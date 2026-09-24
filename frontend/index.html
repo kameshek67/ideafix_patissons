@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Олимп — БВИ и 100 баллов по олимпиаде</title>
+<meta name="description" content="Двусторонний поиск льгот олимпиадников: какие олимпиады дают БВИ на выбранное направление и куда поступить с уже имеющимся дипломом.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="./tailwind.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { DEFAULT: '#BC00F5', 600: '#A800DC', 700: '#8A00B5', 50: '#FCF5FF', 100: '#F4DCFE' },
+        // льготы — оттенки фиолетового семейства, синхронно с --bvi/--sto/--alt в styles.css
+        bvi:  { DEFAULT: '#7300A0', bg: '#F8EBFF', line: '#EACBF8' },
+        sto:  { DEFAULT: '#3A2DB5', bg: '#F0EFFF', line: '#D6D2FA' },
+        alt:  { DEFAULT: '#9C1A61', bg: '#FFF0F7', line: '#F6CDE1' },
+      },
+      // VK Sans Display — шрифт макета; если не установлен, берём близкий по пропорциям Onest
+      fontFamily: { sans: ['VK Sans Display', 'Onest', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'] },
+      boxShadow: { card: '0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10)' },
+    }
+  }
+}
+</script>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body class="text-black antialiased">
+
+<!-- ШАПКА -->
+<header class="app-header">
+  <div class="mx-auto max-w-5xl h-14 px-2 flex items-center">
+    <button id="reset-btn" class="icon-btn" type="button" aria-label="Сбросить выбор" title="Сбросить выбор">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6L18 18" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="flex-1 text-center text-[17px] font-medium">Олимп</div>
+    <button id="about-btn" class="icon-btn" type="button" aria-label="О базе" title="О базе">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/><path d="M12 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/><path d="M12 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main class="mx-auto max-w-5xl px-4 pb-24">
+
+  <!-- ГЕРО -->
+  <section class="pt-4">
+    <h1 class="hero-title">
+      <span class="flex items-center gap-4">Олимпиада
+        <svg class="w-[19px] h-[15px] shrink-0" viewBox="0 0 19 15" fill="none" aria-hidden="true"><path d="M1.28 7.44H17.19M11.03 13.6L17.19 7.44 11.03 1.28" stroke="black" stroke-width="2.565" stroke-linecap="round"/></svg>
+      </span>
+      <span class="text-brand">БВИ или 100&nbsp;баллов</span>
+    </h1>
+  </section>
+
+  <!-- ТАБЫ -->
+  <div class="tabs-bar">
+    <div class="tabs" role="tablist">
+      <button data-tab="uni" class="tab-btn tab-active" role="tab">Вузы</button>
+      <button data-tab="olymp" class="tab-btn" role="tab">Олимпиады</button>
+    </div>
+  </div>
+
+  <!-- ФИЛЬТРЫ -->
+  <section class="mt-3 flex flex-wrap items-center gap-2">
+    <div class="chip-group ml-auto" id="type-filter"></div>
+  </section>
+
+  <!-- ТАБ 1 -->
+  <section id="tab-uni" class="mt-3 space-y-3">
+    <div class="grid sm:grid-cols-2 gap-2">
+      <div class="combo" id="combo-university">
+        <button class="combo-btn" type="button" aria-label="Вуз">
+          <span class="combo-value is-placeholder">Выберите вуз</span>
+          <svg class="chevron" width="15" height="9" viewBox="0 0 15 9" fill="none"><path d="M1 1l6.5 6.5L14 1" stroke="#BC00F5" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="combo-panel hidden">
+          <input class="combo-search" placeholder="Поиск вуза…" autocomplete="off">
+          <div class="combo-list"></div>
+        </div>
+      </div>
+
+      <div class="combo" id="combo-program">
+        <button class="combo-btn" type="button" aria-label="Направление" title="Сначала выберите вуз" disabled>
+          <span class="combo-value is-placeholder">Выберите направление</span>
+          <svg class="chevron" width="15" height="9" viewBox="0 0 15 9" fill="none"><path d="M1 1l6.5 6.5L14 1" stroke="#BC00F5" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="combo-panel hidden">
+          <input class="combo-search" placeholder="Поиск направления или кода…" autocomplete="off">
+          <div class="combo-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="program-result" class="space-y-3">
+      <div class="illu-state">
+        <p>Выбери вуз и направление — получи таблицу льгот по олимпиадам</p>
+        <img src="./assets/illu-uni.png" alt="" width="305" height="319">
+      </div>
+    </div>
+  </section>
+
+  <!-- ТАБ 2 -->
+  <section id="tab-olymp" class="mt-3 space-y-3 hidden">
+    <div class="relative">
+      <label class="search-line">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#BC00F5" d="M17.7033 17.7033C17.3077 18.0989 16.6663 18.0989 16.2707 17.7033L10.5401 11.9728C10.0285 12.3821 9.44006 12.7061 8.7749 12.9449C8.10975 13.1837 7.40196 13.3031 6.65153 13.3031C4.79251 13.3031 3.21917 12.6592 1.9315 11.3716C0.643834 10.0839 0 8.51055 0 6.65153C0 4.79251 0.643834 3.21917 1.9315 1.9315C3.21917 0.643834 4.79251 0 6.65153 0C8.51055 0 10.0839 0.643834 11.3716 1.9315C12.6592 3.21917 13.3031 4.79251 13.3031 6.65153C13.3031 7.40196 13.1837 8.10975 12.9449 8.7749C12.7061 9.44006 12.3821 10.0285 11.9728 10.5401L17.7033 16.2707C18.0989 16.6663 18.0989 17.3077 17.7033 17.7033ZM6.65153 11.2564C7.93067 11.2564 9.01794 10.8087 9.91334 9.91334C10.8087 9.01794 11.2564 7.93067 11.2564 6.65153C11.2564 5.37239 10.8087 4.28512 9.91334 3.38972C9.01794 2.49432 7.93067 2.04662 6.65153 2.04662C5.37239 2.04662 4.28512 2.49432 3.38972 3.38972C2.49432 4.28512 2.04662 5.37239 2.04662 6.65153C2.04662 7.93067 2.49432 9.01794 3.38972 9.91334C4.28512 10.8087 5.37239 11.2564 6.65153 11.2564Z"/></svg>
+        <input id="olymp-input" placeholder="Ваша олимпиада" autocomplete="off" aria-label="Ваша олимпиада">
+      </label>
+      <div id="olymp-suggest" class="suggest hidden"></div>
+    </div>
+
+    <!-- в мобильном макете подсказок нет — показываем их только от sm и шире -->
+    <div id="popular-chips" class="hidden sm:flex flex-wrap gap-1.5"></div>
+
+    <div id="olymp-result" class="space-y-3">
+      <div class="illu-state">
+        <p>Введи название олимпиады. Выбери вуз из списка — получи таблицу льгот</p>
+        <img src="./assets/illu-olymp.png" alt="" width="214" height="232">
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- МОДАЛКА «О базе» -->
+<div id="about-modal" class="fixed inset-0 z-40 hidden">
+  <div class="absolute inset-0 bg-[#2A0038]/40 backdrop-blur-[2px]" data-close></div>
+  <div class="absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:h-fit sm:max-w-2xl bg-white rounded-t-[30px] sm:rounded-[30px] p-5 max-h-[85vh] overflow-y-auto">
+    <div class="sheet-handle sm:hidden"></div>
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-[20px] font-medium">О базе</h2>
+      <button class="icon-btn -mr-2" data-close aria-label="Закрыть">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6L18 18" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div id="counters" class="mb-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <div class="skeleton h-[70px] rounded-2xl"></div><div class="skeleton h-[70px] rounded-2xl"></div>
+      <div class="skeleton h-[70px] rounded-2xl"></div><div class="skeleton h-[70px] rounded-2xl"></div>
+    </div>
+    <div id="about-body" class="space-y-4 text-sm"></div>
+  </div>
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>

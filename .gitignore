@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+# база собирается из XLSX за полминуты — в репозитории её держать незачем
+data/*.db
+data/*.db-wal
+data/*.db-shm
+.idea/
+.vscode/
+*.log
+# PDF презентации генерируется из .pptx командой build_deck.py + LibreOffice
+presentation/*.pdf
