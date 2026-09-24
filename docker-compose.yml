@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: bvi-backend
+    environment:
+      DB_PATH: /app/data/bvi_database.db
+      XLSX_PATH: /app/data/Olimpiady_BVI_100ballov.xlsx
+      FRONTEND_DIR: /app/frontend
+    volumes:
+      # База живёт в volume внутри VM, а не на диске Windows: bind-mount с хоста
+      # замедляет SQLite в десятки раз (запрос 3.5 с против 0.05 с).
+      # Volume наполняется из образа при первом старте и переживает пересоздание
+      # контейнеров; исходный XLSX подкладываем с хоста только для чтения.
+      - bvi-data:/app/data
+      - ./data/Olimpiady_BVI_100ballov.xlsx:/app/data/Olimpiady_BVI_100ballov.xlsx:ro
+      # кэш ссылок на документы вузов: его обновляет refresh_sources.py и он
+      # должен переживать пересоздание контейнера, поэтому лежит на хосте
+      - ./data/university_documents.json:/app/data/university_documents.json
+    ports:
+      - "8000:8000"        # http://localhost:8000/docs — Swagger
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: bvi-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"          # http://localhost:8080 — приложение
+    restart: unless-stopped
+
+volumes:
+  bvi-data:
