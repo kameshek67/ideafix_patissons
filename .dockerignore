@@ -1,12 +1,22 @@
 **/__pycache__/
 **/*.pyc
 **/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
 **/.venv/
-venv/
+**/node_modules/
+**/.next/
+**/*.tsbuildinfo
 .git/
+.github/
 .idea/
 .vscode/
-data/*.db
-data/*.db-wal
-data/*.db-shm
+.env
 *.log
+# в образы не входят: данные подключаются томом, остальное к приложению не относится
+data/
+design/
+docs/
+presentation/
+scripts/
+PostgreSQL/

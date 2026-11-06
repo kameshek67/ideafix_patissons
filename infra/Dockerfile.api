@@ -1,0 +1,22 @@
+# Образ API и воркеров (Python): FastAPI, миграции Alembic, сборка базы, Dramatiq.
+FROM python:3.13-slim AS base
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
+RUN pip install uv==0.13.7
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+COPY packages/domain packages/domain
+COPY packages/db packages/db
+COPY apps/api apps/api
+COPY apps/workers apps/workers
+RUN uv sync --frozen --no-dev --package olymp-api --package olymp-workers
+
+FROM python:3.13-slim
+RUN useradd -r -u 10001 olymp
+WORKDIR /app
+COPY --from=base /app /app
+# XLSX и кэш ссылок на документы подключаются томом в /app/data
+ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONUTF8=1 OLYMP_DATA_DIR=/app/data
+USER olymp
+EXPOSE 8000
+HEALTHCHECK --interval=15s --timeout=4s CMD python -c "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"
+CMD ["uvicorn", "olymp_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]

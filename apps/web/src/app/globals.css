@@ -1,0 +1,4 @@
+/* Tailwind подключается после styles.css — в прототипе его стили тоже шли последними. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

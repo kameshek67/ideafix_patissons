@@ -1,0 +1,45 @@
+# Локальное окружение для разработки: `just up` (или docker compose -f infra/compose.yaml up -d --wait).
+# Сами API и сайт запускаются с хоста (`just api`, `just web`); полный стек в контейнерах —
+# docker-compose.yml в корне.
+name: olymp-dev
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: olymp
+      POSTGRES_PASSWORD: olymp
+      POSTGRES_DB: olymp
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U olymp -d olymp"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    # пользователь guest подключается только изнутри контейнера, поэтому свой
+    environment:
+      RABBITMQ_DEFAULT_USER: olymp
+      RABBITMQ_DEFAULT_PASS: olymp
+    ports: ["5672:5672", "15672:15672"]
+    volumes: [rabbitmq:/var/lib/rabbitmq]
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
+  rabbitmq:

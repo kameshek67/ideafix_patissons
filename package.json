@@ -1,0 +1,5 @@
+{
+  "name": "olymp",
+  "private": true,
+  "workspaces": ["apps/web", "packages/api-client"]
+}
