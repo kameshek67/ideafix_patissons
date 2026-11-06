@@ -1,0 +1,2030 @@
+{
+  "components": {
+    "schemas": {
+      "Benefit": {
+        "properties": {
+          "award_subject": {
+            "title": "Award Subject",
+            "type": "string"
+          },
+          "benefit_type": {
+            "title": "Benefit Type",
+            "type": "string"
+          },
+          "confirm_subject": {
+            "title": "Confirm Subject",
+            "type": "string"
+          },
+          "derived": {
+            "title": "Derived",
+            "type": "boolean"
+          },
+          "grade": {
+            "title": "Grade",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "layer": {
+            "title": "Layer",
+            "type": "string"
+          },
+          "level": {
+            "title": "Level",
+            "type": "string"
+          },
+          "matched": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Matched"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "min_ege": {
+            "title": "Min Ege",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "olympiad_profile": {
+            "title": "Olympiad Profile",
+            "type": "string"
+          },
+          "olympiad_subject": {
+            "title": "Olympiad Subject",
+            "type": "string"
+          },
+          "olympiads": {
+            "items": {
+              "$ref": "#/components/schemas/OlympiadRef"
+            },
+            "title": "Olympiads",
+            "type": "array"
+          },
+          "source_sheet": {
+            "title": "Source Sheet",
+            "type": "string"
+          },
+          "source_title": {
+            "title": "Source Title",
+            "type": "string"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "winner_role": {
+            "title": "Winner Role",
+            "type": "string"
+          },
+          "years": {
+            "title": "Years",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "benefit_type",
+          "layer",
+          "derived",
+          "text",
+          "olympiad_profile",
+          "olympiad_subject",
+          "level",
+          "winner_role",
+          "grade",
+          "confirm_subject",
+          "min_ege",
+          "award_subject",
+          "years",
+          "note",
+          "source_title",
+          "source_url",
+          "source_sheet",
+          "olympiads",
+          "matched"
+        ],
+        "title": "Benefit",
+        "type": "object"
+      },
+      "BenefitGroup": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/Benefit"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "rows",
+          "count"
+        ],
+        "title": "BenefitGroup",
+        "type": "object"
+      },
+      "FallbackHit": {
+        "properties": {
+          "benefit_type": {
+            "title": "Benefit Type",
+            "type": "string"
+          },
+          "faculty_or_direction": {
+            "title": "Faculty Or Direction",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "program_id": {
+            "title": "Program Id",
+            "type": "integer"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "university": {
+            "title": "University",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "benefit_type",
+          "text",
+          "program_id",
+          "faculty_or_direction",
+          "university"
+        ],
+        "title": "FallbackHit",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "Matched": {
+        "description": "Через какую пару «олимпиада + профиль» строка попала в обратный поиск.",
+        "properties": {
+          "level": {
+            "title": "Level",
+            "type": "string"
+          },
+          "profile": {
+            "title": "Profile",
+            "type": "string"
+          },
+          "profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Id"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "via": {
+            "title": "Via",
+            "type": "string"
+          }
+        },
+        "required": [
+          "profile",
+          "profile_id",
+          "level",
+          "role",
+          "via"
+        ],
+        "title": "Matched",
+        "type": "object"
+      },
+      "Note": {
+        "properties": {
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "text"
+        ],
+        "title": "Note",
+        "type": "object"
+      },
+      "OlympiadHit": {
+        "description": "Олимпиада в автокомплите и в выдаче поиска.",
+        "properties": {
+          "bvi_count": {
+            "title": "Bvi Count",
+            "type": "integer"
+          },
+          "canonical_name": {
+            "title": "Canonical Name",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "is_featured": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Featured"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "mentions": {
+            "title": "Mentions",
+            "type": "integer"
+          },
+          "profiles": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profiles"
+          },
+          "rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rank"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          },
+          "sto_count": {
+            "title": "Sto Count",
+            "type": "integer"
+          },
+          "uni_count": {
+            "title": "Uni Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "canonical_name",
+          "short_name",
+          "kind",
+          "mentions",
+          "bvi_count",
+          "sto_count",
+          "uni_count",
+          "rank",
+          "is_featured",
+          "profiles"
+        ],
+        "title": "OlympiadHit",
+        "type": "object"
+      },
+      "OlympiadProfiles": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ProfileHit"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "olympiad": {
+            "$ref": "#/components/schemas/OlympiadHit"
+          },
+          "without_profile": {
+            "title": "Without Profile",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "olympiad",
+          "count",
+          "items",
+          "without_profile"
+        ],
+        "title": "OlympiadProfiles",
+        "type": "object"
+      },
+      "OlympiadRef": {
+        "description": "Олимпиада, к которой привязана строка льготы.",
+        "properties": {
+          "canonical_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Name"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kind"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "short_name",
+          "canonical_name",
+          "kind"
+        ],
+        "title": "OlympiadRef",
+        "type": "object"
+      },
+      "OlympiadSearch": {
+        "description": "«Куда поступить с моей олимпиадой»: список вузов, а с university_id — строки вуза.",
+        "properties": {
+          "fallback": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FallbackHit"
+            },
+            "title": "Fallback",
+            "type": "array"
+          },
+          "matched_olympiads": {
+            "items": {
+              "$ref": "#/components/schemas/OlympiadHit"
+            },
+            "title": "Matched Olympiads",
+            "type": "array"
+          },
+          "profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Id"
+          },
+          "profiles": {
+            "items": {
+              "$ref": "#/components/schemas/ProfileHit"
+            },
+            "title": "Profiles",
+            "type": "array"
+          },
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/UniversityResult"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "shown_programs": {
+            "default": 0,
+            "title": "Shown Programs",
+            "type": "integer"
+          },
+          "total_programs": {
+            "title": "Total Programs",
+            "type": "integer"
+          },
+          "total_universities": {
+            "title": "Total Universities",
+            "type": "integer"
+          },
+          "truncated": {
+            "default": false,
+            "title": "Truncated",
+            "type": "boolean"
+          },
+          "without_profile": {
+            "default": 0,
+            "title": "Without Profile",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query",
+          "matched_olympiads",
+          "profiles",
+          "profile_id",
+          "without_profile",
+          "results",
+          "total_programs",
+          "shown_programs",
+          "total_universities",
+          "truncated",
+          "fallback"
+        ],
+        "title": "OlympiadSearch",
+        "type": "object"
+      },
+      "Olympiads": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OlympiadHit"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count",
+          "items"
+        ],
+        "title": "Olympiads",
+        "type": "object"
+      },
+      "ProfileHit": {
+        "properties": {
+          "bvi_count": {
+            "title": "Bvi Count",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "mentions": {
+            "title": "Mentions",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "olympiad_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Olympiad Id"
+          },
+          "sto_count": {
+            "title": "Sto Count",
+            "type": "integer"
+          },
+          "uni_count": {
+            "title": "Uni Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "olympiad_id",
+          "name",
+          "mentions",
+          "bvi_count",
+          "sto_count",
+          "uni_count"
+        ],
+        "title": "ProfileHit",
+        "type": "object"
+      },
+      "ProgramInfo": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "faculty_or_direction": {
+            "title": "Faculty Or Direction",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "profile_name": {
+            "title": "Profile Name",
+            "type": "string"
+          },
+          "source_sheet": {
+            "title": "Source Sheet",
+            "type": "string"
+          },
+          "source_title": {
+            "title": "Source Title",
+            "type": "string"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "faculty_or_direction",
+          "profile_name",
+          "code",
+          "note",
+          "source_title",
+          "source_url",
+          "source_sheet"
+        ],
+        "title": "ProgramInfo",
+        "type": "object"
+      },
+      "ProgramItem": {
+        "properties": {
+          "benefits": {
+            "title": "Benefits",
+            "type": "integer"
+          },
+          "bvi": {
+            "title": "Bvi",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "faculty_or_direction": {
+            "title": "Faculty Or Direction",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "profile_name": {
+            "title": "Profile Name",
+            "type": "string"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          },
+          "region_group": {
+            "title": "Region Group",
+            "type": "string"
+          },
+          "source_sheet": {
+            "title": "Source Sheet",
+            "type": "string"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          },
+          "sto": {
+            "title": "Sto",
+            "type": "integer"
+          },
+          "university": {
+            "title": "University",
+            "type": "string"
+          },
+          "university_id": {
+            "title": "University Id",
+            "type": "integer"
+          },
+          "university_short": {
+            "title": "University Short",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "university_id",
+          "faculty_or_direction",
+          "profile_name",
+          "code",
+          "note",
+          "source_url",
+          "source_sheet",
+          "university",
+          "university_short",
+          "region",
+          "region_group",
+          "bvi",
+          "sto",
+          "benefits"
+        ],
+        "title": "ProgramItem",
+        "type": "object"
+      },
+      "ProgramOlympiad": {
+        "properties": {
+          "canonical_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Name"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kind"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          },
+          "types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Types",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "short_name",
+          "canonical_name",
+          "kind",
+          "types",
+          "count"
+        ],
+        "title": "ProgramOlympiad",
+        "type": "object"
+      },
+      "ProgramRef": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "faculty_or_direction": {
+            "title": "Faculty Or Direction",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "profile_name": {
+            "title": "Profile Name",
+            "type": "string"
+          },
+          "source_title": {
+            "title": "Source Title",
+            "type": "string"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "faculty_or_direction",
+          "profile_name",
+          "code",
+          "note",
+          "source_url",
+          "source_title"
+        ],
+        "title": "ProgramRef",
+        "type": "object"
+      },
+      "ProgramResult": {
+        "properties": {
+          "benefits": {
+            "items": {
+              "$ref": "#/components/schemas/Benefit"
+            },
+            "title": "Benefits",
+            "type": "array"
+          },
+          "program": {
+            "$ref": "#/components/schemas/ProgramRef"
+          },
+          "types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Types",
+            "type": "array"
+          }
+        },
+        "required": [
+          "program",
+          "benefits",
+          "types"
+        ],
+        "title": "ProgramResult",
+        "type": "object"
+      },
+      "ProgramSearch": {
+        "description": "«Ищу олимпиады под вуз»: таблицы льгот направления, примечания и источники.",
+        "properties": {
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/BenefitGroup"
+            },
+            "title": "Groups",
+            "type": "array"
+          },
+          "notes": {
+            "items": {
+              "$ref": "#/components/schemas/Note"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
+          "olympiads": {
+            "items": {
+              "$ref": "#/components/schemas/ProgramOlympiad"
+            },
+            "title": "Olympiads",
+            "type": "array"
+          },
+          "program": {
+            "$ref": "#/components/schemas/ProgramInfo"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/Source"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "total_benefits": {
+            "title": "Total Benefits",
+            "type": "integer"
+          },
+          "university": {
+            "$ref": "#/components/schemas/UniversityInfo"
+          }
+        },
+        "required": [
+          "program",
+          "university",
+          "groups",
+          "notes",
+          "olympiads",
+          "sources",
+          "total_benefits"
+        ],
+        "title": "ProgramSearch",
+        "type": "object"
+      },
+      "Programs": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ProgramItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count",
+          "items"
+        ],
+        "title": "Programs",
+        "type": "object"
+      },
+      "RegionGroup": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "regions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Regions",
+            "type": "array"
+          },
+          "universities": {
+            "title": "Universities",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "universities",
+          "regions"
+        ],
+        "title": "RegionGroup",
+        "type": "object"
+      },
+      "Regions": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RegionGroup"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "Regions",
+        "type": "object"
+      },
+      "SheetLog": {
+        "properties": {
+          "benefits": {
+            "title": "Benefits",
+            "type": "integer"
+          },
+          "comment": {
+            "title": "Comment",
+            "type": "string"
+          },
+          "rows_ingested": {
+            "title": "Rows Ingested",
+            "type": "integer"
+          },
+          "rows_read": {
+            "title": "Rows Read",
+            "type": "integer"
+          },
+          "sheet": {
+            "title": "Sheet",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sheet",
+          "rows_read",
+          "rows_ingested",
+          "benefits",
+          "comment"
+        ],
+        "title": "SheetLog",
+        "type": "object"
+      },
+      "Source": {
+        "properties": {
+          "checked_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checked At"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Types",
+            "type": "array"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "url",
+          "kind",
+          "types",
+          "checked_at"
+        ],
+        "title": "Source",
+        "type": "object"
+      },
+      "Stats": {
+        "properties": {
+          "benefit_types": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Benefit Types",
+            "type": "object"
+          },
+          "built_at": {
+            "title": "Built At",
+            "type": "string"
+          },
+          "sheets": {
+            "items": {
+              "$ref": "#/components/schemas/SheetLog"
+            },
+            "title": "Sheets",
+            "type": "array"
+          },
+          "source_file": {
+            "title": "Source File",
+            "type": "string"
+          },
+          "top_olympiads": {
+            "items": {
+              "$ref": "#/components/schemas/StatsOlympiad"
+            },
+            "title": "Top Olympiads",
+            "type": "array"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/StatsTotals"
+          },
+          "universities": {
+            "items": {
+              "$ref": "#/components/schemas/StatsUniversity"
+            },
+            "title": "Universities",
+            "type": "array"
+          }
+        },
+        "required": [
+          "totals",
+          "source_file",
+          "built_at",
+          "benefit_types",
+          "universities",
+          "top_olympiads",
+          "sheets"
+        ],
+        "title": "Stats",
+        "type": "object"
+      },
+      "StatsOlympiad": {
+        "properties": {
+          "bvi_count": {
+            "title": "Bvi Count",
+            "type": "integer"
+          },
+          "canonical_name": {
+            "title": "Canonical Name",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "mentions": {
+            "title": "Mentions",
+            "type": "integer"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          },
+          "sto_count": {
+            "title": "Sto Count",
+            "type": "integer"
+          },
+          "uni_count": {
+            "title": "Uni Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "short_name",
+          "canonical_name",
+          "mentions",
+          "bvi_count",
+          "sto_count",
+          "uni_count"
+        ],
+        "title": "StatsOlympiad",
+        "type": "object"
+      },
+      "StatsTotals": {
+        "properties": {
+          "benefits": {
+            "title": "Benefits",
+            "type": "integer"
+          },
+          "bvi": {
+            "title": "Bvi",
+            "type": "integer"
+          },
+          "derived": {
+            "title": "Derived",
+            "type": "integer"
+          },
+          "keywords": {
+            "title": "Keywords",
+            "type": "integer"
+          },
+          "links": {
+            "title": "Links",
+            "type": "integer"
+          },
+          "notes": {
+            "title": "Notes",
+            "type": "integer"
+          },
+          "olympiads": {
+            "title": "Olympiads",
+            "type": "integer"
+          },
+          "profiles": {
+            "title": "Profiles",
+            "type": "integer"
+          },
+          "programs": {
+            "title": "Programs",
+            "type": "integer"
+          },
+          "rows": {
+            "title": "Rows",
+            "type": "integer"
+          },
+          "sto": {
+            "title": "Sto",
+            "type": "integer"
+          },
+          "universities": {
+            "title": "Universities",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "universities",
+          "programs",
+          "benefits",
+          "bvi",
+          "sto",
+          "olympiads",
+          "profiles",
+          "links",
+          "keywords",
+          "rows",
+          "derived",
+          "notes"
+        ],
+        "title": "StatsTotals",
+        "type": "object"
+      },
+      "StatsUniversity": {
+        "properties": {
+          "benefits": {
+            "title": "Benefits",
+            "type": "integer"
+          },
+          "bvi": {
+            "title": "Bvi",
+            "type": "integer"
+          },
+          "city": {
+            "title": "City",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "programs": {
+            "title": "Programs",
+            "type": "integer"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          },
+          "region_group": {
+            "title": "Region Group",
+            "type": "string"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          },
+          "sto": {
+            "title": "Sto",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "short_name",
+          "region",
+          "city",
+          "region_group",
+          "programs",
+          "bvi",
+          "sto",
+          "benefits"
+        ],
+        "title": "StatsUniversity",
+        "type": "object"
+      },
+      "Universities": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/UniversityItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "regions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Regions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count",
+          "items",
+          "regions"
+        ],
+        "title": "Universities",
+        "type": "object"
+      },
+      "UniversityInfo": {
+        "properties": {
+          "city": {
+            "title": "City",
+            "type": "string"
+          },
+          "docs_title": {
+            "default": "",
+            "title": "Docs Title",
+            "type": "string"
+          },
+          "docs_url": {
+            "default": "",
+            "title": "Docs Url",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          },
+          "region_group": {
+            "title": "Region Group",
+            "type": "string"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          },
+          "site_url": {
+            "default": "",
+            "title": "Site Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "short_name",
+          "region",
+          "city",
+          "note",
+          "site_url",
+          "docs_url",
+          "docs_title",
+          "region_group"
+        ],
+        "title": "UniversityInfo",
+        "type": "object"
+      },
+      "UniversityItem": {
+        "properties": {
+          "benefits": {
+            "title": "Benefits",
+            "type": "integer"
+          },
+          "bvi": {
+            "title": "Bvi",
+            "type": "integer"
+          },
+          "city": {
+            "title": "City",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "programs": {
+            "title": "Programs",
+            "type": "integer"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          },
+          "region_group": {
+            "title": "Region Group",
+            "type": "string"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          },
+          "sto": {
+            "title": "Sto",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "short_name",
+          "region",
+          "city",
+          "note",
+          "region_group",
+          "programs",
+          "bvi",
+          "sto",
+          "benefits"
+        ],
+        "title": "UniversityItem",
+        "type": "object"
+      },
+      "UniversityResult": {
+        "properties": {
+          "bvi": {
+            "title": "Bvi",
+            "type": "integer"
+          },
+          "other": {
+            "title": "Other",
+            "type": "integer"
+          },
+          "programs": {
+            "items": {
+              "$ref": "#/components/schemas/ProgramResult"
+            },
+            "title": "Programs",
+            "type": "array"
+          },
+          "programs_total": {
+            "title": "Programs Total",
+            "type": "integer"
+          },
+          "sto": {
+            "title": "Sto",
+            "type": "integer"
+          },
+          "university": {
+            "$ref": "#/components/schemas/UniversityInfo"
+          }
+        },
+        "required": [
+          "university",
+          "programs",
+          "programs_total",
+          "bvi",
+          "sto",
+          "other"
+        ],
+        "title": "UniversityResult",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Двусторонний поиск льгот БВИ и 100 баллов по олимпиадам школьников",
+    "title": "Олимп API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/healthz": {
+      "get": {
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Healthz Healthz Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Healthz",
+        "tags": [
+          "ops"
+        ]
+      }
+    },
+    "/readyz": {
+      "get": {
+        "description": "Готов, если база доступна и собрана.",
+        "operationId": "readyz_readyz_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Readyz Readyz Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Readyz",
+        "tags": [
+          "ops"
+        ]
+      }
+    },
+    "/v1/olympiads": {
+      "get": {
+        "description": "Автокомплит по названиям и сокращениям («всош», «пвг», «вышка»), без q — популярные.",
+        "operationId": "olympiads_v1_olympiads_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "featured",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Featured",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Olympiads"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Olympiads",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/v1/olympiads/{olympiad_id}/profiles": {
+      "get": {
+        "description": "Профили олимпиады: у НТО их десятки, и льгота даётся за пару «олимпиада + профиль».",
+        "operationId": "olympiad_profiles_v1_olympiads__olympiad_id__profiles_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "olympiad_id",
+            "required": true,
+            "schema": {
+              "title": "Olympiad Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OlympiadProfiles"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Olympiad Profiles",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/v1/programs": {
+      "get": {
+        "description": "Направления вуза; q ищет по названию, профилю и коду.",
+        "operationId": "programs_v1_programs_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "university_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "University Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 500,
+              "maximum": 2000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Programs"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Programs",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/v1/regions": {
+      "get": {
+        "description": "Москва / Санкт-Петербург / Регионы.",
+        "operationId": "regions_v1_regions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Regions"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Regions",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/v1/search/by-olympiad": {
+      "get": {
+        "description": "Обратный поиск «куда поступить с моей олимпиадой»: список вузов, а с university_id —\nвсе строки выбранного вуза. Точные итоги (total_*) считаются отдельно от лимита выдачи.",
+        "operationId": "by_olympiad_v1_search_by_olympiad_get",
+        "parameters": [
+          {
+            "description": "Название олимпиады или его часть",
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "description": "Название олимпиады или его часть",
+              "maxLength": 200,
+              "minLength": 2,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "olympiad_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Olympiad Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "profile_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profile Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "university_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "University Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "region",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Region"
+            }
+          },
+          {
+            "in": "query",
+            "name": "benefit_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Benefit Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 400,
+              "maximum": 2000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OlympiadSearch"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "By Olympiad",
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/v1/search/by-program": {
+      "get": {
+        "description": "«Ищу олимпиады под вуз»: строки таблиц по типам льгот, примечания, список олимпиад.",
+        "operationId": "by_program_v1_search_by_program_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "program_id",
+            "required": true,
+            "schema": {
+              "title": "Program Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgramSearch"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "By Program",
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/v1/stats": {
+      "get": {
+        "description": "Счётчики для блока «О базе», статистика по вузам, топ олимпиад, отчёт сборки.",
+        "operationId": "stats_v1_stats_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stats"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Stats",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/v1/universities": {
+      "get": {
+        "description": "Вузы с числом направлений и льгот.",
+        "operationId": "universities_v1_universities_get",
+        "parameters": [
+          {
+            "description": "Москва | Санкт-Петербург | Регионы",
+            "in": "query",
+            "name": "region",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Москва | Санкт-Петербург | Регионы",
+              "title": "Region"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Universities"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Universities",
+        "tags": [
+          "catalog"
+        ]
+      }
+    }
+  }
+}
