@@ -74,7 +74,9 @@ export function OlympApp() {
   const [benefitType, setBenefitType] = useState("Все");
   // текущее значение фильтра для кода, который продолжается после await
   const benefitTypeRef = useRef(benefitType);
-  benefitTypeRef.current = benefitType;
+  useEffect(() => {
+    benefitTypeRef.current = benefitType;
+  }, [benefitType]);
   const [aboutOpen, setAboutOpen] = useState(false);
 
   // ---------------------------------------------------------------- справочники
