@@ -1,0 +1,81 @@
+[project]
+name = "olymp"
+version = "0.0.0"
+description = "Олимп: монорепозиторий (поиск олимпиадных льгот БВИ / 100 баллов)"
+requires-python = ">=3.13"
+
+[tool.uv.workspace]
+members = ["packages/domain", "packages/db", "apps/api", "apps/workers"]
+
+[tool.uv.sources]
+olymp-domain = { workspace = true }
+olymp-db = { workspace = true }
+olymp-api = { workspace = true }
+olymp-workers = { workspace = true }
+
+[dependency-groups]
+dev = [
+  "pytest>=8",
+  "pytest-asyncio>=0.24",
+  "httpx>=0.27",
+  "ruff>=0.7",
+  "mypy>=1.13",
+  "import-linter>=2.1",
+  "pandas-stubs>=2.2",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+# скрипт сборки презентации — отдельный инструмент, не часть приложения
+extend-exclude = ["presentation"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+# длину строк держит ruff format; комментарии на русском могут быть длиннее
+ignore = ["E501"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query"]
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]
+exclude = ["/tests/"]
+
+[[tool.mypy.overrides]]
+# Парсер документов и скрипты данных перенесены из прототипа как есть: их поведение
+# закреплено интеграционным тестом сборки базы (apps/workers/tests), а не типами.
+module = [
+  "olymp_domain.textutils",
+  "olymp_domain.olympiad_seeds",
+  "olymp_workers.ingest",
+  "olymp_workers.refresh_sources",
+  "olymp_workers.validate",
+]
+ignore_errors = true
+
+[tool.importlinter]
+root_packages = ["olymp_api", "olymp_domain", "olymp_db", "olymp_workers"]
+
+[[tool.importlinter.contracts]]
+name = "Модули API не лезут во внутренности друг друга"
+type = "independence"
+modules = ["olymp_api.modules.catalog", "olymp_api.modules.search"]
+
+[[tool.importlinter.contracts]]
+name = "Домен не зависит от БД, API и воркеров"
+type = "forbidden"
+source_modules = ["olymp_domain"]
+forbidden_modules = ["olymp_api", "olymp_db", "olymp_workers"]
+
+[[tool.importlinter.contracts]]
+name = "API не зависит от воркеров"
+type = "forbidden"
+source_modules = ["olymp_api"]
+forbidden_modules = ["olymp_workers"]
+
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib -W ignore::DeprecationWarning"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

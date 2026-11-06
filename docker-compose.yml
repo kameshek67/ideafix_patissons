@@ -1,38 +1,96 @@
+# Весь «Олимп» одной командой:
+#   docker compose up --build -d
+# сайт — http://localhost:8080, API и Swagger — http://localhost:8000/docs
+#
+# При первом старте сервис migrate применяет миграции и собирает базу из
+# data/Olimpiady_BVI_100ballov.xlsx (около минуты, видно в `docker compose logs -f migrate`).
+# База живёт в томе pgdata и переживает пересоздание контейнеров.
+# Для разработки (API и сайт с хоста) — infra/compose.yaml, см. README.
+name: olymp-app
+
+x-python: &python
+  build: {context: ., dockerfile: infra/Dockerfile.api}
+  image: olymp-python
+
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-    container_name: bvi-backend
+  postgres:
+    image: pgvector/pgvector:pg17
     environment:
-      DB_PATH: /app/data/bvi_database.db
-      XLSX_PATH: /app/data/Olimpiady_BVI_100ballov.xlsx
-      FRONTEND_DIR: /app/frontend
-    volumes:
-      # База живёт в volume внутри VM, а не на диске Windows: bind-mount с хоста
-      # замедляет SQLite в десятки раз (запрос 3.5 с против 0.05 с).
-      # Volume наполняется из образа при первом старте и переживает пересоздание
-      # контейнеров; исходный XLSX подкладываем с хоста только для чтения.
-      - bvi-data:/app/data
-      - ./data/Olimpiady_BVI_100ballov.xlsx:/app/data/Olimpiady_BVI_100ballov.xlsx:ro
-      # кэш ссылок на документы вузов: его обновляет refresh_sources.py и он
-      # должен переживать пересоздание контейнера, поэтому лежит на хосте
-      - ./data/university_documents.json:/app/data/university_documents.json
-    ports:
-      - "8000:8000"        # http://localhost:8000/docs — Swagger
+      POSTGRES_USER: olymp
+      POSTGRES_PASSWORD: olymp
+      POSTGRES_DB: olymp
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U olymp -d olymp"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     restart: unless-stopped
 
-  frontend:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: olymp
+      RABBITMQ_DEFAULT_PASS: olymp
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # миграции + сборка базы, если она ещё пустая; пересобрать:
+  #   docker compose run --rm migrate olymp-ingest
+  migrate:
+    <<: *python
+    working_dir: /app/packages/db
+    command: ["sh", "-c", "alembic upgrade head && olymp-ingest --if-empty"]
+    environment:
+      OLYMP_DATABASE_URL: postgresql+psycopg://olymp:olymp@postgres:5432/olymp
+    volumes: [./data:/app/data:ro]
+    depends_on:
+      postgres: {condition: service_healthy}
+    restart: "no"
+
+  api:
+    <<: *python
+    environment:
+      OLYMP_DATABASE_URL: postgresql+asyncpg://olymp:olymp@postgres:5432/olymp
+      OLYMP_REDIS_URL: redis://redis:6379/0
+    ports: ["8000:8000"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_started}
+    restart: unless-stopped
+
+  # фоновые задачи (Dramatiq): обход сайтов вузов и пересборка базы
+  #   docker compose exec worker python -m olymp_workers.tasks refresh-sources
+  worker:
+    <<: *python
+    command: ["dramatiq", "olymp_workers.tasks", "--processes", "1", "--threads", "2"]
+    environment:
+      OLYMP_DATABASE_URL: postgresql+psycopg://olymp:olymp@postgres:5432/olymp
+      OLYMP_RABBITMQ_URL: amqp://olymp:olymp@rabbitmq:5672/
+    volumes: [./data:/app/data]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      rabbitmq: {condition: service_healthy}
+    healthcheck: {disable: true}
+    restart: unless-stopped
+
+  web:
     build:
       context: .
-      dockerfile: frontend/Dockerfile
-    container_name: bvi-frontend
+      dockerfile: infra/Dockerfile.web
+      args: {OLYMP_API_URL: "http://api:8000"}
+    ports: ["8080:3000"]
     depends_on:
-      backend:
-        condition: service_healthy
-    ports:
-      - "8080:80"          # http://localhost:8080 — приложение
+      api: {condition: service_healthy}
     restart: unless-stopped
 
 volumes:
-  bvi-data:
+  pgdata:

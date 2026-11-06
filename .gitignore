@@ -2,12 +2,26 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
-# база собирается из XLSX за полминуты — в репозитории её держать незачем
-data/*.db
-data/*.db-wal
-data/*.db-shm
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / Next.js
+node_modules/
+.next/
+apps/web/next-env.d.ts
+*.tsbuildinfo
+
+# локальные настройки
+.env
 .idea/
 .vscode/
 *.log
+
+# база прототипа на SQLite больше не используется, но могла остаться на диске
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
 # PDF презентации генерируется из .pptx командой build_deck.py + LibreOffice
 presentation/*.pdf
