@@ -1,6 +1,7 @@
 # Весь «Олимп» одной командой:
 #   docker compose up --build -d
 # сайт — http://localhost:8080, API и Swagger — http://localhost:8000/docs
+# (порты меняются переменными OLYMP_WEB_PORT и OLYMP_API_PORT, если эти заняты)
 #
 # При первом старте сервис migrate применяет миграции и собирает базу из
 # data/Olimpiady_BVI_100ballov.xlsx (около минуты, видно в `docker compose logs -f migrate`).
@@ -61,7 +62,10 @@ services:
     environment:
       OLYMP_DATABASE_URL: postgresql+asyncpg://olymp:olymp@postgres:5432/olymp
       OLYMP_REDIS_URL: redis://redis:6379/0
-    ports: ["8000:8000"]
+      # X-Forwarded-For принимаем только от адресов внутренних сетей (там сайт, web);
+      # иначе лимит запросов считал бы всех посетителей сайта одним клиентом
+      FORWARDED_ALLOW_IPS: "127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+    ports: ["${OLYMP_API_PORT:-8000}:8000"]
     depends_on:
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_started}
@@ -87,7 +91,7 @@ services:
       context: .
       dockerfile: infra/Dockerfile.web
       args: {OLYMP_API_URL: "http://api:8000"}
-    ports: ["8080:3000"]
+    ports: ["${OLYMP_WEB_PORT:-8080}:3000"]
     depends_on:
       api: {condition: service_healthy}
     restart: unless-stopped
