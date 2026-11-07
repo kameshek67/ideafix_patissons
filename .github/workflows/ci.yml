@@ -2,7 +2,12 @@ name: ci
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, dev]
+
+# новый push в ту же ветку отменяет устаревший прогон
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   python:
@@ -45,6 +50,15 @@ jobs:
       - run: npm run lint --workspace olymp-web
       - run: npm test --workspace olymp-web
       - run: npm run build --workspace olymp-web
+
+  # файлы задач docs/tasks/T-*.md: шапки, статусы, зависимости (ADR 0009)
+  tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: python scripts/tasks.py check
 
   secrets:
     runs-on: ubuntu-latest
