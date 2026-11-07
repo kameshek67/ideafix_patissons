@@ -36,6 +36,7 @@ EOF
   DEBIAN_FRONTEND=noninteractive apt-get install -y -qq docker-ce docker-ce-cli containerd.io \
     docker-buildx-plugin docker-compose-plugin
 fi
+command -v setfacl >/dev/null || DEBIAN_FRONTEND=noninteractive apt-get install -y -qq acl
 grep -q '"ip": "127.0.0.1"' /etc/docker/daemon.json || echo "ВНИМАНИЕ: в /etc/docker/daemon.json нет \"ip\": \"127.0.0.1\"" >&2
 
 # ---- пользователь deploy: группа docker, вход только ключом CI и только в ideafix-gate
@@ -55,15 +56,19 @@ fi
 # ---- каталоги: релизы пишет deploy, .env (секреты стенда) читает deploy, правит root
 install -d -m 755 -o deploy -g deploy "$root" "$root/releases"
 install -d -m 750 -o root -g deploy "$root/shared"
+install -d -m 750 -o root -g deploy "$root/shared/files"
 if [ ! -f "$root/shared/.env" ]; then
   cat >"$root/shared/.env" <<'EOF'
 # Настройки и секреты стенда ideafix.patissons.tech. Не в git; docker compose читает файл
 # при каждой выкатке. После правки: ideafix up -d (или дождаться следующей выкатки).
 #
-# Мини-приложение MAX (новый стек):
+# Мини-приложение MAX: токен и имя бота (business.max.ru → Чат-боты)
 # OLYMP_MAX_BOT_TOKEN=
 # OLYMP_MAX_BOT_NAME=
+# Бот с кнопкой «Открыть» — ещё и сертификат Минцифры в
+# /opt/ideafix/shared/files/infra/certs/ (infra/certs/README.md):
 # COMPOSE_PROFILES=bot
+# Профили https и tunnel на стенде не включать: HTTPS даёт Caddy сервера.
 EOF
   chown root:deploy "$root/shared/.env"
   chmod 640 "$root/shared/.env"

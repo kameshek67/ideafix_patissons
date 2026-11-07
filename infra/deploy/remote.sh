@@ -37,6 +37,14 @@ flock -w 900 9
 
 # секреты и настройки стенда — один файл на все релизы, в git его нет
 ln -sfn "$root/shared/.env" "$rel/.env"
+# файлы не из git (сертификат для бота MAX и т. п.): shared/files/<путь> → <релиз>/<путь>
+if [ -d "$root/shared/files" ]; then
+  cp -a "$root/shared/files/." "$rel/"
+fi
+# воркер нового стека (uid 10001, infra/Dockerfile.api) пишет в ./data кэш источников
+if [ -d "$rel/data" ]; then
+  setfacl -R -m u:10001:rwX -m d:u:10001:rwX "$rel/data" 2>/dev/null || chmod -R a+rwX "$rel/data"
+fi
 
 if [ "${2:-}" != "--no-pull" ]; then
   read -r user
