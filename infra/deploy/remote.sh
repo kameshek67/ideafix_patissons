@@ -24,6 +24,32 @@ compose_in() {  # compose_in <каталог релиза> <аргументы d
   (cd "$dir" && docker compose -f "$f" -f .deploy/images.yml "$@")
 }
 
+# Меняя настройки существующей сети, compose пересоздаёт её на ходу и подключает контейнеры
+# обратно без имён сервисов в DNS: migrate не находит postgres, и стек не поднимается (так легла
+# выкатка, где сети впервые дали host_binding_ipv4). Поэтому, если сеть стека должна измениться,
+# сначала down (тома с данными остаются), потом up в чистую сеть.
+networks_differ() {  # networks_differ <каталог релиза>
+  compose_in "$1" config --format json | python3 -c '
+import json, subprocess, sys
+for net in json.load(sys.stdin).get("networks", {}).values():
+    if net.get("external"):
+        continue
+    r = subprocess.run(["docker", "network", "inspect", net["name"], "--format", "{{json .Options}}"],
+                       capture_output=True, text=True)
+    if r.returncode == 0 and json.loads(r.stdout) != (net.get("driver_opts") or {}):
+        sys.exit(0)
+sys.exit(1)
+'
+}
+
+up() {  # up <каталог релиза>
+  if networks_differ "$1"; then
+    log "настройки сети стека меняются — down и up в чистую сеть"
+    compose_in "$1" down --remove-orphans
+  fi
+  compose_in "$1" up -d --no-build --remove-orphans
+}
+
 healthy() {
   for _ in $(seq 1 60); do
     curl -fs -o /dev/null -m 5 "$health_url" && return 0
@@ -64,7 +90,7 @@ fi
 
 prev=$(readlink -f "$root/current" 2>/dev/null || true)
 log "поднимаю ${sha:0:12}"
-if compose_in "$rel" up -d --no-build --remove-orphans && healthy; then
+if up "$rel" && healthy; then
   ln -sfn "$rel" "$root/current.tmp"
   mv -Tf "$root/current.tmp" "$root/current"
   log "готово: $health_url отвечает"
@@ -80,7 +106,7 @@ compose_in "$rel" ps -a || true
 compose_in "$rel" logs --no-color --tail 60 || true
 if [ -n "$prev" ] && [ "$prev" != "$rel" ] && [ -d "$prev" ]; then
   log "возвращаю предыдущий релиз $(basename "$prev" | cut -c1-12)"
-  if compose_in "$prev" up -d --no-build --remove-orphans && healthy; then
+  if up "$prev" && healthy; then
     log "предыдущий релиз отвечает"
   else
     log "предыдущий релиз тоже не отвечает"
