@@ -37,28 +37,6 @@ const responses: Record<string, unknown> = {
       },
     ],
   },
-  "/api/v1/stats": {
-    totals: {
-      universities: 39,
-      programs: 659,
-      benefits: 49440,
-      bvi: 27777,
-      sto: 20859,
-      olympiads: 173,
-      profiles: 635,
-      links: 59098,
-      keywords: 117677,
-      rows: 48963,
-      derived: 23720,
-      notes: 477,
-    },
-    source_file: "Olimpiady_BVI_100ballov.xlsx",
-    built_at: "2026-11-06 20:00:00",
-    benefit_types: {},
-    universities: [],
-    top_olympiads: [],
-    sheets: [],
-  },
 };
 
 beforeEach(() => {
