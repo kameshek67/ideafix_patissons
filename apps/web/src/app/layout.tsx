@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Providers } from "@/components/providers";
+import { MAX_BRIDGE_LOADER } from "@/lib/max";
+// Onest — с нашего же адреса, а не с Google Fonts: те же файлы (переменный шрифт v11,
+// совпадают побайтно), но мини-приложению MAX не нужно ходить на сторонний сервер
+import "@fontsource-variable/onest";
 // порядок важен: сначала компоненты прототипа, потом Tailwind — как было в index.html
 import "./styles.css";
 import "./globals.css";
@@ -25,13 +29,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
+        {/* MAX Bridge — только при запуске как мини-приложение MAX (см. lib/max.ts) */}
+        <script dangerouslySetInnerHTML={{ __html: MAX_BRIDGE_LOADER }} />
       </head>
       <body className="text-black antialiased">
         <Providers>{children}</Providers>

@@ -41,7 +41,7 @@ body::before {
   background: rgba(255,255,255,.88); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
 }
 .tabs {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 3px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 3px;
   background: var(--soft); border-radius: 30px; box-shadow: 0 0 0 1px rgba(188,0,245,.05);
 }
 .tab-btn {
@@ -49,6 +49,8 @@ body::before {
   transition: background .15s, box-shadow .15s;
 }
 .tab-btn:hover { background: rgba(255,255,255,.55); }
+/* три вкладки на самых узких телефонах (iPhone SE и уже) — иначе «Олимпиады» впритык */
+@media (max-width: 359px) { .tab-btn { font-size: 15px; } }
 .tab-active, .tab-active:hover { background: #fff; box-shadow: 0 1px 3px rgba(188,0,245,.10); }
 
 /* ---------- поле поиска олимпиады: иконка + подчёркивание ---------- */
@@ -341,3 +343,58 @@ mark { background: #F4DCFE; color: inherit; padding: 0 2px; border-radius: 3px; 
 /* профили бывают длиной в предложение — чипы переносят текст, а не распирают карточку вбок */
 .profile-chips { display: flex; flex-wrap: wrap; gap: 6px; max-height: 148px; overflow-x: hidden; overflow-y: auto; padding-right: 4px; }
 .profile-chips .chip { max-width: 100%; white-space: normal; text-align: left; line-height: 1.3; padding: 6px 14px; }
+
+/* ---------- кнопки действий ----------
+   Главная кнопка — пилюля 50px (как поля формы) в цвете бренда; пока форма не заполнена,
+   она мягкая и подсказывает, чего не хватает. */
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 50px; padding: 0 28px; border-radius: 30px; border: 1px solid var(--brand);
+  background: var(--brand); color: #fff; font-size: 16px; font-weight: 500;
+  box-shadow: 0 6px 16px rgba(188,0,245,.22); transition: background .15s, box-shadow .15s, transform .1s;
+}
+.btn-primary:hover:not(:disabled) { background: #A800DB; }
+.btn-primary:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 3px 10px rgba(188,0,245,.2); }
+.btn-primary:disabled { background: var(--soft); border-color: #EBCBF7; color: var(--muted); box-shadow: none; cursor: default; }
+.btn-danger { display: block; width: 100%; height: 44px; margin-top: 6px; border-radius: 30px; font-size: 15px; color: #B42318; }
+.btn-danger:hover { background: #FFF1F0; }
+
+/* ---------- «Мои дипломы» ---------- */
+.diploma-list { margin-top: 6px; }
+.diploma-list > li + li { border-top: 1px solid #F6EEF9; }
+.diploma-row { display: flex; align-items: flex-start; gap: 4px; }
+.diploma-main {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  padding: 10px 0; text-align: left;
+}
+.diploma-name { font-size: 15px; line-height: 20px; font-weight: 500; }
+.diploma-profile { font-weight: 400; color: var(--muted); }
+.diploma-meta { font-size: 12.5px; line-height: 18px; color: var(--muted); }
+.diploma-main .uni-row-badges { margin-top: 5px; }
+.diploma-main:hover .diploma-name { color: var(--brand-ink); }
+.diploma-remove { flex-shrink: 0; margin-top: 6px; color: #9C8AA3; }
+.diploma-remove:hover { color: #B42318; background: #FFF1F0; }
+
+/* форма диплома (шторка) */
+.form-section + .form-section { margin-top: 18px; }
+.field-label { font-size: 14px; line-height: 20px; font-weight: 500; margin-bottom: 8px; }
+.field-hint { margin-left: 4px; font-size: 12px; font-weight: 400; color: var(--muted); }
+.field-note { margin-top: 8px; font-size: 12px; line-height: 1.4; color: var(--muted); }
+.chip-lg { min-height: 40px; font-size: 14px; }
+.picked-olympiad {
+  display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px;
+  border-radius: 15px; background: var(--soft);
+}
+.picked-olympiad .chip { background: #fff; border-color: var(--hair); color: var(--brand-ink); }
+.suggest-inline { margin-top: 8px; border: 1px solid #F0E1F6; border-radius: 15px; overflow: hidden auto; max-height: 300px; }
+/* Мини-приложение MAX на телефоне (атрибут data-max ставит MaxProvider): встроенный браузер
+   не скачивает файлы по blob-ссылкам, поэтому выгрузку CSV там не показываем */
+html[data-max="ios"] .table-toolbar .chip-ghost,
+html[data-max="android"] .table-toolbar .chip-ghost { display: none; }
+
+/* кнопка формы не уезжает под клавиатуру и полоску «домой» на iPhone */
+.sheet-actions {
+  position: sticky; bottom: 0; z-index: 1; margin: 16px -20px 0;
+  padding: 14px 20px calc(16px + env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 18px);
+}

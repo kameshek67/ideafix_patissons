@@ -51,3 +51,40 @@ export interface OlympiadQuery {
 
 export const getByOlympiad = (query: OlympiadQuery) =>
   unwrap(api.GET("/v1/search/by-olympiad", { params: { query } }));
+
+// ---------------------------------------------------------------- «Мои дипломы»
+
+export type DiplomaForm = Schemas["DiplomaForm"];
+export type DiplomaProfile = Schemas["DiplomaProfile"];
+export type AchievementsMatch = Schemas["AchievementsMatch"];
+export type AchievementUniversity = Schemas["AchievementUniversity"];
+export type AchievementRow = Schemas["AchievementRow"];
+export type DiplomaResult = Schemas["DiplomaResult"];
+export type MaxConfig = Schemas["MaxConfig"];
+export type MyDiplomas = Schemas["MyDiplomas"];
+
+export const getDiplomaForm = (olympiadId: number) =>
+  unwrap(
+    api.GET("/v1/achievements/olympiads/{olympiad_id}", {
+      params: { path: { olympiad_id: olympiadId } },
+    }),
+  );
+
+export interface AchievementsQuery {
+  benefit_type?: string;
+  university_id?: number;
+}
+
+export const getAchievements = (diplomas: string[], query: AchievementsQuery = {}) =>
+  unwrap(api.GET("/v1/achievements/match", { params: { query: { diploma: diplomas, ...query } } }));
+
+export const getMaxConfig = () => unwrap(api.GET("/v1/max/config"));
+
+// дипломы пользователя MAX: API узнаёт его по подписанным данным запуска мини-приложения
+const maxHeaders = (initData: string) => ({ "X-Max-Init-Data": initData });
+
+export const getMyDiplomas = (initData: string) =>
+  unwrap(api.GET("/v1/me/diplomas", { headers: maxHeaders(initData) }));
+
+export const putMyDiplomas = (initData: string, diplomas: string[]) =>
+  unwrap(api.PUT("/v1/me/diplomas", { body: { diplomas }, headers: maxHeaders(initData) }));
