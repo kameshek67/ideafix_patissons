@@ -3,13 +3,15 @@
 Нормализованная часть: universities / programs / benefits.
 Поисковая часть: olympiads / olympiad_aliases / olympiad_profiles / benefit_olympiads /
 benefit_keywords / search_index (полнотекстовый индекс, tsvector).
-Пользовательская часть: max_users / user_diplomas («Мои дипломы» в мини-приложении MAX).
+Пользовательская часть: max_users / user_diplomas («Мои дипломы» в мини-приложении MAX),
+share_links (снимки для ссылок «Поделиться»).
 
 Все текстовые колонки — с сортировкой «C»: строки упорядочиваются побайтно, как в
 прототипе на SQLite. От этого зависит порядок вузов, направлений и профилей в выдаче.
 """
 
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy import (
     BigInteger,
@@ -25,7 +27,7 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy import text as sa_text
-from sqlalchemy.dialects.postgresql import TSVECTOR
+from sqlalchemy.dialects.postgresql import JSONB, TSVECTOR
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 NAMING = {
@@ -311,6 +313,33 @@ class UserDiploma(Base):
     olympiad_name: Mapped[str] = _text()
     profile_name: Mapped[str] = _text()
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class ShareLink(Base):
+    """Снимок для ссылки «Поделиться»: что открыть получателю (F-01).
+
+    Хранит стабильные ключи (squash названий), а не id: ссылка открывает тот же экран и
+    после пересборки базы. Внешних ключей на таблицы сборки нет и быть не должно — иначе
+    TRUNCATE … CASCADE при пересборке молча очистил бы и ссылки.
+    """
+
+    __tablename__ = "share_links"
+    __table_args__ = (
+        CheckConstraint("kind IN ('program', 'olympiad', 'diplomas')", name="kind"),
+        Index(None, "expires_at"),
+    )
+
+    # 10 символов base62 из secrets — непредсказуем, годится и для startapp, и для пути /s/
+    token: Mapped[str] = mapped_column(CText, primary_key=True)
+    kind: Mapped[str] = mapped_column(CText)
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    # sha256 канонического JSON (kind + payload): повторное «Поделиться» отдаёт тот же токен
+    payload_hash: Mapped[str] = mapped_column(CText, unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    # ссылка живёт 90 дней с последнего «Поделиться» этого же экрана
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    opened_count: Mapped[int] = _int()
+    last_opened: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 # Таблицы с данными сборки: их очищает и заново наполняет olymp-ingest.

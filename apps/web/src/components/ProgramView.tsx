@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { BenefitGroup, ProgramSearch } from "@/lib/api";
+import { type BenefitGroup, type ProgramSearch, shareBenefitType } from "@/lib/api";
 import { dash, fmt, place } from "@/lib/format";
+import { programShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
 import { DataTable, useTables } from "./DataTable";
 import { IconSummaryChevron } from "./icons";
+import { ShareButton } from "./ShareButton";
 import { badgeClass, Clamp2, DerivedMark, EmptyState, TYPE_STYLE } from "./ui";
 import { SourceBlock } from "./SourceBlock";
 
@@ -111,8 +113,15 @@ export function ProgramView({ data, benefitType, goToOlympiad }: Props) {
   return (
     <>
       <div className="card p-4" ref={root}>
-        <div className="card-kicker">
-          {`${university.name}${place(university) ? ` · ${place(university)}` : ""}`}
+        <div className="flex items-center gap-3">
+          <div className="card-kicker min-w-0 flex-1">
+            {`${university.name}${place(university) ? ` · ${place(university)}` : ""}`}
+          </div>
+          <ShareButton
+            request={{ kind: "program", program_id: program.id, benefit_type: shareBenefitType(benefitType) }}
+            title={program.faculty_or_direction}
+            text={programShareText(data)}
+          />
         </div>
         <h2 className="card-title mt-1">{program.faculty_or_direction}</h2>
         <div className="mt-3 flex flex-wrap gap-1.5">

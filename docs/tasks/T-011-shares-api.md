@@ -1,15 +1,15 @@
 ---
 id: T-011
 title: API снимков для ссылок «Поделиться» (/v1/shares)
-status: todo
+status: done
 priority: P0
 area: api
 estimate: M
 spec: docs/specs/F-01-share.md
 depends: [T-010]
-owner: ""
-branch: ""
-pr: ""
+owner: Raytist
+branch: feat/T-012-share
+pr: 14
 updated: 2026-11-07
 ---
 
@@ -17,16 +17,23 @@ updated: 2026-11-07
 Короткая стабильная ссылка на направление, выдачу по олимпиаде или итоги дипломов.
 
 ## Что сделать
-- [ ] Миграция `share_links`; модуль `modules/sharing` (router, schemas, service) + контракт import-linter
-- [ ] POST /v1/shares (идемпотентно по хэшу, лимит 30/мин), GET /v1/shares/{token} с `resolved`
-- [ ] `just openapi`, тесты (в т.ч. токен переживает пересборку)
+- [x] Миграция `share_links`; модуль `modules/sharing` (router, schemas, service) + контракт import-linter
+- [x] POST /v1/shares (идемпотентно по хэшу, лимит 60/мин и 20 000/сутки), GET /v1/shares/{token} с `resolved`
+- [x] `just openapi`, тесты (в т.ч. токен переживает пересборку)
 
 ## Критерии приёмки
-- [ ] Критерии API из F-01 выполнены
-- [ ] Пересборка базы не трогает share_links
-- [ ] `just check` зелёный
+- [x] Критерии API из F-01 выполнены
+- [x] Пересборка базы не трогает share_links
+- [x] `just check` зелёный
 
 ## Контекст
 ТЗ: [F-01-share.md](../specs/F-01-share.md). Похожий модуль — modules/achievements. Ошибки — olymp_api.errors.
 
 ## Журнал
+- 2026-11-07 — Raytist — POST принимает id текущей сборки, сервер сам переводит их в ключи и берёт
+  названия дипломов из базы (текст от клиента получатель не видит). Токен — 10 символов base62,
+  `payload_hash` + `ON CONFLICT`, `expires_at` 90 дней, устаревшие удаляются при создании.
+  Лимит в минуту поднят до 60: сайт создаёт ссылку заранее, пока экран показан. GET не
+  кэшируется — считает открытия. Тест пересборки сдвигает начало последовательностей id: с тем
+  же XLSX id совпали бы, и тест не отличил бы ссылку по ключам от ссылки по id.
+- 2026-11-07 — Raytist — PR #14 сливается в `dev` (squash), CI зелёный.

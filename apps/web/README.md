@@ -19,8 +19,11 @@ just web                               # http://localhost:3000, /api/v1/* про
 
 ```
 src/app/            layout.tsx (шрифт, загрузчик MAX Bridge), page.tsx, styles.css — стили и токены прототипа
+  s/[token]/       ссылка «Поделиться»: тот же OlympApp, открытый на экране из снимка (noindex)
 src/components/
-  OlympApp.tsx      корневой экран: вкладки, состояние, запуск по ссылке startapp
+  OlympApp.tsx      корневой экран: вкладки, состояние, запуск по ссылке startapp и /s/<token>
+  ShareButton.tsx   «Поделиться»: ссылка готовится заранее, отправка в MAX или браузере
+  Toaster.tsx       тосты («Ссылка скопирована»)
   Onboarding.tsx    онбординг при первом запуске: 3 экрана, свайп, шторка с кнопками
   ProgramView.tsx   карточка направления («вуз → олимпиады»)
   OlympiadView.tsx  выдача по олимпиаде и льготы выбранного вуза («олимпиада → вузы»)
@@ -32,7 +35,9 @@ src/components/
 src/lib/
   api.ts            все вызовы API (openapi-fetch, типы из @olymp/api-client)
   max.ts            типы и обёртки MAX Bridge
-  diplomas, onboarding, format, table, csv — чистые функции с тестами
+  share.ts          текст сообщения «Поделиться» и выбор способа отправки
+  startParam.ts     разбор payload startapp (diplomas, program-<id>, olympiad-<id>, s_<token>)
+  diplomas, onboarding, format, table, csv, toast — чистые функции с тестами
 src/proxy.ts        передаёт адрес посетителя в API (лимит запросов)
 next.config.ts      прокси /api/v1/* → FastAPI, заголовки безопасности
 ```

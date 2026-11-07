@@ -30,3 +30,5 @@ updated: 2026-11-07
 По итогам ревью 2026-11-07.
 
 ## Журнал
+- 2026-11-07 — Raytist — `parseStartParam()` с тестами сделан в T-013 (`lib/startParam.ts`), вместе с
+  `s_<token>`. `navigate(intent)`, стек «Назад» и deep link без ожидания списка вузов — не сделаны.

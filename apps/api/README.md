@@ -29,6 +29,7 @@ src/olymp_api/
     catalog/         /v1/stats, /regions, /universities, /programs, /olympiads, /olympiads/{id}/profiles
     search/          /v1/search/by-program, /v1/search/by-olympiad
     achievements/    «Мои дипломы»: /v1/achievements/*, /v1/max/config, /v1/me/diplomas
+    sharing/         «Поделиться»: /v1/shares (снимки экранов по стабильным ключам)
 tests/               тесты на собранной базе (httpx + ASGI)
 ```
 

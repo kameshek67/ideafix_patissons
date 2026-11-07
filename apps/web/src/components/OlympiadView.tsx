@@ -1,11 +1,13 @@
 "use client";
 
 import { type ReactNode, useLayoutEffect, useRef } from "react";
-import type { OlympiadSearch, UniversityInfo } from "@/lib/api";
+import { type OlympiadSearch, shareBenefitType, type UniversityInfo } from "@/lib/api";
 import { codesOf, dash, fmt, place, plural } from "@/lib/format";
+import { olympiadShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
 import { DataTable } from "./DataTable";
 import { IconChevronLeft, IconChevronRight } from "./icons";
+import { ShareButton } from "./ShareButton";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
 import { badgeClass, Clamp2, DerivedMark, EmptyState } from "./ui";
 
@@ -15,17 +17,35 @@ const napravleniy = (n: number) => plural(n, "направление", "напр
 function OlympiadHead({
   data,
   profileId,
+  benefitType,
+  university = null,
   children,
 }: {
   data: OlympiadSearch;
   profileId: number | null;
+  benefitType: string;
+  /** экран выбранного вуза: делимся «олимпиада + вуз» */
+  university?: UniversityInfo | null;
   children: ReactNode;
 }) {
   const o = data.matched_olympiads[0]!;
   const profile = data.profiles.find((p) => p.id === profileId);
   return (
     <div className="card p-4">
-      <div className="card-kicker">Олимпиада</div>
+      <div className="flex items-center gap-3">
+        <div className="card-kicker min-w-0 flex-1">Олимпиада</div>
+        <ShareButton
+          request={{
+            kind: "olympiad",
+            olympiad_id: o.id,
+            profile_id: profile ? profile.id : null,
+            university_id: university ? university.id : null,
+            benefit_type: shareBenefitType(benefitType),
+          }}
+          title={o.short_name}
+          text={olympiadShareText(data, profileId, university)}
+        />
+      </div>
       <h2 className="card-title mt-1">{o.short_name}</h2>
       <div className="text-[13px] leading-snug meta-text mt-1">{o.canonical_name}</div>
       {profile ? (
@@ -90,12 +110,13 @@ function ProfileChips({
 interface ResultsProps {
   data: OlympiadSearch;
   profileId: number | null;
+  benefitType: string;
   onProfile: (id: number | null) => void;
   onUniversity: (university: UniversityInfo) => void;
 }
 
 /** Выдача по олимпиаде: шапка, профили, список вузов (или «не найдено»). */
-export function OlympiadResults({ data, profileId, onProfile, onUniversity }: ResultsProps) {
+export function OlympiadResults({ data, profileId, benefitType, onProfile, onUniversity }: ResultsProps) {
   if (!data.matched_olympiads.length) {
     const fallback = (data.fallback || []).slice(0, 8);
     return (
@@ -124,7 +145,7 @@ export function OlympiadResults({ data, profileId, onProfile, onUniversity }: Re
 
   return (
     <>
-      <OlympiadHead data={data} profileId={profileId}>
+      <OlympiadHead data={data} profileId={profileId} benefitType={benefitType}>
         <span className="badge badge-soft">{`${fmt(data.total_universities)} ${vuzov(data.total_universities)}`}</span>
         <span className="badge badge-soft">{`${fmt(data.total_programs)} ${napravleniy(data.total_programs)}`}</span>
       </OlympiadHead>
@@ -275,6 +296,7 @@ interface UniversityProps {
   data: OlympiadSearch;
   university: UniversityInfo;
   profileId: number | null;
+  benefitType: string;
   totalUniversities: number;
   onBack: () => void;
   openProgram: (id: number) => void;
@@ -285,13 +307,14 @@ export function UniversityBenefits({
   data,
   university: u,
   profileId,
+  benefitType,
   totalUniversities,
   onBack,
   openProgram,
 }: UniversityProps) {
   return (
     <>
-      <OlympiadHead data={data} profileId={profileId}>
+      <OlympiadHead data={data} profileId={profileId} benefitType={benefitType} university={u}>
         <span className="badge badge-soft">{u.name}</span>
       </OlympiadHead>
       <button className="back-link" onClick={onBack}>
