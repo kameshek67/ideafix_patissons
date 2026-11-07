@@ -1547,6 +1547,10 @@
             "title": "Sto",
             "type": "integer"
           },
+          "table_rows": {
+            "title": "Table Rows",
+            "type": "integer"
+          },
           "university": {
             "title": "University",
             "type": "string"
@@ -1575,7 +1579,8 @@
           "region_group",
           "bvi",
           "sto",
-          "benefits"
+          "benefits",
+          "table_rows"
         ],
         "title": "ProgramItem",
         "type": "object"
@@ -2639,6 +2644,10 @@
           "sto": {
             "title": "Sto",
             "type": "integer"
+          },
+          "table_rows": {
+            "title": "Table Rows",
+            "type": "integer"
           }
         },
         "required": [
@@ -2652,7 +2661,8 @@
           "programs",
           "bvi",
           "sto",
-          "benefits"
+          "benefits",
+          "table_rows"
         ],
         "title": "UniversityItem",
         "type": "object"

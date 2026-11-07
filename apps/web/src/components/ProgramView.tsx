@@ -155,11 +155,21 @@ export function ProgramView({ data, benefitType, goToOlympiad }: Props) {
           );
         })
       ) : (
-        <EmptyState
-          icon="📄"
-          title="Таблицы для этого направления нет"
-          text="В источнике правило сформулировано общим текстом — смотрите блок «Общие правила и примечания»."
-        />
+        <>
+          <EmptyState
+            icon="📄"
+            title="В базе нет таблицы для этого направления"
+            text="Это не значит, что льготы нет: вуз описал правило общим текстом или не разложил его по таблице. Смотри общие правила ниже и документ приёмной комиссии."
+          />
+          {university.docs_url ? (
+            <a className="source-btn" href={university.docs_url} target="_blank" rel="noreferrer">
+              <span className="source-btn-text">
+                <span>{university.docs_title || "Документы приёмной комиссии"}</span>
+                <span className="meta-text">Открыть на сайте вуза</span>
+              </span>
+            </a>
+          ) : null}
+        </>
       )}
 
       {notes.length ? (

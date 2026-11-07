@@ -14,7 +14,9 @@ REGION_ORDER = {"Москва": 0, "Санкт-Петербург": 1, "Реги
 UNIVERSITY_COUNTERS = """COUNT(DISTINCT p.id) AS programs,
                          SUM(CASE WHEN b.benefit_type = 'БВИ' THEN 1 ELSE 0 END) AS bvi,
                          SUM(CASE WHEN b.benefit_type = '100 баллов' THEN 1 ELSE 0 END) AS sto,
-                         COUNT(b.id) AS benefits"""
+                         COUNT(b.id) AS benefits,
+                         SUM(CASE WHEN b.layer IN ('detailed', 'derived') THEN 1 ELSE 0 END)
+                             AS table_rows"""
 
 
 async def stats(session: AsyncSession) -> dict[str, Any]:
@@ -127,7 +129,9 @@ async def programs(
                    u.short_name AS university_short, u.region, u.region_group,
                    SUM(CASE WHEN b.benefit_type = 'БВИ' THEN 1 ELSE 0 END) AS bvi,
                    SUM(CASE WHEN b.benefit_type = '100 баллов' THEN 1 ELSE 0 END) AS sto,
-                   COUNT(b.id) AS benefits
+                   COUNT(b.id) AS benefits,
+                   SUM(CASE WHEN b.layer IN ('detailed', 'derived') THEN 1 ELSE 0 END)
+                       AS table_rows
             FROM programs p
             JOIN universities u ON u.id = p.university_id
             LEFT JOIN benefits b ON b.program_id = p.id AND b.layer <> 'raw'
