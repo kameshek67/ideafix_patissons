@@ -55,7 +55,6 @@ Caddy сервера, профили `https` и `tunnel` не нужны. Ток
 | Архитектурные решения | [docs/adr/](docs/adr/README.md) |
 | Задачи и план | [docs/tasks/ROADMAP.md](docs/tasks/ROADMAP.md), `just tasks` |
 | Как вносить изменения | [CONTRIBUTING.md](CONTRIBUTING.md) |
-| Что сделано по версиям | [CHANGELOG.md](CHANGELOG.md) |
 | Вся документация | [docs/README.md](docs/README.md) |
 
 ## Ветки
