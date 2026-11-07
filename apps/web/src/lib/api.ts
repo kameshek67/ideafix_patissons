@@ -7,20 +7,38 @@ export type ProgramSearch = Schemas["ProgramSearch"];
 export type OlympiadSearch = Schemas["OlympiadSearch"];
 export type UniversityInfo = Schemas["UniversityInfo"];
 export type Benefit = Schemas["Benefit"];
-export type Source = Schemas["Source"];
+// в контракте имя Source занято двумя схемами (поиск и баллы за достижения), поэтому длинное имя
+export type Source = Schemas["olymp_api__modules__search__schemas__Source"];
 export type BenefitGroup = Schemas["BenefitGroup"];
 
 // Next.js проксирует /api/v1/* на FastAPI (next.config.ts). Адрес абсолютный: Request
 // вне браузера (тесты) не принимает относительные URL.
 const api = apiClient(typeof window === "undefined" ? "/api" : `${window.location.origin}/api`);
 
-/** Ответ openapi-fetch -> данные; ошибка -> исключение «статус текст», как в прототипе. */
+/** Ошибка ответа API: статус нужен, чтобы отличить «сервер лёг» (5xx) от «не нашлось» (4xx). */
+export class ApiError extends Error {
+  constructor(
+    readonly status: number,
+    statusText: string,
+  ) {
+    super(`${status} ${statusText}`);
+  }
+}
+
+/** Ответ openapi-fetch -> данные; ошибка -> ApiError «статус текст», как в прототипе. */
 async function unwrap<T>(p: Promise<{ data?: T; error?: unknown; response: Response }>): Promise<T> {
   const { data, response } = await p;
   if (!response.ok || data === undefined) {
-    throw new Error(`${response.status} ${response.statusText}`);
+    throw new ApiError(response.status, response.statusText);
   }
   return data;
+}
+
+/** Текст ошибки загрузки для школьника: без кодов, адресов и слов «бэкенд» и «сборка базы». */
+export function friendlyError(e: unknown): string {
+  if (e instanceof ApiError && e.status >= 500) return "Сервер сейчас не отвечает. Попробуй ещё раз через минуту.";
+  if (e instanceof ApiError) return "Не получилось загрузить данные. Попробуй ещё раз.";
+  return "Нет связи с сервером. Проверь интернет и попробуй ещё раз.";
 }
 
 
@@ -101,3 +119,31 @@ export const createShare = (body: ShareRequest) => unwrap(api.POST("/v1/shares",
 
 export const getShare = (token: string) =>
   unwrap(api.GET("/v1/shares/{token}", { params: { path: { token } } }));
+
+// ---------------------------------------------------------------- баллы за достижения (ГТО…)
+
+export type ExtraUniversities = Schemas["ExtraUniversities"];
+export type ExtraRules = Schemas["ExtraRules"];
+export type ExtraRule = Schemas["ExtraRule"];
+export type ExtraScore = Schemas["Score"];
+export type ExtraClaim = Schemas["ClaimIn"];
+
+/** Год кампании, по которому собраны баллы за достижения (data/individual_achievements.csv). */
+export const EXTRA_YEAR = 2026;
+
+export const getExtraUniversities = () =>
+  unwrap(api.GET("/v1/extra-points/universities", { params: { query: { admission_year: EXTRA_YEAR } } }));
+
+export const getExtraRules = (universityId: number) =>
+  unwrap(
+    api.GET("/v1/extra-points/universities/{university_id}", {
+      params: { path: { university_id: universityId }, query: { admission_year: EXTRA_YEAR } },
+    }),
+  );
+
+export const scoreExtra = (universityId: number, claims: ExtraClaim[]) =>
+  unwrap(
+    api.POST("/v1/extra-points/score", {
+      body: { university_id: universityId, admission_year: EXTRA_YEAR, claims },
+    }),
+  );

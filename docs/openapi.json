@@ -161,6 +161,60 @@
         "title": "AchievementsMatch",
         "type": "object"
       },
+      "Award": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "honors_document",
+              "gto_badge",
+              "olympiad_final",
+              "olympiad_regional",
+              "olympiad_other",
+              "sport_title",
+              "volunteer",
+              "military",
+              "abilimpics",
+              "essay",
+              "other"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "points": {
+            "title": "Points",
+            "type": "integer"
+          },
+          "review": {
+            "enum": [
+              "extracted",
+              "reviewed"
+            ],
+            "title": "Review",
+            "type": "string"
+          },
+          "rule_id": {
+            "title": "Rule Id",
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/olymp_api__modules__extra_points__schemas__Source"
+          }
+        },
+        "required": [
+          "rule_id",
+          "kind",
+          "label",
+          "points",
+          "review",
+          "source"
+        ],
+        "title": "Award",
+        "type": "object"
+      },
       "Benefit": {
         "properties": {
           "award_subject": {
@@ -302,6 +356,72 @@
           "count"
         ],
         "title": "BenefitGroup",
+        "type": "object"
+      },
+      "ClaimIn": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "honors_document",
+              "gto_badge",
+              "olympiad_final",
+              "olympiad_regional",
+              "olympiad_other",
+              "sport_title",
+              "volunteer",
+              "military",
+              "abilimpics",
+              "essay",
+              "other"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "rule_id": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "правило, выбранное на экране",
+            "title": "Rule Id"
+          },
+          "variant": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "gold/silver/bronze, kms…",
+            "title": "Variant"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "maximum": 2100.0,
+                "minimum": 2000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "год получения",
+            "title": "Year"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "ClaimIn",
         "type": "object"
       },
       "Counts": {
@@ -537,6 +657,203 @@
           "diplomas"
         ],
         "title": "DiplomasShareIn",
+        "type": "object"
+      },
+      "ExtraRule": {
+        "properties": {
+          "exclusive_group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exclusive Group"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "honors_document",
+              "gto_badge",
+              "olympiad_final",
+              "olympiad_regional",
+              "olympiad_other",
+              "sport_title",
+              "volunteer",
+              "military",
+              "abilimpics",
+              "essay",
+              "other"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "notes": {
+            "title": "Notes",
+            "type": "string"
+          },
+          "points": {
+            "title": "Points",
+            "type": "integer"
+          },
+          "recency_years": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recency Years"
+          },
+          "review": {
+            "enum": [
+              "extracted",
+              "reviewed"
+            ],
+            "title": "Review",
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/olymp_api__modules__extra_points__schemas__Source"
+          },
+          "variants": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Variants",
+            "type": "array"
+          },
+          "years": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Years",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "label",
+          "points",
+          "variants",
+          "years",
+          "recency_years",
+          "exclusive_group",
+          "notes",
+          "review",
+          "source"
+        ],
+        "title": "ExtraRule",
+        "type": "object"
+      },
+      "ExtraRules": {
+        "properties": {
+          "admission_year": {
+            "title": "Admission Year",
+            "type": "integer"
+          },
+          "max_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Total"
+          },
+          "max_total_source": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/olymp_api__modules__extra_points__schemas__Source"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rules": {
+            "items": {
+              "$ref": "#/components/schemas/ExtraRule"
+            },
+            "title": "Rules",
+            "type": "array"
+          },
+          "university_id": {
+            "title": "University Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "university_id",
+          "admission_year",
+          "max_total",
+          "max_total_source",
+          "rules"
+        ],
+        "title": "ExtraRules",
+        "type": "object"
+      },
+      "ExtraUniversities": {
+        "properties": {
+          "admission_year": {
+            "title": "Admission Year",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ExtraUniversity"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "admission_year",
+          "items"
+        ],
+        "title": "ExtraUniversities",
+        "type": "object"
+      },
+      "ExtraUniversity": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "rules": {
+            "title": "Rules",
+            "type": "integer"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "short_name",
+          "rules"
+        ],
+        "title": "ExtraUniversity",
         "type": "object"
       },
       "FallbackHit": {
@@ -1230,6 +1547,10 @@
             "title": "Sto",
             "type": "integer"
           },
+          "table_rows": {
+            "title": "Table Rows",
+            "type": "integer"
+          },
           "university": {
             "title": "University",
             "type": "string"
@@ -1258,7 +1579,8 @@
           "region_group",
           "bvi",
           "sto",
-          "benefits"
+          "benefits",
+          "table_rows"
         ],
         "title": "ProgramItem",
         "type": "object"
@@ -1418,7 +1740,7 @@
           },
           "sources": {
             "items": {
-              "$ref": "#/components/schemas/Source"
+              "$ref": "#/components/schemas/olymp_api__modules__search__schemas__Source"
             },
             "title": "Sources",
             "type": "array"
@@ -1591,6 +1913,119 @@
           "profile_name"
         ],
         "title": "SavedDiploma",
+        "type": "object"
+      },
+      "Score": {
+        "properties": {
+          "admission_year": {
+            "title": "Admission Year",
+            "type": "integer"
+          },
+          "awards": {
+            "items": {
+              "$ref": "#/components/schemas/Award"
+            },
+            "title": "Awards",
+            "type": "array"
+          },
+          "capped": {
+            "title": "Capped",
+            "type": "boolean"
+          },
+          "max_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Total"
+          },
+          "raw_total": {
+            "title": "Raw Total",
+            "type": "integer"
+          },
+          "skipped": {
+            "items": {
+              "$ref": "#/components/schemas/Skipped"
+            },
+            "title": "Skipped",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "scored",
+              "no_data"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "university_id": {
+            "title": "University Id",
+            "type": "integer"
+          },
+          "unmatched": {
+            "items": {
+              "$ref": "#/components/schemas/Unmatched"
+            },
+            "title": "Unmatched",
+            "type": "array"
+          },
+          "unverified": {
+            "title": "Unverified",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "university_id",
+          "admission_year",
+          "status",
+          "total",
+          "raw_total",
+          "capped",
+          "max_total",
+          "awards",
+          "skipped",
+          "unmatched",
+          "unverified"
+        ],
+        "title": "Score",
+        "type": "object"
+      },
+      "ScoreRequest": {
+        "description": "Достижения школьника. Ничего не сохраняется и не пишется в журнал.",
+        "properties": {
+          "admission_year": {
+            "maximum": 2100.0,
+            "minimum": 2000.0,
+            "title": "Admission Year",
+            "type": "integer"
+          },
+          "claims": {
+            "items": {
+              "$ref": "#/components/schemas/ClaimIn"
+            },
+            "maxItems": 40,
+            "title": "Claims",
+            "type": "array"
+          },
+          "university_id": {
+            "title": "University Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "university_id",
+          "admission_year",
+          "claims"
+        ],
+        "title": "ScoreRequest",
         "type": "object"
       },
       "Share": {
@@ -1803,47 +2238,52 @@
         "title": "SheetLog",
         "type": "object"
       },
-      "Source": {
+      "Skipped": {
         "properties": {
-          "checked_at": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Checked At"
-          },
           "kind": {
+            "enum": [
+              "honors_document",
+              "gto_badge",
+              "olympiad_final",
+              "olympiad_regional",
+              "olympiad_other",
+              "sport_title",
+              "volunteer",
+              "military",
+              "abilimpics",
+              "essay",
+              "other"
+            ],
             "title": "Kind",
             "type": "string"
           },
-          "title": {
-            "title": "Title",
+          "label": {
+            "title": "Label",
             "type": "string"
           },
-          "types": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Types",
-            "type": "array"
+          "reason": {
+            "enum": [
+              "year_missing",
+              "year_not_allowed",
+              "too_old",
+              "year_in_future",
+              "same_group_better"
+            ],
+            "title": "Reason",
+            "type": "string"
           },
-          "url": {
-            "title": "Url",
+          "rule_id": {
+            "title": "Rule Id",
             "type": "string"
           }
         },
         "required": [
-          "title",
-          "url",
+          "rule_id",
           "kind",
-          "types",
-          "checked_at"
+          "label",
+          "reason"
         ],
-        "title": "Source",
+        "title": "Skipped",
         "type": "object"
       },
       "Stats": {
@@ -2204,6 +2644,10 @@
           "sto": {
             "title": "Sto",
             "type": "integer"
+          },
+          "table_rows": {
+            "title": "Table Rows",
+            "type": "integer"
           }
         },
         "required": [
@@ -2217,7 +2661,8 @@
           "programs",
           "bvi",
           "sto",
-          "benefits"
+          "benefits",
+          "table_rows"
         ],
         "title": "UniversityItem",
         "type": "object"
@@ -2262,6 +2707,68 @@
         "title": "UniversityResult",
         "type": "object"
       },
+      "Unmatched": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "honors_document",
+              "gto_badge",
+              "olympiad_final",
+              "olympiad_regional",
+              "olympiad_other",
+              "sport_title",
+              "volunteer",
+              "military",
+              "abilimpics",
+              "essay",
+              "other"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "rule_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Id"
+          },
+          "variant": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          }
+        },
+        "required": [
+          "kind",
+          "variant",
+          "year",
+          "rule_id"
+        ],
+        "title": "Unmatched",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -2300,6 +2807,79 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "olymp_api__modules__extra_points__schemas__Source": {
+        "properties": {
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page"
+          },
+          "quote": {
+            "title": "Quote",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "page",
+          "quote"
+        ],
+        "title": "Source",
+        "type": "object"
+      },
+      "olymp_api__modules__search__schemas__Source": {
+        "properties": {
+          "checked_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checked At"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Types",
+            "type": "array"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "url",
+          "kind",
+          "types",
+          "checked_at"
+        ],
+        "title": "Source",
         "type": "object"
       }
     }
@@ -2482,6 +3062,151 @@
         "summary": "Diploma Form",
         "tags": [
           "achievements"
+        ]
+      }
+    },
+    "/v1/extra-points/score": {
+      "post": {
+        "description": "Сколько баллов за достижения получит школьник в вузе (с лимитом). Данные не сохраняются.",
+        "operationId": "score_v1_extra_points_score_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Score"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Score",
+        "tags": [
+          "extra-points"
+        ]
+      }
+    },
+    "/v1/extra-points/universities": {
+      "get": {
+        "description": "Вузы, у которых в базе есть баллы за индивидуальные достижения (ГТО, аттестат…).",
+        "operationId": "universities_v1_extra_points_universities_get",
+        "parameters": [
+          {
+            "description": "Год приёмной кампании",
+            "in": "query",
+            "name": "admission_year",
+            "required": true,
+            "schema": {
+              "description": "Год приёмной кампании",
+              "maximum": 2100,
+              "minimum": 2000,
+              "title": "Admission Year",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtraUniversities"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Universities",
+        "tags": [
+          "extra-points"
+        ]
+      }
+    },
+    "/v1/extra-points/universities/{university_id}": {
+      "get": {
+        "description": "Баллы вуза за достижения и лимит суммы; у каждого правила — цитата из документа вуза.",
+        "operationId": "rules_v1_extra_points_universities__university_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "university_id",
+            "required": true,
+            "schema": {
+              "title": "University Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Год приёмной кампании",
+            "in": "query",
+            "name": "admission_year",
+            "required": true,
+            "schema": {
+              "description": "Год приёмной кампании",
+              "maximum": 2100,
+              "minimum": 2000,
+              "title": "Admission Year",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtraRules"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Rules",
+        "tags": [
+          "extra-points"
         ]
       }
     },

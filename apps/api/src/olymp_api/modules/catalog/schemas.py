@@ -79,6 +79,8 @@ class UniversityItem(ResponseModel):
     bvi: int
     sto: int
     benefits: int
+    # строк таблиц (без текстовых правил): 0 — в базе нет таблицы льгот, а не «льготы нет»
+    table_rows: int
 
 
 class Universities(ResponseModel):
@@ -103,6 +105,7 @@ class ProgramItem(ResponseModel):
     bvi: int
     sto: int
     benefits: int
+    table_rows: int
 
 
 class Programs(ResponseModel):
