@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Ежедневный дамп PostgreSQL стенда (служба ideafix-backup.timer), хранится 14 дней.
+# В стеке без PostgreSQL (прототип на SQLite) ничего не делает.
+set -euo pipefail
+dir=/var/backups/ideafix
+install -d -m 700 "$dir"
+cid=$(docker ps -q --filter label=com.docker.compose.project=ideafix \
+  --filter label=com.docker.compose.service=postgres)
+if [ -z "$cid" ]; then
+  echo "postgres стенда не запущен — дамп не нужен"
+  exit 0
+fi
+user=$(docker exec "$cid" printenv POSTGRES_USER)
+db=$(docker exec "$cid" printenv POSTGRES_DB)
+out=$dir/$db-$(date +%F).sql.gz
+docker exec "$cid" pg_dump -U "$user" -d "$db" --no-owner | gzip >"$out.tmp"
+mv "$out.tmp" "$out"
+find "$dir" -name '*.sql.gz' -mtime +14 -delete
+echo "дамп: $out ($(du -h "$out" | cut -f1))"
