@@ -155,9 +155,18 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
             <span>{u.name}</span>
             <span className="meta">
               {`${place(u)} · ${fmt(u.programs)} ${plural(u.programs, "направление", "направления", "направлений")} · `}
-              <span className="text-bvi">{`${fmt(u.bvi)} БВИ`}</span>
-              {" · "}
-              <span className="text-sto">{`${fmt(u.sto)} по 100`}</span>
+              {u.table_rows === 0 ? (
+                // нули читались бы как «льготы нет», а таблицы просто нет в данных
+                <span title="В базе нет таблицы льгот этого вуза: смотри документ приёмной комиссии">
+                  нет таблицы льгот
+                </span>
+              ) : (
+                <>
+                  <span className="text-bvi">{`${fmt(u.bvi)} БВИ`}</span>
+                  {" · "}
+                  <span className="text-sto">{`${fmt(u.sto)} по 100`}</span>
+                </>
+              )}
             </span>
           </>
         ),
@@ -180,9 +189,15 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
           <span>{p.faculty_or_direction}</span>
           <span className="meta">
             {p.code ? `${p.code} · ` : ""}
-            <span className="text-bvi">{`${fmt(p.bvi)} БВИ`}</span>
-            {" · "}
-            <span className="text-sto">{`${fmt(p.sto)} по 100`}</span>
+            {p.table_rows === 0 ? (
+              <span>нет таблицы льгот</span>
+            ) : (
+              <>
+                <span className="text-bvi">{`${fmt(p.bvi)} БВИ`}</span>
+                {" · "}
+                <span className="text-sto">{`${fmt(p.sto)} по 100`}</span>
+              </>
+            )}
           </span>
         </>
       ),
@@ -627,6 +642,9 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
             </span>
             <span className="text-brand">БВИ или 100&nbsp;баллов</span>
           </h1>
+          <p className="mt-2 text-[12.5px] leading-snug meta-text" id="campaign-note">
+            {`Данные — приёмная кампания ${campaign.campaign_year}. Правила ${campaign.campaign_year + 1} вузы публикуют позже: после этого база будет обновлена.`}
+          </p>
         </section>
 
         {/* ТАБЫ */}
