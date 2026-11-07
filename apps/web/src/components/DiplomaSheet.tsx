@@ -128,11 +128,11 @@ export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSav
   }, [form, profileFilter]);
 
   const missing = !form
-    ? "Выберите олимпиаду"
+    ? "Выбери олимпиаду"
     : profile === undefined
-      ? "Выберите профиль"
+      ? "Выбери профиль"
       : !role
-        ? "Выберите степень диплома"
+        ? "Выбери степень диплома"
         : null;
 
   function save() {
