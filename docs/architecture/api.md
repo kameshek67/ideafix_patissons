@@ -32,6 +32,9 @@ Swagger — `http://localhost:8000/docs` (через сайт — `/docs`). Ко
 | `GET /v1/search/by-olympiad?q=&olympiad_id=&profile_id=&university_id=&region=&benefit_type=` | обратный поиск: список вузов, а с `university_id` — все строки выбранного вуза |
 | `GET /v1/achievements/olympiads/{id}` | олимпиада для формы диплома: ключ и профили без мусора разбора таблиц |
 | `GET /v1/achievements/match?diploma=…&diploma=…&benefit_type=&university_id=` | «Мои дипломы»: итоги по каждому диплому, вузы, а с `university_id` — строки вуза |
+| `GET /v1/extra-points/universities?admission_year=` | вузы, у которых в базе есть баллы за индивидуальные достижения (ГТО, аттестат…) |
+| `GET /v1/extra-points/universities/{id}?admission_year=` | правила вуза: баллы, условия, лимит суммы, цитата из документа |
+| `POST /v1/extra-points/score` | сколько баллов за отмеченные достижения получит школьник в вузе (с лимитом); ничего не сохраняется |
 | `GET /v1/max/config` | настроен ли вход через MAX, имя бота, годы, за которые дипломы действуют |
 | `GET /v1/me/diplomas`, `PUT /v1/me/diplomas` | дипломы пользователя MAX (заголовок `X-Max-Init-Data` — подписанные данные запуска) |
 | `POST /v1/shares` | ссылка «Поделиться» на карточку направления, выдачу по олимпиаде или итоги дипломов: снимок по стабильным ключам, тот же экран — тот же токен ([F-01](../specs/F-01-share.md)) |

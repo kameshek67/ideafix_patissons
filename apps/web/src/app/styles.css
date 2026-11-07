@@ -41,7 +41,7 @@ body::before {
   background: rgba(255,255,255,.88); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
 }
 .tabs {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 3px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 3px;
   background: var(--soft); border-radius: 30px; box-shadow: 0 0 0 1px rgba(188,0,245,.05);
 }
 .tab-btn {
@@ -49,8 +49,9 @@ body::before {
   transition: background .15s, box-shadow .15s;
 }
 .tab-btn:hover { background: rgba(255,255,255,.55); }
-/* три вкладки на самых узких телефонах (iPhone SE и уже) — иначе «Олимпиады» впритык */
-@media (max-width: 359px) { .tab-btn { font-size: 15px; } }
+/* четыре вкладки на телефоне: шрифт меньше, иначе «Баллы» уходит на вторую строку */
+@media (max-width: 479px) { .tab-btn { font-size: 14px; } }
+@media (max-width: 359px) { .tab-btn { font-size: 12.5px; } }
 .tab-active, .tab-active:hover { background: #fff; box-shadow: 0 1px 3px rgba(188,0,245,.10); }
 
 /* ---------- поле поиска олимпиады: иконка + подчёркивание ---------- */

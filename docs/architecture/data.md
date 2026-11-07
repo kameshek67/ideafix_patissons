@@ -133,6 +133,21 @@ ingest_log, meta
 `benefit_type`: `БВИ`, `100 баллов`, `Особое право (БВИ/100)` (Иннополис — конкретное право
 определяют правила приёма), `Фаст-трек` (ЦУ), `ИД (доп. баллы)` (УрФУ).
 
+## Баллы за индивидуальные достижения (ИД)
+
+Не из XLSX: `data/individual_achievements.csv` (правила: достижение → баллы → условия) и
+`data/individual_achievement_limits.csv` (потолок суммы). Каждая строка содержит адрес
+документа вуза, страницу и цитату. `olymp-ingest` загружает их в таблицы
+`individual_achievements` и `individual_achievement_limits` в той же транзакции; ошибка в CSV
+(неизвестный вуз, нет источника, повтор) останавливает сборку. `olymp-validate` проверяет
+наличие источника и что одно достижение не стоит больше лимита вуза. Строки со статусом
+`review=extracted` разобраны из документа автоматически и человеком не сверены: API помечает ответ
+`unverified`. Название вуза в CSV должно совпадать с XLSX.
+
+Виды достижений (`kind`): `honors_document` (аттестат или диплом с отличием, медаль), `gto_badge`
+(знак ГТО; степень — в `variants`: gold, silver, bronze), `olympiad_final`, `olympiad_regional`,
+`olympiad_other`, `sport_title`, `volunteer`, `military`, `abilimpics`, `essay`, `other`.
+
 ## Пользовательские данные
 
 | Таблица | Что | Миграция |

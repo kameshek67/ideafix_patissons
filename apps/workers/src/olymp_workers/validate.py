@@ -95,6 +95,32 @@ def validate(conn: psycopg.Connection, check_links: bool) -> Report:
         "\n".join(row[0][:100] for row in spaced[:5]),
     )
 
+    # --- баллы за индивидуальные достижения -----------------------------
+    bad_source = one(
+        """SELECT (SELECT COUNT(*) FROM individual_achievements
+                   WHERE source_url NOT LIKE 'http%' OR source_page IS NULL OR source_quote = '')
+                + (SELECT COUNT(*) FROM individual_achievement_limits
+                   WHERE source_url NOT LIKE 'http%' OR source_page IS NULL OR source_quote = '')"""
+    )
+    r.check(
+        bad_source > 0,
+        ERROR,
+        f"Баллы за ИД без источника (адрес, страница, цитата): {bad_source}",
+    )
+    over_cap = q(
+        """SELECT u.name, l.max_total, MAX(a.points) FROM individual_achievement_limits l
+           JOIN universities u ON u.id = l.university_id
+           JOIN individual_achievements a ON a.university_id = l.university_id
+                                         AND a.admission_year = l.admission_year
+           GROUP BY u.name, l.max_total HAVING MAX(a.points) > l.max_total"""
+    )
+    r.check(
+        bool(over_cap),
+        ERROR,
+        f"Баллы за одно достижение больше лимита вуза: {len(over_cap)}",
+        "\n".join(f"{n}: {p} > {m}" for n, m, p in over_cap[:5]),
+    )
+
     # --- связи «льгота ↔ олимпиада» -------------------------------------
     rows_total = one("SELECT COUNT(*) FROM benefits WHERE layer IN ('detailed','derived')")
     rows_unlinked = one(
