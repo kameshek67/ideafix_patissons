@@ -115,7 +115,7 @@ function Table<Row>({ id, columns, rows, placeholder }: Props<Row>) {
                 <th
                   key={col.key + i}
                   className={`${hideClass(col)} ${col.width || ""}`}
-                  title={`${col.title} — сортировать`}
+                  title={col.hint ? `${col.hint}. Нажми, чтобы отсортировать` : `${col.title} — сортировать`}
                   onClick={() => sortBy(i)}
                 >
                   {col.title}

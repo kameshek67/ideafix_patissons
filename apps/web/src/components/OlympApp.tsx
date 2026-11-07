@@ -162,9 +162,9 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
                 </span>
               ) : (
                 <>
-                  <span className="text-bvi">{`${fmt(u.bvi)} БВИ`}</span>
+                  <span className="text-bvi">{`БВИ: ${fmt(u.bvi)}`}</span>
                   {" · "}
-                  <span className="text-sto">{`${fmt(u.sto)} по 100`}</span>
+                  <span className="text-sto">{`100 баллов: ${fmt(u.sto)}`}</span>
                 </>
               )}
             </span>
@@ -193,9 +193,9 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
               <span>нет таблицы льгот</span>
             ) : (
               <>
-                <span className="text-bvi">{`${fmt(p.bvi)} БВИ`}</span>
+                <span className="text-bvi">{`БВИ: ${fmt(p.bvi)}`}</span>
                 {" · "}
-                <span className="text-sto">{`${fmt(p.sto)} по 100`}</span>
+                <span className="text-sto">{`100 баллов: ${fmt(p.sto)}`}</span>
               </>
             )}
           </span>
@@ -696,7 +696,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
             <Combo<UniversityItem>
               id="combo-university"
               ariaLabel="Вуз"
-              placeholder="Выберите вуз"
+              placeholder="Выбери вуз"
               searchPlaceholder="Поиск вуза…"
               value={universityLabel}
               onSearch={universityItems}
@@ -705,7 +705,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
             <Combo<ProgramItem>
               id="combo-program"
               ariaLabel="Направление"
-              placeholder="Выберите направление"
+              placeholder="Выбери направление"
               searchPlaceholder="Поиск направления или кода…"
               value={programLabel}
               disabled={programDisabled}
@@ -727,9 +727,9 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
               <IconSearch />
               <input
                 id="olymp-input"
-                placeholder="Ваша олимпиада"
+                placeholder="Твоя олимпиада"
                 autoComplete="off"
-                aria-label="Ваша олимпиада"
+                aria-label="Твоя олимпиада"
                 value={input}
                 onChange={(e) => {
                   setInput(e.target.value);
@@ -755,8 +755,8 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
                     <div className="font-medium text-[15px]">{o.short_name}</div>
                     <div className="text-[12.5px] meta-text truncate">{o.canonical_name}</div>
                     <div className="mt-1.5 flex gap-1 flex-wrap">
-                      <span className="badge badge-bvi">{`${fmt(o.bvi_count)} БВИ`}</span>
-                      <span className="badge badge-sto">{`${fmt(o.sto_count)} по 100`}</span>
+                      <span className="badge badge-bvi">{`БВИ: ${fmt(o.bvi_count)}`}</span>
+                      <span className="badge badge-sto">{`100 баллов: ${fmt(o.sto_count)}`}</span>
                       <span className="badge badge-soft">
                         {`${fmt(o.uni_count)} ${plural(o.uni_count, "вуз", "вуза", "вузов")}`}
                       </span>

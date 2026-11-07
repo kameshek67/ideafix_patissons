@@ -66,7 +66,7 @@ describe("ошибки загрузки", () => {
     renderApp();
     await waitFor(() => expect(screen.getByText("Популярные:")).toBeTruthy());
     fireEvent.click(screen.getByRole("tab", { name: "Олимпиады" }));
-    const input = screen.getByPlaceholderText("Ваша олимпиада");
+    const input = screen.getByPlaceholderText("Твоя олимпиада");
     fireEvent.change(input, { target: { value: "высшая проба" } });
 
     down = true;
@@ -86,7 +86,7 @@ describe("ошибки загрузки", () => {
     await waitFor(() => expect(screen.getByText("Популярные:")).toBeTruthy());
     fireEvent.click(screen.getByRole("tab", { name: "Олимпиады" }));
     down = true;
-    const input = screen.getByPlaceholderText("Ваша олимпиада");
+    const input = screen.getByPlaceholderText("Твоя олимпиада");
     fireEvent.change(input, { target: { value: "нто" } });
     await new Promise((r) => setTimeout(r, 400));
     expect(screen.queryByText("Не получилось загрузить")).toBeNull(); // подсказки необязательны

@@ -62,7 +62,8 @@ describe("нет данных вместо нулей", () => {
     const msu = items.find((t) => t.includes("МГУ"))!;
     expect(mipt).toContain("нет таблицы льгот");
     expect(mipt).not.toContain("БВИ");
-    expect(msu).toContain("120 БВИ");
+    expect(msu).toContain("БВИ: 120"); // подпись перед числом: «120 БВИ» читалось как 120 вузов
+    expect(msu).not.toContain("по 100");
   });
 
   it("под заголовком сказано, к какой кампании относятся данные", () => {

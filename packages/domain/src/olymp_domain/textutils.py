@@ -289,6 +289,16 @@ class ParsedCondition:
     role: str = ""
     grade: str = ""
     raw: str = ""
+    # название стоит в списке точных названий (ИТМО): можно сопоставлять и короткие сокращения
+    exact: bool = False
+
+
+# Как олимпиады названы в списках ИТМО «Предмет: олимпиады — условие» -> строка для поиска в справочнике
+SUBJECT_LIST_ALIASES: dict[str, str] = {
+    "московская": "МОШ",
+    "санктпетербургская": "Санкт-Петербургская олимпиада школьников",
+    "нтобольшиеданные": "НТО",
+}
 
 
 def split_top_level(text: str, separators: str = ";") -> list[str]:
@@ -354,6 +364,59 @@ def _parse_attrs(text: str) -> tuple[str, str, str, str]:
     return ", ".join(profile_parts), level, role, grade
 
 
+# граница разделов «Информатика: … . Математика: … . ИИ (…) — …»: точка и слово с заглавной
+# («побед. и призёры», «Всерос. олимпиада» с маленькой буквы границей не считаются)
+_RE_SECTION_BOUNDARY = re.compile(r"(?<=[а-яё)»])\.\s+(?=[А-ЯЁ])")
+SUBJECT_LISTS_MARKER = "поимённый список олимпиад"
+
+
+def _parse_subject_lists(s: str) -> list[ParsedCondition]:
+    """
+    Формат ИТМО «Предмет: олимпиады — условие; олимпиады — условие. Другой предмет: …»:
+
+    «Информатика: Высшая проба, Московская — I ур., побед. и призёры; Ломоносов — только победители»
+    -> [('Высшая проба', 'Информатика', 'I', 'победители и призёры'), ('Московская', …),
+        ('Ломоносов', 'Информатика', '', 'только победители')]
+
+    Общий разбор режет такой текст по «;» и теряет названия (в имя попадал заголовок, а часть
+    олимпиад — МОШ, ПВГ, НТО, ЮМШ — пропадала).
+    """
+    start = s.lower().find(SUBJECT_LISTS_MARKER) + len(SUBJECT_LISTS_MARKER)
+    body = s[start:].lstrip(". ")
+    out: list[ParsedCondition] = []
+    for section in _RE_SECTION_BOUNDARY.split(body):
+        section = section.strip().rstrip(".")
+        colon, paren = section.find(":"), section.find("(")
+        if colon > 0 and (paren == -1 or colon < paren):
+            subject, rest = clean_text(section[:colon]), section[colon + 1 :]
+        else:
+            # «ИИ (Всерос. олимпиада по ИИ) — победители»: предмет, олимпиада в скобках
+            m = re.match(r"^([^(—]+?)\s*\(([^)]*)\)\s*(—.*)$", section)
+            if not m:
+                continue
+            subject, rest = clean_text(m.group(1)), f"{m.group(2)} {m.group(3)}"
+        for group in split_top_level(rest, ";"):
+            names_part, sep, tail = group.partition("—")
+            if not sep:
+                continue
+            _, level, role, grade = _parse_attrs(tail)
+            for name in split_top_level(names_part, ","):
+                name = clean_text(name)
+                if name:
+                    out.append(
+                        ParsedCondition(
+                            name=name,
+                            profile=subject.lower(),
+                            level=level,
+                            role=role,
+                            grade=grade,
+                            raw=clean_text(f"{subject}: {group}")[:300],
+                            exact=True,
+                        )
+                    )
+    return out
+
+
 def parse_enumeration(text: str) -> list[ParsedCondition]:
     """
     Превращает сводную формулировку из «Базы» в строки таблицы:
@@ -368,6 +431,10 @@ def parse_enumeration(text: str) -> list[ParsedCondition]:
     if not s or s in ("—", "-", "–"):
         return []
     s = RE_BRACKET_PREFIX.sub("", s)
+    if SUBJECT_LISTS_MARKER in s.lower():
+        parsed = _parse_subject_lists(s)
+        if parsed:
+            return parsed
     default_role = ""
     m = RE_ROLE_PREFIX.match(s)
     if m:

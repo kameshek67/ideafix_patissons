@@ -106,8 +106,8 @@ const SLIDES: Slide[] = [
           profile="английский язык"
           meta="Победитель · 2026"
           badges={[
-            ["50 БВИ", "badge-bvi"],
-            ["139 по 100", "badge-sto"],
+            ["БВИ: 50", "badge-bvi"],
+            ["100 баллов: 139", "badge-sto"],
             ["13 вузов", "badge-soft"],
           ]}
         />
@@ -117,8 +117,8 @@ const SLIDES: Slide[] = [
           profile="математика"
           meta="Победитель · 11 класс · 2025"
           badges={[
-            ["224 БВИ", "badge-bvi"],
-            ["35 по 100", "badge-sto"],
+            ["БВИ: 224", "badge-bvi"],
+            ["100 баллов: 35", "badge-sto"],
             ["16 вузов", "badge-soft"],
           ]}
         />

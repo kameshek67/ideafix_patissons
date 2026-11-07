@@ -7,17 +7,17 @@ from olymp_db.session import psycopg_dsn
 EXPECTED = {
     "universities": "39",
     "programs": "659",
-    "benefits": "49440",
-    "benefits_bvi": "27777",
+    "benefits": "49450",
+    "benefits_bvi": "27787",
     "benefits_sto": "20859",
     "benefits_raw": "859",
-    "benefits_rows": "48963",
+    "benefits_rows": "48973",
     "benefits_derived": "23720",
     "benefits_notes": "477",
     "olympiads": "173",
-    "profiles": "635",
-    "links": "59098",
-    "keywords": "117677",
+    "profiles": "637",
+    "links": "59108",
+    "keywords": "117736",
     "fts": "on",
 }
 
@@ -122,3 +122,27 @@ def test_extra_points_reload_is_idempotent_and_keeps_data_on_error(
     with pytest.raises(ExtraPointsDataError):
         reload_extra_points(built_database_url, broken)
     assert counts() == before
+
+
+def test_itmo_01_03_02_keeps_roles_and_short_named_olympiads(built_database_url: str) -> None:
+    """T-067: «побед. и призёры» не превращается в «победители», МОШ, ПВГ, НТО и ЮМШ не теряются."""
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        rows = conn.execute(
+            """SELECT o.short_name, b.olympiad_profile, b.winner_role
+               FROM benefits b
+               JOIN programs p ON p.id = b.program_id
+               JOIN universities u ON u.id = p.university_id
+               JOIN benefit_olympiads bo ON bo.benefit_id = b.id
+               JOIN olympiads o ON o.id = bo.olympiad_id
+               WHERE u.short_name = 'Университет ИТМО' AND p.code LIKE '%01.03.02%'
+                 AND b.layer IN ('detailed', 'derived')"""
+        ).fetchall()
+    got = {tuple(r) for r in rows}
+    assert ("«Высшая проба»", "информатика", "победители и призёры") in got
+    assert ("«Высшая проба»", "математика", "победители и призёры") in got
+    assert not any(r[0] == "«Высшая проба»" and r[2] == "победители" for r in got)
+    assert ("МОШ", "информатика", "победители и призёры") in got
+    assert ("ЮМШ", "математика", "победители и призёры") in got
+    assert ("«Покори Воробьёвы горы!»", "математика", "только победители") in got
+    assert ("НТО", "информатика", "победители") in got
+    assert ("«ТехноКубок»", "информатика", "только победители") in got
