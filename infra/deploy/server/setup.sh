@@ -37,7 +37,19 @@ EOF
     docker-buildx-plugin docker-compose-plugin
 fi
 command -v setfacl >/dev/null || DEBIAN_FRONTEND=noninteractive apt-get install -y -qq acl
-grep -q '"ip": "127.0.0.1"' /etc/docker/daemon.json || echo "ВНИМАНИЕ: в /etc/docker/daemon.json нет \"ip\": \"127.0.0.1\"" >&2
+# "ip" действует только на docker0; сетям compose тот же адрес по умолчанию даёт
+# default-network-opts (деплой ещё и сам задаёт его сети стека — images.py)
+python3 - <<'PY' && systemctl restart docker
+import json, sys
+from pathlib import Path
+p = Path("/etc/docker/daemon.json")
+d = json.loads(p.read_text()) if p.exists() else {}
+want = {"bridge": {"com.docker.network.bridge.host_binding_ipv4": "127.0.0.1"}}
+if d.get("ip") == "127.0.0.1" and d.get("default-network-opts") == want:
+    sys.exit(1)  # уже так — docker не перезапускаем
+d.update({"ip": "127.0.0.1", "default-network-opts": want})
+p.write_text(json.dumps(d, indent=2) + "\n")
+PY
 
 # ---- пользователь deploy: группа docker, вход только ключом CI и только в ideafix-gate
 id deploy >/dev/null 2>&1 || useradd --system --create-home --home-dir /home/deploy --shell /bin/bash deploy

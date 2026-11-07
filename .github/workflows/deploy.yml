@@ -106,11 +106,18 @@ jobs:
           # токен нужен серверу только чтобы скачать образы; после выкатки он недействителен
           printf '%s\n%s\n' "$GITHUB_ACTOR" "$GHCR_TOKEN" | ssh_deploy deploy "$SHA"
 
-      - name: сайт отвечает снаружи
+      - name: снаружи — только https
         run: |
+          ok=
           for i in $(seq 1 24); do
-            curl -fsS -o /dev/null -m 10 https://ideafix.patissons.tech/ && exit 0
+            curl -fsS -o /dev/null -m 10 https://ideafix.patissons.tech/ && { ok=1; break; }
             sleep 5
           done
-          echo "::error::на сервере релиз поднялся, но https://ideafix.patissons.tech не отвечает снаружи (Caddy, DNS, сертификат?)"
-          exit 1
+          [ -n "$ok" ] || { echo "::error::релиз поднялся, но https://ideafix.patissons.tech не отвечает снаружи (Caddy, DNS, сертификат?)"; exit 1; }
+          # порты стека должны быть закрыты: сайт и API — только через Caddy
+          for p in 8000 8080; do
+            if timeout 5 bash -c "</dev/tcp/$DEPLOY_HOST/$p" 2>/dev/null; then
+              echo "::error::порт $p сервера открыт из интернета — контейнер опубликован не на 127.0.0.1"
+              exit 1
+            fi
+          done
