@@ -1,0 +1,9 @@
+{
+  "name": "Олимп — онбординг",
+  "id": "olymp-onboarding-dev",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": { "allowedDomains": ["none"] }
+}
