@@ -37,6 +37,14 @@ api:
 web:
     npm run dev --workspace olymp-web
 
+# мини-приложение MAX: проверить токен бота (OLYMP_MAX_BOT_TOKEN в .env) и получить ссылки
+max-check:
+    uv run olymp-max-bot check
+
+# ссылка, открывающая сайт «как из MAX» в обычном браузере (--start diplomas — сразу дипломы)
+max-link *ARGS:
+    uv run python scripts/max_dev_link.py {{ARGS}}
+
 # пересоздать контракт API и клиент для сайта после изменения эндпоинтов
 openapi:
     uv run python -m olymp_api.openapi_cli > docs/openapi.json

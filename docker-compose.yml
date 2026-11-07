@@ -7,6 +7,11 @@
 # data/Olimpiady_BVI_100ballov.xlsx (около минуты, видно в `docker compose logs -f migrate`).
 # База живёт в томе pgdata и переживает пересоздание контейнеров.
 # Для разработки (API и сайт с хоста) — infra/compose.yaml, см. README.
+#
+# Мини-приложение MAX: токен бота — в .env (OLYMP_MAX_BOT_TOKEN), сайту нужен HTTPS:
+#   docker compose --profile tunnel up --build -d   # временный адрес https://….trycloudflare.com
+#   docker compose --profile https up --build -d    # свой сервер и домен (OLYMP_DOMAIN в .env)
+# Подробно — README, раздел «Мини-приложение в MAX».
 name: olymp-app
 
 x-python: &python
@@ -65,6 +70,10 @@ services:
       # X-Forwarded-For принимаем только от адресов внутренних сетей (там сайт, web);
       # иначе лимит запросов считал бы всех посетителей сайта одним клиентом
       FORWARDED_ALLOW_IPS: "127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+      # мини-приложение MAX: токен бота (по нему API проверяет вход пользователя MAX
+      # и хранит его дипломы) и публичное имя бота — значения из .env
+      OLYMP_MAX_BOT_TOKEN: ${OLYMP_MAX_BOT_TOKEN:-}
+      OLYMP_MAX_BOT_NAME: ${OLYMP_MAX_BOT_NAME:-}
     ports: ["${OLYMP_API_PORT:-8000}:8000"]
     depends_on:
       migrate: {condition: service_completed_successfully}
@@ -96,5 +105,48 @@ services:
       api: {condition: service_healthy}
     restart: unless-stopped
 
+  # ---------------------------------------------------------------- HTTPS для MAX
+  # MAX открывает мини-приложение только по https. Два способа — по профилю:
+
+  # без сервера и домена: временный адрес Cloudflare (меняется при каждом перезапуске)
+  #   docker compose --profile tunnel up --build -d
+  #   docker compose logs tunnel | grep trycloudflare.com
+  tunnel:
+    image: cloudflare/cloudflared:2026.10.7
+    command: ["tunnel", "--no-autoupdate", "--url", "http://web:3000"]
+    depends_on:
+      web: {condition: service_healthy}
+    profiles: [tunnel]
+    restart: unless-stopped
+
+  # свой сервер: домен указывает на него, порты 80 и 443 открыты; сертификат Caddy
+  # получит сам (Let's Encrypt). OLYMP_DOMAIN=olymp.example.ru в .env
+  #   docker compose --profile https up --build -d
+  https:
+    image: caddy:2.11-alpine
+    command: ["caddy", "reverse-proxy", "--from", "${OLYMP_DOMAIN:-localhost}", "--to", "web:3000"]
+    ports: ["80:80", "443:443"]
+    volumes: [caddy-data:/data]
+    depends_on:
+      web: {condition: service_healthy}
+    profiles: [https]
+    restart: unless-stopped
+
+  # приветствие бота с кнопкой «Открыть» (необязательно; long polling):
+  #   docker compose --profile bot up --build -d
+  bot:
+    <<: *python
+    command: ["olymp-max-bot", "run"]
+    environment:
+      OLYMP_MAX_BOT_TOKEN: ${OLYMP_MAX_BOT_TOKEN:-}
+      # API бота (platform-api2.max.ru) подписан сертификатом Минцифры — его корневой
+      # сертификат кладётся в infra/certs (см. infra/certs/README.md)
+      OLYMP_MAX_CA_DIR: /certs
+    volumes: [./infra/certs:/certs:ro]
+    healthcheck: {disable: true}
+    profiles: [bot]
+    restart: unless-stopped
+
 volumes:
   pgdata:
+  caddy-data:
