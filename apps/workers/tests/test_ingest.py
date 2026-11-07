@@ -68,3 +68,19 @@ def test_benefit_ids_follow_build_order(built_database_url: str) -> None:
             "SELECT nextval(pg_get_serial_sequence('benefits', 'id'))"
         ).fetchone()[0]
     assert next_id == max_id + 1
+
+
+def test_extra_points_loaded_with_sources(built_database_url: str) -> None:
+    """Баллы за ИД (T-052): строки загружены, у каждой есть источник, вузы из справочника."""
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        meta = dict(conn.execute("SELECT key, value FROM meta").fetchall())
+        no_source = conn.execute(
+            "SELECT COUNT(*) FROM individual_achievements"
+            " WHERE source_url NOT LIKE 'https://%' OR source_quote = '' OR source_page IS NULL"
+        ).fetchone()[0]
+    assert (meta["extra_rules"], meta["extra_universities"], meta["extra_limits"]) == (
+        "223",
+        "7",
+        "6",
+    )
+    assert no_source == 0
