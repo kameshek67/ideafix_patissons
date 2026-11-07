@@ -49,13 +49,13 @@ services:
       retries: 10
     restart: unless-stopped
 
-  # миграции + сборка базы, если она ещё пустая + баллы за достижения из data/*.csv (при каждом
+  # миграции + сборка базы, если её нет или изменились данные/код разбора + баллы за достижения из data/*.csv (при каждом
   # запуске: так новые строки CSV доезжают на стенд без пересборки); пересобрать всё:
   #   docker compose run --rm migrate olymp-ingest
   migrate:
     <<: *python
     working_dir: /app/packages/db
-    command: ["sh", "-c", "alembic upgrade head && olymp-ingest --if-empty && olymp-extra-points"]
+    command: ["sh", "-c", "alembic upgrade head && olymp-ingest --if-stale && olymp-extra-points"]
     environment:
       OLYMP_DATABASE_URL: postgresql+psycopg://olymp:olymp@postgres:5432/olymp
     volumes: [./data:/app/data:ro]
