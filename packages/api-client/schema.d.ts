@@ -82,6 +82,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/extra-points/score": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Score
+         * @description Сколько баллов за достижения получит школьник в вузе (с лимитом). Данные не сохраняются.
+         */
+        post: operations["score_v1_extra_points_score_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/extra-points/universities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Universities
+         * @description Вузы, у которых в базе есть баллы за индивидуальные достижения (ГТО, аттестат…).
+         */
+        get: operations["universities_v1_extra_points_universities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/extra-points/universities/{university_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Rules
+         * @description Баллы вуза за достижения и лимит суммы; у каждого правила — цитата из документа вуза.
+         */
+        get: operations["rules_v1_extra_points_universities__university_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/max/config": {
         parameters: {
             query?: never;
@@ -392,6 +452,26 @@ export interface components {
             /** Valid Years */
             valid_years: number[];
         };
+        /** Award */
+        Award: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "honors_document" | "gto_badge" | "olympiad_final" | "olympiad_regional" | "olympiad_other" | "sport_title" | "volunteer" | "military" | "abilimpics" | "essay" | "other";
+            /** Label */
+            label: string;
+            /** Points */
+            points: number;
+            /**
+             * Review
+             * @enum {string}
+             */
+            review: "extracted" | "reviewed";
+            /** Rule Id */
+            rule_id: string;
+            source: components["schemas"]["olymp_api__modules__extra_points__schemas__Source"];
+        };
         /** Benefit */
         Benefit: {
             /** Award Subject */
@@ -442,6 +522,29 @@ export interface components {
             rows: components["schemas"]["Benefit"][];
             /** Type */
             type: string;
+        };
+        /** ClaimIn */
+        ClaimIn: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "honors_document" | "gto_badge" | "olympiad_final" | "olympiad_regional" | "olympiad_other" | "sport_title" | "volunteer" | "military" | "abilimpics" | "essay" | "other";
+            /**
+             * Rule Id
+             * @description правило, выбранное на экране
+             */
+            rule_id?: string | null;
+            /**
+             * Variant
+             * @description gold/silver/bronze, kms…
+             */
+            variant?: string | null;
+            /**
+             * Year
+             * @description год получения
+             */
+            year?: number | null;
         };
         /**
          * Counts
@@ -524,6 +627,66 @@ export interface components {
              * @enum {string}
              */
             kind: "diplomas";
+        };
+        /** ExtraRule */
+        ExtraRule: {
+            /** Exclusive Group */
+            exclusive_group: string | null;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "honors_document" | "gto_badge" | "olympiad_final" | "olympiad_regional" | "olympiad_other" | "sport_title" | "volunteer" | "military" | "abilimpics" | "essay" | "other";
+            /** Label */
+            label: string;
+            /** Notes */
+            notes: string;
+            /** Points */
+            points: number;
+            /** Recency Years */
+            recency_years: number | null;
+            /**
+             * Review
+             * @enum {string}
+             */
+            review: "extracted" | "reviewed";
+            source: components["schemas"]["olymp_api__modules__extra_points__schemas__Source"];
+            /** Variants */
+            variants: string[];
+            /** Years */
+            years: number[];
+        };
+        /** ExtraRules */
+        ExtraRules: {
+            /** Admission Year */
+            admission_year: number;
+            /** Max Total */
+            max_total: number | null;
+            max_total_source: components["schemas"]["olymp_api__modules__extra_points__schemas__Source"] | null;
+            /** Rules */
+            rules: components["schemas"]["ExtraRule"][];
+            /** University Id */
+            university_id: number;
+        };
+        /** ExtraUniversities */
+        ExtraUniversities: {
+            /** Admission Year */
+            admission_year: number;
+            /** Items */
+            items: components["schemas"]["ExtraUniversity"][];
+        };
+        /** ExtraUniversity */
+        ExtraUniversity: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Rules */
+            rules: number;
+            /** Short Name */
+            short_name: string;
         };
         /** FallbackHit */
         FallbackHit: {
@@ -789,6 +952,8 @@ export interface components {
             source_url: string;
             /** Sto */
             sto: number;
+            /** Table Rows */
+            table_rows: number;
             /** University */
             university: string;
             /** University Id */
@@ -849,7 +1014,7 @@ export interface components {
             olympiads: components["schemas"]["ProgramOlympiad"][];
             program: components["schemas"]["ProgramInfo"];
             /** Sources */
-            sources: components["schemas"]["Source"][];
+            sources: components["schemas"]["olymp_api__modules__search__schemas__Source"][];
             /** Total Benefits */
             total_benefits: number;
             university: components["schemas"]["UniversityInfo"];
@@ -912,6 +1077,46 @@ export interface components {
             profile_name: string;
             /** Spec */
             spec: string;
+        };
+        /** Score */
+        Score: {
+            /** Admission Year */
+            admission_year: number;
+            /** Awards */
+            awards: components["schemas"]["Award"][];
+            /** Capped */
+            capped: boolean;
+            /** Max Total */
+            max_total: number | null;
+            /** Raw Total */
+            raw_total: number;
+            /** Skipped */
+            skipped: components["schemas"]["Skipped"][];
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "scored" | "no_data";
+            /** Total */
+            total: number;
+            /** University Id */
+            university_id: number;
+            /** Unmatched */
+            unmatched: components["schemas"]["Unmatched"][];
+            /** Unverified */
+            unverified: boolean;
+        };
+        /**
+         * ScoreRequest
+         * @description Достижения школьника. Ничего не сохраняется и не пишется в журнал.
+         */
+        ScoreRequest: {
+            /** Admission Year */
+            admission_year: number;
+            /** Claims */
+            claims: components["schemas"]["ClaimIn"][];
+            /** University Id */
+            university_id: number;
         };
         /** Share */
         Share: {
@@ -978,18 +1183,22 @@ export interface components {
             /** Sheet */
             sheet: string;
         };
-        /** Source */
-        Source: {
-            /** Checked At */
-            checked_at: string | null;
-            /** Kind */
-            kind: string;
-            /** Title */
-            title: string;
-            /** Types */
-            types: string[];
-            /** Url */
-            url: string;
+        /** Skipped */
+        Skipped: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "honors_document" | "gto_badge" | "olympiad_final" | "olympiad_regional" | "olympiad_other" | "sport_title" | "volunteer" | "military" | "abilimpics" | "essay" | "other";
+            /** Label */
+            label: string;
+            /**
+             * Reason
+             * @enum {string}
+             */
+            reason: "year_missing" | "year_not_allowed" | "too_old" | "year_in_future" | "same_group_better";
+            /** Rule Id */
+            rule_id: string;
         };
         /** Stats */
         Stats: {
@@ -1141,6 +1350,8 @@ export interface components {
             short_name: string;
             /** Sto */
             sto: number;
+            /** Table Rows */
+            table_rows: number;
         };
         /** UniversityResult */
         UniversityResult: {
@@ -1156,6 +1367,20 @@ export interface components {
             sto: number;
             university: components["schemas"]["UniversityInfo"];
         };
+        /** Unmatched */
+        Unmatched: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "honors_document" | "gto_badge" | "olympiad_final" | "olympiad_regional" | "olympiad_other" | "sport_title" | "volunteer" | "military" | "abilimpics" | "essay" | "other";
+            /** Rule Id */
+            rule_id: string | null;
+            /** Variant */
+            variant: string | null;
+            /** Year */
+            year: number | null;
+        };
         /** ValidationError */
         ValidationError: {
             /** Context */
@@ -1168,6 +1393,28 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** Source */
+        olymp_api__modules__extra_points__schemas__Source: {
+            /** Page */
+            page: number | null;
+            /** Quote */
+            quote: string;
+            /** Url */
+            url: string;
+        };
+        /** Source */
+        olymp_api__modules__search__schemas__Source: {
+            /** Checked At */
+            checked_at: string | null;
+            /** Kind */
+            kind: string;
+            /** Title */
+            title: string;
+            /** Types */
+            types: string[];
+            /** Url */
+            url: string;
         };
     };
     responses: never;
@@ -1274,6 +1521,105 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DiplomaForm"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    score_v1_extra_points_score_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScoreRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Score"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    universities_v1_extra_points_universities_get: {
+        parameters: {
+            query: {
+                /** @description Год приёмной кампании */
+                admission_year: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExtraUniversities"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rules_v1_extra_points_universities__university_id__get: {
+        parameters: {
+            query: {
+                /** @description Год приёмной кампании */
+                admission_year: number;
+            };
+            header?: never;
+            path: {
+                university_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExtraRules"];
                 };
             };
             /** @description Validation Error */

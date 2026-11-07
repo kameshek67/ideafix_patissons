@@ -27,7 +27,7 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy import text as sa_text
-from sqlalchemy.dialects.postgresql import JSONB, TSVECTOR
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, TSVECTOR
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 NAMING = {
@@ -268,6 +268,65 @@ class Meta(Base):
     value: Mapped[str] = mapped_column(CText)
 
 
+# ---------------------------------------------------------------- индивидуальные достижения
+# Баллы вузов за ИД (ГТО, аттестат с отличием, спорт…): data/individual_achievements*.csv,
+# наполняет olymp-ingest в той же транзакции. У каждой строки есть документ-источник.
+
+ACHIEVEMENT_REVIEW = ("extracted", "reviewed")
+
+
+class IndividualAchievement(Base):
+    """Сколько баллов вуз начисляет за одно достижение (правило, а не диплом школьника)."""
+
+    __tablename__ = "individual_achievements"
+    __table_args__ = (
+        CheckConstraint(f"review IN ({_in(ACHIEVEMENT_REVIEW)})", name="review"),
+        CheckConstraint("points >= 0", name="points"),
+        Index(None, "university_id", "admission_year"),
+    )
+
+    id: Mapped[int] = _pk()
+    rule_key: Mapped[str] = mapped_column(CText, unique=True)
+    university_id: Mapped[int] = mapped_column(ForeignKey("universities.id", ondelete="CASCADE"))
+    admission_year: Mapped[int] = mapped_column(SmallInteger)
+    kind: Mapped[str] = mapped_column(CText)
+    # вид внутри типа (gold/silver/bronze, kms…); пусто — подходит любой
+    variants: Mapped[list[str]] = mapped_column(ARRAY(CText), server_default=sa_text("'{}'"))
+    points: Mapped[int] = mapped_column(SmallInteger)
+    # годы получения, которые засчитываются; пусто — без ограничения
+    years: Mapped[list[int]] = mapped_column(ARRAY(SmallInteger), server_default=sa_text("'{}'"))
+    # не старше N лет к году приёма (ГТО: «текущий и предшествующий год» — 1)
+    recency_years: Mapped[int | None] = mapped_column(SmallInteger)
+    # внутри группы засчитывается только лучшее («за один вид достижений»)
+    exclusive_group: Mapped[str] = _text()
+    label: Mapped[str] = _text()
+    notes: Mapped[str] = _text()
+    source_url: Mapped[str] = _text()
+    source_page: Mapped[int | None] = mapped_column(SmallInteger)
+    source_quote: Mapped[str] = _text()
+    # extracted — разобрано из документа вуза, человек не сверял; reviewed — сверено
+    review: Mapped[str] = _text("extracted")
+
+
+class IndividualAchievementLimit(Base):
+    """Потолок суммы баллов за ИД у вуза. Нет строки — в документе вуза потолок не найден."""
+
+    __tablename__ = "individual_achievement_limits"
+    __table_args__ = (
+        UniqueConstraint("university_id", "admission_year"),
+        CheckConstraint("max_total >= 0", name="max_total"),
+    )
+
+    id: Mapped[int] = _pk()
+    university_id: Mapped[int] = mapped_column(ForeignKey("universities.id", ondelete="CASCADE"))
+    admission_year: Mapped[int] = mapped_column(SmallInteger)
+    max_total: Mapped[int] = mapped_column(SmallInteger)
+    source_url: Mapped[str] = _text()
+    source_page: Mapped[int | None] = mapped_column(SmallInteger)
+    source_quote: Mapped[str] = _text()
+    review: Mapped[str] = _text("extracted")
+
+
 # ---------------------------------------------------------------- пользователи MAX
 # Данные пользователей не входят в DATA_TABLES: пересборка базы их не трогает. Поэтому
 # дипломы ссылаются на олимпиады и профили ключами squash, а не id — id после пересборки
@@ -351,6 +410,8 @@ DATA_TABLES = [
     "olympiad_aliases",
     "olympiads",
     "benefits",
+    "individual_achievements",
+    "individual_achievement_limits",
     "programs",
     "university_documents",
     "universities",
