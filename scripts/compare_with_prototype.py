@@ -1,6 +1,6 @@
-"""Сверка нового API с прототипом из ветки main: одинаковые ли ответы.
+"""Сверка нового API с прототипом из тега prototype-v1: одинаковые ли ответы.
 
-Прототип отдаёт API на http://localhost:8000/api (docker compose up в ветке main).
+Прототип отдаёт API на http://localhost:8000/api (git worktree add ../olymp-prototype prototype-v1, затем docker compose up там).
 Новый API по умолчанию поднимается прямо в процессе из OLYMP_DATABASE_URL:
 
     uv run python scripts/compare_with_prototype.py
