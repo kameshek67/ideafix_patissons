@@ -58,12 +58,20 @@ export function Skeleton() {
   );
 }
 
-export function LoadError({ message }: { message: string }) {
+/** Ошибка загрузки: понятный текст и «Повторить», экран не остаётся на скелетоне. */
+export function LoadError({ message, onRetry }: { message: string; onRetry?: () => void }) {
   return (
-    <div className="col-span-full card p-4 text-sm text-red-600">
-      {`Не удалось загрузить данные: ${message}. Проверьте, что бэкенд запущен и база собрана (`}
-      <code>olymp-ingest</code>
-      {")."}
+    <div className="empty-state col-span-full" role="alert">
+      <div className="empty-icon" aria-hidden="true">
+        ⚠️
+      </div>
+      <p className="empty-title">Не получилось загрузить</p>
+      <p className="empty-text">{message}</p>
+      {onRetry ? (
+        <button type="button" className="btn-secondary mt-3" onClick={onRetry}>
+          Повторить
+        </button>
+      ) : null}
     </div>
   );
 }
