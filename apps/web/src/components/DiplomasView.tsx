@@ -11,6 +11,7 @@ import {
   type UniversityInfo,
 } from "@/lib/api";
 import { type DiplomaEntry, diplomaMeta, parseSpec } from "@/lib/diplomas";
+import { conditionsLine } from "@/lib/conditions";
 import { codesOf, dash, fmt, place, plural } from "@/lib/format";
 import { diplomasShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
@@ -390,6 +391,9 @@ function detailColumns(openProgram: (id: number) => void, several: boolean): Col
             <div className="mt-0.5 text-[11.5px] meta-text cell-clamp-1" title={r.program_profile}>
               {r.program_profile}
             </div>
+          ) : null}
+          {conditionsLine(r) ? (
+            <div className="mt-0.5 text-[11.5px] leading-snug meta-text sm:hidden">{conditionsLine(r)}</div>
           ) : null}
         </>
       ),
