@@ -5,7 +5,8 @@
 Сервисы берутся из `docker compose config` того стека, что сейчас в main, поэтому скрипт
 не нужно править при смене сервисов. Каждому сервису со сборкой (`build:`) назначается
 образ `<registry>/<сервис>:<tag>`. В каталог пишутся:
-  images.yml  — образы; уезжает на сервер вместе с релизом;
+  images.yml  — образы и сети стека с портами только на 127.0.0.1; уезжает на сервер
+                 вместе с релизом;
   build.yml   — кэш слоёв в GHCR и метка org.opencontainers.image.source (по ней GHCR
                  привязывает пакет к репозиторию и даёт его GITHUB_TOKEN право читать), только для CI;
   services     — собираемые сервисы, по строке;
@@ -34,6 +35,13 @@ def main() -> None:
     source = (
         f"{server}/{os.environ['GITHUB_REPOSITORY']}" if "GITHUB_REPOSITORY" in os.environ else ""
     )
+    # Порты без адреса Docker публикует на 0.0.0.0, в обход ufw: "ip" в daemon.json действует
+    # только на docker0, а не на сети compose. Снаружи сайт доступен только через Caddy.
+    networks = {
+        name: {"driver_opts": {"com.docker.network.bridge.host_binding_ipv4": "127.0.0.1"}}
+        for name, net in (cfg.get("networks") or {"default": {}}).items()
+        if not net.get("external") and net.get("driver", "bridge") == "bridge"
+    }
     images, build = {}, {}
     for name in built:
         repo = f"{registry}/{name}"
@@ -46,7 +54,8 @@ def main() -> None:
             }
         }
     out.mkdir(parents=True, exist_ok=True)
-    (out / "images.yml").write_text(json.dumps({"services": images}, indent=2) + "\n")
+    deploy = {"services": images, "networks": networks}
+    (out / "images.yml").write_text(json.dumps(deploy, indent=2) + "\n")
     (out / "build.yml").write_text(json.dumps({"services": build}, indent=2) + "\n")
     (out / "services").write_text("\n".join(built) + "\n")
     (out / "images").write_text("\n".join(images[n]["image"] for n in built) + "\n")
