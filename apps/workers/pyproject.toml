@@ -17,6 +17,7 @@ dependencies = [
 olymp-ingest = "olymp_workers.ingest:main"
 olymp-refresh-sources = "olymp_workers.refresh_sources:main"
 olymp-validate = "olymp_workers.validate:main"
+olymp-max-bot = "olymp_workers.max_bot:main"
 
 [build-system]
 requires = ["hatchling"]

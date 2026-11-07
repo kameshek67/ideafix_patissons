@@ -14,6 +14,9 @@ apps/web/next-env.d.ts
 
 # локальные настройки
 .env
+# сертификаты для API бота MAX кладутся локально (см. infra/certs/README.md)
+infra/certs/*
+!infra/certs/README.md
 .idea/
 .vscode/
 *.log
