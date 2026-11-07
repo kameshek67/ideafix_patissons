@@ -5,10 +5,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getByOlympiad,
   getByProgram,
+  getDiplomaForm,
+  getMaxConfig,
   getOlympiads,
   getPrograms,
   getStats,
   getUniversities,
+  type DiplomaResult,
   type OlympiadHit,
   type OlympiadQuery,
   type OlympiadSearch,
@@ -17,16 +20,31 @@ import {
   type UniversityInfo,
   type UniversityItem,
 } from "@/lib/api";
+import { type DiplomaEntry, upsertDiploma } from "@/lib/diplomas";
 import { fmt, place, plural } from "@/lib/format";
+import { haptic } from "@/lib/max";
 import { AboutModal } from "./AboutModal";
 import { Combo, type ComboItem } from "./Combo";
 import { TablesContext, useTablesStore } from "./DataTable";
+import { DiplomaSheet } from "./DiplomaSheet";
+import { DiplomasView } from "./DiplomasView";
 import { IconClose, IconHeroArrow, IconMore, IconSearch } from "./icons";
+import { useMax, useMaxBackButton } from "./MaxProvider";
 import { OlympiadResults, UniversityBenefits } from "./OlympiadView";
 import { ProgramView } from "./ProgramView";
 import { IlluState, LoadError, OLYMP_START, Skeleton, TYPES, UNI_START } from "./ui";
+import { useMyDiplomas } from "./useMyDiplomas";
 
-type Tab = "uni" | "olymp";
+type Tab = "uni" | "olymp" | "diplomas";
+
+// годы, которые форма диплома предлагает, пока не ответил /v1/max/config
+const FALLBACK_CAMPAIGN = { campaign_year: 2026, valid_years: [2023, 2024, 2025, 2026] };
+
+interface SheetState {
+  /** номер редактируемого диплома; null — новый */
+  index: number | null;
+  olympiadId: number | null;
+}
 
 type ProgramState =
   | { kind: "start"; text: string }
@@ -67,9 +85,11 @@ function searchQuery(s: SearchState, extra: Partial<OlympiadQuery> = {}): Olympi
   };
 }
 
-/** Приложение «Олимп»: две вкладки — «Вузы» (что даёт направление) и «Олимпиады» (куда с дипломом). */
+/** Приложение «Олимп»: вкладки «Вузы» (что даёт направление), «Олимпиады» (куда с дипломом)
+ *  и «Дипломы» (где дают льготы все мои дипломы). */
 export function OlympApp() {
   const queryClient = useQueryClient();
+  const max = useMax();
   const [tab, setTab] = useState<Tab>("uni");
   const [benefitType, setBenefitType] = useState("Все");
   // текущее значение фильтра для кода, который продолжается после await
@@ -96,6 +116,7 @@ export function OlympApp() {
   // сортировка и фильтры таблиц сбрасываются, когда экран загружает новые данные
   const [programTables, resetProgramTables] = useTablesStore();
   const [olympTables, resetOlympTables] = useTablesStore();
+  const [diplomaTables, resetDiplomaTables] = useTablesStore();
 
   // ---------------------------------------------------------------- вкладка «Вузы»
   const [university, setUniversity] = useState<UniversityItem | null>(null);
@@ -314,6 +335,45 @@ export function OlympApp() {
     return () => document.removeEventListener("click", onClick);
   }, [hideSuggest]);
 
+  // ---------------------------------------------------------------- вкладка «Дипломы»
+  const diplomas = useMyDiplomas();
+  const configQ = useQuery({ queryKey: ["max-config"], queryFn: getMaxConfig, staleTime: Infinity });
+  const campaign = configQ.data ?? FALLBACK_CAMPAIGN;
+  const [sheet, setSheet] = useState<SheetState | null>(null);
+  const [diplomaReset, setDiplomaReset] = useState(0);
+
+  function saveDiploma(entry: DiplomaEntry) {
+    diplomas.update(upsertDiploma(diplomas.entries, entry, sheet?.index ?? null));
+    setSheet(null);
+  }
+
+  function removeDiploma(index: number) {
+    diplomas.update(diplomas.entries.filter((_, i) => i !== index));
+    haptic(max, "warning");
+    setSheet(null);
+  }
+
+  // ---------------------------------------------------------------- кнопка «Назад» в MAX
+  useMaxBackButton(aboutOpen ? () => setAboutOpen(false) : null);
+  useMaxBackButton(tab === "olymp" && olympState.kind === "university" ? backToList : null);
+
+  // ---------------------------------------------------------------- запуск по ссылке
+  // https://max.ru/<бот>?startapp=diplomas | olympiad-<id> | program-<id>
+  const started = useRef(false);
+  useEffect(() => {
+    const param = max?.initDataUnsafe.start_param;
+    if (!param || started.current || !universitiesQ.data) return;
+    started.current = true;
+    const [kind, id] = [param.split("-")[0], Number(param.split("-")[1])];
+    if (kind === "diplomas") setTab("diplomas");
+    else if (kind === "program" && id) void openProgram(id);
+    else if (kind === "olympiad" && id)
+      void getDiplomaForm(id)
+        .then((f) => goToOlympiad(id, f.olympiad.short_name))
+        .catch(() => undefined);
+    // переход один раз, когда справочник вузов готов (openProgram выставляет вуз из него)
+  }, [max, universitiesQ.data]);
+
   // ---------------------------------------------------------------- фильтр по типу льготы
   function pickType(type: string) {
     setBenefitType(type);
@@ -394,6 +454,9 @@ export function OlympApp() {
               resetOlympiadTab();
               resetProgramTables();
               resetOlympTables();
+              // дипломы сброс не удаляет — только возвращает к списку вузов
+              resetDiplomaTables();
+              setDiplomaReset((n) => n + 1);
               scrollTop();
             }}
           >
@@ -437,6 +500,14 @@ export function OlympApp() {
               onClick={() => setTab("olymp")}
             >
               Олимпиады
+            </button>
+            <button
+              className={tab === "diplomas" ? "tab-btn tab-active" : "tab-btn"}
+              role="tab"
+              id="tab-btn-diplomas"
+              onClick={() => setTab("diplomas")}
+            >
+              Дипломы
             </button>
           </div>
         </div>
@@ -551,7 +622,48 @@ export function OlympApp() {
             <TablesContext.Provider value={olympTables}>{olympResult}</TablesContext.Provider>
           </div>
         </section>
+
+        {/* ТАБ 3 */}
+        <section id="tab-diplomas" className={tab === "diplomas" ? "mt-3 space-y-3" : "mt-3 space-y-3 hidden"}>
+          {diplomas.loaded ? (
+            <TablesContext.Provider value={diplomaTables}>
+              <DiplomasView
+                active={tab === "diplomas"}
+                entries={diplomas.entries}
+                storage={diplomas.storage}
+                sync={diplomas.sync}
+                benefitType={benefitType}
+                resetSignal={diplomaReset}
+                onAdd={() => setSheet({ index: null, olympiadId: null })}
+                onEdit={(index: number, result: DiplomaResult | undefined) =>
+                  setSheet({ index, olympiadId: result?.olympiad?.id ?? null })
+                }
+                onRemove={removeDiploma}
+                openProgram={(id) => void openProgram(id)}
+                resetTables={resetDiplomaTables}
+              />
+            </TablesContext.Provider>
+          ) : null}
+        </section>
       </main>
+
+      {/* ФОРМА ДИПЛОМА */}
+      {sheet ? (
+        <DiplomaSheet
+          key={`${sheet.index ?? "new"}`}
+          initial={
+            sheet.index !== null && diplomas.entries[sheet.index]
+              ? { entry: diplomas.entries[sheet.index]!, olympiadId: sheet.olympiadId }
+              : null
+          }
+          popular={popularQ.data?.items ?? []}
+          validYears={campaign.valid_years}
+          campaignYear={campaign.campaign_year}
+          onSave={saveDiploma}
+          onDelete={sheet.index !== null ? () => removeDiploma(sheet.index!) : null}
+          onClose={() => setSheet(null)}
+        />
+      ) : null}
 
       {/* МОДАЛКА «О базе» */}
       <AboutModal
