@@ -85,8 +85,15 @@ docker compose exec worker python -m olymp_workers.tasks refresh-sources   # о�
 
    ```bash
    docker compose --profile tunnel up --build -d
-   docker compose logs tunnel | grep trycloudflare.com
+   docker compose logs tunnel | grep trycloudflare.com      # cmd и PowerShell: | findstr trycloudflare.com
    ```
+
+   Если порты 8080/8000 заняты прежним прототипом (контейнеры `bvi-*`), раскомментируйте
+   в `.env` строки `OLYMP_WEB_PORT=18080` и `OLYMP_API_PORT=18000` — иначе `api` не стартует
+   («port is already allocated»). Туннелю порты не важны: он ходит к сайту внутри сети Docker.
+   Если Docker выходит в интернет через VPN-клиент (системный прокси), во время сборки он должен
+   быть включён — иначе ошибка `connecting to 127.0.0.1:…: actively refused`. Образы, собранные
+   раньше, пересобирать не нужно: `docker compose --profile tunnel up -d` без `--build`.
 
    На своём сервере с доменом (DNS указывает на сервер, порты 80 и 443 открыты) впишите в `.env`
    `OLYMP_DOMAIN=olymp.example.ru` и запустите `docker compose --profile https up --build -d` —
