@@ -1,7 +1,7 @@
 ---
 id: T-060
 title: Обработать ошибки загрузки: «Не получилось загрузить» и «Повторить»
-status: review
+status: done
 priority: P0
 area: web
 estimate: S

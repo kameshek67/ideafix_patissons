@@ -1,7 +1,7 @@
 ---
 id: T-051
 title: Собрать таблицу ИД вузов в data/individual_achievements.csv
-status: review
+status: done
 priority: P3
 area: data
 estimate: M

@@ -1,7 +1,7 @@
 ---
 id: T-054
 title: Блок «Другие достижения» в «Дипломах»
-status: review
+status: done
 priority: P3
 area: web
 estimate: M

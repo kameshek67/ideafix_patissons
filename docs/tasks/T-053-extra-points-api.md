@@ -1,7 +1,7 @@
 ---
 id: T-053
 title: API: баллы за достижения в подборе по вузам
-status: review
+status: done
 priority: P3
 area: api
 estimate: M

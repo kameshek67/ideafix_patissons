@@ -1,7 +1,7 @@
 ---
 id: T-050
 title: Исследование: доп. баллы (ИД) — источники и данные 5 вузов
-status: review
+status: done
 priority: P3
 area: data
 estimate: M

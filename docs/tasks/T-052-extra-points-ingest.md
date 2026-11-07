@@ -1,7 +1,7 @@
 ---
 id: T-052
 title: Модель и сборка ИД: таблица individual_achievements
-status: review
+status: done
 priority: P3
 area: workers
 estimate: S
