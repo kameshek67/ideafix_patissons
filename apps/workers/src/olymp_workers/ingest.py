@@ -43,6 +43,7 @@ from olymp_db.models import DATA_TABLES
 from olymp_db.session import database_url, psycopg_dsn
 from olymp_domain.olympiad_seeds import JUNK_KEYS, SEEDS
 from olymp_domain.textutils import (
+    SUBJECT_LIST_ALIASES,
     OlympiadMatcher,
     ProfileIndex,
     clean_name,
@@ -1085,6 +1086,9 @@ class Ingestor:
         self.universities: dict[str, int] = {}
         self.uni_squash: dict[str, int] = {}
         self.olympiad_ids: dict[str, int] = {}  # squash key -> olympiad id
+        # короткие сокращения (ПВГ, ЮМШ, МОШ, НТО): в поиске по тексту их нет, но в списке
+        # точных названий (ИТМО) они однозначны
+        self.short_aliases: dict[str, int] = {}
         self.olympiad_names: dict[int, str] = {}  # olympiad id -> короткое название
         self.olympiad_kinds: dict[int, str] = {}  # olympiad id -> rsosh | vsosh | international
         self.profile_ids: dict[tuple[int, str], int] = {}  # (olympiad_id, ключ) -> profile id
@@ -1225,6 +1229,9 @@ class Ingestor:
                     (item.db_id, alias, sq, int(len(sq) < 16)),
                 )
                 self.matcher.add(item.db_id, alias, is_generic=len(sq) < 16)
+                # одно сокращение у двух олимпиад — неоднозначно, не используем (-1)
+                if len(sq) < 4 and self.short_aliases.setdefault(sq, item.db_id) != item.db_id:
+                    self.short_aliases[sq] = -1
             for key in item.squash_keys:
                 self.olympiad_ids[key] = item.db_id
 
@@ -1930,6 +1937,15 @@ class Ingestor:
             if hits:
                 for hit in hits:
                     out.append((hit.olympiad_id, item.profile, "", item))
+                continue
+            if item.exact:
+                alias = SUBJECT_LIST_ALIASES.get(squash(item.name), item.name)
+                ids = [h.olympiad_id for h in self.matcher.find(alias)]
+                short = self.short_aliases.get(squash(alias), -1)
+                if not ids and short > 0:
+                    ids = [short]
+                for olympiad_id in ids:
+                    out.append((olympiad_id, item.profile, "", item))
                 continue
             # формат «предмет: олимпиада, олимпиада» (ИТМО, НГУ) — слева должен стоять
             # именно учебный предмет, иначе это просто проза и брать её в таблицу нельзя
