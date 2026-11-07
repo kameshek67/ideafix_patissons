@@ -146,3 +146,37 @@ def test_itmo_01_03_02_keeps_roles_and_short_named_olympiads(built_database_url:
     assert ("«Покори Воробьёвы горы!»", "математика", "только победители") in got
     assert ("НТО", "информатика", "победители") in got
     assert ("«ТехноКубок»", "информатика", "только победители") in got
+
+
+def test_rebuild_only_when_data_or_parser_changed(built_database_url: str) -> None:
+    """`--if-stale`: база, собранная текущими данными и кодом, не пересобирается; иначе — да."""
+    from pathlib import Path
+
+    from olymp_workers.ingest import build_fingerprint, is_current
+
+    xlsx = str(Path(__file__).resolve().parents[3] / "data" / "Olimpiady_BVI_100ballov.xlsx")
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        stored = conn.execute("SELECT value FROM meta WHERE key = 'build_fingerprint'").fetchone()[
+            0
+        ]
+    assert stored == build_fingerprint(xlsx)
+    assert is_current(built_database_url, xlsx)
+
+    try:
+        with psycopg.connect(psycopg_dsn(built_database_url), autocommit=True) as conn:
+            conn.execute("UPDATE meta SET value = 'старый-код' WHERE key = 'build_fingerprint'")
+        assert not is_current(built_database_url, xlsx)  # код разбора или данные изменились
+    finally:
+        with psycopg.connect(psycopg_dsn(built_database_url), autocommit=True) as conn:
+            conn.execute("UPDATE meta SET value = %s WHERE key = 'build_fingerprint'", (stored,))
+    assert is_current(built_database_url, xlsx)
+
+
+def test_fingerprint_depends_on_inputs(tmp_path) -> None:
+    from olymp_workers.ingest import build_fingerprint
+
+    a, b = tmp_path / "a.xlsx", tmp_path / "b.xlsx"
+    a.write_bytes(b"1")
+    b.write_bytes(b"2")
+    assert build_fingerprint(str(a)) == build_fingerprint(str(a))
+    assert build_fingerprint(str(a)) != build_fingerprint(str(b))
