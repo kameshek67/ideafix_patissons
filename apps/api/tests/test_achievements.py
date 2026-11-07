@@ -41,6 +41,7 @@ def init_data(user_id: int, *, token: str = TOKEN, auth_date: int | None = None)
 async def max_client(built_database_url: str) -> AsyncIterator[httpx.AsyncClient]:
     app = create_app(
         Settings(
+            _env_file=None,
             database_url=built_database_url,
             rate_limit_requests=0,
             max_bot_token=TOKEN,
