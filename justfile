@@ -68,3 +68,24 @@ compare *ARGS:
 # весь стек в контейнерах: сайт :8080, API :8000
 app:
     docker compose up --build -d
+
+# новая миграция Alembic по изменениям моделей: just migration "описание" (проверь файл руками!)
+migration MESSAGE:
+    cd packages/db && uv run alembic revision --autogenerate -m "{{MESSAGE}}"
+
+# ---------------------------------------------------------------- задачи (docs/tasks)
+
+# доска задач по статусам (+ открытые PR, если есть gh)
+tasks:
+    uv run python scripts/tasks.py board
+
+# задачи, которые можно брать: todo, зависимости готовы, нет открытого PR
+tasks-next:
+    uv run python scripts/tasks.py next
+
+# проверка файлов задач (то же делает CI)
+tasks-check:
+    uv run python scripts/tasks.py check
+
+# всё, что проверяет CI (для тестов с базой нужен `just up`)
+check: lint test tasks-check
