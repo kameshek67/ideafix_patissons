@@ -65,16 +65,16 @@ Caddy сервера, профили `https` и `tunnel` не нужны. Ток
 
 ## Структура
 
-```
-apps/api          FastAPI: каталог, поиск, «Мои дипломы», вход через MAX
-apps/web          Next.js: сайт и мини-приложение MAX
-apps/workers      сборка базы из XLSX, обход сайтов вузов, проверки данных, бот MAX
-packages/domain   чистая логика: нормализация названий, условия дипломов
-packages/db       модели и миграции
-packages/api-client  типы API (генерируются из docs/openapi.json)
-data/             исходный XLSX и ссылки на документы вузов
-docs/             документация, ТЗ, ADR, задачи
-infra/            Dockerfile'ы и окружение для разработки
-```
+| Папка | Что | |
+|---|---|---|
+| `apps/api` | FastAPI: каталог, поиск, «Мои дипломы», вход через MAX | [README](apps/api/README.md) |
+| `apps/web` | Next.js: сайт и мини-приложение MAX | [README](apps/web/README.md) |
+| `apps/workers` | сборка базы из XLSX, обход сайтов вузов, проверки данных, бот MAX | [README](apps/workers/README.md) |
+| `packages/domain` | чистая логика: нормализация названий, условия дипломов | [README](packages/domain/README.md) |
+| `packages/db` | модели и миграции | [README](packages/db/README.md) |
+| `packages/api-client` | типы API (генерируются из `docs/openapi.json`) | [README](packages/api-client/README.md) |
+| `infra` | Docker, окружение разработки, стенд | [README](infra/README.md) |
+| `data`, `scripts` | исходный XLSX и ссылки на документы; утилиты | [data](data/README.md) · [scripts](scripts/README.md) |
+| `docs` | документация, ТЗ, ADR, задачи, ревью | [README](docs/README.md) |
 
 Данные справочные: перед подачей документов сверяйтесь с правилами приёма вуза.
