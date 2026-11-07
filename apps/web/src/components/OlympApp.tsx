@@ -9,6 +9,7 @@ import {
   getMaxConfig,
   getOlympiads,
   getPrograms,
+  getShare,
   getUniversities,
   type DiplomaResult,
   type OlympiadHit,
@@ -23,6 +24,8 @@ import { type DiplomaEntry, upsertDiploma } from "@/lib/diplomas";
 import { fmt, place, plural } from "@/lib/format";
 import { haptic, whenMax } from "@/lib/max";
 import { shouldShowOnboarding } from "@/lib/onboarding";
+import { parseStartParam, type StartIntent } from "@/lib/startParam";
+import { showToast } from "@/lib/toast";
 import { AboutModal } from "./AboutModal";
 import { Combo, type ComboItem } from "./Combo";
 import { TablesContext, useTablesStore } from "./DataTable";
@@ -33,6 +36,7 @@ import { useMax, useMaxBackButton } from "./MaxProvider";
 import { OlympiadResults, UniversityBenefits } from "./OlympiadView";
 import { Onboarding, type OnboardingExit } from "./Onboarding";
 import { ProgramView } from "./ProgramView";
+import { Toaster } from "./Toaster";
 import { IlluState, LoadError, OLYMP_START, Skeleton, TYPES, UNI_START } from "./ui";
 import { useMyDiplomas } from "./useMyDiplomas";
 
@@ -88,7 +92,7 @@ function searchQuery(s: SearchState, extra: Partial<OlympiadQuery> = {}): Olympi
 
 /** Приложение «Олимп»: вкладки «Вузы» (что даёт направление), «Олимпиады» (куда с дипломом)
  *  и «Дипломы» (где дают льготы все мои дипломы). */
-export function OlympApp() {
+export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   const queryClient = useQueryClient();
   const max = useMax();
   const [tab, setTab] = useState<Tab>("uni");
@@ -341,6 +345,15 @@ export function OlympApp() {
   const campaign = configQ.data ?? FALLBACK_CAMPAIGN;
   const [sheet, setSheet] = useState<SheetState | null>(null);
   const [diplomaReset, setDiplomaReset] = useState(0);
+  // дипломы из ссылки «Поделиться»: показываются только для просмотра, в свой список
+  // (и в localStorage или профиль MAX) не попадают
+  const [sharedDiplomas, setSharedDiplomas] = useState<DiplomaEntry[] | null>(null);
+
+  function closeShared() {
+    setSharedDiplomas(null);
+    if (window.location.pathname.startsWith("/s/")) window.history.replaceState(null, "", "/");
+    scrollTop();
+  }
 
   function saveDiploma(entry: DiplomaEntry) {
     diplomas.update(upsertDiploma(diplomas.entries, entry, sheet?.index ?? null));
@@ -380,21 +393,72 @@ export function OlympApp() {
   useMaxBackButton(tab === "olymp" && olympState.kind === "university" ? backToList : null);
 
   // ---------------------------------------------------------------- запуск по ссылке
-  // https://max.ru/<бот>?startapp=diplomas | olympiad-<id> | program-<id>
+  // https://max.ru/<бот>?startapp=diplomas | olympiad-<id> | program-<id> | s_<token>
+  // и страница сайта /s/<token> — ссылка «Поделиться» (F-01)
+
+  function staleLink() {
+    showToast("Ссылка устарела — открыли главный экран");
+  }
+
+  /** Выдача по олимпиаде из ссылки: профиль и вуз — как у отправителя. */
+  async function openSharedOlympiad(
+    olympiad: OlympiadRef,
+    profileId: number | null,
+    university: UniversityInfo | null,
+    type: string,
+  ) {
+    setTab("olymp");
+    setInput(olympiad.short_name);
+    hideSuggest();
+    const state: SearchState = { query: olympiad.short_name, olympiad, profileId, benefitType: type };
+    setSearch(state);
+    setOlympState({ kind: "loading" });
+    const seq = ++olympSeq.current;
+    const list = await loadOlympiad(searchQuery(state));
+    if (seq !== olympSeq.current) return;
+    setListData(list);
+    const data = university ? await loadOlympiad(searchQuery(state, { university_id: university.id })) : list;
+    if (seq !== olympSeq.current) return;
+    resetOlympTables();
+    setOlympState(university ? { kind: "university", data, university } : { kind: "results", data });
+    scrollTop();
+  }
+
+  async function openShare(token: string) {
+    try {
+      const shared = await getShare(token);
+      const type = shared.benefit_type ?? "Все";
+      benefitTypeRef.current = type;
+      setBenefitType(type);
+      const r = shared.resolved;
+      if (shared.kind === "program" && r.program_id) await openProgram(r.program_id);
+      else if (shared.kind === "olympiad" && r.olympiad)
+        await openSharedOlympiad(r.olympiad, r.profile_id ?? null, r.university ?? null, type);
+      else if (shared.kind === "diplomas" && r.diplomas.length) {
+        setSharedDiplomas(r.diplomas.map((d) => ({ spec: d.spec, olympiad: d.olympiad, profile: d.profile })));
+        setTab("diplomas");
+      } else staleLink();
+    } catch {
+      staleLink();
+    }
+  }
+
   const started = useRef(false);
   useEffect(() => {
-    const param = max?.initDataUnsafe.start_param;
-    if (!param || started.current || !universitiesQ.data) return;
+    const intent: StartIntent | null = shareToken
+      ? { kind: "share", token: shareToken }
+      : parseStartParam(max?.initDataUnsafe.start_param);
+    if (!intent || started.current || !universitiesQ.data) return;
     started.current = true;
-    const [kind, id] = [param.split("-")[0], Number(param.split("-")[1])];
-    if (kind === "diplomas") setTab("diplomas");
-    else if (kind === "program" && id) void openProgram(id);
-    else if (kind === "olympiad" && id)
-      void getDiplomaForm(id)
-        .then((f) => goToOlympiad(id, f.olympiad.short_name))
+    if (intent.kind === "diplomas") setTab("diplomas");
+    else if (intent.kind === "program") void openProgram(intent.id);
+    else if (intent.kind === "olympiad")
+      void getDiplomaForm(intent.id)
+        .then((f) => goToOlympiad(intent.id, f.olympiad.short_name))
         .catch(() => undefined);
+    else void openShare(intent.token);
     // переход один раз, когда справочник вузов готов (openProgram выставляет вуз из него)
-  }, [max, universitiesQ.data]);
+  }, [max, universitiesQ.data, shareToken]);
 
   // ---------------------------------------------------------------- фильтр по типу льготы
   function pickType(type: string) {
@@ -441,6 +505,7 @@ export function OlympApp() {
           <OlympiadResults
             data={olympState.data}
             profileId={search.profileId}
+            benefitType={search.benefitType}
             onProfile={(profileId) => void runOlympiadSearch({ ...search, profileId, benefitType })}
             onUniversity={(u) => void pickResultUniversity(u)}
           />
@@ -451,6 +516,7 @@ export function OlympApp() {
             data={olympState.data}
             university={olympState.university}
             profileId={search.profileId}
+            benefitType={search.benefitType}
             totalUniversities={listData?.total_universities ?? 0}
             onBack={backToList}
             openProgram={(id) => void openProgram(id)}
@@ -479,6 +545,7 @@ export function OlympApp() {
               // дипломы сброс не удаляет — только возвращает к списку вузов
               resetDiplomaTables();
               setDiplomaReset((n) => n + 1);
+              if (sharedDiplomas) closeShared();
               scrollTop();
             }}
           >
@@ -647,9 +714,29 @@ export function OlympApp() {
 
         {/* ТАБ 3 */}
         <section id="tab-diplomas" className={tab === "diplomas" ? "mt-3 space-y-3" : "mt-3 space-y-3 hidden"}>
-          {diplomas.loaded ? (
+          {sharedDiplomas ? (
             <TablesContext.Provider value={diplomaTables}>
               <DiplomasView
+                key="shared"
+                readOnly
+                active={tab === "diplomas"}
+                entries={sharedDiplomas}
+                storage="device"
+                sync="idle"
+                benefitType={benefitType}
+                resetSignal={diplomaReset}
+                onAdd={closeShared}
+                onEdit={() => undefined}
+                onRemove={() => undefined}
+                onCloseShared={closeShared}
+                openProgram={(id) => void openProgram(id)}
+                resetTables={resetDiplomaTables}
+              />
+            </TablesContext.Provider>
+          ) : diplomas.loaded ? (
+            <TablesContext.Provider value={diplomaTables}>
+              <DiplomasView
+                key="own"
                 active={tab === "diplomas"}
                 entries={diplomas.entries}
                 storage={diplomas.storage}
@@ -692,6 +779,8 @@ export function OlympApp() {
 
       {/* МОДАЛКА «О приложении» */}
       <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} campaign={campaign} />
+
+      <Toaster />
     </>
   );
 }

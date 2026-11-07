@@ -86,3 +86,18 @@ export const getMyDiplomas = (initData: string) =>
 
 export const putMyDiplomas = (initData: string, diplomas: string[]) =>
   unwrap(api.PUT("/v1/me/diplomas", { body: { diplomas }, headers: maxHeaders(initData) }));
+
+// «Поделиться» (F-01): снимок экрана по id текущей сборки и открытие ссылки по токену
+export type ShareRequest = Schemas["ProgramShareIn"] | Schemas["OlympiadShareIn"] | Schemas["DiplomasShareIn"];
+export type ShareCreated = Schemas["ShareCreated"];
+export type SharedScreen = Schemas["Share"];
+export type ShareBenefitType = NonNullable<Schemas["ProgramShareIn"]["benefit_type"]>;
+
+/** Фильтр «Все / БВИ / 100 баллов» в снимке: «Все» — без фильтра. */
+export const shareBenefitType = (type: string): ShareBenefitType | null =>
+  type === "БВИ" || type === "100 баллов" ? type : null;
+
+export const createShare = (body: ShareRequest) => unwrap(api.POST("/v1/shares", { body }));
+
+export const getShare = (token: string) =>
+  unwrap(api.GET("/v1/shares/{token}", { params: { path: { token } } }));
