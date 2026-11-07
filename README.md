@@ -142,6 +142,13 @@ OLYMP_MAX_BOT_TOKEN=local-test-token uv run python scripts/max_dev_link.py --sta
 https://dev.max.ru/docs/webapps/validation, срок годности — `OLYMP_MAX_INIT_DATA_TTL`, по
 умолчанию сутки) и таблицы `max_users`, `user_diplomas` — пересборка базы их не трогает.
 
+## Стенд
+
+`main` выкатывается на https://ideafix.patissons.tech сам, после зелёного `ci`. HTTPS там даёт
+Caddy сервера, профили `https` и `tunnel` не нужны. Токен бота MAX и другие секреты стенда лежат
+в `/opt/ideafix/shared/.env` на сервере. Как это устроено и как откатиться —
+[infra/deploy/README.md](infra/deploy/README.md).
+
 ## Разработка
 
 Нужны [uv](https://docs.astral.sh/uv/), Node.js 22+, Docker и (по желанию) [just](https://just.systems).
