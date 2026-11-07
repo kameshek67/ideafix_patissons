@@ -80,7 +80,7 @@ const SLIDES: Slide[] = [
     body: () =>
       "Выбери вуз и направление — покажем, какие олимпиады дают БВИ или 100 баллов и какой нужен балл ЕГЭ.",
     // eslint-disable-next-line @next/next/no-img-element
-    art: <img src="./assets/illu-uni.png" alt="" width={305} height={318} />,
+    art: <img src="/assets/illu-uni.png" alt="" width={305} height={318} />,
     size: [305, 318],
   },
   {
@@ -88,7 +88,7 @@ const SLIDES: Slide[] = [
     line2: "куда с ней поступить",
     body: () => "Введи название олимпиады — увидишь все вузы, где она даёт льготы, с профилями и уровнями.",
     // eslint-disable-next-line @next/next/no-img-element
-    art: <img src="./assets/illu-olymp.png" alt="" width={240} height={260} />,
+    art: <img src="/assets/illu-olymp.png" alt="" width={240} height={260} />,
     size: [240, 260],
   },
   {
@@ -123,7 +123,7 @@ const SLIDES: Slide[] = [
           ]}
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="onboarding-cup" src="./assets/illu-olymp.png" alt="" width={128} height={139} />
+        <img className="onboarding-cup" src="/assets/illu-olymp.png" alt="" width={128} height={139} />
       </div>
     ),
     size: [372, 330],

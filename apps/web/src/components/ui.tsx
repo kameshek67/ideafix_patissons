@@ -21,8 +21,8 @@ export const OLYMP_START = "Введи название олимпиады. Вы
 
 // стартовые экраны из макета: подпись + 3D-иллюстрация
 const ILLU = {
-  uni: ["./assets/illu-uni.png", 305, 319],
-  olymp: ["./assets/illu-olymp.png", 214, 232],
+  uni: ["/assets/illu-uni.png", 305, 319],
+  olymp: ["/assets/illu-olymp.png", 214, 232],
 } as const;
 
 export function IlluState({ kind, text }: { kind: keyof typeof ILLU; text: string }) {
