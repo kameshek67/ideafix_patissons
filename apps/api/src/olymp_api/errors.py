@@ -26,7 +26,10 @@ def problem(
 def install(app: FastAPI) -> None:
     @app.exception_handler(StarletteHTTPException)
     async def _http(request: Request, exc: StarletteHTTPException) -> JSONResponse:
-        return problem(request, exc.status_code, str(exc.detail))
+        response = problem(request, exc.status_code, str(exc.detail))
+        # например, Retry-After у 429
+        response.headers.update(exc.headers or {})
+        return response
 
     @app.exception_handler(RequestValidationError)
     async def _validation(request: Request, exc: RequestValidationError) -> JSONResponse:

@@ -498,6 +498,47 @@
         "title": "DiplomaResult",
         "type": "object"
       },
+      "DiplomasShareIn": {
+        "description": "Итоги дипломов: строки дипломов, как в /v1/achievements/match.",
+        "properties": {
+          "benefit_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "БВИ",
+                  "100 баллов"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Benefit Type"
+          },
+          "diplomas": {
+            "items": {
+              "maxLength": 300,
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Diplomas",
+            "type": "array"
+          },
+          "kind": {
+            "const": "diplomas",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "diplomas"
+        ],
+        "title": "DiplomasShareIn",
+        "type": "object"
+      },
       "FallbackHit": {
         "properties": {
           "benefit_type": {
@@ -963,6 +1004,63 @@
         "title": "OlympiadSearch",
         "type": "object"
       },
+      "OlympiadShareIn": {
+        "description": "Выдача по олимпиаде; профиль и вуз — если выбраны.",
+        "properties": {
+          "benefit_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "БВИ",
+                  "100 баллов"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Benefit Type"
+          },
+          "kind": {
+            "const": "olympiad",
+            "title": "Kind",
+            "type": "string"
+          },
+          "olympiad_id": {
+            "title": "Olympiad Id",
+            "type": "integer"
+          },
+          "profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Id"
+          },
+          "university_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "University Id"
+          }
+        },
+        "required": [
+          "kind",
+          "olympiad_id"
+        ],
+        "title": "OlympiadShareIn",
+        "type": "object"
+      },
       "Olympiads": {
         "properties": {
           "count": {
@@ -1345,6 +1443,41 @@
         "title": "ProgramSearch",
         "type": "object"
       },
+      "ProgramShareIn": {
+        "description": "Карточка направления.",
+        "properties": {
+          "benefit_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "БВИ",
+                  "100 баллов"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Benefit Type"
+          },
+          "kind": {
+            "const": "program",
+            "title": "Kind",
+            "type": "string"
+          },
+          "program_id": {
+            "title": "Program Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "kind",
+          "program_id"
+        ],
+        "title": "ProgramShareIn",
+        "type": "object"
+      },
       "Programs": {
         "properties": {
           "count": {
@@ -1458,6 +1591,183 @@
           "profile_name"
         ],
         "title": "SavedDiploma",
+        "type": "object"
+      },
+      "Share": {
+        "properties": {
+          "benefit_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "БВИ",
+                  "100 баллов"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Benefit Type"
+          },
+          "found": {
+            "title": "Found",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "program",
+              "olympiad",
+              "diplomas"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "resolved": {
+            "$ref": "#/components/schemas/ShareResolved"
+          }
+        },
+        "required": [
+          "kind",
+          "benefit_type",
+          "found",
+          "resolved"
+        ],
+        "title": "Share",
+        "type": "object"
+      },
+      "ShareCreated": {
+        "properties": {
+          "max_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Url"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          },
+          "web_path": {
+            "title": "Web Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "web_path",
+          "max_url"
+        ],
+        "title": "ShareCreated",
+        "type": "object"
+      },
+      "ShareResolved": {
+        "description": "id объектов снимка в текущей сборке базы; null — объекта больше нет.",
+        "properties": {
+          "diplomas": {
+            "items": {
+              "$ref": "#/components/schemas/SharedDiploma"
+            },
+            "title": "Diplomas",
+            "type": "array"
+          },
+          "olympiad": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SharedOlympiad"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Id"
+          },
+          "program_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Program Id"
+          },
+          "university": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UniversityInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "program_id",
+          "olympiad",
+          "profile_id",
+          "university",
+          "diplomas"
+        ],
+        "title": "ShareResolved",
+        "type": "object"
+      },
+      "SharedDiploma": {
+        "properties": {
+          "olympiad": {
+            "title": "Olympiad",
+            "type": "string"
+          },
+          "profile": {
+            "title": "Profile",
+            "type": "string"
+          },
+          "spec": {
+            "title": "Spec",
+            "type": "string"
+          }
+        },
+        "required": [
+          "spec",
+          "olympiad",
+          "profile"
+        ],
+        "title": "SharedDiploma",
+        "type": "object"
+      },
+      "SharedOlympiad": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "short_name"
+        ],
+        "title": "SharedOlympiad",
         "type": "object"
       },
       "SheetLog": {
@@ -2655,6 +2965,121 @@
         "summary": "By Program",
         "tags": [
           "search"
+        ]
+      }
+    },
+    "/v1/shares": {
+      "post": {
+        "description": "Ссылка «Поделиться» на карточку направления, выдачу по олимпиаде или итоги дипломов.\n\nСнимок хранит стабильные ключи, а не id: ссылка открывает тот же экран и после\nпересборки базы. Тот же экран — та же ссылка (200), срок жизни продлевается.",
+        "operationId": "create_share_v1_shares_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "discriminator": {
+                  "mapping": {
+                    "diplomas": "#/components/schemas/DiplomasShareIn",
+                    "olympiad": "#/components/schemas/OlympiadShareIn",
+                    "program": "#/components/schemas/ProgramShareIn"
+                  },
+                  "propertyName": "kind"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ProgramShareIn"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OlympiadShareIn"
+                  },
+                  {
+                    "$ref": "#/components/schemas/DiplomasShareIn"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareCreated"
+                }
+              }
+            },
+            "description": "Этим экраном уже делились"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareCreated"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Share",
+        "tags": [
+          "sharing"
+        ]
+      }
+    },
+    "/v1/shares/{token}": {
+      "get": {
+        "description": "Что открыть по ссылке: тип экрана, фильтр и актуальные id объектов снимка.\n404 — ссылки нет или она устарела.",
+        "operationId": "open_share_v1_shares__token__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "pattern": "^[A-Za-z0-9]{10}$",
+              "title": "Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Share"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Open Share",
+        "tags": [
+          "sharing"
         ]
       }
     },

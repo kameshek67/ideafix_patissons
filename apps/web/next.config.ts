@@ -22,6 +22,14 @@ const config: NextConfig = {
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         ],
       },
+      {
+        // ссылки «Поделиться»: токен не уходит на сторонние сайты в Referer и не индексируется
+        source: "/s/:token",
+        headers: [
+          { key: "Referrer-Policy", value: "no-referrer" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
     ];
   },
   // значок Next.js в углу экрана в режиме разработки закрывал бы интерфейс

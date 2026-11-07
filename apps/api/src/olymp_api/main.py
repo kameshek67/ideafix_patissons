@@ -114,8 +114,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     from .modules.achievements.router import router as achievements_router
     from .modules.catalog.router import router as catalog_router
     from .modules.search.router import router as search_router
+    from .modules.sharing.router import router as sharing_router
 
-    for router in (catalog_router, search_router, achievements_router):
+    for router in (catalog_router, search_router, achievements_router, sharing_router):
         app.include_router(router, prefix="/v1")
     return app
 

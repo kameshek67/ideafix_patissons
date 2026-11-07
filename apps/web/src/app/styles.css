@@ -327,6 +327,21 @@ mark { background: #F4DCFE; color: inherit; padding: 0 2px; border-radius: 3px; 
   border-radius: 30px; background: var(--soft); font-size: 13.5px; color: var(--brand-ink); }
 .back-link:hover { background: #F6E6FD; }
 
+/* ---------- «Поделиться» ---------- */
+/* компактная пилюля в шапке карточки — в пару к .back-link */
+.share-btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 11px;
+  border-radius: 30px; background: var(--soft); font-size: 13.5px; color: var(--brand-ink);
+  flex-shrink: 0; white-space: nowrap; }
+.share-btn:hover { background: #F6E6FD; }
+.share-btn:disabled { opacity: .6; cursor: default; }
+/* тост: тёмная пилюля снизу по центру, над home indicator */
+.toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 60;
+  transform: translateX(-50%); width: max-content; max-width: calc(100vw - 32px);
+  padding: 11px 18px; border-radius: 30px; background: #2A0038; color: #fff;
+  font-size: 14px; line-height: 18px; text-align: center; box-shadow: 0 8px 24px rgba(42,0,56,.22);
+  animation: toast-in .18s ease-out; }
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } }
+
 /* карточка профилей олимпиады */
 /* профили бывают длиной в предложение — чипы переносят текст, а не распирают карточку вбок */
 .profile-chips { display: flex; flex-wrap: wrap; gap: 6px; max-height: 148px; overflow-x: hidden; overflow-y: auto; padding-right: 4px; }

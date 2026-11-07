@@ -1,20 +1,23 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import {
   type AchievementRow,
   type AchievementsMatch,
   type DiplomaResult,
   getAchievements,
+  shareBenefitType,
   type UniversityInfo,
 } from "@/lib/api";
 import { type DiplomaEntry, diplomaMeta, parseSpec } from "@/lib/diplomas";
 import { codesOf, dash, fmt, place, plural } from "@/lib/format";
+import { diplomasShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
 import { DataTable } from "./DataTable";
 import { IconChevronLeft, IconChevronRight, IconPlus, IconTrash } from "./icons";
 import { useMaxBackButton } from "./MaxProvider";
+import { ShareButton } from "./ShareButton";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
 import type { DiplomaStorage, SyncState } from "./useMyDiplomas";
 import { badgeClass, Clamp2, DerivedMark, EmptyState, LoadError, Skeleton } from "./ui";
@@ -42,6 +45,10 @@ interface Props {
   onRemove: (index: number) => void;
   openProgram: (id: number) => void;
   resetTables: () => void;
+  /** чужие дипломы по ссылке «Поделиться»: только просмотр, без правки и удаления */
+  readOnly?: boolean;
+  /** «Проверить свои дипломы» — выйти из просмотра чужих */
+  onCloseShared?: () => void;
 }
 
 function storageNote(storage: DiplomaStorage, sync: SyncState): string {
@@ -105,7 +112,25 @@ export function DiplomasView(props: Props) {
           openProgram={props.openProgram}
         />
       ) : (
-        <Results data={data} benefitType={benefitType} onUniversity={openUniversity} />
+        <Results
+          data={data}
+          benefitType={benefitType}
+          readOnly={!!props.readOnly}
+          onUniversity={openUniversity}
+          share={
+            props.readOnly ? null : (
+              <ShareButton
+                id="diploma-share"
+                wide
+                prefetch={active}
+                label="Поделиться итогами"
+                request={{ kind: "diplomas", diplomas: specs, benefit_type: shareBenefitType(benefitType) }}
+                title="Мои дипломы"
+                text={diplomasShareText(data)}
+              />
+            )
+          }
+        />
       )}
     </>
   );
@@ -119,7 +144,7 @@ function DiplomasStart({ onAdd }: { onAdd: () => void }) {
         <IconPlus /> Добавить диплом
       </button>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="./assets/illu-olymp.png" alt="" width={214} height={232} />
+      <img src="/assets/illu-olymp.png" alt="" width={214} height={232} />
     </div>
   );
 }
@@ -129,18 +154,20 @@ function DiplomaList({
   storage,
   sync,
   data,
+  readOnly,
   onAdd,
   onEdit,
   onRemove,
+  onCloseShared,
 }: Props & { data: AchievementsMatch | undefined }) {
   const results = new Map((data?.diplomas ?? []).map((d) => [d.spec, d]));
   return (
     <div className="card p-4" id="diploma-list">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <h2 className="block-title">Мои дипломы</h2>
+        <h2 className="block-title">{readOnly ? "Дипломы, которыми поделились" : "Мои дипломы"}</h2>
         <span className="badge badge-soft">{fmt(entries.length)}</span>
-        <span className={`ml-auto text-[12px] ${sync === "error" ? "text-red-600" : "meta-text"}`}>
-          {storageNote(storage, sync)}
+        <span className={`ml-auto text-[12px] ${sync === "error" && !readOnly ? "text-red-600" : "meta-text"}`}>
+          {readOnly ? "только просмотр" : storageNote(storage, sync)}
         </span>
       </div>
       <ul className="diploma-list">
@@ -148,9 +175,14 @@ function DiplomaList({
           const parts = parseSpec(entry.spec);
           const result = results.get(entry.spec);
           const c = result?.counts;
+          // чужие дипломы не правятся: та же разметка строки, но без кнопки
+          const Main = readOnly ? "div" : "button";
           return (
             <li key={entry.spec} className="diploma-row">
-              <button className="diploma-main" onClick={() => onEdit(i, result)} title="Изменить диплом">
+              <Main
+                className="diploma-main"
+                {...(readOnly ? {} : { onClick: () => onEdit(i, result), title: "Изменить диплом" })}
+              >
                 <span className="diploma-name">
                   {entry.olympiad || result?.olympiad?.short_name || "Олимпиада"}
                   {entry.profile ? <span className="diploma-profile">{` · ${entry.profile}`}</span> : null}
@@ -178,17 +210,25 @@ function DiplomaList({
                     <span className="badge badge-soft">льгот не нашлось</span>
                   )}
                 </span>
-              </button>
-              <button className="icon-btn diploma-remove" aria-label="Удалить диплом" title="Удалить диплом" onClick={() => onRemove(i)}>
-                <IconTrash />
-              </button>
+              </Main>
+              {readOnly ? null : (
+                <button className="icon-btn diploma-remove" aria-label="Удалить диплом" title="Удалить диплом" onClick={() => onRemove(i)}>
+                  <IconTrash />
+                </button>
+              )}
             </li>
           );
         })}
       </ul>
-      <button className="chip chip-ghost mt-3" id="diploma-add" onClick={onAdd}>
-        <IconPlus /> Добавить диплом
-      </button>
+      {readOnly ? (
+        <button className="btn-secondary w-full mt-3" id="diploma-own" onClick={onCloseShared}>
+          Проверить свои дипломы
+        </button>
+      ) : (
+        <button className="chip chip-ghost mt-3" id="diploma-add" onClick={onAdd}>
+          <IconPlus /> Добавить диплом
+        </button>
+      )}
     </div>
   );
 }
@@ -211,10 +251,15 @@ function rejectedNote(data: AchievementsMatch): string | null {
 function Results({
   data,
   benefitType,
+  readOnly,
+  share,
   onUniversity,
 }: {
   data: AchievementsMatch;
   benefitType: string;
+  readOnly: boolean;
+  /** кнопка «Поделиться итогами» под итоговой карточкой */
+  share: ReactNode;
   onUniversity: (u: UniversityInfo) => void;
 }) {
   const t = data.totals;
@@ -239,7 +284,7 @@ function Results({
   return (
     <>
       <div className="card p-4" id="diploma-summary">
-        <div className="card-kicker">Ваши дипломы дают льготы</div>
+        <div className="card-kicker">{readOnly ? "Эти дипломы дают льготы" : "Ваши дипломы дают льготы"}</div>
         <h2 className="card-title mt-1">
           {`${fmt(t.programs)} ${napravleniy(t.programs)} в ${fmt(t.universities)} ${vuzah(t.universities)}`}
         </h2>
@@ -259,6 +304,7 @@ function Results({
           </p>
         ) : null}
       </div>
+      {share}
       <div className="card uni-list overflow-hidden" id="diploma-universities">
         <div className="list-caption">Направления считаются по лучшей льготе. Выберите вуз, чтобы увидеть их</div>
         {data.results.map((r) => (
