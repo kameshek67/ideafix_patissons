@@ -14,8 +14,19 @@ export default {
         alt: { DEFAULT: "#9C1A61", bg: "#FFF0F7", line: "#F6CDE1" },
       },
       // VK Sans Display — шрифт макета; если не установлен, берём близкий по пропорциям Onest
+      // («Onest Variable» — он же, раздаётся с нашего адреса пакетом @fontsource-variable/onest)
       fontFamily: {
-        sans: ["VK Sans Display", "Onest", "Inter", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
+        sans: [
+          "VK Sans Display",
+          "Onest Variable",
+          "Onest",
+          "Inter",
+          "Segoe UI",
+          "Roboto",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif",
+        ],
       },
       boxShadow: { card: "0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10)" },
     },
