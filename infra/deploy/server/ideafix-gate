@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Всё, что ключ CI может сделать на сервере (forced command в ~deploy/.ssh/authorized_keys):
+#   upload <sha>  — релиз (tar.gz со stdin) в /opt/ideafix/releases/<sha>
+#   deploy <sha>  — выкатить его: infra/deploy/remote.sh из самого релиза
+set -euo pipefail
+
+root=${IDEAFIX_ROOT:-/opt/ideafix}
+read -r action sha rest <<<"${SSH_ORIGINAL_COMMAND:-}"
+if [[ ! ${sha:-} =~ ^[0-9a-f]{40}$ || -n ${rest:-} ]]; then
+  echo "ожидается: upload|deploy <sha коммита>" >&2
+  exit 2
+fi
+rel=$root/releases/$sha
+
+case $action in
+  upload)
+    # тот же коммит уже на сервере (перезапуск CI): каталог не трогаем, на него смотрят контейнеры
+    if [ -d "$rel" ]; then
+      cat >/dev/null
+      echo "релиз ${sha:0:12} уже загружен"
+      exit 0
+    fi
+    tmp=$(mktemp -d "$root/releases/.upload.XXXXXX")
+    trap 'rm -rf "$tmp"' EXIT
+    tar -xzf - -C "$tmp" --no-same-owner
+    chmod 755 "$tmp"
+    mv -T "$tmp" "$rel"
+    trap - EXIT
+    echo "релиз ${sha:0:12} загружен"
+    ;;
+  deploy)
+    [ -x "$rel/infra/deploy/remote.sh" ] || { echo "нет релиза ${sha:0:12}" >&2; exit 2; }
+    exec "$rel/infra/deploy/remote.sh" "$sha"
+    ;;
+  *)
+    echo "неизвестная команда: $action" >&2
+    exit 2
+    ;;
+esac

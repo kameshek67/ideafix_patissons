@@ -61,7 +61,7 @@ test:
     uv run pytest -q
     npm test --workspace olymp-web
 
-# сверить ответы API с прототипом из ветки main (он должен работать на :8000)
+# сверить ответы API с прототипом (тег prototype-v1, должен работать на :8000)
 compare *ARGS:
     uv run python scripts/compare_with_prototype.py {{ARGS}}
 

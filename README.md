@@ -39,6 +39,13 @@ just web                  # :3000
 Подробно, а также Windows без just — [docs/guides/development.md](docs/guides/development.md).
 Мини-приложение в MAX — [docs/runbooks/max-setup.md](docs/runbooks/max-setup.md).
 
+## Стенд
+
+`main` выкатывается на https://ideafix.patissons.tech сам, после зелёного `ci`. HTTPS там даёт
+Caddy сервера, профили `https` и `tunnel` не нужны. Токен бота MAX и другие секреты стенда лежат
+в `/opt/ideafix/shared/.env` на сервере. Как это устроено и как откатиться —
+[infra/deploy/README.md](infra/deploy/README.md).
+
 ## Документация
 
 | | |
