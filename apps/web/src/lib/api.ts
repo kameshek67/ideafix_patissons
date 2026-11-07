@@ -1,6 +1,5 @@
 import { apiClient, type Schemas } from "@olymp/api-client";
 
-export type Stats = Schemas["Stats"];
 export type UniversityItem = Schemas["UniversityItem"];
 export type ProgramItem = Schemas["ProgramItem"];
 export type OlympiadHit = Schemas["OlympiadHit"];
@@ -24,7 +23,6 @@ async function unwrap<T>(p: Promise<{ data?: T; error?: unknown; response: Respo
   return data;
 }
 
-export const getStats = () => unwrap(api.GET("/v1/stats"));
 
 export const getUniversities = () => unwrap(api.GET("/v1/universities"));
 
