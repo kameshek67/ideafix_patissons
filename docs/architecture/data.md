@@ -144,6 +144,11 @@ ingest_log, meta
 `review=extracted` разобраны из документа автоматически и человеком не сверены: API помечает ответ
 `unverified`. Название вуза в CSV должно совпадать с XLSX.
 
+На стенде `olymp-ingest --if-empty` готовую базу не пересобирает, поэтому сервис `migrate` после него
+всегда запускает `olymp-extra-points`: он в одной транзакции заменяет баллы за ИД данными из CSV (API
+не блокируется, при ошибке в CSV прежние данные остаются) и записывает хэш файлов в
+`meta.extra_points_version`; он входит в ключи кэша API. Изменили CSV — релиз сам довезёт данные.
+
 Виды достижений (`kind`): `honors_document` (аттестат или диплом с отличием, медаль), `gto_badge`
 (знак ГТО; степень — в `variants`: gold, silver, bronze), `olympiad_final`, `olympiad_regional`,
 `olympiad_other`, `sport_title`, `volunteer`, `military`, `abilimpics`, `essay`, `other`.

@@ -84,3 +84,41 @@ def test_extra_points_loaded_with_sources(built_database_url: str) -> None:
         "6",
     )
     assert no_source == 0
+
+
+def test_extra_points_reload_is_idempotent_and_keeps_data_on_error(
+    built_database_url: str, tmp_path
+) -> None:
+    """Перезагрузка баллов при выкате: тот же результат, а ошибка в CSV не стирает данные."""
+    import shutil
+    from pathlib import Path
+
+    import pytest
+    from olymp_workers.extra_points import ExtraPointsDataError, reload_extra_points
+
+    data = Path(__file__).resolve().parents[3] / "data"
+
+    def counts() -> tuple[int, int, str]:
+        with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+            rules = conn.execute("SELECT COUNT(*) FROM individual_achievements").fetchone()[0]
+            limits = conn.execute("SELECT COUNT(*) FROM individual_achievement_limits").fetchone()[
+                0
+            ]
+            version = conn.execute(
+                "SELECT value FROM meta WHERE key = 'extra_points_version'"
+            ).fetchone()[0]
+        return rules, limits, version
+
+    before = counts()
+    assert reload_extra_points(built_database_url, data) == {"rules": 223, "limits": 6}
+    assert counts() == before
+
+    broken = tmp_path / "data"
+    shutil.copytree(data, broken, ignore=shutil.ignore_patterns("*.xlsx"))
+    text = (broken / "individual_achievements.csv").read_text(encoding="utf-8")
+    (broken / "individual_achievements.csv").write_text(
+        text.replace("Университет ИТМО", "Несуществующий вуз", 1), encoding="utf-8"
+    )
+    with pytest.raises(ExtraPointsDataError):
+        reload_extra_points(built_database_url, broken)
+    assert counts() == before

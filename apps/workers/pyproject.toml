@@ -15,6 +15,7 @@ dependencies = [
 
 [project.scripts]
 olymp-ingest = "olymp_workers.ingest:main"
+olymp-extra-points = "olymp_workers.extra_points:main"
 olymp-refresh-sources = "olymp_workers.refresh_sources:main"
 olymp-validate = "olymp_workers.validate:main"
 olymp-max-bot = "olymp_workers.max_bot:main"

@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from olymp_domain.extra_points import Claim, ExtraRule, score
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from olymp_api.db import Row, fetch_all, fetch_one
+from olymp_api.db import Row, fetch_all, fetch_one, scalar
 
 from . import schemas
 
@@ -144,3 +144,9 @@ async def score_claims(session: AsyncSession, req: schemas.ScoreRequest) -> sche
         ],
         unverified=any(a.rule.review != "reviewed" for a in res.awards),
     )
+
+
+async def data_version(session: AsyncSession) -> str:
+    """Версия CSV с баллами за ИД (хэш файлов): входит в ключи кэша вместе со сборкой базы."""
+    value = await scalar(session, "SELECT value FROM meta WHERE key = 'extra_points_version'")
+    return str(value or "-")
