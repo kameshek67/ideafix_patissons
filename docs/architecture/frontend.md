@@ -12,7 +12,7 @@
 | «Олимпиады» | олимпиада → профиль → вузы → льготы вуза | `Combo`, `OlympiadView` (`OlympiadResults`, `UniversityBenefits`) | `/v1/olympiads`, `/v1/olympiads/{id}/profiles`, `/v1/search/by-olympiad` |
 | «Дипломы» | мои дипломы → все вузы и направления с льготами | `DiplomasView`, `DiplomaSheet`, `useMyDiplomas` | `/v1/achievements/*`, `/v1/me/diplomas`, `/v1/max/config` |
 
-Плюс `AboutModal` («О базе», `/v1/stats`) и фильтр по типу льготы (БВИ / 100 баллов / все).
+Плюс `AboutModal` («О приложении»: что умеет «Олимп» и как работают льготы; годы действия дипломов — из `/v1/max/config`) и фильтр по типу льготы (БВИ / 100 баллов / все).
 
 ## Состояние
 
