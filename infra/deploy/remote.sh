@@ -21,7 +21,33 @@ compose_in() {  # compose_in <каталог релиза> <аргументы d
   local dir=$1 f
   shift
   for f in compose.yaml compose.yml docker-compose.yaml docker-compose.yml; do [ -f "$dir/$f" ] && break; done
-  (cd "$dir" && docker compose -f "$f" -f .deploy/images.json "$@")
+  (cd "$dir" && docker compose -f "$f" -f .deploy/images.yml "$@")
+}
+
+# Меняя настройки существующей сети, compose пересоздаёт её на ходу и подключает контейнеры
+# обратно без имён сервисов в DNS: migrate не находит postgres, и стек не поднимается (так легла
+# выкатка, где сети впервые дали host_binding_ipv4). Поэтому, если сеть стека должна измениться,
+# сначала down (тома с данными остаются), потом up в чистую сеть.
+networks_differ() {  # networks_differ <каталог релиза>
+  compose_in "$1" config --format json | python3 -c '
+import json, subprocess, sys
+for net in json.load(sys.stdin).get("networks", {}).values():
+    if net.get("external"):
+        continue
+    r = subprocess.run(["docker", "network", "inspect", net["name"], "--format", "{{json .Options}}"],
+                       capture_output=True, text=True)
+    if r.returncode == 0 and json.loads(r.stdout) != (net.get("driver_opts") or {}):
+        sys.exit(0)
+sys.exit(1)
+'
+}
+
+up() {  # up <каталог релиза>
+  if networks_differ "$1"; then
+    log "настройки сети стека меняются — down и up в чистую сеть"
+    compose_in "$1" down --remove-orphans
+  fi
+  compose_in "$1" up -d --no-build --remove-orphans
 }
 
 healthy() {
@@ -37,6 +63,8 @@ flock -w 900 9
 
 # секреты и настройки стенда — один файл на все релизы, в git его нет
 ln -sfn "$root/shared/.env" "$rel/.env"
+# /usr/local/bin/ideafix из первой версии setup.sh ищет оверрайд под старым именем
+ln -sfn images.yml "$rel/.deploy/images.json"
 # файлы не из git (сертификат для бота MAX и т. п.): shared/files/<путь> → <релиз>/<путь>
 if [ -d "$root/shared/files" ]; then
   cp -a "$root/shared/files/." "$rel/"
@@ -62,7 +90,7 @@ fi
 
 prev=$(readlink -f "$root/current" 2>/dev/null || true)
 log "поднимаю ${sha:0:12}"
-if compose_in "$rel" up -d --no-build --remove-orphans && healthy; then
+if up "$rel" && healthy; then
   ln -sfn "$rel" "$root/current.tmp"
   mv -Tf "$root/current.tmp" "$root/current"
   log "готово: $health_url отвечает"
@@ -78,7 +106,7 @@ compose_in "$rel" ps -a || true
 compose_in "$rel" logs --no-color --tail 60 || true
 if [ -n "$prev" ] && [ "$prev" != "$rel" ] && [ -d "$prev" ]; then
   log "возвращаю предыдущий релиз $(basename "$prev" | cut -c1-12)"
-  if compose_in "$prev" up -d --no-build --remove-orphans && healthy; then
+  if up "$prev" && healthy; then
     log "предыдущий релиз отвечает"
   else
     log "предыдущий релиз тоже не отвечает"
