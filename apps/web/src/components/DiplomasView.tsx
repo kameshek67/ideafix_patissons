@@ -201,8 +201,8 @@ function DiplomaList({
                     </span>
                   ) : c && c.programs ? (
                     <>
-                      {c.bvi ? <span className="badge badge-bvi">{`${fmt(c.bvi)} БВИ`}</span> : null}
-                      {c.sto ? <span className="badge badge-sto">{`${fmt(c.sto)} по 100`}</span> : null}
+                      {c.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(c.bvi)}`}</span> : null}
+                      {c.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(c.sto)}`}</span> : null}
                       {c.other ? <span className="badge badge-alt">{`${fmt(c.other)} др.`}</span> : null}
                       <span className="badge badge-soft">{`${fmt(c.universities)} ${vuzov(c.universities)}`}</span>
                     </>
@@ -272,8 +272,8 @@ function Results({
           title={benefitType === "Все" ? "Льгот по этим дипломам не нашлось" : "Под фильтр ничего не попало"}
           text={
             benefitType === "Все"
-              ? "Проверьте профиль и год олимпиады — или добавьте ещё дипломы."
-              : "Снимите фильтр по типу льготы."
+              ? "Проверь профиль и год олимпиады — или добавь ещё дипломы."
+              : "Сними фильтр по типу льготы."
           }
         />
         {note ? <p className="text-[12.5px] leading-snug meta-text px-1">{note}</p> : null}
@@ -289,8 +289,8 @@ function Results({
           {`${fmt(t.programs)} ${napravleniy(t.programs)} в ${fmt(t.universities)} ${vuzah(t.universities)}`}
         </h2>
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {t.bvi ? <span className="badge badge-bvi">{`${fmt(t.bvi)} БВИ`}</span> : null}
-          {t.sto ? <span className="badge badge-sto">{`${fmt(t.sto)} по 100`}</span> : null}
+          {t.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(t.bvi)}`}</span> : null}
+          {t.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(t.sto)}`}</span> : null}
           {t.other ? (
             <span className="badge badge-alt" title="Особое право, фаст-трек, доп. баллы">
               {`${fmt(t.other)} др.`}
@@ -306,15 +306,15 @@ function Results({
       </div>
       {share}
       <div className="card uni-list overflow-hidden" id="diploma-universities">
-        <div className="list-caption">Направления считаются по лучшей льготе. Выберите вуз, чтобы увидеть их</div>
+        <div className="list-caption">Направления считаются по лучшей льготе. Выбери вуз, чтобы увидеть их</div>
         {data.results.map((r) => (
           <button key={r.university.id} className="uni-row" onClick={() => onUniversity(r.university)}>
             <div className="uni-row-main">
               <div className="uni-row-name">{r.university.name}</div>
               <div className="uni-row-meta">{`${place(r.university)} · ${fmt(r.programs)} ${napravleniy(r.programs)}`}</div>
               <div className="uni-row-badges">
-                {r.bvi ? <span className="badge badge-bvi">{`${fmt(r.bvi)} БВИ`}</span> : null}
-                {r.sto ? <span className="badge badge-sto">{`${fmt(r.sto)} по 100`}</span> : null}
+                {r.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(r.bvi)}`}</span> : null}
+                {r.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(r.sto)}`}</span> : null}
                 {r.other ? <span className="badge badge-alt">{`${fmt(r.other)} др.`}</span> : null}
                 {r.check ? (
                   <span className="badge badge-soft" title={CHECK_HINT}>{`${fmt(r.check)} проверить`}</span>
@@ -415,7 +415,12 @@ function detailColumns(openProgram: (id: number) => void, several: boolean): Col
       ),
     },
     { key: "profile", title: "Профиль в правилах", width: "w-[17%]", cell: (r) => <Clamp2 value={r.profile} /> },
-    { key: "level", title: "Ур.", width: "w-[6%]" },
+    {
+      key: "level",
+      title: "Ур.",
+      hint: "Уровень олимпиады: I — самый высокий в перечне РСОШ",
+      width: "w-[6%]",
+    },
     { key: "role", title: "Кому", width: "w-[11%]", hide: "sm" },
     { key: "grade", title: "Класс", width: "w-[8%]", hide: "sm", cell: (r) => <span className="nowrap">{r.grade}</span> },
     { key: "confirm", title: "ЕГЭ", width: "w-[10%]", hide: "sm" },

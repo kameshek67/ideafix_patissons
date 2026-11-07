@@ -57,7 +57,12 @@ function programColumns(goToOlympiad: (id: number, name: string) => void): Colum
       ),
     },
     { key: "profile", title: "Профиль олимпиады", width: "w-[22%]", cell: (r) => <Clamp2 value={r.profile} /> },
-    { key: "level", title: "Ур.", width: "w-[6%]" },
+    {
+      key: "level",
+      title: "Ур.",
+      hint: "Уровень олимпиады: I — самый высокий в перечне РСОШ",
+      width: "w-[6%]",
+    },
     { key: "role", title: "Кому", width: "w-[13%]", hide: "sm" },
     {
       key: "grade",
@@ -193,7 +198,7 @@ export function ProgramView({ data, benefitType, goToOlympiad }: Props) {
       {olympiads.length ? (
         <div className="card p-4">
           <h3 className="block-title mb-1">Олимпиады этого направления</h3>
-          <p className="text-[12.5px] meta-text mb-3">Нажмите, чтобы увидеть, куда ещё она даёт льготы</p>
+          <p className="text-[12.5px] meta-text mb-3">Нажми, чтобы увидеть, куда ещё она даёт льготы</p>
           <div className="flex flex-wrap gap-1.5">
             {olympiads.map((o) => (
               <button key={o.id} className="chip chip-ghost" onClick={() => goToOlympiad(o.id, o.short_name)}>

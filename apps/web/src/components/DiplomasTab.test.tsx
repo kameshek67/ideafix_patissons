@@ -121,7 +121,7 @@ describe("вкладка «Дипломы»", () => {
 
     const sheet = () => within(document.querySelector<HTMLElement>("#diploma-sheet")!);
     // пока не выбрана олимпиада, кнопка подсказывает, чего не хватает
-    expect(sheet().getByRole("button", { name: "Выберите олимпиаду" }).hasAttribute("disabled")).toBe(true);
+    expect(sheet().getByRole("button", { name: "Выбери олимпиаду" }).hasAttribute("disabled")).toBe(true);
 
     await waitFor(() => expect(sheet().getByRole("button", { name: "«Высшая проба»" })).toBeTruthy());
     fireEvent.click(sheet().getByRole("button", { name: "«Высшая проба»" }));

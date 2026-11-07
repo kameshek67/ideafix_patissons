@@ -54,8 +54,8 @@ function OlympiadHead({
         </div>
       ) : null}
       <div className="mt-3 flex flex-wrap gap-1.5">
-        <span className="badge badge-bvi">{`${fmt(profile ? profile.bvi_count : o.bvi_count)} БВИ`}</span>
-        <span className="badge badge-sto">{`${fmt(profile ? profile.sto_count : o.sto_count)} по 100`}</span>
+        <span className="badge badge-bvi">{`БВИ: ${fmt(profile ? profile.bvi_count : o.bvi_count)}`}</span>
+        <span className="badge badge-sto">{`100 баллов: ${fmt(profile ? profile.sto_count : o.sto_count)}`}</span>
         {children}
       </div>
     </div>
@@ -124,7 +124,7 @@ export function OlympiadResults({ data, profileId, benefitType, onProfile, onUni
         <EmptyState
           icon="🤷"
           title="Олимпиада не найдена"
-          text="Проверьте написание или выберите из подсказок: в базе олимпиады перечня РСОШ, ВсОШ и международные."
+          text="Проверь написание или выбери из подсказок: в базе олимпиады перечня РСОШ, ВсОШ и международные."
         />
         {fallback.length ? (
           <div className="card p-4">
@@ -152,7 +152,7 @@ export function OlympiadResults({ data, profileId, benefitType, onProfile, onUni
       <ProfileChips data={data} profileId={profileId} onPick={onProfile} />
       {data.results.length ? (
         <div className="card uni-list overflow-hidden">
-          <div className="list-caption">Выберите вуз, чтобы увидеть льготы по направлениям</div>
+          <div className="list-caption">Выбери вуз, чтобы увидеть льготы по направлениям</div>
           {data.results.map((group) => {
             const u = group.university;
             return (
@@ -163,8 +163,8 @@ export function OlympiadResults({ data, profileId, benefitType, onProfile, onUni
                     {`${place(u)} · ${fmt(group.programs_total)} ${napravleniy(group.programs_total)}`}
                   </div>
                   <div className="uni-row-badges">
-                    {group.bvi ? <span className="badge badge-bvi">{`${fmt(group.bvi)} БВИ`}</span> : null}
-                    {group.sto ? <span className="badge badge-sto">{`${fmt(group.sto)} по 100`}</span> : null}
+                    {group.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(group.bvi)}`}</span> : null}
+                    {group.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(group.sto)}`}</span> : null}
                     {group.other ? (
                       <span className="badge badge-alt" title="Особое право, фаст-трек, доп. баллы">
                         {`${fmt(group.other)} др.`}
@@ -178,7 +178,7 @@ export function OlympiadResults({ data, profileId, benefitType, onProfile, onUni
           })}
         </div>
       ) : (
-        <EmptyState icon="🔍" title="Под фильтры ничего не попало" text="Снимите фильтр по профилю или типу льготы." />
+        <EmptyState icon="🔍" title="Под фильтры ничего не попало" text="Сними фильтр по профилю или типу льготы." />
       )}
     </>
   );
@@ -257,7 +257,12 @@ function universityColumns(openProgram: (id: number) => void): Column<University
       ),
     },
     { key: "profile", title: "Профиль олимпиады", width: "w-[20%]", cell: (r) => <Clamp2 value={r.profile} /> },
-    { key: "level", title: "Ур.", width: "w-[6%]" },
+    {
+      key: "level",
+      title: "Ур.",
+      hint: "Уровень олимпиады: I — самый высокий в перечне РСОШ",
+      width: "w-[6%]",
+    },
     { key: "role", title: "Кому", width: "w-[12%]", hide: "sm" },
     { key: "confirm", title: "ЕГЭ", width: "w-[12%]", hide: "sm" },
   ];

@@ -86,6 +86,10 @@ export function AboutModal({ open, onClose, campaign }: Props) {
           <p className="mt-5 text-[12.5px] leading-[17px] meta-text">
             Условия у вузов разные — перед подачей сверься с документом вуза в карточке направления.
           </p>
+          <p className="mt-2 text-[12.5px] leading-[17px] meta-text">
+            Числа у «БВИ» и «100 баллов» — строки таблиц льгот (олимпиада × профиль × направление), а не количество вузов
+            или людей.
+          </p>
         </div>
       </div>
     </div>
