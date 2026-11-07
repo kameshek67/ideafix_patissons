@@ -9,6 +9,7 @@ import { DataTable, useTables } from "./DataTable";
 import { IconSummaryChevron } from "./icons";
 import { ShareButton } from "./ShareButton";
 import { badgeClass, Clamp2, DerivedMark, EmptyState, TYPE_STYLE } from "./ui";
+import { conditionsLine } from "@/lib/conditions";
 import { SourceBlock } from "./SourceBlock";
 
 interface ProgramRow {
@@ -53,6 +54,10 @@ function programColumns(goToOlympiad: (id: number, name: string) => void): Colum
             r.olympiad
           )}
           <DerivedMark derived={r.derived} />
+          {conditionsLine(r) ? (
+            // на телефоне колонки «Кому», «Класс» и «ЕГЭ» скрыты: условия — второй строкой
+            <div className="mt-0.5 text-[11.5px] leading-snug meta-text sm:hidden">{conditionsLine(r)}</div>
+          ) : null}
         </>
       ),
     },
