@@ -110,7 +110,7 @@ services:
 
   # без сервера и домена: временный адрес Cloudflare (меняется при каждом перезапуске)
   #   docker compose --profile tunnel up --build -d
-  #   docker compose logs tunnel | grep trycloudflare.com
+  #   docker compose logs tunnel | grep trycloudflare.com     (Windows: | findstr trycloudflare.com)
   tunnel:
     image: cloudflare/cloudflared:2026.10.7
     command: ["tunnel", "--no-autoupdate", "--url", "http://web:3000"]
