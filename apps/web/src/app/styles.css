@@ -211,6 +211,7 @@ details[open] .chev { transform: rotate(180deg); }
 
 /* ---------- модалка «О приложении» ---------- */
 .sheet-handle { width: 40px; height: 4px; border-radius: 4px; background: #E6D6EC; margin: -6px auto 12px; }
+.about-sheet { overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #E6D6EC transparent; }
 
 mark { background: #F4DCFE; color: inherit; padding: 0 2px; border-radius: 3px; }
 
