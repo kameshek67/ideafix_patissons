@@ -1,7 +1,7 @@
 ---
 id: T-063
 title: Тексты и единицы: вузы вместо строк, понятные термины, обращение на «ты»
-status: review
+status: done
 priority: P0
 area: web
 estimate: S

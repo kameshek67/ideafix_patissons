@@ -1,7 +1,7 @@
 ---
 id: T-061
 title: Показывать условия льготы на мобильном второй строкой
-status: review
+status: done
 priority: P0
 area: web
 estimate: M
