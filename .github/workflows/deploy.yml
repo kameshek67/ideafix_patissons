@@ -79,8 +79,13 @@ jobs:
           registry="ghcr.io/${GITHUB_REPOSITORY,,}"
           services=$(python3 infra/deploy/images.py "$registry" "$SHA" .deploy)
           for f in compose.yaml compose.yml docker-compose.yaml docker-compose.yml; do [ -f "$f" ] && break; done
-          docker compose -f "$f" -f .deploy/build-cache.json -f .deploy/images.json \
-            build --push $services
+          # bake сам читает compose-файлы; оверрайды — .yml: файлы .json bake считает своим форматом
+          docker buildx bake -f "$f" -f .deploy/build.yml -f .deploy/images.yml --push $services
+          # сервер скачает образы тем же GITHUB_TOKEN: каждый должен быть виден в GHCR уже сейчас
+          while read -r img; do
+            docker buildx imagetools inspect "$img" >/dev/null \
+              || { echo "::error::$img не опубликован в GHCR"; exit 1; }
+          done < .deploy/images
 
       - name: релиз на сервер
         env:
@@ -95,7 +100,7 @@ jobs:
 
           # код релиза (compose, data/ и т. п.) + оверрайд с образами; .env живёт только на сервере
           git archive --format=tar -o release.tar HEAD
-          tar -rf release.tar .deploy/images.json .deploy/services
+          tar -rf release.tar .deploy/images.yml .deploy/services
           gzip -c release.tar | ssh_deploy upload "$SHA"
 
           # токен нужен серверу только чтобы скачать образы; после выкатки он недействителен
