@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { MaxWebApp } from "@/lib/max";
 import { markOnboardingDone, ONBOARDING_KEY, shouldShowOnboarding } from "@/lib/onboarding";
@@ -59,6 +59,55 @@ describe("экраны", () => {
     fireEvent.click(screen.getByRole("button", { name: "Добавить диплом" }));
     expect(onFinish).toHaveBeenCalledWith("add-diploma");
     expect(localStorage.getItem(ONBOARDING_KEY)).toBe("done");
+  });
+
+  // лента экранов в jsdom не прокручивается: ширина и положение — вручную
+  function renderTrack() {
+    render(<Onboarding onFinish={vi.fn()} />);
+    const track = document.querySelector<HTMLElement>(".onboarding-track")!;
+    Object.defineProperty(track, "clientWidth", { configurable: true, value: 390 });
+    Object.defineProperty(track, "scrollLeft", { configurable: true, writable: true, value: 0 });
+    const scrollTo = vi.fn();
+    track.scrollTo = scrollTo as unknown as typeof track.scrollTo;
+    const scrollAt = (left: number) => {
+      track.scrollLeft = left;
+      fireEvent.scroll(track);
+    };
+    return { scrollTo, scrollAt };
+  }
+
+  it("быстрое второе «Далее» во время прокрутки не теряется", () => {
+    const { scrollTo, scrollAt } = renderTrack();
+    fireEvent.click(screen.getByRole("button", { name: "Далее" }));
+    expect(scrollTo).toHaveBeenLastCalledWith({ left: 390, behavior: "smooth" });
+    // лента только тронулась: ближе ещё первый экран, но шаг уже второй
+    scrollAt(40);
+    expect(screen.getByText("2 из 3")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Далее" }));
+    expect(screen.getByText("3 из 3")).toBeTruthy();
+    expect(scrollTo).toHaveBeenLastCalledWith({ left: 780, behavior: "smooth" });
+    scrollAt(500);
+    scrollAt(780);
+    expect(screen.getByText("3 из 3")).toBeTruthy();
+    // доехали — дальше шаг снова следует за свайпом
+    scrollAt(390);
+    expect(screen.getByText("2 из 3")).toBeTruthy();
+  });
+
+  it("если прокрутку перехватили свайпом, шаг сверяется с лентой после остановки", () => {
+    vi.useFakeTimers();
+    try {
+      const { scrollAt } = renderTrack();
+      fireEvent.click(screen.getByRole("button", { name: "Далее" }));
+      // палец вернул ленту назад, не дав доехать до второго экрана
+      scrollAt(120);
+      scrollAt(30);
+      expect(screen.getByText("2 из 3")).toBeTruthy();
+      act(() => vi.advanceTimersByTime(200));
+      expect(screen.getByText("1 из 3")).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("«Пропустить» и Escape ведут в приложение", () => {
