@@ -62,6 +62,10 @@ jobs:
 
   secrets:
     runs-on: ubuntu-latest
+    # gitleaks на PR читает список коммитов PR: без pull-requests: read — 403
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
