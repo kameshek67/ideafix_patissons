@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 export interface Column<Row> {
   key: keyof Row & string;
   title: string;
+  /** Расшифровка для подсказки у заголовка (сокращения вроде «Ур.») */
+  hint?: string;
   width?: string;
   /** "sm" — колонка скрыта на телефоне */
   hide?: "sm";

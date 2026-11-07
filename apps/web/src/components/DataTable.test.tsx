@@ -32,7 +32,7 @@ function Harness() {
         rows={rows}
         columns={[
           { key: "name", title: "Олимпиада" },
-          { key: "level", title: "Ур.", hide: "sm" },
+          { key: "level", title: "Ур.", hint: "Уровень олимпиады: I — самый высокий", hide: "sm" },
         ]}
       />
     </TablesContext.Provider>
@@ -50,7 +50,10 @@ describe("DataTable", () => {
   it("показывает счётчик и прячет колонку на телефоне", () => {
     render(<Harness />);
     expect(screen.getByText("3 из 3")).toBeTruthy();
-    expect(screen.getByTitle("Ур. — сортировать").className).toContain("hidden sm:table-cell");
+    // сокращённый заголовок расшифрован в подсказке
+    expect(screen.getByTitle("Уровень олимпиады: I — самый высокий. Нажми, чтобы отсортировать").className).toContain(
+      "hidden sm:table-cell",
+    );
   });
 
   it("сортирует по клику на заголовок и переключает направление", () => {
