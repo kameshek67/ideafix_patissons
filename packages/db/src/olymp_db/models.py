@@ -3,19 +3,26 @@
 Нормализованная часть: universities / programs / benefits.
 Поисковая часть: olympiads / olympiad_aliases / olympiad_profiles / benefit_olympiads /
 benefit_keywords / search_index (полнотекстовый индекс, tsvector).
+Пользовательская часть: max_users / user_diplomas («Мои дипломы» в мини-приложении MAX).
 
 Все текстовые колонки — с сортировкой «C»: строки упорядочиваются побайтно, как в
 прототипе на SQLite. От этого зависит порядок вузов, направлений и профилей в выдаче.
 """
 
+from datetime import datetime
+
 from sqlalchemy import (
+    BigInteger,
     CheckConstraint,
+    DateTime,
     ForeignKey,
     Index,
     Integer,
     MetaData,
+    SmallInteger,
     Text,
     UniqueConstraint,
+    func,
 )
 from sqlalchemy import text as sa_text
 from sqlalchemy.dialects.postgresql import TSVECTOR
@@ -257,6 +264,53 @@ class Meta(Base):
 
     key: Mapped[str] = mapped_column(CText, primary_key=True)
     value: Mapped[str] = mapped_column(CText)
+
+
+# ---------------------------------------------------------------- пользователи MAX
+# Данные пользователей не входят в DATA_TABLES: пересборка базы их не трогает. Поэтому
+# дипломы ссылаются на олимпиады и профили ключами squash, а не id — id после пересборки
+# другие, а ключи (squash названий) прежние.
+
+
+class MaxUser(Base):
+    """Пользователь мини-приложения MAX — из подписанных данных запуска (initData)."""
+
+    __tablename__ = "max_users"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=False)
+    first_name: Mapped[str] = _text()
+    last_name: Mapped[str] = _text()
+    username: Mapped[str] = _text()
+    language_code: Mapped[str] = _text()
+    photo_url: Mapped[str] = _text()
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class UserDiploma(Base):
+    """Диплом олимпиады в профиле ученика («Мои дипломы»)."""
+
+    __tablename__ = "user_diplomas"
+    __table_args__ = (
+        UniqueConstraint("user_id", "position"),
+        CheckConstraint("role IN ('w', 'p')", name="role"),
+        CheckConstraint("grade IS NULL OR grade BETWEEN 9 AND 11", name="grade"),
+        CheckConstraint("year IS NULL OR year BETWEEN 2000 AND 2100", name="year"),
+    )
+
+    id: Mapped[int] = _pk()
+    # поиск по user_id обслуживает уникальный индекс (user_id, position)
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("max_users.id", ondelete="CASCADE"))
+    position: Mapped[int] = mapped_column(Integer)
+    olympiad_key: Mapped[str] = mapped_column(CText)
+    profile_key: Mapped[str | None] = mapped_column(CText, nullable=True)
+    role: Mapped[str] = mapped_column(CText)
+    grade: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    year: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    # названия на момент сохранения — показать диплом, даже если олимпиада ушла из базы
+    olympiad_name: Mapped[str] = _text()
+    profile_name: Mapped[str] = _text()
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
 # Таблицы с данными сборки: их очищает и заново наполняет olymp-ingest.

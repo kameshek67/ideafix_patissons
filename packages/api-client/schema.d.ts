@@ -41,6 +41,92 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/achievements/match": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Match
+         * @description «Мои дипломы»: где дипломы дают льготы с учётом условий вуза — степени диплома,
+         *     класса и года олимпиады. Список вузов, а с university_id — строки выбранного вуза.
+         */
+        get: operations["match_v1_achievements_match_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/achievements/olympiads/{olympiad_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Diploma Form
+         * @description Олимпиада для формы диплома: ключ и профили без мусора разбора таблиц.
+         */
+        get: operations["diploma_form_v1_achievements_olympiads__olympiad_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/max/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Max Config
+         * @description Настроен ли вход через MAX и как называется бот мини-приложения.
+         */
+        get: operations["max_config_v1_max_config_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/diplomas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Diplomas
+         * @description Дипломы пользователя MAX. Нужен заголовок X-Max-Init-Data — данные запуска
+         *     мини-приложения, подписанные токеном бота.
+         */
+        get: operations["my_diplomas_v1_me_diplomas_get"];
+        /**
+         * Save My Diplomas
+         * @description Сохраняет список дипломов пользователя MAX целиком.
+         */
+        put: operations["save_my_diplomas_v1_me_diplomas_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/olympiads": {
         parameters: {
             query?: never;
@@ -206,6 +292,62 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AchievementProgram */
+        AchievementProgram: {
+            /** Code */
+            code: string;
+            /** Faculty Or Direction */
+            faculty_or_direction: string;
+            /** Id */
+            id: number;
+            /** Profile Name */
+            profile_name: string;
+        };
+        /** AchievementRow */
+        AchievementRow: {
+            benefit: components["schemas"]["Benefit"];
+            /** Diplomas */
+            diplomas: number[];
+            /** Fit */
+            fit: string;
+            program: components["schemas"]["AchievementProgram"];
+        };
+        /** AchievementUniversity */
+        AchievementUniversity: {
+            /** Bvi */
+            bvi: number;
+            /** Check */
+            check: number;
+            /** Other */
+            other: number;
+            /** Programs */
+            programs: number;
+            /** Sto */
+            sto: number;
+            university: components["schemas"]["UniversityInfo"];
+        };
+        /**
+         * AchievementsMatch
+         * @description Где дипломы дают льготы: итоги, список вузов, а с university_id — строки вуза.
+         */
+        AchievementsMatch: {
+            /** Campaign Year */
+            campaign_year: number;
+            /** Diplomas */
+            diplomas: components["schemas"]["DiplomaResult"][];
+            rejected: components["schemas"]["Rejected"];
+            /** Results */
+            results: components["schemas"]["AchievementUniversity"][];
+            /**
+             * Rows
+             * @default []
+             */
+            rows: components["schemas"]["AchievementRow"][];
+            totals: components["schemas"]["Counts"];
+            university: components["schemas"]["UniversityInfo"] | null;
+            /** Valid Years */
+            valid_years: number[];
+        };
         /** Benefit */
         Benefit: {
             /** Award Subject */
@@ -257,6 +399,73 @@ export interface components {
             /** Type */
             type: string;
         };
+        /**
+         * Counts
+         * @description Сколько направлений дают льготу; каждое считается по лучшей льготе.
+         */
+        Counts: {
+            /** Bvi */
+            bvi: number;
+            /** Other */
+            other: number;
+            /** Programs */
+            programs: number;
+            /** Sto */
+            sto: number;
+            /** Universities */
+            universities: number;
+        };
+        /**
+         * DiplomaForm
+         * @description Олимпиада для формы диплома: ключ и профили, которые можно выбрать.
+         */
+        DiplomaForm: {
+            olympiad: components["schemas"]["DiplomaOlympiad"];
+            /** Profiles */
+            profiles: components["schemas"]["DiplomaProfile"][];
+        };
+        /** DiplomaOlympiad */
+        DiplomaOlympiad: {
+            /** Canonical Name */
+            canonical_name: string;
+            /** Id */
+            id: number;
+            /** Key */
+            key: string;
+            /** Short Name */
+            short_name: string;
+        };
+        /** DiplomaProfile */
+        DiplomaProfile: {
+            /** Id */
+            id: number;
+            /** Key */
+            key: string;
+            /** Level */
+            level: string;
+            /** Mentions */
+            mentions: number;
+            /** Name */
+            name: string;
+        };
+        /** DiplomaResult */
+        DiplomaResult: {
+            counts: components["schemas"]["Counts"];
+            /** Expired */
+            expired: boolean;
+            /** Found */
+            found: boolean;
+            /** Grade */
+            grade: number | null;
+            olympiad: components["schemas"]["DiplomaOlympiad"] | null;
+            profile: components["schemas"]["DiplomaProfile"] | null;
+            /** Role */
+            role: string;
+            /** Spec */
+            spec: string;
+            /** Year */
+            year: number | null;
+        };
         /** FallbackHit */
         FallbackHit: {
             /** Benefit Type */
@@ -292,6 +501,47 @@ export interface components {
             role: string;
             /** Via */
             via: string;
+        };
+        /**
+         * MaxConfig
+         * @description Что сайту нужно знать о мини-приложении MAX.
+         */
+        MaxConfig: {
+            /** Bot Name */
+            bot_name: string | null;
+            /** Campaign Year */
+            campaign_year: number;
+            /** Enabled */
+            enabled: boolean;
+            /** Valid Years */
+            valid_years: number[];
+        };
+        /** MaxProfile */
+        MaxProfile: {
+            /** First Name */
+            first_name: string;
+            /** Id */
+            id: number;
+            /** Last Name */
+            last_name: string;
+            /** Photo Url */
+            photo_url: string;
+            /** Username */
+            username: string;
+        };
+        /** MyDiplomas */
+        MyDiplomas: {
+            /** Diplomas */
+            diplomas: components["schemas"]["SavedDiploma"][];
+            user: components["schemas"]["MaxProfile"];
+        };
+        /** MyDiplomasUpdate */
+        MyDiplomasUpdate: {
+            /**
+             * Diplomas
+             * @description Строки дипломов, например «высшаяпроба.математика.w.11.2025»
+             */
+            diplomas: string[];
         };
         /** Note */
         Note: {
@@ -547,6 +797,29 @@ export interface components {
             /** Items */
             items: components["schemas"]["RegionGroup"][];
         };
+        /**
+         * Rejected
+         * @description Строки олимпиад дипломов, которые не подошли по условиям вуза (без учёта профиля).
+         */
+        Rejected: {
+            /** Grade */
+            grade: number;
+            /** Role */
+            role: number;
+            /** Team */
+            team: number;
+            /** Year */
+            year: number;
+        };
+        /** SavedDiploma */
+        SavedDiploma: {
+            /** Olympiad Name */
+            olympiad_name: string;
+            /** Profile Name */
+            profile_name: string;
+            /** Spec */
+            spec: string;
+        };
         /** SheetLog */
         SheetLog: {
             /** Benefits */
@@ -800,6 +1073,144 @@ export interface operations {
                     "application/json": {
                         [key: string]: string;
                     };
+                };
+            };
+        };
+    };
+    match_v1_achievements_match_get: {
+        parameters: {
+            query: {
+                /** @description Диплом: ключ олимпиады, ключ профиля (- — не указан), степень (w — победитель, p — призёр), класс (0 — не указан) и год олимпиады (0 — не указан), например «высшаяпроба.математика.w.11.2025». Ключи отдаёт /v1/achievements/olympiads/{id}. */
+                diploma: string[];
+                benefit_type?: string | null;
+                university_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AchievementsMatch"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    diploma_form_v1_achievements_olympiads__olympiad_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                olympiad_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DiplomaForm"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    max_config_v1_max_config_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaxConfig"];
+                };
+            };
+        };
+    };
+    my_diplomas_v1_me_diplomas_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyDiplomas"];
+                };
+            };
+        };
+    };
+    save_my_diplomas_v1_me_diplomas_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MyDiplomasUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyDiplomas"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
