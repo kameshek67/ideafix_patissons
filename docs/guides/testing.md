@@ -51,6 +51,7 @@ npm test --workspace olymp-web -- DiplomasTab
 | `web` | `npm ci`, актуальность клиента API, tsc, vitest, `next build` |
 | `tasks` | `scripts/tasks.py check` |
 | `secrets` | gitleaks по всей истории |
+| `deploy` (отдельный workflow) | после зелёного `ci` на `main` — выкатка на стенд и проверка по https |
 
 Красный CI блокирует слияние. Если CI падает не из-за твоих изменений — сообщи в чате
 команды и заведи задачу, не чини молча в чужой ветке.

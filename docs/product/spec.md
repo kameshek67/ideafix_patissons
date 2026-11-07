@@ -115,4 +115,4 @@
 | Провайдер LLM (OpenRouter free / локальная модель) | [ADR 0010](../adr/0010-llm-gateway.md), F-02 |
 | Где учитель хранит данные класса и как получить согласие учеников | F-04 |
 | Источник данных по ИД (медаль, ГТО) | F-05 |
-| Хостинг для демо: туннель или свой сервер с доменом | [runbooks/deploy.md](../runbooks/deploy.md) |
+| ~~Хостинг для демо~~ — решено: https://ideafix.patissons.tech, автодеплой `main` | [runbooks/deploy.md](../runbooks/deploy.md) |

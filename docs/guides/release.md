@@ -2,8 +2,11 @@
 
 ## Релиз (dev → main)
 
+> **Слияние в `main` сразу выкатывается на https://ideafix.patissons.tech** (после зелёного `ci`,
+> см. [runbooks/deploy.md](../runbooks/deploy.md)). Отдельного стенда для `dev` нет.
+
 1. Убедись, что `dev` зелёный в CI и демо-сценарий ([spec.md §8](../product/spec.md)) проходит
-   на стенде из `dev`.
+   на локальном Docker-стеке из `dev` (`docker compose up --build -d`).
 2. `gh pr create --base main --head dev --title "Релиз v0.2.0"`; в описании — задачи релиза
    (`just tasks` → «Сделано»), известные проблемы.
 3. Слияние — **merge commit** (не squash), чтобы история `dev` сохранилась.
@@ -13,7 +16,8 @@
    git tag -a v0.2.0 -m "Релиз v0.2.0: «Поделиться», помощник, баллы ЕГЭ"
    git push origin v0.2.0
    ```
-5. Обнови стенд по [runbooks/deploy.md](../runbooks/deploy.md).
+5. Стенд обновится сам: дождись зелёного job `deploy` и пройди проверку из
+   [runbooks/deploy.md](../runbooks/deploy.md). Если что-то сломалось — откат там же.
 
 ## Hotfix (срочное исправление демо)
 

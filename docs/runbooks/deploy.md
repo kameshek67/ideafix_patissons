@@ -1,32 +1,48 @@
-# Развёртывание демо-стенда
+# Развёртывание
 
-Стенд всегда собирается из `main` (или тега релиза). Постоянный стенд — задача T-006; пока
-доступны два способа.
+## Основной стенд — https://ideafix.patissons.tech
 
-## Вариант 1. Свой сервер с доменом (постоянный адрес)
+**Выкатка автоматическая:** каждый коммит в `main`, на котором прошёл `ci`, собирается в образы
+(GHCR) и выкатывается на сервер workflow `.github/workflows/deploy.yml`. Если сайт не ответил за
+3 минуты, поднимается предыдущий релиз. Отсюда главное правило: **слияние в `main` = выкатка на
+прод**, поэтому в `main` попадают только релизные PR из `dev` и hotfix'ы ([release.md](../guides/release.md)).
 
-Требования: Linux-сервер с Docker, домен с A-записью на сервер, открытые порты 80 и 443.
+Устройство, секреты, работа на сервере, откат, бэкапы — [infra/deploy/README.md](../../infra/deploy/README.md).
+Коротко:
+
+| Что | Где / как |
+|---|---|
+| Секреты стенда (токен бота MAX, `COMPOSE_PROFILES`) | `/opt/ideafix/shared/.env` на сервере |
+| Файлы не из git (сертификат Минцифры) | `/opt/ideafix/shared/files/<путь в репозитории>` |
+| Логи, статус | `ideafix logs -f --tail 100`, `ideafix ps` |
+| Откат | Actions → deploy → старый запуск → Re-run, или `remote.sh <sha> --no-pull` |
+| Ручная выкатка последнего `main` | Actions → deploy → Run workflow |
+| Дампы PostgreSQL | `/var/backups/ideafix`, ежедневно в 04:30, 14 дней |
+| Мониторинг | Telegram-бот Sentry Patissons |
+
+HTTPS даёт Caddy на хосте; профили `https` и `tunnel` из `docker-compose.yml` на стенде не включать.
+Порты контейнеров на сервере — только `127.0.0.1`.
+
+### Проверка после выкатки
+
+- [ ] Job `deploy` зелёный (он сам проверяет сайт снаружи по https).
+- [ ] Вкладки «Вузы», «Олимпиады», «Дипломы» работают.
+- [ ] https://ideafix.patissons.tech/api/v1/max/config → `"enabled": true`.
+- [ ] Из MAX: бот → «Открыть» → «Дипломы» → «Сохранено в профиле MAX» (в настройках бота
+      указан адрес стенда — [max-setup.md](max-setup.md), шаг 3).
+- [ ] Демо-сценарий из [spec.md §8](../product/spec.md) проходит на телефоне.
+
+### Пересборка базы на стенде
+
+Пока не сделана T-064, пересборка блокирует API примерно на минуту — **не запускать во время показа**.
 
 ```bash
-git clone git@github.com:Raytist/ideafix_patissons.git olymp && cd olymp
-git checkout v0.2.0                      # или main
-cp .env.example .env                     # впиши OLYMP_DOMAIN, OLYMP_MAX_BOT_TOKEN, OLYMP_MAX_BOT_NAME
-docker compose --profile https --profile bot up --build -d
-docker compose logs -f migrate           # первая сборка базы ~1 мин
-curl -fsS https://$OLYMP_DOMAIN/api/v1/stats | head -c 200
+ideafix run --rm migrate olymp-ingest
 ```
 
-Обновление:
+## Запасной вариант — ноутбук + Cloudflare quick tunnel
 
-```bash
-git fetch --tags && git checkout v0.2.1
-docker compose --profile https --profile bot up --build -d
-```
-
-Пересобрать базу (после изменения сборки или XLSX): `docker compose run --rm migrate olymp-ingest`.
-Пользовательские данные (дипломы, ссылки) при этом сохраняются.
-
-## Вариант 2. Ноутбук + Cloudflare quick tunnel (без сервера)
+Если стенд недоступен на демо:
 
 ```bash
 docker compose --profile tunnel --profile bot up --build -d
@@ -34,21 +50,5 @@ docker compose logs tunnel | grep trycloudflare.com      # Windows: | findstr tr
 ```
 
 Адрес меняется при каждом перезапуске туннеля — вставь новый в настройки бота
-([max-setup.md](max-setup.md), шаг 3). Ноутбук не должен засыпать.
-
-## Проверка после развёртывания
-
-- [ ] `https://<адрес>/` открывается, вкладки «Вузы», «Олимпиады», «Дипломы» работают.
-- [ ] `https://<адрес>/api/v1/max/config` → `"enabled": true`.
-- [ ] Из MAX: бот → «Открыть» → «Дипломы» → «Сохранено в профиле MAX».
-- [ ] Демо-сценарий из [spec.md §8](../product/spec.md) проходит на телефоне.
-
-## Откат
-
-```bash
-git checkout v<предыдущая>
-docker compose --profile https --profile bot up --build -d
-```
-
-Миграции только добавляют таблицы и колонки, поэтому откат кода на одну версию назад безопасен.
-Миграции с удалением данных требуют отдельного плана отката в PR.
+([max-setup.md](max-setup.md), шаг 3). Quick tunnel не поддерживает SSE (потоковые ответы
+помощника F-02). Ноутбук не должен засыпать.

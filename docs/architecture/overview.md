@@ -69,8 +69,9 @@
 |---|---|---|
 | Разработка | `just up` (инфраструктура в Docker) + `just api` + `just web` | сайт :3000, API :8000 |
 | Весь стек локально | `docker compose up --build -d` | сайт :8080, API :8000 |
-| Демо в MAX без сервера | профиль `tunnel` (Cloudflare quick tunnel) | `https://*.trycloudflare.com` |
-| Свой сервер | профиль `https` (Caddy + Let's Encrypt), `OLYMP_DOMAIN` | `https://<домен>` |
+| **Стенд (прод)** | автодеплой `main` после зелёного `ci` ([infra/deploy](../../infra/deploy/README.md)) | https://ideafix.patissons.tech |
+| Запасное демо без сервера | профиль `tunnel` (Cloudflare quick tunnel) | `https://*.trycloudflare.com` |
+| Другой свой сервер | профиль `https` (Caddy + Let's Encrypt), `OLYMP_DOMAIN` | `https://<домен>` |
 
 ## Наблюдаемость
 
