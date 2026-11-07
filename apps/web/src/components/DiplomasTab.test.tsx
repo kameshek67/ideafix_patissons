@@ -59,6 +59,8 @@ function matchResponse(spec: string) {
 const requests: URL[] = [];
 
 beforeEach(() => {
+  // онбординг первого запуска проверяется в Onboarding.test.tsx
+  localStorage.setItem("olymp.onboarding.v1", "done");
   requests.length = 0;
   vi.stubGlobal(
     "fetch",

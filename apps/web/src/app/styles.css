@@ -356,6 +356,12 @@ mark { background: #F4DCFE; color: inherit; padding: 0 2px; border-radius: 3px; 
 .btn-primary:hover:not(:disabled) { background: #A800DB; }
 .btn-primary:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 3px 10px rgba(188,0,245,.2); }
 .btn-primary:disabled { background: var(--soft); border-color: #EBCBF7; color: var(--muted); box-shadow: none; cursor: default; }
+.btn-secondary {
+  display: inline-flex; align-items: center; justify-content: center; height: 50px; padding: 0 28px;
+  border-radius: 30px; border: 1px solid #EBCBF7; background: var(--soft); color: var(--brand-ink);
+  font-size: 16px; font-weight: 500; transition: border-color .15s, background .15s;
+}
+.btn-secondary:hover { border-color: var(--brand); background: #fff; }
 .btn-danger { display: block; width: 100%; height: 44px; margin-top: 6px; border-radius: 30px; font-size: 15px; color: #B42318; }
 .btn-danger:hover { background: #FFF1F0; }
 
@@ -387,6 +393,60 @@ mark { background: #F4DCFE; color: inherit; padding: 0 2px; border-radius: 3px; 
 }
 .picked-olympiad .chip { background: #fff; border-color: var(--hair); color: var(--brand-ink); }
 .suggest-inline { margin-top: 8px; border: 1px solid #F0E1F6; border-radius: 15px; overflow: hidden auto; max-height: 300px; }
+/* ---------- онбординг (первый запуск) ----------
+   Как в Figma «03 · Онбординг · 430»: текст и иллюстрация — на фоне приложения, прогресс
+   и кнопки — в белой шторке снизу. На телефоне — во весь экран, на компьютере — карточка 430. */
+.onboarding { position: fixed; inset: 0; z-index: 50; display: flex; }
+.onboarding-card {
+  position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden;
+  background: linear-gradient(168deg, #fff 64%, rgba(188,0,245,.5) 100%), #fff;
+}
+@media (min-width: 640px) {
+  .onboarding {
+    align-items: center; justify-content: center;
+    background: rgba(42,0,56,.4); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  }
+  .onboarding-card { width: 430px; height: min(932px, calc(100dvh - 48px)); border-radius: 32px; box-shadow: 0 24px 48px rgba(89,0,120,.10); }
+}
+.onboarding-top {
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  height: 56px; margin-top: calc(8px + env(safe-area-inset-top)); padding: 0 16px;
+}
+.onboarding-step { font-size: 13px; line-height: 18px; color: var(--muted); }
+.onboarding-skip { padding: 8px 0 8px 12px; font-size: 15px; line-height: 20px; font-weight: 500; color: var(--brand-ink); }
+/* экраны — лента с прокруткой по слайдам: свайп работает сам, без библиотек */
+.onboarding-track {
+  flex: 1 1 0; min-height: 0; display: flex; overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
+}
+.onboarding-track::-webkit-scrollbar { display: none; }
+.onboarding-slide {
+  flex: 0 0 100%; min-width: 0; display: flex; flex-direction: column; padding: 8px 16px 0;
+  scroll-snap-align: start; scroll-snap-stop: always;
+}
+.onboarding-title { display: flex; flex-direction: column; font-size: 32px; line-height: 40px; font-weight: 500; letter-spacing: -.01em; }
+.onboarding-body { margin-top: 12px; font-size: 16px; line-height: 22px; color: var(--muted); }
+.onboarding-art { flex: 1 1 0; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.onboarding-collage { position: relative; width: 372px; height: 330px; }
+.onboarding-diploma {
+  position: absolute; display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  padding: 14px 16px; text-align: left; background: #fff; border: 1px solid var(--hair);
+  border-radius: 15px; box-shadow: 0 12px 28px rgba(89,0,120,.12);
+}
+.onboarding-diploma .uni-row-badges { margin-top: 6px; }
+.onboarding-diploma.is-front { left: 8px; top: 96px; width: 320px; transform: rotate(-3deg); transform-origin: 0 0; }
+.onboarding-diploma.is-back { left: 58px; top: 196px; width: 300px; transform: rotate(4deg); transform-origin: 0 0; opacity: .92; }
+.onboarding-cup { position: absolute; left: 236px; top: 0; }
+.onboarding-sheet {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 20px;
+  padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+  background: #fff; border-radius: 30px 30px 0 0; box-shadow: 0 -8px 24px rgba(89,0,120,.08);
+}
+.onboarding-dots { display: flex; gap: 6px; }
+.onboarding-dots span { width: 8px; height: 8px; border-radius: 4px; background: #EBCBF7; transition: width .2s, background-color .2s; }
+.onboarding-dots span.is-active { width: 24px; background: var(--brand); }
+.onboarding-actions { width: 100%; display: grid; gap: 8px; }
+
 /* Мини-приложение MAX на телефоне (атрибут data-max ставит MaxProvider): встроенный браузер
    не скачивает файлы по blob-ссылкам, поэтому выгрузку CSV там не показываем */
 html[data-max="ios"] .table-toolbar .chip-ghost,

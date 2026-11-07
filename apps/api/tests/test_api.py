@@ -128,7 +128,9 @@ async def test_validation_error_is_problem_json(client: httpx.AsyncClient) -> No
 
 
 async def test_rate_limit(built_database_url: str) -> None:
-    app = create_app(Settings(database_url=built_database_url, rate_limit_requests=2))
+    app = create_app(
+        Settings(_env_file=None, database_url=built_database_url, rate_limit_requests=2)
+    )
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://t") as c:
         codes = [(await c.get("/v1/regions")).status_code for _ in range(3)]
         assert (await c.get("/healthz")).status_code == 200  # служебные пути без лимита
@@ -137,6 +139,6 @@ async def test_rate_limit(built_database_url: str) -> None:
 
 
 async def test_without_database() -> None:
-    app = create_app(Settings(database_url=None))
+    app = create_app(Settings(_env_file=None, database_url=None))
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://t") as c:
         assert (await c.get("/v1/stats")).status_code == 503

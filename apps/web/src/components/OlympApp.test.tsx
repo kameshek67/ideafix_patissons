@@ -62,6 +62,8 @@ const responses: Record<string, unknown> = {
 };
 
 beforeEach(() => {
+  // онбординг первого запуска проверяется в Onboarding.test.tsx
+  localStorage.setItem("olymp.onboarding.v1", "done");
   vi.stubGlobal(
     "fetch",
     vi.fn(async (input: Request | string) => {

@@ -22,7 +22,8 @@ import {
 } from "@/lib/api";
 import { type DiplomaEntry, upsertDiploma } from "@/lib/diplomas";
 import { fmt, place, plural } from "@/lib/format";
-import { haptic } from "@/lib/max";
+import { haptic, whenMax } from "@/lib/max";
+import { shouldShowOnboarding } from "@/lib/onboarding";
 import { AboutModal } from "./AboutModal";
 import { Combo, type ComboItem } from "./Combo";
 import { TablesContext, useTablesStore } from "./DataTable";
@@ -31,6 +32,7 @@ import { DiplomasView } from "./DiplomasView";
 import { IconClose, IconHeroArrow, IconMore, IconSearch } from "./icons";
 import { useMax, useMaxBackButton } from "./MaxProvider";
 import { OlympiadResults, UniversityBenefits } from "./OlympiadView";
+import { Onboarding, type OnboardingExit } from "./Onboarding";
 import { ProgramView } from "./ProgramView";
 import { IlluState, LoadError, OLYMP_START, Skeleton, TYPES, UNI_START } from "./ui";
 import { useMyDiplomas } from "./useMyDiplomas";
@@ -353,6 +355,28 @@ export function OlympApp() {
     setSheet(null);
   }
 
+  // ---------------------------------------------------------------- онбординг
+  // при первом запуске; решаем после проверки MAX: по ссылке startapp=… его не показываем
+  const [onboarding, setOnboarding] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    void whenMax().then((app) => {
+      if (alive && shouldShowOnboarding(app, new URL(window.location.href))) setOnboarding(true);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  function finishOnboarding(exit: OnboardingExit) {
+    setOnboarding(false);
+    if (exit === "add-diploma") {
+      setTab("diplomas");
+      setSheet({ index: null, olympiadId: null });
+    } else setTab("uni");
+    window.scrollTo({ top: 0 });
+  }
+
   // ---------------------------------------------------------------- кнопка «Назад» в MAX
   useMaxBackButton(aboutOpen ? () => setAboutOpen(false) : null);
   useMaxBackButton(tab === "olymp" && olympState.kind === "university" ? backToList : null);
@@ -646,6 +670,9 @@ export function OlympApp() {
           ) : null}
         </section>
       </main>
+
+      {/* ОНБОРДИНГ — первый запуск */}
+      {onboarding ? <Onboarding onFinish={finishOnboarding} /> : null}
 
       {/* ФОРМА ДИПЛОМА */}
       {sheet ? (
