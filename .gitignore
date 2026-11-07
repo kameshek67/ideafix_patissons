@@ -28,3 +28,4 @@ data/*.db-shm
 
 # PDF презентации генерируется из .pptx командой build_deck.py + LibreOffice
 presentation/*.pdf
+

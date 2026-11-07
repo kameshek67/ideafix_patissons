@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Задачи команды
+    url: https://github.com/Raytist/ideafix_patissons/tree/dev/docs/tasks
+    about: Задачи разработки ведутся файлами в docs/tasks (см. docs/tasks/README.md)
