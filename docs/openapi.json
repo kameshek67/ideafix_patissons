@@ -1,6 +1,166 @@
 {
   "components": {
     "schemas": {
+      "AchievementProgram": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "faculty_or_direction": {
+            "title": "Faculty Or Direction",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "profile_name": {
+            "title": "Profile Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "faculty_or_direction",
+          "profile_name",
+          "code"
+        ],
+        "title": "AchievementProgram",
+        "type": "object"
+      },
+      "AchievementRow": {
+        "properties": {
+          "benefit": {
+            "$ref": "#/components/schemas/Benefit"
+          },
+          "diplomas": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Diplomas",
+            "type": "array"
+          },
+          "fit": {
+            "title": "Fit",
+            "type": "string"
+          },
+          "program": {
+            "$ref": "#/components/schemas/AchievementProgram"
+          }
+        },
+        "required": [
+          "program",
+          "benefit",
+          "diplomas",
+          "fit"
+        ],
+        "title": "AchievementRow",
+        "type": "object"
+      },
+      "AchievementUniversity": {
+        "properties": {
+          "bvi": {
+            "title": "Bvi",
+            "type": "integer"
+          },
+          "check": {
+            "title": "Check",
+            "type": "integer"
+          },
+          "other": {
+            "title": "Other",
+            "type": "integer"
+          },
+          "programs": {
+            "title": "Programs",
+            "type": "integer"
+          },
+          "sto": {
+            "title": "Sto",
+            "type": "integer"
+          },
+          "university": {
+            "$ref": "#/components/schemas/UniversityInfo"
+          }
+        },
+        "required": [
+          "university",
+          "programs",
+          "bvi",
+          "sto",
+          "other",
+          "check"
+        ],
+        "title": "AchievementUniversity",
+        "type": "object"
+      },
+      "AchievementsMatch": {
+        "description": "Где дипломы дают льготы: итоги, список вузов, а с university_id — строки вуза.",
+        "properties": {
+          "campaign_year": {
+            "title": "Campaign Year",
+            "type": "integer"
+          },
+          "diplomas": {
+            "items": {
+              "$ref": "#/components/schemas/DiplomaResult"
+            },
+            "title": "Diplomas",
+            "type": "array"
+          },
+          "rejected": {
+            "$ref": "#/components/schemas/Rejected"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/AchievementUniversity"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "rows": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/AchievementRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/Counts"
+          },
+          "university": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UniversityInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "valid_years": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Valid Years",
+            "type": "array"
+          }
+        },
+        "required": [
+          "diplomas",
+          "totals",
+          "rejected",
+          "results",
+          "university",
+          "rows",
+          "campaign_year",
+          "valid_years"
+        ],
+        "title": "AchievementsMatch",
+        "type": "object"
+      },
       "Benefit": {
         "properties": {
           "award_subject": {
@@ -144,6 +304,200 @@
         "title": "BenefitGroup",
         "type": "object"
       },
+      "Counts": {
+        "description": "Сколько направлений дают льготу; каждое считается по лучшей льготе.",
+        "properties": {
+          "bvi": {
+            "title": "Bvi",
+            "type": "integer"
+          },
+          "other": {
+            "title": "Other",
+            "type": "integer"
+          },
+          "programs": {
+            "title": "Programs",
+            "type": "integer"
+          },
+          "sto": {
+            "title": "Sto",
+            "type": "integer"
+          },
+          "universities": {
+            "title": "Universities",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "universities",
+          "programs",
+          "bvi",
+          "sto",
+          "other"
+        ],
+        "title": "Counts",
+        "type": "object"
+      },
+      "DiplomaForm": {
+        "description": "Олимпиада для формы диплома: ключ и профили, которые можно выбрать.",
+        "properties": {
+          "olympiad": {
+            "$ref": "#/components/schemas/DiplomaOlympiad"
+          },
+          "profiles": {
+            "items": {
+              "$ref": "#/components/schemas/DiplomaProfile"
+            },
+            "title": "Profiles",
+            "type": "array"
+          }
+        },
+        "required": [
+          "olympiad",
+          "profiles"
+        ],
+        "title": "DiplomaForm",
+        "type": "object"
+      },
+      "DiplomaOlympiad": {
+        "properties": {
+          "canonical_name": {
+            "title": "Canonical Name",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "short_name",
+          "canonical_name"
+        ],
+        "title": "DiplomaOlympiad",
+        "type": "object"
+      },
+      "DiplomaProfile": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "level": {
+            "title": "Level",
+            "type": "string"
+          },
+          "mentions": {
+            "title": "Mentions",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "name",
+          "level",
+          "mentions"
+        ],
+        "title": "DiplomaProfile",
+        "type": "object"
+      },
+      "DiplomaResult": {
+        "properties": {
+          "counts": {
+            "$ref": "#/components/schemas/Counts"
+          },
+          "expired": {
+            "title": "Expired",
+            "type": "boolean"
+          },
+          "found": {
+            "title": "Found",
+            "type": "boolean"
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grade"
+          },
+          "olympiad": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DiplomaOlympiad"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "profile": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DiplomaProfile"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "spec": {
+            "title": "Spec",
+            "type": "string"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          }
+        },
+        "required": [
+          "spec",
+          "found",
+          "olympiad",
+          "profile",
+          "role",
+          "grade",
+          "year",
+          "expired",
+          "counts"
+        ],
+        "title": "DiplomaResult",
+        "type": "object"
+      },
       "FallbackHit": {
         "properties": {
           "benefit_type": {
@@ -234,6 +588,116 @@
           "via"
         ],
         "title": "Matched",
+        "type": "object"
+      },
+      "MaxConfig": {
+        "description": "Что сайту нужно знать о мини-приложении MAX.",
+        "properties": {
+          "bot_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bot Name"
+          },
+          "campaign_year": {
+            "title": "Campaign Year",
+            "type": "integer"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "valid_years": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Valid Years",
+            "type": "array"
+          }
+        },
+        "required": [
+          "enabled",
+          "bot_name",
+          "campaign_year",
+          "valid_years"
+        ],
+        "title": "MaxConfig",
+        "type": "object"
+      },
+      "MaxProfile": {
+        "properties": {
+          "first_name": {
+            "title": "First Name",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "last_name": {
+            "title": "Last Name",
+            "type": "string"
+          },
+          "photo_url": {
+            "title": "Photo Url",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "first_name",
+          "last_name",
+          "username",
+          "photo_url"
+        ],
+        "title": "MaxProfile",
+        "type": "object"
+      },
+      "MyDiplomas": {
+        "properties": {
+          "diplomas": {
+            "items": {
+              "$ref": "#/components/schemas/SavedDiploma"
+            },
+            "title": "Diplomas",
+            "type": "array"
+          },
+          "user": {
+            "$ref": "#/components/schemas/MaxProfile"
+          }
+        },
+        "required": [
+          "user",
+          "diplomas"
+        ],
+        "title": "MyDiplomas",
+        "type": "object"
+      },
+      "MyDiplomasUpdate": {
+        "properties": {
+          "diplomas": {
+            "description": "Строки дипломов, например «высшаяпроба.математика.w.11.2025»",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Diplomas",
+            "type": "array"
+          }
+        },
+        "required": [
+          "diplomas"
+        ],
+        "title": "MyDiplomasUpdate",
         "type": "object"
       },
       "Note": {
@@ -944,6 +1408,58 @@
         "title": "Regions",
         "type": "object"
       },
+      "Rejected": {
+        "description": "Строки олимпиад дипломов, которые не подошли по условиям вуза (без учёта профиля).",
+        "properties": {
+          "grade": {
+            "title": "Grade",
+            "type": "integer"
+          },
+          "role": {
+            "title": "Role",
+            "type": "integer"
+          },
+          "team": {
+            "title": "Team",
+            "type": "integer"
+          },
+          "year": {
+            "title": "Year",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "role",
+          "grade",
+          "year",
+          "team"
+        ],
+        "title": "Rejected",
+        "type": "object"
+      },
+      "SavedDiploma": {
+        "properties": {
+          "olympiad_name": {
+            "title": "Olympiad Name",
+            "type": "string"
+          },
+          "profile_name": {
+            "title": "Profile Name",
+            "type": "string"
+          },
+          "spec": {
+            "title": "Spec",
+            "type": "string"
+          }
+        },
+        "required": [
+          "spec",
+          "olympiad_name",
+          "profile_name"
+        ],
+        "title": "SavedDiploma",
+        "type": "object"
+      },
       "SheetLog": {
         "properties": {
           "benefits": {
@@ -1533,6 +2049,213 @@
         "summary": "Readyz",
         "tags": [
           "ops"
+        ]
+      }
+    },
+    "/v1/achievements/match": {
+      "get": {
+        "description": "«Мои дипломы»: где дипломы дают льготы с учётом условий вуза — степени диплома,\nкласса и года олимпиады. Список вузов, а с university_id — строки выбранного вуза.",
+        "operationId": "match_v1_achievements_match_get",
+        "parameters": [
+          {
+            "description": "Диплом: ключ олимпиады, ключ профиля (- — не указан), степень (w — победитель, p — призёр), класс (0 — не указан) и год олимпиады (0 — не указан), например «высшаяпроба.математика.w.11.2025». Ключи отдаёт /v1/achievements/olympiads/{id}.",
+            "in": "query",
+            "name": "diploma",
+            "required": true,
+            "schema": {
+              "description": "Диплом: ключ олимпиады, ключ профиля (- — не указан), степень (w — победитель, p — призёр), класс (0 — не указан) и год олимпиады (0 — не указан), например «высшаяпроба.математика.w.11.2025». Ключи отдаёт /v1/achievements/olympiads/{id}.",
+              "items": {
+                "type": "string"
+              },
+              "title": "Diploma",
+              "type": "array"
+            }
+          },
+          {
+            "in": "query",
+            "name": "benefit_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Benefit Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "university_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "University Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AchievementsMatch"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Match",
+        "tags": [
+          "achievements"
+        ]
+      }
+    },
+    "/v1/achievements/olympiads/{olympiad_id}": {
+      "get": {
+        "description": "Олимпиада для формы диплома: ключ и профили без мусора разбора таблиц.",
+        "operationId": "diploma_form_v1_achievements_olympiads__olympiad_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "olympiad_id",
+            "required": true,
+            "schema": {
+              "title": "Olympiad Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiplomaForm"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Diploma Form",
+        "tags": [
+          "achievements"
+        ]
+      }
+    },
+    "/v1/max/config": {
+      "get": {
+        "description": "Настроен ли вход через MAX и как называется бот мини-приложения.",
+        "operationId": "max_config_v1_max_config_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaxConfig"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Max Config",
+        "tags": [
+          "achievements"
+        ]
+      }
+    },
+    "/v1/me/diplomas": {
+      "get": {
+        "description": "Дипломы пользователя MAX. Нужен заголовок X-Max-Init-Data — данные запуска\nмини-приложения, подписанные токеном бота.",
+        "operationId": "my_diplomas_v1_me_diplomas_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyDiplomas"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "My Diplomas",
+        "tags": [
+          "achievements"
+        ]
+      },
+      "put": {
+        "description": "Сохраняет список дипломов пользователя MAX целиком.",
+        "operationId": "save_my_diplomas_v1_me_diplomas_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MyDiplomasUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyDiplomas"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save My Diplomas",
+        "tags": [
+          "achievements"
         ]
       }
     },

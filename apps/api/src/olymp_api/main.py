@@ -51,7 +51,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession) if engine else None
     )
 
-    # API только читает данные: разрешаем GET с любого origin, как в прототипе
+    # Данные каталога разрешаем читать (GET) с любого origin, как в прототипе. Запись
+    # (PUT /v1/me/diplomas) — только с самого сайта: чужой origin не пройдёт проверку CORS.
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -110,10 +111,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(503, "База ещё не собрана: запустите olymp-ingest")
         return {"status": "ready", "built_at": str(built)}
 
+    from .modules.achievements.router import router as achievements_router
     from .modules.catalog.router import router as catalog_router
     from .modules.search.router import router as search_router
 
-    for router in (catalog_router, search_router):
+    for router in (catalog_router, search_router, achievements_router):
         app.include_router(router, prefix="/v1")
     return app
 

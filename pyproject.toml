@@ -61,7 +61,11 @@ root_packages = ["olymp_api", "olymp_domain", "olymp_db", "olymp_workers"]
 [[tool.importlinter.contracts]]
 name = "Модули API не лезут во внутренности друг друга"
 type = "independence"
-modules = ["olymp_api.modules.catalog", "olymp_api.modules.search"]
+modules = [
+    "olymp_api.modules.achievements",
+    "olymp_api.modules.catalog",
+    "olymp_api.modules.search",
+]
 
 [[tool.importlinter.contracts]]
 name = "Домен не зависит от БД, API и воркеров"
