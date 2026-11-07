@@ -1,7 +1,7 @@
 ---
 id: T-080
 title: Добавить онбординг при первом запуске (3 экрана по макету из Figma)
-status: review
+status: done
 priority: P1
 area: web
 estimate: M
@@ -9,7 +9,7 @@ spec: ""
 depends: []
 owner: Raytist
 branch: feat/T-080-onboarding
-pr: "https://github.com/Raytist/ideafix_patissons/pull/4"
+pr: https://github.com/Raytist/ideafix_patissons/pull/4
 updated: 2026-11-07
 ---
 
@@ -54,3 +54,4 @@ updated: 2026-11-07
   десктоп, свайпы, `just max-link` (кнопка «Назад», `--start diplomas`), сценарий сверки дизайна
   (31 состояние) — остальные экраны совпадают с прототипом. Не проверено в самом MAX: адрес
   мини-приложения к боту ещё не привязан.
+- 2026-11-07 — Raytist — PR #4 слит в `dev` (squash), CI зелёный; выходит в релизе v0.1.1.
