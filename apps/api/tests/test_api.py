@@ -142,3 +142,14 @@ async def test_without_database() -> None:
     app = create_app(Settings(_env_file=None, database_url=None))
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://t") as c:
         assert (await c.get("/v1/stats")).status_code == 503
+
+
+async def test_table_rows_separate_text_rules_from_tables(client: httpx.AsyncClient) -> None:
+    """У МФТИ в базе только текстовое правило: `table_rows` = 0, чтобы интерфейс не писал «0 БВИ»."""
+    items = {u["short_name"]: u for u in (await client.get("/v1/universities")).json()["items"]}
+    assert items["МФТИ"]["table_rows"] == 0 and items["МФТИ"]["benefits"] > 0
+    assert items["НИУ ВШЭ (Москва)"]["table_rows"] > 1000
+    programs = (
+        await client.get("/v1/programs", params={"university_id": items["МФТИ"]["id"]})
+    ).json()
+    assert programs["items"] and all(p["table_rows"] == 0 for p in programs["items"])

@@ -952,6 +952,8 @@ export interface components {
             source_url: string;
             /** Sto */
             sto: number;
+            /** Table Rows */
+            table_rows: number;
             /** University */
             university: string;
             /** University Id */
@@ -1348,6 +1350,8 @@ export interface components {
             short_name: string;
             /** Sto */
             sto: number;
+            /** Table Rows */
+            table_rows: number;
         };
         /** UniversityResult */
         UniversityResult: {
