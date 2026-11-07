@@ -148,10 +148,22 @@ export function Onboarding({ onFinish }: { onFinish: (exit: OnboardingExit) => v
     onFinish(exit);
   }
 
+  // плавная прокрутка к экрану после «Далее»: пока она идёт, промежуточные положения ленты
+  // шаг не меняют — иначе в начале пути шаг откатывался назад, и второе быстрое «Далее»
+  // считалось от прежнего экрана
+  const scrolling = useRef<{ target: number; timer?: ReturnType<typeof setTimeout> } | null>(null);
+  useEffect(() => () => clearTimeout(scrolling.current?.timer), []);
+
   function go(next: number) {
     const target = Math.max(0, Math.min(SLIDES.length - 1, next));
     const el = track.current;
-    if (el && typeof el.scrollTo === "function") el.scrollTo({ left: target * el.clientWidth, behavior: "smooth" });
+    if (el && typeof el.scrollTo === "function") {
+      clearTimeout(scrolling.current?.timer);
+      const left = target * el.clientWidth;
+      // уже на месте — прокрутки и события scroll не будет
+      scrolling.current = Math.abs(el.scrollLeft - left) < 1 ? null : { target };
+      el.scrollTo({ left, behavior: "smooth" });
+    }
     setStep(target);
     haptic(app, "select");
   }
@@ -160,8 +172,23 @@ export function Onboarding({ onFinish }: { onFinish: (exit: OnboardingExit) => v
   function onScroll() {
     const el = track.current;
     if (!el || !el.clientWidth) return;
-    const current = Math.round(el.scrollLeft / el.clientWidth);
-    if (current !== step) setStep(current);
+    const position = el.scrollLeft / el.clientWidth;
+    const pending = scrolling.current;
+    if (pending) {
+      clearTimeout(pending.timer);
+      if (Math.abs(position - pending.target) < 0.01) {
+        scrolling.current = null; // доехали: дальше шаг снова следует за свайпом
+      } else {
+        // прокрутку перехватили пальцем — шаг сверяется с лентой, когда она остановится
+        pending.timer = setTimeout(() => {
+          scrolling.current = null;
+          onScroll();
+        }, 150);
+      }
+      return;
+    }
+    const current = Math.round(position);
+    if (current !== stepRef.current) setStep(current);
   }
 
   // поворот телефона или смена ширины окна: лента остаётся ровно на текущем экране.
