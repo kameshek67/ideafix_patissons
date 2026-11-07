@@ -6,7 +6,7 @@ priority: P0
 area: web
 estimate: L
 spec: docs/specs/F-02-ai-chat.md
-depends: [T-023]
+depends: [T-023, T-062]
 owner: ""
 branch: ""
 pr: ""

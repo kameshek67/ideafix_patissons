@@ -2,7 +2,7 @@
 id: T-006
 title: Постоянный демо-стенд с HTTPS для MAX
 status: todo
-priority: P1
+priority: P0
 area: infra
 estimate: M
 spec: ""

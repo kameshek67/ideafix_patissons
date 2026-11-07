@@ -6,7 +6,7 @@ priority: P0
 area: web
 estimate: M
 spec: docs/specs/F-01-share.md
-depends: [T-011]
+depends: [T-011, T-062]
 owner: ""
 branch: ""
 pr: ""

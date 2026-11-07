@@ -6,7 +6,7 @@ priority: P0
 area: domain
 estimate: M
 spec: docs/specs/F-03-ege-check.md
-depends: []
+depends: [T-073]
 owner: ""
 branch: ""
 pr: ""

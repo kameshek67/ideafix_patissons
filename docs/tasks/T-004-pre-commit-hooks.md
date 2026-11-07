@@ -2,7 +2,7 @@
 id: T-004
 title: Хуки перед коммитом: ruff, format, tsc, проверка задач
 status: todo
-priority: P2
+priority: P1
 area: infra
 estimate: S
 spec: ""

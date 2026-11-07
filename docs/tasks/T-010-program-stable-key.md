@@ -6,7 +6,7 @@ priority: P0
 area: workers
 estimate: S
 spec: docs/specs/F-01-share.md
-depends: []
+depends: [T-073]
 owner: ""
 branch: ""
 pr: ""
