@@ -1,7 +1,7 @@
 ---
 id: T-001
 title: Документация, правила разработки, система задач
-status: review
+status: done
 priority: P0
 area: docs
 estimate: L
@@ -9,7 +9,7 @@ spec: ""
 depends: []
 owner: 34elo
 branch: docs/foundation
-pr: ""
+pr: "#1"
 updated: 2026-11-07
 ---
 
@@ -33,3 +33,4 @@ updated: 2026-11-07
 
 ## Журнал
 - 2026-11-07 — 34elo — main перемотан на feature/my-diplomas, создан dev, архивные теги; написана документация
+- 2026-11-07 — влито в dev (PR #1)

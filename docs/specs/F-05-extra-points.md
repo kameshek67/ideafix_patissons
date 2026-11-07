@@ -22,6 +22,10 @@
    у каждой строки.
 3. Предложить модель данных и экран — дописать это ТЗ до статуса «готово к работе».
 
+## Задачи
+
+T-050 исследование → T-051 данные → T-052 модель и сборка → T-053 API → T-054 интерфейс.
+
 ## Эскиз решения (после исследования)
 - Таблица `individual_achievements(university_id, kind, points, conditions, source_url)`,
   `kind` из справочника (`medal`, `gto_gold`, `essay`, `volunteer`, `olympiad_non_bvi`, …).
