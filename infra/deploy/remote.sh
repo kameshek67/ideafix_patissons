@@ -21,7 +21,7 @@ compose_in() {  # compose_in <каталог релиза> <аргументы d
   local dir=$1 f
   shift
   for f in compose.yaml compose.yml docker-compose.yaml docker-compose.yml; do [ -f "$dir/$f" ] && break; done
-  (cd "$dir" && docker compose -f "$f" -f .deploy/images.json "$@")
+  (cd "$dir" && docker compose -f "$f" -f .deploy/images.yml "$@")
 }
 
 healthy() {
@@ -37,6 +37,8 @@ flock -w 900 9
 
 # секреты и настройки стенда — один файл на все релизы, в git его нет
 ln -sfn "$root/shared/.env" "$rel/.env"
+# /usr/local/bin/ideafix из первой версии setup.sh ищет оверрайд под старым именем
+ln -sfn images.yml "$rel/.deploy/images.json"
 # файлы не из git (сертификат для бота MAX и т. п.): shared/files/<путь> → <релиз>/<путь>
 if [ -d "$root/shared/files" ]; then
   cp -a "$root/shared/files/." "$rel/"
