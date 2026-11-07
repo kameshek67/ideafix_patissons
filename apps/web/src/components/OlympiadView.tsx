@@ -2,6 +2,7 @@
 
 import { type ReactNode, useLayoutEffect, useRef } from "react";
 import { type OlympiadSearch, shareBenefitType, type UniversityInfo } from "@/lib/api";
+import { conditionsLine } from "@/lib/conditions";
 import { codesOf, dash, fmt, place, plural } from "@/lib/format";
 import { olympiadShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
@@ -193,6 +194,7 @@ interface UniversityRow {
   profile: string;
   level: string;
   role: string;
+  grade: string;
   confirm: string;
   derived: boolean;
 }
@@ -216,6 +218,7 @@ function universityRows(data: OlympiadSearch): UniversityRow[] {
           profile: dash(b.matched?.profile || b.olympiad_profile),
           level: dash(b.matched?.level || b.level),
           role: dash(b.winner_role || b.matched?.role),
+          grade: dash(b.grade),
           confirm: [b.confirm_subject, b.min_ege && `≥${b.min_ege}`].filter(Boolean).join(" ") || "—",
           derived: b.derived,
         });
@@ -240,6 +243,9 @@ function universityColumns(openProgram: (id: number) => void): Column<University
             <div className="mt-0.5 text-[11.5px] meta-text cell-clamp-1" title={r.program_profile}>
               {r.program_profile}
             </div>
+          ) : null}
+          {conditionsLine(r) ? (
+            <div className="mt-0.5 text-[11.5px] leading-snug meta-text sm:hidden">{conditionsLine(r)}</div>
           ) : null}
         </>
       ),
