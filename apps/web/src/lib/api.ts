@@ -15,13 +15,30 @@ export type BenefitGroup = Schemas["BenefitGroup"];
 // вне браузера (тесты) не принимает относительные URL.
 const api = apiClient(typeof window === "undefined" ? "/api" : `${window.location.origin}/api`);
 
-/** Ответ openapi-fetch -> данные; ошибка -> исключение «статус текст», как в прототипе. */
+/** Ошибка ответа API: статус нужен, чтобы отличить «сервер лёг» (5xx) от «не нашлось» (4xx). */
+export class ApiError extends Error {
+  constructor(
+    readonly status: number,
+    statusText: string,
+  ) {
+    super(`${status} ${statusText}`);
+  }
+}
+
+/** Ответ openapi-fetch -> данные; ошибка -> ApiError «статус текст», как в прототипе. */
 async function unwrap<T>(p: Promise<{ data?: T; error?: unknown; response: Response }>): Promise<T> {
   const { data, response } = await p;
   if (!response.ok || data === undefined) {
-    throw new Error(`${response.status} ${response.statusText}`);
+    throw new ApiError(response.status, response.statusText);
   }
   return data;
+}
+
+/** Текст ошибки загрузки для школьника: без кодов, адресов и слов «бэкенд» и «сборка базы». */
+export function friendlyError(e: unknown): string {
+  if (e instanceof ApiError && e.status >= 500) return "Сервер сейчас не отвечает. Попробуй ещё раз через минуту.";
+  if (e instanceof ApiError) return "Не получилось загрузить данные. Попробуй ещё раз.";
+  return "Нет связи с сервером. Проверь интернет и попробуй ещё раз.";
 }
 
 
