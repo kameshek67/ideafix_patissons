@@ -24,7 +24,10 @@ export interface MaxWebApp {
   close(): void;
   openLink(url: string): void;
   openMaxLink(url: string): void;
+  /** экран «поделиться» внутри MAX — выбор чата; открывается только в ответ на нажатие */
   shareMaxContent(params: { text?: string; link?: string }): Status<"shared" | "cancelled">;
+  /** системное меню «поделиться» телефона (iOS, Android); в веб-версии MAX его нет */
+  shareContent?(params: { text?: string; link?: string }): Status<"shared">;
   enableClosingConfirmation(): void;
   disableClosingConfirmation(): void;
   BackButton: {

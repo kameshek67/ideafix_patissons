@@ -248,6 +248,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/shares": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Share
+         * @description Ссылка «Поделиться» на карточку направления, выдачу по олимпиаде или итоги дипломов.
+         *
+         *     Снимок хранит стабильные ключи, а не id: ссылка открывает тот же экран и после
+         *     пересборки базы. Тот же экран — та же ссылка (200), срок жизни продлевается.
+         */
+        post: operations["create_share_v1_shares_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/shares/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Open Share
+         * @description Что открыть по ссылке: тип экрана, фильтр и актуальные id объектов снимка.
+         *     404 — ссылки нет или она устарела.
+         */
+        get: operations["open_share_v1_shares__token__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/stats": {
         parameters: {
             query?: never;
@@ -466,6 +510,21 @@ export interface components {
             /** Year */
             year: number | null;
         };
+        /**
+         * DiplomasShareIn
+         * @description Итоги дипломов: строки дипломов, как в /v1/achievements/match.
+         */
+        DiplomasShareIn: {
+            /** Benefit Type */
+            benefit_type?: ("БВИ" | "100 баллов") | null;
+            /** Diplomas */
+            diplomas: string[];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "diplomas";
+        };
         /** FallbackHit */
         FallbackHit: {
             /** Benefit Type */
@@ -642,6 +701,25 @@ export interface components {
              */
             without_profile: number;
         };
+        /**
+         * OlympiadShareIn
+         * @description Выдача по олимпиаде; профиль и вуз — если выбраны.
+         */
+        OlympiadShareIn: {
+            /** Benefit Type */
+            benefit_type?: ("БВИ" | "100 баллов") | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "olympiad";
+            /** Olympiad Id */
+            olympiad_id: number;
+            /** Profile Id */
+            profile_id?: number | null;
+            /** University Id */
+            university_id?: number | null;
+        };
         /** Olympiads */
         Olympiads: {
             /** Count */
@@ -776,6 +854,21 @@ export interface components {
             total_benefits: number;
             university: components["schemas"]["UniversityInfo"];
         };
+        /**
+         * ProgramShareIn
+         * @description Карточка направления.
+         */
+        ProgramShareIn: {
+            /** Benefit Type */
+            benefit_type?: ("БВИ" | "100 баллов") | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "program";
+            /** Program Id */
+            program_id: number;
+        };
         /** Programs */
         Programs: {
             /** Count */
@@ -819,6 +912,58 @@ export interface components {
             profile_name: string;
             /** Spec */
             spec: string;
+        };
+        /** Share */
+        Share: {
+            /** Benefit Type */
+            benefit_type: ("БВИ" | "100 баллов") | null;
+            /** Found */
+            found: boolean;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "program" | "olympiad" | "diplomas";
+            resolved: components["schemas"]["ShareResolved"];
+        };
+        /** ShareCreated */
+        ShareCreated: {
+            /** Max Url */
+            max_url: string | null;
+            /** Token */
+            token: string;
+            /** Web Path */
+            web_path: string;
+        };
+        /**
+         * ShareResolved
+         * @description id объектов снимка в текущей сборке базы; null — объекта больше нет.
+         */
+        ShareResolved: {
+            /** Diplomas */
+            diplomas: components["schemas"]["SharedDiploma"][];
+            olympiad: components["schemas"]["SharedOlympiad"] | null;
+            /** Profile Id */
+            profile_id: number | null;
+            /** Program Id */
+            program_id: number | null;
+            university: components["schemas"]["UniversityInfo"] | null;
+        };
+        /** SharedDiploma */
+        SharedDiploma: {
+            /** Olympiad */
+            olympiad: string;
+            /** Profile */
+            profile: string;
+            /** Spec */
+            spec: string;
+        };
+        /** SharedOlympiad */
+        SharedOlympiad: {
+            /** Id */
+            id: number;
+            /** Short Name */
+            short_name: string;
         };
         /** SheetLog */
         SheetLog: {
@@ -1388,6 +1533,79 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProgramSearch"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_share_v1_shares_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProgramShareIn"] | components["schemas"]["OlympiadShareIn"] | components["schemas"]["DiplomasShareIn"];
+            };
+        };
+        responses: {
+            /** @description Этим экраном уже делились */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShareCreated"];
+                };
+            };
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShareCreated"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    open_share_v1_shares__token__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Share"];
                 };
             };
             /** @description Validation Error */
