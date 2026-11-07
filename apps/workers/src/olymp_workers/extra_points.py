@@ -6,10 +6,14 @@
 """
 
 import csv
+import hashlib
+import os
+import sys
 from pathlib import Path
 from typing import Any
 
 import psycopg
+from olymp_db.session import psycopg_dsn
 from olymp_domain.extra_points import KINDS
 
 ACHIEVEMENTS_CSV = "individual_achievements.csv"
@@ -105,4 +109,45 @@ def load_extra_points(conn: psycopg.Connection[Any], data_dir: Path) -> dict[str
                 row["review"],
             ),
         )
+    # версия данных входит в ключи кэша API: после перезагрузки CSV старые ответы не отдаются
+    digest = hashlib.sha256(
+        (data_dir / ACHIEVEMENTS_CSV).read_bytes() + (data_dir / LIMITS_CSV).read_bytes()
+    ).hexdigest()[:16]
+    conn.execute(
+        """INSERT INTO meta (key, value) VALUES ('extra_points_version', %s)
+           ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value""",
+        (digest,),
+    )
     return {"rules": len(rules), "limits": len(limits)}
+
+
+def reload_extra_points(database_url: str | None, data_dir: Path) -> dict[str, int]:
+    """Заменяет баллы за ИД данными из CSV, не пересобирая остальную базу.
+
+    Вызывается при каждом выкате (сервис migrate): olymp-ingest --if-empty на готовой базе
+    ничего не делает, и без этого новые строки CSV не попали бы на стенд. Одна транзакция:
+    API до коммита видит прежние данные, а при ошибке в CSV прежние данные остаются.
+    """
+    with psycopg.connect(psycopg_dsn(database_url)) as conn:
+        conn.execute(
+            "TRUNCATE individual_achievements, individual_achievement_limits RESTART IDENTITY"
+        )
+        stats = load_extra_points(conn, data_dir)
+        conn.commit()
+    return stats
+
+
+def main() -> int:
+    repo = Path(__file__).resolve().parents[4]
+    data_dir = Path(os.environ.get("OLYMP_DATA_DIR", repo / "data"))
+    try:
+        stats = reload_extra_points(os.environ.get("OLYMP_DATABASE_URL"), data_dir)
+    except ExtraPointsDataError as exc:
+        print(f"Баллы за ИД не загружены: {exc}", file=sys.stderr)  # noqa: T201
+        return 1
+    print(f"Баллы за ИД: правил {stats['rules']}, лимитов {stats['limits']}")  # noqa: T201
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
