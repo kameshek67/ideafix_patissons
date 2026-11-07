@@ -1,0 +1,123 @@
+# Выкатка main на https://ideafix.patissons.tech (сервер 2.26.52.44) после зелёного ci.
+# Как устроено и как откатиться — infra/deploy/README.md. Секрет один: DEPLOY_SSH_KEY.
+name: deploy
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+  # вручную: Actions → deploy → Run workflow (выкатит последний коммит main)
+  workflow_dispatch:
+
+# выкатки идут по одной, начатая не прерывается
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  COMPOSE_PROJECT_NAME: ideafix
+  DEPLOY_HOST: 2.26.52.44
+  # ключ сервера (не секрет): защищает от подмены хоста
+  DEPLOY_KNOWN_HOST: 2.26.52.44 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEOp/jKkipQ6ZNvA7SQVXo5tcn8lD2v5nLGsUha5acZm
+
+jobs:
+  # что выкатывать: коммит, на котором прошёл ci, если он всё ещё последний в main
+  gate:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.pick.outputs.sha }}
+      go: ${{ steps.pick.outputs.go }}
+    steps:
+      - id: pick
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          tip=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)
+          # ci разных коммитов может закончиться не по порядку: старый поверх нового не выкатываем
+          # (повторный запуск job — осознанный откат, его пропускаем)
+          if [ "$GITHUB_EVENT_NAME" = workflow_run ] && [ "$GITHUB_RUN_ATTEMPT" = 1 ] && [ "$tip" != "$SHA" ]; then
+            echo "::notice::в main уже ${tip:0:12}, ${SHA:0:12} не выкатываю — выкатится следующий запуск"
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    needs: gate
+    if: needs.gate.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: production
+      url: https://ideafix.patissons.tech
+    env:
+      SHA: ${{ needs.gate.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: образы в GHCR
+        run: |
+          registry="ghcr.io/${GITHUB_REPOSITORY,,}"
+          services=$(python3 infra/deploy/images.py "$registry" "$SHA" .deploy)
+          for f in compose.yaml compose.yml docker-compose.yaml docker-compose.yml; do [ -f "$f" ] && break; done
+          # bake сам читает compose-файлы; оверрайды — .yml: файлы .json bake считает своим форматом
+          docker buildx bake -f "$f" -f .deploy/build.yml -f .deploy/images.yml --push $services
+          # сервер скачает образы тем же GITHUB_TOKEN: каждый должен быть виден в GHCR уже сейчас
+          while read -r img; do
+            docker buildx imagetools inspect "$img" >/dev/null \
+              || { echo "::error::$img не опубликован в GHCR"; exit 1; }
+          done < .deploy/images
+
+      - name: релиз на сервер
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          [ -n "$DEPLOY_SSH_KEY" ] || { echo "::error::нет секрета DEPLOY_SSH_KEY (infra/deploy/README.md)"; exit 1; }
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOST" > ~/.ssh/known_hosts
+          ssh_deploy() { ssh -i ~/.ssh/deploy -o BatchMode=yes -o ServerAliveInterval=15 "deploy@$DEPLOY_HOST" "$@"; }
+
+          # код релиза (compose, data/ и т. п.) + оверрайд с образами; .env живёт только на сервере
+          git archive --format=tar -o release.tar HEAD
+          tar -rf release.tar .deploy/images.yml .deploy/services
+          gzip -c release.tar | ssh_deploy upload "$SHA"
+
+          # токен нужен серверу только чтобы скачать образы; после выкатки он недействителен
+          printf '%s\n%s\n' "$GITHUB_ACTOR" "$GHCR_TOKEN" | ssh_deploy deploy "$SHA"
+
+      - name: снаружи — только https
+        run: |
+          ok=
+          for i in $(seq 1 24); do
+            curl -fsS -o /dev/null -m 10 https://ideafix.patissons.tech/ && { ok=1; break; }
+            sleep 5
+          done
+          [ -n "$ok" ] || { echo "::error::релиз поднялся, но https://ideafix.patissons.tech не отвечает снаружи (Caddy, DNS, сертификат?)"; exit 1; }
+          # порты стека должны быть закрыты: сайт и API — только через Caddy
+          for p in 8000 8080; do
+            if timeout 5 bash -c "</dev/tcp/$DEPLOY_HOST/$p" 2>/dev/null; then
+              echo "::error::порт $p сервера открыт из интернета — контейнер опубликован не на 127.0.0.1"
+              exit 1
+            fi
+          done

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# docker compose текущего релиза: ideafix ps | ideafix logs -f web | ideafix exec api sh
+set -euo pipefail
+cd /opt/ideafix/current
+for f in compose.yaml compose.yml docker-compose.yaml docker-compose.yml; do [ -f "$f" ] && break; done
+exec docker compose -p ideafix -f "$f" -f .deploy/images.yml "$@"
