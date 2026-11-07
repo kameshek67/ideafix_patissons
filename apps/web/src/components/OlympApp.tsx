@@ -31,6 +31,7 @@ import { Combo, type ComboItem } from "./Combo";
 import { TablesContext, useTablesStore } from "./DataTable";
 import { DiplomaSheet } from "./DiplomaSheet";
 import { DiplomasView } from "./DiplomasView";
+import { ExtraPointsView } from "./ExtraPointsView";
 import { IconClose, IconHeroArrow, IconMore, IconSearch } from "./icons";
 import { useMax, useMaxBackButton } from "./MaxProvider";
 import { OlympiadResults, UniversityBenefits } from "./OlympiadView";
@@ -40,7 +41,7 @@ import { Toaster } from "./Toaster";
 import { IlluState, LoadError, OLYMP_START, Skeleton, TYPES, UNI_START } from "./ui";
 import { useMyDiplomas } from "./useMyDiplomas";
 
-type Tab = "uni" | "olymp" | "diplomas";
+type Tab = "uni" | "olymp" | "diplomas" | "extra";
 
 // годы, которые форма диплома предлагает, пока не ответил /v1/max/config
 const FALLBACK_CAMPAIGN = { campaign_year: 2026, valid_years: [2023, 2024, 2025, 2026] };
@@ -598,11 +599,19 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
             >
               Дипломы
             </button>
+            <button
+              className={tab === "extra" ? "tab-btn tab-active" : "tab-btn"}
+              role="tab"
+              id="tab-btn-extra"
+              onClick={() => setTab("extra")}
+            >
+              Баллы
+            </button>
           </div>
         </div>
 
-        {/* ФИЛЬТРЫ */}
-        <section className="mt-3 flex flex-wrap items-center gap-2">
+        {/* ФИЛЬТРЫ (на вкладке «Баллы» не нужны: там нет льгот по олимпиадам) */}
+        <section className={tab === "extra" ? "hidden" : "mt-3 flex flex-wrap items-center gap-2"}>
           <div className="chip-group ml-auto" id="type-filter">
             {TYPES.map((t) => (
               <button key={t} className={`chip ${benefitType === t ? "chip-on" : ""}`} onClick={() => pickType(t)}>
@@ -753,6 +762,11 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
               />
             </TablesContext.Provider>
           ) : null}
+        </section>
+
+        {/* ТАБ 4 */}
+        <section id="tab-extra" className={tab === "extra" ? "mt-3 space-y-3" : "mt-3 space-y-3 hidden"}>
+          <ExtraPointsView active={tab === "extra"} />
         </section>
       </main>
 

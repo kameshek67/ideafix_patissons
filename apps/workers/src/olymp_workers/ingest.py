@@ -64,6 +64,7 @@ from olymp_domain.textutils import (
     squash,
 )
 
+from .extra_points import load_extra_points
 from .university_pages import PAGES
 
 REPO = Path(__file__).resolve().parents[4]
@@ -1181,6 +1182,9 @@ class Ingestor:
         log("[6/7] Полнотекстовый индекс")
         self.build_fts()
 
+        extra = load_extra_points(self.conn, DATA_DIR)
+        log(f"      баллы за ИД: правил {extra['rules']}, лимитов {extra['limits']}")
+
         log("[7/7] Статистика")
         self.finalize(started)
 
@@ -2125,6 +2129,9 @@ class Ingestor:
             "profiles": "SELECT COUNT(*) FROM olympiad_profiles",
             "links": "SELECT COUNT(*) FROM benefit_olympiads",
             "keywords": "SELECT COUNT(*) FROM benefit_keywords",
+            "extra_rules": "SELECT COUNT(*) FROM individual_achievements",
+            "extra_universities": "SELECT COUNT(DISTINCT university_id) FROM individual_achievements",
+            "extra_limits": "SELECT COUNT(*) FROM individual_achievement_limits",
         }
         for key, sql in counts.items():
             value = self.conn.execute(sql).fetchone()[0]
