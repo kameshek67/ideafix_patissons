@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { type ExtraRule, getExtraRules, getExtraUniversities, scoreExtra } from "@/lib/api";
+import { type ExtraRule, friendlyError, getExtraRules, getExtraUniversities, scoreExtra } from "@/lib/api";
 import {
   KIND_LABEL,
   type Picked,
@@ -39,7 +39,7 @@ function Total({ universityId, rules, picked }: { universityId: number; rules: E
   const s = q.data;
   return (
     <div className="card p-4" aria-live="polite">
-      {q.error ? <LoadError message={q.error.message} /> : null}
+      {q.error ? <LoadError message={friendlyError(q.error)} onRetry={() => void q.refetch()} /> : null}
       {s ? (
         <>
           <p className="card-title">
@@ -180,7 +180,7 @@ export function ExtraPointsView({ active }: { active: boolean }) {
         и отметь, что у тебя есть.
       </p>
       {unis.isLoading ? <Skeleton /> : null}
-      {unis.error ? <LoadError message={unis.error.message} /> : null}
+      {unis.error ? <LoadError message={friendlyError(unis.error)} onRetry={() => void unis.refetch()} /> : null}
       {unis.data && unis.data.items.length === 0 ? (
         <EmptyState icon="🏅" title="Пока нет данных" text="Баллы за достижения ещё не загружены." />
       ) : null}
@@ -198,7 +198,7 @@ export function ExtraPointsView({ active }: { active: boolean }) {
         ))}
       </div>
       {uid !== null && rulesQ.isLoading ? <Skeleton /> : null}
-      {rulesQ.error ? <LoadError message={rulesQ.error.message} /> : null}
+      {rulesQ.error ? <LoadError message={friendlyError(rulesQ.error)} onRetry={() => void rulesQ.refetch()} /> : null}
       {uid !== null && rulesQ.data ? (
         <>
           <div className="chip-group" role="group" aria-label="Тип достижения">

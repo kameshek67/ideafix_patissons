@@ -24,7 +24,11 @@ interface Props<T> {
 }
 
 // idle — панель ещё ни разу не открывали: список пустой, как в прототипе
-type ListState<T> = { kind: "idle" } | { kind: "loading" } | { kind: "items"; items: ComboItem<T>[] };
+type ListState<T> =
+  | { kind: "idle" }
+  | { kind: "loading" }
+  | { kind: "error"; query: string }
+  | { kind: "items"; items: ComboItem<T>[] };
 
 /** Комбобокс с поиском: кнопка-поле, выпадающая панель, список с подсказками. */
 export function Combo<T>({
@@ -49,8 +53,12 @@ export function Combo<T>({
   async function refresh(q: string) {
     const current = ++seq.current;
     setList({ kind: "loading" });
-    const items = await onSearch(q);
-    if (current === seq.current) setList({ kind: "items", items });
+    try {
+      const items = await onSearch(q);
+      if (current === seq.current) setList({ kind: "items", items });
+    } catch {
+      if (current === seq.current) setList({ kind: "error", query: q });
+    }
   }
 
   function toggle() {
@@ -106,6 +114,13 @@ export function Combo<T>({
         <div className="combo-list">
           {list.kind === "idle" ? null : list.kind === "loading" ? (
             <div className="suggest-empty">Загрузка…</div>
+          ) : list.kind === "error" ? (
+            <div className="suggest-empty" role="alert">
+              Не получилось загрузить.{" "}
+              <button type="button" className="underline" onClick={() => void refresh(list.query)}>
+                Повторить
+              </button>
+            </div>
           ) : list.items.length ? (
             list.items.map((item) => (
               <button

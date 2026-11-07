@@ -3,6 +3,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  friendlyError,
   getByOlympiad,
   getByProgram,
   getDiplomaForm,
@@ -55,6 +56,7 @@ interface SheetState {
 type ProgramState =
   | { kind: "start"; text: string }
   | { kind: "loading" }
+  | { kind: "error"; message: string; retry: () => void }
   // type — фильтр по типу льготы, с которым карточка нарисована (см. pickType);
   // renderId — номер отрисовки: карточка создаётся заново, как renderProgram() в прототипе
   // (поэтому, например, блок примечаний после смены фильтра снова свёрнут)
@@ -63,6 +65,7 @@ type ProgramState =
 type OlympState =
   | { kind: "start" }
   | { kind: "loading" }
+  | { kind: "error"; message: string; retry: () => void }
   | { kind: "results"; data: OlympiadSearch }
   | { kind: "university"; data: OlympiadSearch; university: UniversityInfo };
 
@@ -112,7 +115,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     queryFn: () => getOlympiads({ limit: 12 }),
     staleTime: Infinity,
   });
-  const initError = (universitiesQ.error || popularQ.error)?.message ?? null;
+  const initError = universitiesQ.error || popularQ.error ? friendlyError(universitiesQ.error || popularQ.error) : null;
   // читаем данные во время рендера: TanStack Query перерисовывает компонент только при
   // изменении полей, которые читались при рендере (иначе комбобокс видел бы пустой список)
   const universities = universitiesQ.data?.items ?? [];
@@ -202,7 +205,14 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     setProgramLabel(p.faculty_or_direction);
     setProgramState({ kind: "loading" });
     const seq = ++programSeq.current;
-    const data = await loadProgram(p.id);
+    let data: ProgramSearch;
+    try {
+      data = await loadProgram(p.id);
+    } catch (e) {
+      if (seq === programSeq.current)
+        setProgramState({ kind: "error", message: friendlyError(e), retry: () => void pickProgram(p) });
+      return;
+    }
     if (seq !== programSeq.current) return;
     resetProgramTables();
     setProgramState({ kind: "data", data, type: benefitTypeRef.current, renderId: ++programRenders.current });
@@ -212,7 +222,15 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   async function openProgram(programId: number) {
     setTab("uni");
     const seq = ++programSeq.current;
-    const data = await loadProgram(programId);
+    setProgramState({ kind: "loading" });
+    let data: ProgramSearch;
+    try {
+      data = await loadProgram(programId);
+    } catch (e) {
+      if (seq === programSeq.current)
+        setProgramState({ kind: "error", message: friendlyError(e), retry: () => void openProgram(programId) });
+      return;
+    }
     if (seq !== programSeq.current) return;
     resetProgramTables();
     setProgramState({ kind: "data", data, type: benefitTypeRef.current, renderId: ++programRenders.current });
@@ -269,11 +287,18 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
       const q = value.trim();
       if (q.length < 2) return hideSuggest();
       const seq = ++suggestSeq.current;
-      const data = await queryClient.fetchQuery({
-        queryKey: ["olympiads", "suggest", q],
-        queryFn: () => getOlympiads({ q, limit: 8 }),
-        staleTime: 60_000,
-      });
+      let data: Awaited<ReturnType<typeof getOlympiads>>;
+      try {
+        data = await queryClient.fetchQuery({
+          queryKey: ["olympiads", "suggest", q],
+          queryFn: () => getOlympiads({ q, limit: 8 }),
+          staleTime: 60_000,
+        });
+      } catch {
+        // подсказки необязательны: при ошибке просто не показываем их, поиск по Enter работает
+        if (seq === suggestSeq.current) setSuggestOpen(false);
+        return;
+      }
       if (seq !== suggestSeq.current) return;
       setSuggestItems(data.items);
       setSuggestOpen(true);
@@ -287,7 +312,14 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     setSearch(state);
     setOlympState({ kind: "loading" });
     const seq = ++olympSeq.current;
-    const data = await loadOlympiad(searchQuery(state));
+    let data: OlympiadSearch;
+    try {
+      data = await loadOlympiad(searchQuery(state));
+    } catch (e) {
+      if (seq === olympSeq.current)
+        setOlympState({ kind: "error", message: friendlyError(e), retry: () => void runOlympiadSearch(next) });
+      return;
+    }
     if (seq !== olympSeq.current) return;
     resetOlympTables();
     setListData(data);
@@ -306,7 +338,14 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     setOlympState({ kind: "loading" });
     const seq = ++olympSeq.current;
     const state = { ...search, benefitType };
-    const data = await loadOlympiad(searchQuery(state, { university_id: u.id }));
+    let data: OlympiadSearch;
+    try {
+      data = await loadOlympiad(searchQuery(state, { university_id: u.id }));
+    } catch (e) {
+      if (seq === olympSeq.current)
+        setOlympState({ kind: "error", message: friendlyError(e), retry: () => void pickResultUniversity(u) });
+      return;
+    }
     if (seq !== olympSeq.current) return;
     resetOlympTables();
     setOlympState({ kind: "university", data, university: u });
@@ -476,13 +515,23 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   // ---------------------------------------------------------------- разметка
   const programResult = (() => {
     if (initError && programState.kind === "start" && programState.text === UNI_START) {
-      return <LoadError message={initError} />;
+      return (
+        <LoadError
+          message={initError}
+          onRetry={() => {
+            void universitiesQ.refetch();
+            void popularQ.refetch();
+          }}
+        />
+      );
     }
     switch (programState.kind) {
       case "start":
         return <IlluState kind="uni" text={programState.text} />;
       case "loading":
         return <Skeleton />;
+      case "error":
+        return <LoadError message={programState.message} onRetry={programState.retry} />;
       case "data":
         return (
           <ProgramView
@@ -501,6 +550,8 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
         return <IlluState kind="olymp" text={OLYMP_START} />;
       case "loading":
         return <Skeleton />;
+      case "error":
+        return <LoadError message={olympState.message} onRetry={olympState.retry} />;
       case "results":
         return (
           <OlympiadResults
