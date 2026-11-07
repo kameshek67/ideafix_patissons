@@ -209,21 +209,8 @@ details[open] .chev { transform: rotate(180deg); }
 .notes-list li { padding: 10px 12px; border-radius: 12px; background: var(--soft); font-size: 13.5px; line-height: 1.45; }
 .notes-list li .badge { margin-bottom: 4px; background: #fff; }
 
-/* ---------- модалка «О базе» ---------- */
+/* ---------- модалка «О приложении» ---------- */
 .sheet-handle { width: 40px; height: 4px; border-radius: 4px; background: #E6D6EC; margin: -6px auto 12px; }
-.stat { padding: 10px 12px; border-radius: 15px; background: var(--soft); min-width: 0; }
-.stat-label { font-size: 12px; color: var(--muted); }
-.stat-value { font-size: 22px; line-height: 28px; font-weight: 500; }
-.stat-hint { font-size: 11.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.about-table { width: 100%; font-size: 13px; }
-.about-table th { position: sticky; top: 0; background: #fff; text-align: left; font-weight: 500; font-size: 12px; color: var(--muted); padding: 6px 8px 6px 0; }
-.about-table td { padding: 6px 8px 6px 0; border-top: 1px solid var(--hair); vertical-align: top; }
-.about-table .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-@media (max-width: 639px) {
-  .about-table { font-size: 12px; }
-  .about-table td, .about-table th { padding-right: 6px; }
-  .about-table td:not(.num) { overflow-wrap: anywhere; hyphens: auto; }
-}
 
 mark { background: #F4DCFE; color: inherit; padding: 0 2px; border-radius: 3px; }
 

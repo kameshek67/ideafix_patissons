@@ -9,7 +9,6 @@ import {
   getMaxConfig,
   getOlympiads,
   getPrograms,
-  getStats,
   getUniversities,
   type DiplomaResult,
   type OlympiadHit,
@@ -102,14 +101,13 @@ export function OlympApp() {
   const [aboutOpen, setAboutOpen] = useState(false);
 
   // ---------------------------------------------------------------- справочники
-  const statsQ = useQuery({ queryKey: ["stats"], queryFn: getStats, staleTime: Infinity });
   const universitiesQ = useQuery({ queryKey: ["universities"], queryFn: getUniversities, staleTime: Infinity });
   const popularQ = useQuery({
     queryKey: ["olympiads", "popular"],
     queryFn: () => getOlympiads({ limit: 12 }),
     staleTime: Infinity,
   });
-  const initError = (statsQ.error || universitiesQ.error || popularQ.error)?.message ?? null;
+  const initError = (universitiesQ.error || popularQ.error)?.message ?? null;
   // читаем данные во время рендера: TanStack Query перерисовывает компонент только при
   // изменении полей, которые читались при рендере (иначе комбобокс видел бы пустой список)
   const universities = universitiesQ.data?.items ?? [];
@@ -491,8 +489,8 @@ export function OlympApp() {
             id="about-btn"
             className="icon-btn"
             type="button"
-            aria-label="О базе"
-            title="О базе"
+            aria-label="О приложении"
+            title="О приложении"
             onClick={() => setAboutOpen(true)}
           >
             <IconMore />
@@ -692,13 +690,8 @@ export function OlympApp() {
         />
       ) : null}
 
-      {/* МОДАЛКА «О базе» */}
-      <AboutModal
-        open={aboutOpen}
-        onClose={() => setAboutOpen(false)}
-        stats={statsQ.data}
-        error={initError}
-      />
+      {/* МОДАЛКА «О приложении» */}
+      <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} campaign={campaign} />
     </>
   );
 }
