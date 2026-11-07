@@ -19,7 +19,7 @@ async def universities(
     request: Request, admission_year: int = YEAR, session: AsyncSession = Depends(get_session)
 ) -> Any:
     """Вузы, у которых в базе есть баллы за индивидуальные достижения (ГТО, аттестат…)."""
-    key = f"v1:extra:unis:{admission_year}:{await data_version(session)}"
+    key = f"v1:extra:unis:{admission_year}:{await data_version(session)}:{await service.data_version(session)}"
     if (hit := await cache_get(request, key)) is not None:
         return hit
     data = ExtraUniversities.model_validate(await service.universities(session, admission_year))
@@ -36,7 +36,7 @@ async def rules(
     session: AsyncSession = Depends(get_session),
 ) -> Any:
     """Баллы вуза за достижения и лимит суммы; у каждого правила — цитата из документа вуза."""
-    key = f"v1:extra:rules:{university_id}:{admission_year}:{await data_version(session)}"
+    key = f"v1:extra:rules:{university_id}:{admission_year}:{await data_version(session)}:{await service.data_version(session)}"
     if (hit := await cache_get(request, key)) is not None:
         return hit
     data = ExtraRules.model_validate(await service.rules(session, university_id, admission_year))
