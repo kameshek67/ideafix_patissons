@@ -27,6 +27,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -2153,6 +2154,7 @@ class Ingestor:
             value = self.conn.execute(sql).fetchone()[0]
             self.set_meta(key, str(value))
         self.set_meta("source_file", os.path.basename(self.xlsx_path))
+        self.set_meta("build_fingerprint", build_fingerprint(self.xlsx_path))
         self.set_meta("built_at", time.strftime("%Y-%m-%d %H:%M:%S"))
         self.conn.commit()
         # свежая статистика для планировщика запросов
@@ -2197,6 +2199,41 @@ class Ingestor:
         log(f"\nГотово за {elapsed:.1f} c -> {self.conn.info.dbname}@{self.conn.info.host}")
 
 
+def build_fingerprint(xlsx_path: str) -> str:
+    """Отпечаток всего, от чего зависит результат сборки: исходные данные и код разбора.
+
+    Меняется, если поменяли XLSX, кэш ссылок на документы вузов или код разбора (этот файл,
+    нормализация текста, справочник олимпиад, страницы вузов). Тогда `--if-stale` пересоберёт базу.
+    """
+    import olymp_domain.olympiad_seeds as seeds
+    import olymp_domain.textutils as textutils
+
+    from . import university_pages
+
+    parts = [
+        Path(xlsx_path),
+        Path(SOURCES_CACHE),
+        Path(__file__),
+        Path(university_pages.__file__),
+        Path(textutils.__file__),
+        Path(seeds.__file__),
+    ]
+    digest = hashlib.sha256()
+    for part in parts:
+        digest.update(part.name.encode())
+        digest.update(part.read_bytes() if part.exists() else b"-")
+    return digest.hexdigest()[:16]
+
+
+def is_current(url: str | None, xlsx_path: str) -> bool:
+    """База собрана тем же кодом и теми же данными, что и сейчас (см. build_fingerprint)."""
+    with psycopg.connect(psycopg_dsn(url)) as conn:
+        if conn.execute("SELECT to_regclass('public.meta')").fetchone()[0] is None:
+            return False
+        row = conn.execute("SELECT value FROM meta WHERE key = 'build_fingerprint'").fetchone()
+    return row is not None and row[0] == build_fingerprint(xlsx_path)
+
+
 def has_data(url: str | None) -> bool:
     """В базе уже есть собранные данные (проверка для первого старта контейнера)."""
     with psycopg.connect(psycopg_dsn(url)) as conn:
@@ -2216,6 +2253,11 @@ def main() -> int:
     parser.add_argument(
         "--if-empty", action="store_true", help="ничего не делать, если база уже собрана"
     )
+    parser.add_argument(
+        "--if-stale",
+        action="store_true",
+        help="собрать, только если базы нет или изменились данные либо код разбора",
+    )
     args = parser.parse_args()
 
     if not os.path.exists(args.xlsx):
@@ -2223,6 +2265,9 @@ def main() -> int:
         return 1
     if args.if_empty and has_data(args.database_url):
         log("База уже собрана — пропускаю (без --if-empty соберётся заново)")
+        return 0
+    if args.if_stale and is_current(args.database_url, args.xlsx):
+        log("База собрана текущими данными и кодом разбора — пропускаю")
         return 0
     Ingestor(args.xlsx, args.database_url).run()
     return 0
