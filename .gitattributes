@@ -1,0 +1,19 @@
+# Единые окончания строк для всей команды (Windows, macOS, Linux):
+# в репозитории и рабочей копии — LF; PowerShell-скрипты — CRLF.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+
+# данные и сгенерированные файлы — не показывать построчный diff в PR
+data/university_documents.json linguist-generated=true
+docs/openapi.json linguist-generated=true
+packages/api-client/schema.d.ts linguist-generated=true
+uv.lock linguist-generated=true
+package-lock.json linguist-generated=true -diff
+
+# бинарные
+*.xlsx binary
+*.pptx binary
+*.png binary
+*.jpg binary
+*.pdf binary
+*.woff2 binary
