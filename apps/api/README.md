@@ -59,3 +59,24 @@ uv run pytest apps/api -q
 
 База собирается из настоящего XLSX один раз на прогон (корневой `conftest.py`). Без PostgreSQL
 тесты пропускаются.
+
+## Правила разработки
+
+Общие правила — [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+**Новый эндпоинт.**
+1. Схема ответа — в `schemas.py`, SQL и логика — в `service.py`, маршрут — в `router.py`
+   с `response_model` и docstring (он попадает в Swagger). Роутер тонкий.
+2. Публичные маршруты — под `/v1` (префикс ставит `main.py`). Ошибки — `HTTPException` или
+   `errors.problem(...)`.
+3. Ответы поиска кэшируй через `cache_get/cache_set`, ключ включает `data_version()`.
+4. Тест в `apps/api/tests/` на собранной базе (фикстура `client`).
+5. `just openapi` → закоммить `docs/openapi.json` и `packages/api-client/schema.d.ts`.
+
+**Новый модуль.** `modules/<имя>/{router,schemas,service}.py`, подключение в `main.py`, строка в
+контракте независимости в корневом `pyproject.toml`. Модули не импортируют друг друга: общее — в
+`olymp_api/*.py` или `packages/domain`.
+
+**Пользователь MAX.** Эндпоинты с данными пользователя — заголовок `X-Max-Init-Data` и
+`Depends(max_user)`. Без `OLYMP_MAX_BOT_TOKEN` они отвечают 503. id и имя пользователя MAX не
+логируем и никуда не передаём (в том числе в LLM).

@@ -1,6 +1,6 @@
 # Фронтенд
 
-Код — `apps/web`, правила разработки — [CONTRIBUTING.md](../../CONTRIBUTING.md).
+Код — `apps/web`, правила разработки — [README сайта](../../apps/web/README.md#правила-разработки).
 
 ## Экраны
 

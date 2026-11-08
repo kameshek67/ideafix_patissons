@@ -52,3 +52,19 @@ npm test      --workspace olymp-web    # vitest + Testing Library
 npm run lint  --workspace olymp-web    # tsc --noEmit
 npm run build --workspace olymp-web
 ```
+
+## Правила разработки
+
+Общие правила — [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+- **Данные** — только через функции `src/lib/api.ts` и TanStack Query. Типы ответов — `Schemas[...]`
+  из `@olymp/api-client`; если нужного типа нет, сначала поменяй API и запусти `just openapi`.
+- **Дизайн** повторяет прототип: новые элементы собирай из существующих классов `styles.css` и
+  токенов Tailwind-конфига. UI-библиотеки не добавляй, Tailwind не обновляй (3.4.16).
+- **MAX**: любой вызов Bridge — через `safely()` и с проверкой `app` из `useMax()`. Без MAX функция
+  должна работать в браузере (например, «Поделиться» → `navigator.share` или копирование).
+- **Логику** выноси в чистые функции `src/lib/` и покрывай тестами. Компонентные тесты мокают
+  `@/lib/api` (см. `OlympApp.test.tsx`, `DiplomasTab.test.tsx`).
+- **Тексты** — на русском, обращение на «ты», «ёлочки».
+- **Основной экран — телефон** 360–430 px: проверяй вёрстку в узком окне.
+- Версия Next.js новая: при сомнениях в API смотри документацию в `node_modules/next/dist/docs/`.
