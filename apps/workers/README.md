@@ -12,6 +12,7 @@
 | `just validate [--check-links]` | проверки собранной базы; код 1 — есть ошибки ERROR |
 | `just refresh-sources [--dry-run] [--only кфу]` | обойти страницы приёмных комиссий, обновить ссылки на документы |
 | `just max-check` / `uv run olymp-max-bot run` | проверить токен бота MAX / запустить приветствие бота (long polling) |
+| `just ai-cards sites` / `just ai-cards draft --top 50` | сайты олимпиад из перечня РСОШ / ИИ-черновики карточек олимпиад по этим сайтам (F-06) |
 | `just worker` | воркер Dramatiq (фоновые задачи refresh-sources и пересборки) |
 
 В Docker: сервис `migrate` собирает базу при первом старте, `worker` — очередь, `bot` — профиль `bot`.
@@ -27,7 +28,10 @@ src/olymp_workers/
   validate.py          проверки качества данных
   tasks.py             акторы Dramatiq
   max_bot.py           бот MAX: приветствие и подсказка с кнопками мини-приложения и сайта, check
-tests/                 итоговые числа сборки на настоящем XLSX; бот — на поддельном API MAX
+  ai_cards.py          сайты олимпиад (rsr-olymp.ru) → ИИ-черновики карточек; факт без дословной цитаты
+                       со страницы отбрасывается
+tests/                 итоговые числа сборки на настоящем XLSX; бот — на поддельном API MAX;
+                       ИИ-карточки — на поддельных сайте и модели
 ```
 
 Как устроена сборка и слои данных — [docs/architecture/data.md](../../docs/architecture/data.md).
