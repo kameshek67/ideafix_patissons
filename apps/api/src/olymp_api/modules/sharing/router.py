@@ -3,6 +3,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Path, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from olymp_api.clients import client_ip
 from olymp_api.db import get_session
 from olymp_api.redis_support import hit
 
@@ -15,7 +16,7 @@ router = APIRouter(tags=["sharing"])
 async def limit_creation(request: Request) -> None:
     """Лимит на создание ссылок: с одного адреса в минуту и всего за сутки."""
     settings = request.app.state.settings
-    ip = request.client.host if request.client else "unknown"
+    ip = client_ip(request)
     for key, window, limit in (
         (f"shares:{ip}", 60, settings.share_rate_limit),
         ("shares:all", 86400, settings.share_daily_limit),
