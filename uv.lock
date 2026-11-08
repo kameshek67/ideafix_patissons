@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.15' and sys_platform == 'win32'",
@@ -1154,7 +1154,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dramatiq", extras = ["rabbitmq"], specifier = ">=1.17" },
+    { name = "dramatiq", extras = ["rabbitmq"], specifier = ">=2.2.1" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "olymp-db", editable = "packages/db" },
     { name = "olymp-domain", editable = "packages/domain" },
