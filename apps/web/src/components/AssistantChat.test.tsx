@@ -91,6 +91,42 @@ describe("AssistantChat", () => {
     expect(screen.getByText("Начало")).toBeTruthy();
   });
 
+  it("«Повторить» отправляет тот же вопрос заново без неудачного ответа", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(new Response("{}", { status: 503 }))
+      .mockImplementation(async () => stream(SSE));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<AssistantChat {...props} />);
+    ask("вопрос");
+    await screen.findByRole("alert");
+    fireEvent.click(screen.getByText("Повторить"));
+    await screen.findByText("Попробуй НТО");
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.getAllByText("вопрос")).toHaveLength(1);
+    const [, init] = fetchMock.mock.calls[1] as [string, RequestInit];
+    expect(JSON.parse(init.body as string).messages).toEqual([{ role: "user", content: "вопрос" }]);
+  });
+
+  it("«Стоп» обрывает ответ и не оставляет пустой пузырь", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        (_url: string, init: RequestInit) =>
+          new Promise<Response>((_resolve, reject) => {
+            init.signal?.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")));
+          }),
+      ),
+    );
+    const { container } = render(<AssistantChat {...props} />);
+    ask("вопрос");
+    fireEvent.click(await screen.findByLabelText("Остановить ответ"));
+    await screen.findByLabelText("Отправить");
+    expect(container.querySelector(".assistant-answer")).toBeNull();
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.getByText("вопрос")).toBeTruthy();
+  });
+
   it("сообщает о лимите сообщений", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response("{}", { status: 429 })));
     render(<AssistantChat {...props} />);

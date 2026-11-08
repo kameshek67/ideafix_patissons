@@ -16,6 +16,7 @@ from olymp_domain import squash
 from olymp_domain.diplomas import is_real_profile
 from olymp_domain.interests import (
     display_name,
+    expand_keywords,
     is_list_profile,
     phrase_matches,
     query_words,
@@ -175,7 +176,8 @@ async def find_profiles(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
     raw = args.get("keywords")
     if not isinstance(raw, list) or not raw:
         raise ValueError("нужен список keywords")
-    themes = [words for words in (query_words(str(k)) for k in raw[:MAX_KEYWORDS]) if words]
+    keywords = expand_keywords([str(k) for k in raw[:MAX_KEYWORDS]])
+    themes = [words for words in (query_words(k) for k in keywords) if words]
     if not themes:
         raise ValueError("ключевые слова слишком короткие")
     # профилей с льготами несколько сотен: сопоставляем по основам слов в коде, а не в SQL
