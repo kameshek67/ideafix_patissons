@@ -40,7 +40,6 @@ interface Props {
   sync: SyncState;
   benefitType: string;
   /** растёт при сбросе из шапки — экран возвращается к списку вузов */
-  resetSignal: number;
   onAdd: () => void;
   onEdit: (index: number, result: DiplomaResult | undefined) => void;
   onRemove: (index: number) => void;
@@ -64,7 +63,7 @@ function storageNote(storage: DiplomaStorage, sync: SyncState): string {
 
 /** «Мои дипломы»: список дипломов, сводка льгот, вузы и строки выбранного вуза. */
 export function DiplomasView(props: Props) {
-  const { active, entries, benefitType, resetSignal } = props;
+  const { active, entries, benefitType } = props;
   const specs = entries.map((e) => e.spec);
   const typeQuery = benefitType !== "Все" ? { benefit_type: benefitType } : {};
   const [university, setUniversity] = useState<UniversityInfo | null>(null);
@@ -83,8 +82,8 @@ export function DiplomasView(props: Props) {
 
   const data = specs.length ? matchQ.data : undefined;
 
-  // сброс из шапки и удаление всех дипломов возвращают к списку вузов
-  useEffect(() => setUniversity(null), [resetSignal, specs.length]);
+  // удаление всех дипломов возвращает к списку вузов
+  useEffect(() => setUniversity(null), [specs.length]);
   useMaxBackButton(active && university ? () => setUniversity(null) : null);
 
   if (!entries.length) return <DiplomasStart onAdd={props.onAdd} />;
