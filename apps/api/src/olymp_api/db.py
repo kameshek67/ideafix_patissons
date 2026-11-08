@@ -23,7 +23,17 @@ def make_engine(settings: Settings) -> AsyncEngine | None:
     url = settings.database_url.replace("+psycopg", "+asyncpg")
     if "+asyncpg" not in url:
         url = url.replace("postgresql://", "postgresql+asyncpg://")
-    return create_async_engine(url, pool_size=10, max_overflow=10, pool_pre_ping=True)
+    server_settings = {
+        "statement_timeout": str(settings.db_statement_timeout_ms),
+        "lock_timeout": str(settings.db_lock_timeout_ms),
+    }
+    return create_async_engine(
+        url,
+        pool_size=10,
+        max_overflow=10,
+        pool_pre_ping=True,
+        connect_args={"server_settings": server_settings},
+    )
 
 
 async def get_session(request: Request) -> AsyncIterator[AsyncSession]:
