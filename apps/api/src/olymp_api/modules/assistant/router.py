@@ -2,19 +2,24 @@ import json
 from collections.abc import AsyncIterator
 from typing import Any
 
+import structlog
 from fastapi import APIRouter, HTTPException, Request, Response
 from fastapi.responses import StreamingResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from olymp_api import errors
 from olymp_api.max_auth import HEADER, InitDataError, validate_init_data
 from olymp_api.modules.achievements.service import parse_specs
 from olymp_api.redis_support import hit
 
+from .context import context_key, decode
+from .factcheck import Vocabulary, VocabularyCache
 from .schemas import AssistantConfig, AssistantStreamEvent, ChatRequest, FeedbackRequest
 from .service import SUGGESTIONS, conversation
 from .tools import ToolContext
 
 router = APIRouter(prefix="/assistant", tags=["assistant"])
+log = structlog.get_logger()
 
 DAY = 86_400
 MINUTE = 60
@@ -31,6 +36,21 @@ def client_key(request: Request) -> str:
         except InitDataError:
             pass
     return f"ip:{request.client.host if request.client else 'unknown'}"
+
+
+async def vocabulary(request: Request, session: AsyncSession) -> Vocabulary | None:
+    """Словарь вузов и олимпиад для проверки ответа: один на процесс, обновляется после
+    пересборки базы. Не загрузился — проверка идёт без словаря (числа и догадки)."""
+    cache: VocabularyCache | None = getattr(request.app.state, "assistant_vocabulary", None)
+    if cache is None:
+        cache = request.app.state.assistant_vocabulary = VocabularyCache()
+    try:
+        return await cache.get(session)
+    except Exception as exc:  # noqa: BLE001 - без словаря ответ всё равно проверяется
+        log.warning("assistant_vocabulary_failed", error=type(exc).__name__)
+        if session is not None:
+            await session.rollback()
+        return None
 
 
 def sse(event: str, data: dict[str, Any]) -> str:
@@ -55,7 +75,13 @@ async def config(request: Request) -> Any:
     responses={
         200: {
             "model": AssistantStreamEvent,
-            "description": "Поток text/event-stream: status, delta, entities, sources, done, error",
+            "description": (
+                "Поток text/event-stream. Порядок: status (что делает помощник, пока ответа нет; "
+                "может быть несколько, последний — «Проверяю ответ…») → delta (ответ кусками, "
+                "уже проверенный целиком) → notice (оговорка под ответом, не часть ответа и не "
+                "для истории; только если был поиск) → entities → sources → done (message_id и "
+                "context для следующего запроса). При сбое — error с code."
+            ),
         }
     },
 )
@@ -88,11 +114,18 @@ async def chat(body: ChatRequest, request: Request) -> Response:
         count, _ = await hit(request, "assistant:llm", DAY)
         return bool(count <= limit)
 
+    key = context_key(settings.assistant_context_secret)
+    dialog = decode(body.context, key)  # неверная подпись — как будто контекста нет
+
     async def stream() -> AsyncIterator[str]:
         # сессия живёт внутри генератора: зависимости FastAPI могут закрыться раньше потока
         async with factory() as session:
+            vocab = await vocabulary(request, session)
             ctx = ToolContext(session, body.diplomas)
-            async for event, data in conversation(provider, body.messages, ctx, spend):
+            events = conversation(
+                provider, body.messages, ctx, spend, key=key, dialog=dialog, vocab=vocab
+            )
+            async for event, data in events:
                 yield sse(event, data)
 
     return StreamingResponse(

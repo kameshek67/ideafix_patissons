@@ -68,6 +68,8 @@ class OpenAICompatibleProvider:
         fallback_model: str | None = None,
         timeout: float = 30,
         max_tokens: int = 1500,
+        temperature: float | None = None,
+        top_p: float | None = None,
         deny_data_collection: bool = True,
         transport: httpx.AsyncBaseTransport | None = None,
     ) -> None:
@@ -76,6 +78,8 @@ class OpenAICompatibleProvider:
         self.models = [model, *([fallback_model] if fallback_model else [])]
         self.timeout = timeout
         self.max_tokens = max_tokens
+        self.temperature = temperature
+        self.top_p = top_p
         # параметр есть только у OpenRouter, другие серверы могут отвергнуть лишнее поле
         self.deny_data_collection = deny_data_collection and "openrouter.ai" in base_url
         self.transport = transport
@@ -112,6 +116,11 @@ class OpenAICompatibleProvider:
             "stream": True,
             "max_tokens": self.max_tokens,
         }
+        # без явной температуры многие провайдеры берут ≈1: больше выдумок
+        if self.temperature is not None:
+            body["temperature"] = self.temperature
+        if self.top_p is not None:
+            body["top_p"] = self.top_p
         if tools:
             body["tools"] = tools
         if self.deny_data_collection:
@@ -190,5 +199,7 @@ def make_provider(settings: Settings) -> LLMProvider | None:
         fallback_model=settings.llm_fallback_model,
         timeout=settings.llm_timeout,
         max_tokens=settings.llm_max_tokens,
+        temperature=settings.llm_temperature,
+        top_p=settings.llm_top_p,
         deny_data_collection=settings.llm_deny_data_collection,
     )

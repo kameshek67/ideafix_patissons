@@ -641,6 +641,10 @@ class ProfileRule:
     raw: str = ""
     # rsosh — только олимпиады перечня, vsosh — только ВсОШ, any — любые
     scope: str = "any"
+    # предметы ЕГЭ для подтверждения: «Астрономия (подтв.: математика, физика)» -> [математика, физика]
+    confirm: list[str] = field(default_factory=list)
+    # олимпиады целиком: «НТО (все профили)» -> ["НТО"]; профили берутся из справочника
+    whole_olympiads: list[str] = field(default_factory=list)
 
 
 def has_profile_rule(text: str) -> bool:
@@ -672,6 +676,12 @@ def _looks_like_profile(token: str) -> bool:
     return not any(word in low for word in RULE_STOPWORDS)
 
 
+# «(подтв.: математика, физика)» — предметы ЕГЭ для подтверждения диплома, а не профили
+RE_CONFIRM_GROUP = re.compile(r"\(\s*подтв\w*\.?\s*:?\s*([^()]*)\)", re.IGNORECASE)
+# «НТО (все профили)» — вся олимпиада, а не профиль «все профили»
+RE_ALL_PROFILES = re.compile(r"([^,;()|]+?)\s*\(\s*все\s+профили\s*\)", re.IGNORECASE)
+
+
 def parse_profile_rules(text: str) -> list[ProfileRule]:
     """
     Разбирает правила, заданные профилем олимпиады, а не её названием:
@@ -686,7 +696,28 @@ def parse_profile_rules(text: str) -> list[ProfileRule]:
     default_scope = "rsosh" if "перечн" in s.lower() else "any"
 
     rules: list[ProfileRule] = []
-    for chunk in split_sentences(s):
+    # «… профили: Робототехника (подтв.: …) | ВсОШ (финал): …» — после «|» другое правило
+    chunks = [
+        part.strip()
+        for sentence in split_sentences(s)
+        for part in sentence.split("|")
+        if part.strip()
+    ]
+    for full_chunk in chunks:
+        # скобки «(подтв.: …)» и «(все профили)» — не перечисление профилей: забираем их отдельно
+        confirm = [
+            clean_text(w).strip(" .;:")
+            for m in RE_CONFIRM_GROUP.finditer(full_chunk)
+            for w in m.group(1).split(",")
+            if clean_text(w).strip(" .;:")
+        ]
+        chunk = RE_CONFIRM_GROUP.sub("", full_chunk)
+        whole_olympiads = [
+            clean_text(RE_RULE_PREFIX.sub("", m.group(1), count=1)).strip(" .;:")
+            for m in RE_ALL_PROFILES.finditer(chunk)
+        ]
+        whole_olympiads = [w for w in whole_olympiads if w]
+        chunk = RE_ALL_PROFILES.sub("", chunk)
         low = chunk.lower().replace("ё", "е")
         if "всош" in low or "заключительный этап" in low:
             scope = "vsosh"
@@ -715,9 +746,17 @@ def parse_profile_rules(text: str) -> list[ProfileRule]:
             part = re.sub(r"\b(I{1,3})\b\s*(ур\.?|уров\w*)?", "", part).strip(" .;:")
             if _looks_like_profile(part):
                 tokens.append(part)
-        if tokens:
+        if tokens or whole_olympiads:
             rules.append(
-                ProfileRule(profiles=tokens, levels=levels, role=role, raw=chunk[:200], scope=scope)
+                ProfileRule(
+                    profiles=tokens,
+                    levels=levels,
+                    role=role,
+                    raw=full_chunk[:200],
+                    scope=scope,
+                    confirm=confirm,
+                    whole_olympiads=whole_olympiads,
+                )
             )
     return rules
 

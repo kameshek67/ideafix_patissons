@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field, model_validator
 
 from olymp_api.schemas import ResponseModel
 
+from .context import MAX_TOKEN_CHARS
+
 MAX_MESSAGES = 20
 MAX_MESSAGE_CHARS = 2000
 MAX_HISTORY_CHARS = 16_000
@@ -21,6 +23,12 @@ class ChatRequest(BaseModel):
         default_factory=list,
         max_length=20,
         description="Строки дипломов, если ученик разрешил их учитывать",
+    )
+    context: str | None = Field(
+        default=None,
+        max_length=MAX_TOKEN_CHARS,
+        description="Контекст диалога из события done прошлого ответа, как есть. Подписан "
+        "сервером: изменённый или устаревший контекст молча не учитывается",
     )
 
     @model_validator(mode="after")
@@ -60,8 +68,17 @@ class AssistantSource(ResponseModel):
 class AssistantStreamEvent(ResponseModel):
     """Данные одного события потока. Какие поля заполнены, зависит от типа события (event:)."""
 
-    text: str | None = None
+    text: str | None = Field(
+        default=None,
+        description="status — что делает помощник; delta — кусок ответа; notice — оговорка "
+        "под ответом (показывать отдельно, в историю не отправлять)",
+    )
     entities: list[AssistantEntity] | None = None
     sources: list[AssistantSource] | None = None
     message_id: str | None = None
+    context: str | None = Field(
+        default=None,
+        description="done — подписанный контекст диалога (id найденного и сводка фактов): "
+        "хранить и прислать в следующем запросе в поле context",
+    )
     code: str | None = None

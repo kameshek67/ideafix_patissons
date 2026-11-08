@@ -9,8 +9,11 @@ import structlog
 from olymp_api.llm import LLMError, TextDelta, ToolCall, ToolCalls
 from olymp_api.llm.fake import FakeProvider
 from olymp_api.main import create_app
-from olymp_api.modules.assistant import evaluate, service
-from olymp_api.modules.assistant.tools import HANDLERS
+from olymp_api.modules.assistant import context, evaluate, factcheck, prompt, service
+from olymp_api.modules.assistant.context import DialogContext
+from olymp_api.modules.assistant.factcheck import Entity, Vocabulary, check
+from olymp_api.modules.assistant.schemas import ChatMessage
+from olymp_api.modules.assistant.tools import HANDLERS, ToolContext, ToolResult
 from olymp_api.settings import Settings
 
 USER = [{"role": "user", "content": "Люблю роботов"}]
@@ -41,14 +44,30 @@ async def no_session() -> AsyncIterator[None]:
     yield None
 
 
+class StaticVocabulary:
+    """Словарь проверки ответа без базы."""
+
+    def __init__(self, vocab: factcheck.Vocabulary) -> None:
+        self.vocab = vocab
+
+    async def get(self, session: Any) -> factcheck.Vocabulary:
+        return self.vocab
+
+
 class Harness:
     """API с поддельным провайдером и без базы: инструменты здесь не обращаются к данным."""
 
-    def __init__(self, rounds: Sequence[Sequence[Any]], **settings: Any) -> None:
+    def __init__(
+        self,
+        rounds: Sequence[Sequence[Any]],
+        vocab: factcheck.Vocabulary | None = None,
+        **settings: Any,
+    ) -> None:
         self.app = create_app(Settings(_env_file=None, rate_limit_requests=0, **settings))
         self.fake = FakeProvider(rounds)
         self.app.state.llm = self.fake
         self.app.state.session_factory = no_session
+        self.app.state.assistant_vocabulary = StaticVocabulary(vocab or factcheck.Vocabulary())
 
     @property
     def client(self) -> httpx.AsyncClient:
@@ -85,18 +104,108 @@ async def test_plain_answer_has_no_disclaimer() -> None:
     assert response.headers["cache-control"] == "no-cache, no-transform"
     assert response.headers["x-accel-buffering"] == "no"
     events = parse(response.text)
-    assert text_of(events) == "Привет"
-    assert [name for name, _ in events] == ["delta", "delta", "entities", "sources", "done"]
-    assert data_of(events, "done")["message_id"]
+    done = data_of(events, "done")
+    assert done["message_id"]
+    assert done["context"]
+    # без поиска оговорки нет; ответ отдаётся целиком после генерации и проверки
+    assert events == [
+        ("status", {"text": service.STATUS_WRITING}),
+        ("status", {"text": service.STATUS_CHECKING}),
+        ("delta", {"text": "Привет"}),
+        ("entities", {"entities": []}),
+        ("sources", {"sources": []}),
+        ("done", done),
+    ]
 
 
-async def test_text_before_and_after_search_is_not_glued() -> None:
+async def test_text_before_search_is_hidden_from_user_and_model() -> None:
+    """«Сейчас найду…» перед поиском — не ответ: ученик видел два ответа в одном, а модель
+    в следующем раунде принимала эту фразу за свои слова."""
     rounds = [
         [TextDelta("Сейчас найду."), tool("find_olympiads", {"query": ""})],
         [TextDelta("Вот варианты")],
     ]
-    text = text_of(parse((await Harness(rounds).post()).text))
-    assert text.startswith("Сейчас найду.\n\nВот варианты")
+    harness = Harness(rounds)
+    events = parse((await harness.post()).text)
+    assert text_of(events) == "Вот варианты"
+    assert "Сейчас найду" not in json.dumps(events, ensure_ascii=False)
+    second = harness.fake.requests[1]["messages"]
+    assert "Сейчас найду" not in json.dumps(second, ensure_ascii=False)
+    call = next(m for m in second if m["role"] == "assistant")
+    assert call["content"] is None
+    assert call["tool_calls"][0]["function"]["name"] == "find_olympiads"
+
+
+async def test_event_order_with_search() -> None:
+    calls = ToolCalls(
+        (
+            ToolCall("c1", "find_olympiads", "{}"),
+            ToolCall("c2", "find_olympiads", "{}"),
+            ToolCall("c3", "universities_for_olympiad", "{}"),
+        )
+    )
+    rounds = [
+        [TextDelta("Секунду, поищу."), calls],
+        [TextDelta("Вот вузы.\n\nПодробнее"), TextDelta(" ниже.")],
+    ]
+    events = parse((await Harness(rounds).post()).text)
+    assert [name for name, _ in events] == [
+        *["status"] * 5,
+        "delta",
+        "delta",
+        "notice",
+        "entities",
+        "sources",
+        "done",
+    ]
+    # одинаковые поиски подряд — один статус; тексты по инструменту, без слов ученика
+    assert [data["text"] for name, data in events if name == "status"] == [
+        service.STATUS_WRITING,
+        service.STATUS_TOOLS["find_olympiads"],
+        service.STATUS_TOOLS["universities_for_olympiad"],
+        service.STATUS_WRITING,
+        service.STATUS_CHECKING,
+    ]
+    assert [data["text"] for name, data in events if name == "delta"] == [
+        "Вот вузы.\n\n",
+        "Подробнее ниже.",
+    ]
+
+
+async def test_disclaimer_is_separate_notice() -> None:
+    rounds = [[tool("find_olympiads", {"query": ""})], [TextDelta("Вот варианты")]]
+    events = parse((await Harness(rounds).post()).text)
+    assert data_of(events, "notice") == {"text": service.DISCLAIMER}
+    assert text_of(events) == "Вот варианты"
+
+
+def test_every_tool_has_own_status() -> None:
+    assert service.tool_status("new_tool") == service.STATUS_SEARCH
+    assert all(service.tool_status(name) != service.STATUS_SEARCH for name in HANDLERS)
+
+
+async def test_answer_passes_review_before_user_sees_it(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: list[tuple[str, str]] = []
+
+    async def review(answer: str, checker: service.Review) -> str:
+        seen.append((answer, checker.facts.text))
+        return "Проверенный ответ"
+
+    monkeypatch.setattr(service, "review", review)
+    rounds = [[tool("find_olympiads", {"query": ""})], [TextDelta("Черновик  ")]]
+    events = parse((await Harness(rounds).post()).text)
+    # факты проверки — результат инструмента и слова ученика
+    assert [answer for answer, _ in seen] == ["Черновик"]
+    assert "роботов" in seen[0][1]
+    assert text_of(events) == "Проверенный ответ"
+
+
+def test_chunks_keep_text() -> None:
+    text = "Первый абзац.\n\nВторой\nс переносом.\n\n\nТретий"
+    parts = service.chunks(text)
+    assert "".join(parts) == text
+    assert parts[0] == "Первый абзац.\n\n"
+    assert service.chunks("") == []
 
 
 async def test_personal_data_does_not_reach_provider() -> None:
@@ -150,8 +259,8 @@ async def test_rejects_bad_request(body: dict[str, Any]) -> None:
 
 async def test_provider_failure_is_error_event() -> None:
     events = parse((await Harness([[TextDelta("нач"), LLMError("сбой")]]).post()).text)
-    assert events[-1] == ("error", {"code": "unavailable"})
-    assert "done" not in [name for name, _ in events]
+    # оборванный ответ не показывается: целиком он не прошёл бы проверку
+    assert [name for name, _ in events] == ["status", "error"]
 
 
 async def test_empty_answer_is_error_event() -> None:
@@ -307,7 +416,8 @@ async def test_interests_become_olympiads(real: Any) -> None:
         "робот" in p["profile"].lower() or "програм" in p["profile"].lower() for p in profiles
     )
     assert data_of(events, "entities")["entities"]
-    assert text_of(events).endswith(service.DISCLAIMER)
+    assert data_of(events, "notice")["text"] == service.DISCLAIMER
+    assert service.DISCLAIMER not in text_of(events)
 
 
 @pytest.mark.parametrize(
@@ -535,23 +645,65 @@ async def test_tool_results_stay_small(real: Any) -> None:
 # ---------------------------------------------------------------- набор оценки
 
 
-def test_eval_set_is_valid() -> None:
-    cases = evaluate.load_cases(evaluate.DEFAULT_SET)
-    assert len(cases) == 33
+@pytest.mark.parametrize(("path", "count"), [(evaluate.DEFAULT_SET, 33), (evaluate.DIALOG_SET, 20)])
+def test_eval_set_is_valid(path: Any, count: int) -> None:
+    cases = evaluate.load_cases(path)
+    assert len(cases) == count
     assert len({case.id for case in cases}) == len(cases)
-    assert {tool for case in cases for tool in case.tools} <= set(HANDLERS)
+    checks = [check for case in cases for check in case.checks if check]
+    assert {tool for check in checks for tool in check.tools} <= set(HANDLERS)
+    assert all(len(case.checks) == len(case.turns) for case in cases)
+
+
+def test_eval_sets_have_unique_ids_together() -> None:
+    cases = evaluate.load_cases(*evaluate.DEFAULT_SETS)
+    assert len({case.id for case in cases}) == len(cases)
+    dialogs = [case for case in cases if len(case.turns) > 1]
+    assert len(dialogs) >= 15
+    assert any(case.conditions for case in cases)
+
+
+def test_old_format_is_one_turn() -> None:
+    case = evaluate.parse_case({"id": "x", "question": "?", "tools": ["find_profiles"]})
+    assert case.turns == ["?"]
+    assert case.checks == [evaluate.Check(tools=["find_profiles"])]
+
+
+def test_top_level_checks_go_to_last_turn() -> None:
+    case = evaluate.parse_case(
+        {
+            "id": "x",
+            "turns": ["а", "б"],
+            "checks": [{"include": ["1"]}, None],
+            "must_mention_conditions": ["85"],
+        }
+    )
+    assert case.checks == [
+        evaluate.Check(include=["1"]),
+        evaluate.Check(must_mention_conditions=["85"]),
+    ]
+    with pytest.raises(ValueError, match="checks"):
+        evaluate.parse_case({"id": "y", "turns": ["а", "б"], "checks": [None]})
+    with pytest.raises(ValueError, match="неизвестные"):
+        evaluate.parse_case({"id": "z", "question": "?", "includes": ["опечатка"]})
 
 
 def test_judge() -> None:
-    case = evaluate.Case("x", "?", ["find_profiles"], ["нто"], ["выдумка"])
-    assert evaluate.judge(case, "Попробуй НТО", ["find_profiles"], None) == []
-    assert evaluate.judge(case, "Попробуй НТО", [], None)
-    assert evaluate.judge(case, "Ничего", ["find_profiles"], None)
-    assert evaluate.judge(case, "НТО и выдумка", ["find_profiles"], None)
-    assert evaluate.judge(case, "НТО", ["find_profiles"], "unavailable")
-    both = evaluate.Case("y", "?", [], [], [], ["НТО", "Юниор"])
+    check = evaluate.Check(tools=["find_profiles"], include=["нто"], exclude=["выдумка"])
+    assert evaluate.judge(check, "Попробуй НТО", ["find_profiles"], None) == []
+    assert evaluate.judge(check, "Попробуй НТО", [], None)
+    assert evaluate.judge(check, "Ничего", ["find_profiles"], None)
+    assert evaluate.judge(check, "НТО и выдумка", ["find_profiles"], None)
+    assert evaluate.judge(check, "НТО", ["find_profiles"], "unavailable")
+    both = evaluate.Check(include_all=["НТО", "Юниор"])
     assert evaluate.judge(both, "НТО и «Юниор»", [], None) == []
     assert evaluate.judge(both, "Только НТО", [], None)
+    conditions = evaluate.Check(must_mention_conditions=["85", "победител"], max_tools=1)
+    assert evaluate.judge(conditions, "Только победителям, ЕГЭ от 85", ["a"], None) == []
+    assert evaluate.judge(conditions, "Победителям, ЕГЭ от 85", ["a", "b"], None)
+    assert evaluate.judge(conditions, "Победителям и призёрам", [], None) == [
+        "не названо условие «85»"
+    ]
 
 
 async def test_eval_runs_on_fake_provider(built_database_url: str) -> None:
@@ -559,8 +711,245 @@ async def test_eval_runs_on_fake_provider(built_database_url: str) -> None:
     fake = FakeProvider(
         [[tool("find_profiles", {"keywords": ["робот"]})], [TextDelta("Попробуй НТО")]]
     )
-    case = evaluate.Case("x", "Люблю роботов", ["find_profiles"], ["нто"], [])
+    case = evaluate.Case.single("x", "Люблю роботов", tools=["find_profiles"], include=["нто"])
     async with app.state.session_factory() as session:
-        outcome = await evaluate.run_case(case, fake, session)
+        vocab = await factcheck.load_vocabulary(session)
+        outcome = await evaluate.run_case(case, fake, session, vocab)
     await app.state.engine.dispose()
+    assert len(vocab) > 100
     assert outcome.passed, outcome.reasons
+    assert outcome.turns[0].tool_results
+
+
+async def test_vocabulary_from_database_knows_real_names(built_database_url: str) -> None:
+    app = create_app(Settings(_env_file=None, database_url=built_database_url))
+    async with app.state.session_factory() as session:
+        vocab = await factcheck.load_vocabulary(session)
+    await app.state.engine.dispose()
+    kinds = {
+        mention.fragment: {e.kind for e in mention.entities}
+        for mention in vocab.find(
+            "НТО, «Высшая проба», ВсОШ, МГУ, НИУ ВШЭ и Университет ИТМО. "
+            "Олимпиада по информатике и программированию, физика, грани, логично."
+        )
+    }
+    assert kinds["НТО"] == {"olympiad"}
+    assert kinds["Высшая проба"] == {"olympiad"}
+    assert kinds["МГУ"] == {"university"}
+    assert "university" in kinds["НИУ ВШЭ"]
+    assert kinds["Университет ИТМО"] == {"university"}
+    assert set(kinds) == {"НТО", "Высшая проба", "ВсОШ", "МГУ", "НИУ ВШЭ", "Университет ИТМО"}
+
+
+# ---------------------------------------------------------------- контекст диалога (C1)
+
+SECRET = "test-secret"
+KEY = context.context_key(SECRET)
+NOTE = "олимпиады: «Высшая проба» [olympiad_id=3]; вузы: НИУ ВШЭ (Москва) [university_id=2]"
+
+
+def vocab() -> Vocabulary:
+    v = Vocabulary()
+    v.add_university(2, "НИУ ВШЭ (Москва)", "НИУ ВШЭ (Москва)")
+    v.add_university(5, "МФТИ", "МФТИ")
+    v.add(Entity("olympiad", 3, "«Высшая проба»"), "«Высшая проба»", "вышка")
+    v.add(Entity("olympiad", 4, "«Физтех»"), "«Физтех»", "физтех")
+    return v
+
+
+def token(dialog: DialogContext, key: bytes = KEY) -> str:
+    return context.encode(dialog, key)
+
+
+def system_of(harness: Harness) -> str:
+    return str(harness.fake.requests[0]["messages"][0]["content"])
+
+
+def test_context_roundtrip_and_forgery() -> None:
+    dialog = DialogContext([3], [(7, 3)], [11], [2], [NOTE])
+    signed = token(dialog)
+    assert context.decode(signed, KEY) == dialog
+    body, signature = signed.split(".")
+    forged_body = context.encode(DialogContext([999]), KEY).split(".")[0]
+    assert context.decode(f"{forged_body}.{signature}", KEY) is None  # чужое тело
+    assert context.decode(token(dialog, b"other"), KEY) is None  # чужой ключ
+    assert context.decode("мусор", KEY) is None
+    assert context.decode(None, KEY) is None
+
+
+def test_context_accumulates_with_limit() -> None:
+    ctx = ToolContext(None, [])  # type: ignore[arg-type]
+    old = DialogContext(list(range(context.MAX_IDS)), notes=["a", "b", "c"])
+    old.seed(ctx)
+    ctx.olympiads.add(1000)
+    new = context.advance(old, ctx, [{"kind": "olympiad", "id": 1000, "label": "НТО"}])
+    assert len(new.olympiads) == context.MAX_IDS
+    assert new.olympiads[-1] == 1000 and 0 not in new.olympiads
+    assert new.notes == ["b", "c", "олимпиады: НТО [olympiad_id=1000]"]
+
+
+async def test_context_goes_to_model_and_back() -> None:
+    harness = Harness([[TextDelta("ок")]], assistant_context_secret=SECRET)
+    signed = token(DialogContext([3], universities=[2], notes=[NOTE]))
+    events = parse((await harness.post(context=signed)).text)
+    # сводка фактов — в системном сообщении, id доступны модели
+    assert "[olympiad_id=3]" in system_of(harness)
+    returned = context.decode(data_of(events, "done")["context"], KEY)
+    assert returned is not None
+    assert returned.olympiads == [3] and returned.universities == [2]
+    assert returned.notes == [NOTE]
+
+
+async def test_forged_context_is_ignored() -> None:
+    harness = Harness([[TextDelta("ок")]], assistant_context_secret=SECRET)
+    forged = token(DialogContext([3], notes=[NOTE]), b"wrong")
+    response = await harness.post(context=forged)
+    assert response.status_code == 200
+    assert "[olympiad_id=3]" not in system_of(harness)
+    assert prompt.CONTEXT_NOTE not in system_of(harness)
+    returned = context.decode(data_of(parse(response.text), "done")["context"], KEY)
+    assert returned is not None
+    assert (returned.olympiads, returned.notes) == ([], [])
+
+
+async def test_followup_needs_one_tool_call(real: Any) -> None:
+    """После списка вузов «а какой балл?» решается одним benefit_conditions, без поиска."""
+    _, found = await real([[tool("find_olympiads", {"query": "высшая проба"})], [TextDelta("ок")]])
+    olympiad = tool_json(found)[0]["olympiads"][0]["olympiad_id"]
+    first, fake = await real(
+        [
+            [tool("find_olympiads", {"query": "высшая проба"})],
+            [tool("universities_for_olympiad", {"olympiad_id": olympiad}, "c2")],
+            [TextDelta("Смотри варианты.")],
+        ]
+    )
+    university = tool_json(fake)[1]["universities"][0]["university_id"]
+    signed = data_of(first, "done")["context"]
+    pair = {"olympiad_id": olympiad, "university_id": university}
+    _, followup = await real(
+        [[tool("benefit_conditions", pair)], [TextDelta("ок")]], context=signed
+    )
+    assert len(followup.requests) == 2  # один раунд с инструментом и ответ
+    result = tool_json(followup)[0]
+    assert "error" not in result, result
+    # без контекста те же id не принимаются
+    _, stale = await real([[tool("benefit_conditions", pair)], [TextDelta("ок")]])
+    assert "error" in tool_json(stale)[0]
+
+
+# ---------------------------------------------------------------- проверка ответа
+
+
+async def test_invented_university_triggers_clean_retry() -> None:
+    clean = "В базе нет данных об этом вузе."
+    harness = Harness([[TextDelta("Поступай в МФТИ.")], [TextDelta(clean)]], vocab=vocab())
+    with structlog.testing.capture_logs() as logs:
+        events = parse((await harness.post()).text)
+    assert text_of(events) == clean
+    retry = harness.fake.requests[1]
+    assert retry["tools"] == []
+    assert retry["messages"][-1]["role"] == "system"
+    assert "«МФТИ»" in retry["messages"][-1]["content"]
+    statuses = [data["text"] for name, data in events if name == "status"]
+    assert service.STATUS_CHECKING in statuses
+    # в логах только число и виды нарушений, без текста ответа
+    entry = next(e for e in logs if e["event"] == "assistant_factcheck")
+    assert entry["violations"] == 1 and entry["kinds"] == {"entity": 1}
+    assert "МФТИ" not in json.dumps(logs, ensure_ascii=False, default=str)
+
+
+async def test_dirty_retry_is_cut() -> None:
+    rounds = [
+        [TextDelta("Смотри олимпиады.\n\n- МФТИ даёт БВИ.")],
+        [TextDelta("Смотри олимпиады.\n\n- Обычно МФТИ даёт БВИ.")],
+    ]
+    events = parse((await Harness(rounds, vocab=vocab()).post()).text)
+    assert text_of(events) == f"Смотри олимпиады.\n\n{service.CUT_NOTE}"
+
+
+async def test_everything_cut_means_no_data() -> None:
+    rounds = [[TextDelta("МФТИ даёт БВИ.")], [TextDelta("Да, МФТИ.")]]
+    events = parse((await Harness(rounds, vocab=vocab()).post()).text)
+    assert text_of(events) == service.NO_DATA_ANSWER
+
+
+async def test_retry_respects_budget() -> None:
+    harness = Harness(
+        [[TextDelta("Ответ готов. В МФТИ дают БВИ.")]], vocab=vocab(), llm_daily_requests=1
+    )
+    events = parse((await harness.post()).text)
+    assert len(harness.fake.requests) == 1
+    assert text_of(events) == f"Ответ готов.\n\n{service.CUT_NOTE}"
+
+
+async def test_answer_from_facts_passes_as_is() -> None:
+    """Числа и названия из инструментов, справочника правил, контекста и слов ученика —
+    не нарушения: ответ показывается без повтора."""
+    results = [
+        ToolResult(
+            json.dumps(
+                {
+                    "olympiad": "«Высшая проба»",
+                    "olympiad_id": 3,
+                    "universities": [
+                        {
+                            "university": "НИУ ВШЭ (Москва)",
+                            "university_id": 2,
+                            "conditions": ["БВИ · победители · 11 класс · математика от 80"],
+                        }
+                    ],
+                },
+                ensure_ascii=False,
+            )
+        ),
+        ToolResult(
+            json.dumps(
+                {"rules": [{"topic": "ЕГЭ", "text": "Подтверждающий балл обычно не ниже 75."}]},
+                ensure_ascii=False,
+            )
+        ),
+    ]
+    dialog = DialogContext([4], notes=["олимпиады: «Физтех» [olympiad_id=4]"])
+    messages = [ChatMessage(role="user", content="Я в 10 классе, какой балл нужен?")]
+    facts = service.collect_facts(results, messages, dialog)
+    fake = FakeProvider([])
+    checker = service.Review(fake, [], always, facts, vocab())
+    answer = (
+        "**«Высшая проба»** даёт БВИ в НИУ ВШЭ (Москва).\n"
+        "- Победителям 11 класса, математика от 80 баллов.\n"
+        "- Подтверждающий балл ЕГЭ обычно не ниже 75.\n"
+        "- Ты в 10 классе, время готовиться.\n"
+        "- Ещё посмотри «Физтех»."
+    )
+    assert await service.review(answer, checker) == answer
+    assert fake.requests == []
+    # id из контекста не оправдывают числа: «4 вуза» не из данных
+    assert [v.kind for v in check("Есть 4 вуза.", facts, vocab())] == ["number"]
+
+
+async def always() -> bool:
+    return True
+
+
+async def test_verified_previous_answer_counts_as_facts() -> None:
+    """Прошлый ответ, который сервер сам проверил (отпечаток в контексте), — факт для уточнения;
+    изменённый на клиенте ответ — нет."""
+    said = "В МФТИ дают БВИ."
+    signed = token(DialogContext(answers=[context.digest(said)]))
+
+    async def ask(previous: str) -> Harness:
+        harness = Harness(
+            [[TextDelta("Да, МФТИ.")]], vocab=vocab(), assistant_context_secret=SECRET
+        )
+        messages = [
+            *USER,
+            {"role": "assistant", "content": previous},
+            {"role": "user", "content": "А?"},
+        ]
+        await harness.post(messages=messages, context=signed)
+        return harness
+
+    assert len((await ask(said)).fake.requests) == 1
+    assert (
+        len((await ask("В МФТИ точно дают БВИ.")).fake.requests) == 2
+    )  # повтор: МФТИ не из данных
