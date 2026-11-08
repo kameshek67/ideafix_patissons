@@ -56,6 +56,7 @@ just max-link --start diplomas   # открыть сайт «как из MAX» (
 | `OLYMP_RATE_LIMIT_REQUESTS` / `_WINDOW` | 600 / 60 | лимит запросов на IP; 0 — выключен |
 | `OLYMP_CACHE_TTL` | 600 | кэш ответов поиска, секунд |
 | `OLYMP_MAX_BOT_TOKEN`, `OLYMP_MAX_BOT_NAME` | — | мини-приложение MAX (секрет!) |
+| `OLYMP_SITE_URL` | `https://ideafix.patissons.tech` | адрес сайта для кнопки «Сайт» в сообщениях бота MAX |
 | `OLYMP_MAX_INIT_DATA_TTL` | 86400 | срок годности данных запуска MAX |
 | `OLYMP_LLM_BASE_URL`, `OLYMP_LLM_API_KEY`, `OLYMP_LLM_MODEL` | — | ИИ-помощник: без любого из них он выключен (ключ — секрет!). Подходит любой OpenAI-совместимый провайдер; OpenRouter: `https://openrouter.ai/api/v1`, на стенде — `https://ai.starimg.ru/v1` и `deepseek-v4.1-flash` |
 | `OLYMP_LLM_FALLBACK_MODEL` | — | резервная модель |

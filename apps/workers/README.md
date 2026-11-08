@@ -26,7 +26,7 @@ src/olymp_workers/
   refresh_sources.py   обход этих страниц → university_documents + data/university_documents.json
   validate.py          проверки качества данных
   tasks.py             акторы Dramatiq
-  max_bot.py           бот MAX: приветствие с кнопками, check
+  max_bot.py           бот MAX: приветствие и подсказка с кнопками мини-приложения и сайта, check
 tests/                 итоговые числа сборки на настоящем XLSX; бот — на поддельном API MAX
 ```
 
