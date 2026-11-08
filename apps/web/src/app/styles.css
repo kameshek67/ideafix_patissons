@@ -441,6 +441,13 @@ mark { background: #F4DCFE; color: inherit; padding: 0 2px; border-radius: 3px; 
 .onboarding-diploma.is-front { left: 8px; top: 96px; width: 320px; transform: rotate(-3deg); transform-origin: 0 0; }
 .onboarding-diploma.is-back { left: 58px; top: 196px; width: 300px; transform: rotate(4deg); transform-origin: 0 0; opacity: .92; }
 .onboarding-cup { position: absolute; left: 236px; top: 0; }
+.onboarding-bubble {
+  position: absolute; max-width: 270px; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 19px;
+  background: #fff; box-shadow: 0 8px 24px rgba(89,0,120,.10);
+}
+.onboarding-bubble.is-question { right: 8px; top: 8px; background: var(--soft); border-bottom-right-radius: 4px; }
+.onboarding-bubble.is-answer { left: 8px; top: 92px; border-bottom-left-radius: 4px; }
+.onboarding-diploma.is-points { left: 40px; top: 214px; width: 300px; transform: rotate(-2deg); transform-origin: 0 0; }
 .onboarding-sheet {
   flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 20px;
   padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
