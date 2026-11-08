@@ -1,0 +1,17 @@
+# Обновления зависимостей раз в неделю, небольшими PR в dev (T-071)
+version: 2
+updates:
+  - package-ecosystem: uv
+    directory: /
+    target-branch: dev
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 3
+  - package-ecosystem: npm
+    directory: /
+    target-branch: dev
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 3
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: dev
+    schedule: {interval: weekly}

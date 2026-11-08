@@ -31,7 +31,11 @@ def _create_database(prefix: str) -> tuple[URL, str]:
         with admin.connect() as c:
             c.execute(text("SELECT 1"))
     except Exception as exc:  # noqa: BLE001
-        pytest.skip(f"PostgreSQL недоступен: {exc.__class__.__name__}")
+        message = f"PostgreSQL недоступен: {exc.__class__.__name__}"
+        # в CI пропуск тестов с базой выглядел бы как зелёный прогон — там это ошибка (T-071)
+        if os.environ.get("OLYMP_REQUIRE_DB") == "1":
+            pytest.fail(message)
+        pytest.skip(message)
     name = f"{prefix}_{uuid.uuid4().hex[:8]}"
     with admin.connect() as c:
         c.execute(text(f'CREATE DATABASE "{name}"'))
