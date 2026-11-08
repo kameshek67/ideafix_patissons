@@ -9,21 +9,25 @@ from olymp_db.session import psycopg_dsn
 from olymp_domain.olympiad_cards import CardError
 from olymp_workers.olympiad_cards import CARDS_FILE, load_olympiad_cards
 
-# итог сборки прототипа на SQLite по тому же файлу data/Olimpiady_BVI_100ballov.xlsx
+# Итог сборки. Исходно совпадал со сборкой прототипа на SQLite по тому же файлу
+# data/Olimpiady_BVI_100ballov.xlsx (programs 710, benefits 53286, derived 26288, profiles 638);
+# изменён осознанно (план качества помощника, D1 и D2):
+#  - D2: программы с одним кодом больше не склеиваются по коду (ВШЭ, КФУ, филиалы ВШЭ) -> +51 программа;
+#  - D1: правила УрФУ разбираются как «профиль (подтв.: предметы)», НТО УрФУ раскрывается целиком.
 EXPECTED = {
     "universities": "39",
-    "programs": "659",
-    "benefits": "49450",
-    "benefits_bvi": "27787",
-    "benefits_sto": "20859",
+    "programs": "710",
+    "benefits": "53286",
+    "benefits_bvi": "30494",
+    "benefits_sto": "21988",
     "benefits_raw": "859",
-    "benefits_rows": "48973",
-    "benefits_derived": "23720",
+    "benefits_rows": "52809",
+    "benefits_derived": "26288",
     "benefits_notes": "477",
     "olympiads": "173",
-    "profiles": "637",
-    "links": "59108",
-    "keywords": "117736",
+    "profiles": "638",
+    "links": "62944",
+    "keywords": "123574",
     "fts": "on",
 }
 
@@ -266,3 +270,88 @@ def test_cards_file_changes_build_fingerprint(
     before = ingest.build_fingerprint(ingest.DEFAULT_XLSX)
     cards.write_text('{"olympiads": [] }', encoding="utf-8")
     assert ingest.build_fingerprint(ingest.DEFAULT_XLSX) != before
+
+
+def test_hse_pmi_vysshaya_proba_math_has_no_conflicting_conditions(
+    built_database_url: str,
+) -> None:
+    """D2: у ПМИ ВШЭ (№3, 01.03.02) «Высшая проба» по математике — только победители, ЕГЭ ≥ 85.
+
+    Строка «победители и призёры, ≥ 75» принадлежит другим программам с тем же кодом
+    (№4 «Прикладной анализ данных», №5 «Компьютерные науки и анализ данных»): раньше все три
+    программы склеивались по коду 01.03.02 и условия попадали на ПМИ вместе.
+    """
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        rows = conn.execute(
+            """SELECT p.faculty_or_direction, b.winner_role, b.min_ege
+               FROM benefits b
+               JOIN programs p ON p.id = b.program_id
+               JOIN universities u ON u.id = p.university_id
+               JOIN benefit_olympiads bo ON bo.benefit_id = b.id
+               JOIN olympiads o ON o.id = bo.olympiad_id
+               WHERE u.name = 'НИУ ВШЭ (Москва)' AND p.code = '01.03.02'
+                 AND o.short_name = '«Высшая проба»' AND b.benefit_type = 'БВИ'
+                 AND b.layer = 'detailed' AND b.olympiad_subject = 'математика'
+               ORDER BY p.id, b.id"""
+        ).fetchall()
+    by_program: dict[str, set[tuple[str, str]]] = {}
+    for program, role, min_ege in rows:
+        by_program.setdefault(program, set()).add((role, min_ege))
+
+    pmi = "№3. Прикладная математика и информатика (01.03.02)"
+    assert by_program[pmi] == {("только победители", "85 и более")}
+    # «≥ 75» достаётся программам, у которых оно записано в документе ВШЭ
+    assert by_program["№4. Прикладной анализ данных (01.03.02)"] == {
+        ("победители и призёры", "75 и более")
+    }
+    assert ("победители и призёры", "75 и более") in by_program[
+        "№5. Компьютерные науки и анализ данных (01.03.02)"
+    ]
+
+
+def test_programs_with_same_code_are_not_merged(built_database_url: str) -> None:
+    """D2: у ВШЭ (Москва) на одном коде несколько программ — каждая со своим номером."""
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        names = [
+            row[0]
+            for row in conn.execute(
+                """SELECT p.faculty_or_direction FROM programs p
+                   JOIN universities u ON u.id = p.university_id
+                   WHERE u.name = 'НИУ ВШЭ (Москва)' AND p.code = '38.03.01'
+                     AND p.source_sheet = 'База' ORDER BY p.id"""
+            )
+        ]
+    assert any(n.startswith("№24. Экономика") for n in names)
+    assert any(n.startswith("№25. Совместная программа") for n in names)
+    assert len(names) >= 5
+
+
+def test_urfu_profile_rules_keep_profile_and_confirm_subjects(built_database_url: str) -> None:
+    """D1: «Астрономия (подтв.: математика, физика)» — профиль астрономия, а не математика."""
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        astronomy = conn.execute(
+            """SELECT DISTINCT b.confirm_subject FROM benefits b
+               JOIN programs p ON p.id = b.program_id
+               JOIN universities u ON u.id = p.university_id
+               WHERE u.name LIKE '%(УрФУ)' AND b.layer = 'derived' AND b.benefit_type = 'БВИ'
+                 AND b.olympiad_profile = 'астрономия'"""
+        ).fetchall()
+        nto = conn.execute(
+            """SELECT COUNT(DISTINCT p.id), COUNT(DISTINCT b.olympiad_profile),
+                      COUNT(*) FILTER (
+                          WHERE b.confirm_subject = 'биология, информатика, математика, физика, химия'
+                      )
+               FROM benefits b
+               JOIN programs p ON p.id = b.program_id
+               JOIN universities u ON u.id = p.university_id
+               JOIN benefit_olympiads bo ON bo.benefit_id = b.id
+               JOIN olympiads o ON o.id = bo.olympiad_id
+               WHERE u.name LIKE '%(УрФУ)' AND b.layer = 'derived' AND o.short_name = 'НТО'"""
+        ).fetchone()
+    assert astronomy == [("математика, физика",)]
+    # НТО (все профили) раньше давало 0 строк; теперь — профили НТО на направлениях УрФУ
+    programs, profiles, with_nto_confirm = nto
+    assert programs >= 50
+    assert profiles >= 20
+    # предметы подтверждения НТО взяты из скобок «(подтв.: …)» правила УрФУ
+    assert with_nto_confirm >= 3000

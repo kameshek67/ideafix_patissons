@@ -267,6 +267,18 @@
             ],
             "title": "Code"
           },
+          "context": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "done — подписанный контекст диалога (id найденного и сводка фактов): хранить и прислать в следующем запросе в поле context",
+            "title": "Context"
+          },
           "entities": {
             "anyOf": [
               {
@@ -315,6 +327,7 @@
                 "type": "null"
               }
             ],
+            "description": "status — что делает помощник; delta — кусок ответа; notice — оговорка под ответом (показывать отдельно, в историю не отправлять)",
             "title": "Text"
           }
         },
@@ -323,6 +336,7 @@
           "entities",
           "sources",
           "message_id",
+          "context",
           "code"
         ],
         "title": "AssistantStreamEvent",
@@ -551,6 +565,19 @@
       },
       "ChatRequest": {
         "properties": {
+          "context": {
+            "anyOf": [
+              {
+                "maxLength": 8000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Контекст диалога из события done прошлого ответа, как есть. Подписан сервером: изменённый или устаревший контекст молча не учитывается",
+            "title": "Context"
+          },
           "diplomas": {
             "description": "Строки дипломов, если ученик разрешил их учитывать",
             "items": {
@@ -3330,7 +3357,7 @@
                 }
               }
             },
-            "description": "Поток text/event-stream: status, delta, entities, sources, done, error"
+            "description": "Поток text/event-stream. Порядок: status (что делает помощник, пока ответа нет; может быть несколько, последний — «Проверяю ответ…») → delta (ответ кусками, уже проверенный целиком) → notice (оговорка под ответом, не часть ответа и не для истории; только если был поиск) → entities → sources → done (message_id и context для следующего запроса). При сбое — error с code."
           },
           "422": {
             "content": {
