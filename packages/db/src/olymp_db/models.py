@@ -148,7 +148,8 @@ class Olympiad(Base):
     id: Mapped[int] = _pk()
     canonical_name: Mapped[str] = mapped_column(CText, unique=True)
     short_name: Mapped[str] = mapped_column(CText)
-    squash_key: Mapped[str] = mapped_column(CText)
+    # по ключу олимпиаду ищут дипломы и ссылки «Поделиться»: два одинаковых — ошибка сборки
+    squash_key: Mapped[str] = mapped_column(CText, unique=True)
     kind: Mapped[str] = _text("rsosh")
     is_featured: Mapped[int] = _int()
     mentions: Mapped[int] = _int()

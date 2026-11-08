@@ -321,19 +321,18 @@ async def by_olympiad(
         if row["benefit_type"] not in program["types"]:
             program["types"].append(row["benefit_type"])
 
-    # вузы, у которых все направления не влезли в лимит выдачи, всё равно показываем в списке
-    for aggregate_university_id, aggregate in totals_by_university.items():
-        if aggregate_university_id in universities_map:
-            continue
-        info = await fetch_one(
+    # вузы, у которых все направления не влезли в лимит выдачи, всё равно показываем в списке —
+    # одним запросом и в том же формате карточки, что и остальные
+    missing = [uid for uid in totals_by_university if uid not in universities_map]
+    if missing:
+        for row in await fetch_all(
             session,
-            """SELECT id, name, short_name, region, city, note, region_group
-               FROM universities WHERE id = :id""",
-            {"id": aggregate_university_id},
-        )
-        if info:
-            universities_map[aggregate_university_id] = {
-                "university": info,
+            f"SELECT {UNIVERSITY_FIELDS} FROM universities u WHERE u.id = ANY(:ids)",
+            {"ids": missing},
+        ):
+            aggregate = totals_by_university[row["university_id"]]
+            universities_map[row["university_id"]] = {
+                "university": university_of(row),
                 "programs": [],
                 "programs_total": aggregate["programs_total"],
                 "bvi": aggregate["bvi"],
