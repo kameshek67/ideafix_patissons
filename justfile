@@ -57,6 +57,10 @@ assistant-eval *ARGS:
 ai-cards *ARGS:
     uv run olymp-ai-cards {{ARGS}}
 
+# сообщения «Нашли ошибку в данных» в CSV: just reports --all > reports.csv
+reports *ARGS:
+    uv run python scripts/export_reports.py {{ARGS}}
+
 # пересоздать контракт API и клиент для сайта после изменения эндпоинтов
 openapi:
     uv run python -m olymp_api.openapi_cli > docs/openapi.json

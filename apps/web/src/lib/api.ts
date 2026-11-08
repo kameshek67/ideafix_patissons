@@ -110,6 +110,14 @@ export async function sendAssistantFeedback(messageId: string, rating: 1 | -1): 
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
 }
 
+export type ReportRequest = Schemas["ProgramReportIn"] | Schemas["OlympiadReportIn"];
+
+/** «Нашли ошибку в данных» (T-079). */
+export async function sendReport(body: ReportRequest): Promise<void> {
+  const { response } = await api.POST("/v1/reports", { body });
+  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+}
+
 // дипломы пользователя MAX: API узнаёт его по подписанным данным запуска мини-приложения
 const maxHeaders = (initData: string) => ({ "X-Max-Init-Data": initData });
 

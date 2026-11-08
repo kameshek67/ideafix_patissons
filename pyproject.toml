@@ -66,6 +66,7 @@ modules = [
     "olymp_api.modules.achievements",
     "olymp_api.modules.catalog",
     "olymp_api.modules.extra_points",
+    "olymp_api.modules.reports",
     "olymp_api.modules.search",
     "olymp_api.modules.sharing",
 ]
