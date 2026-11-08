@@ -82,6 +82,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/assistant/chat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Chat
+         * @description Ответ помощника потоком. История хранится на клиенте, сервер её не сохраняет.
+         */
+        post: operations["chat_v1_assistant_chat_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/assistant/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Config
+         * @description Доступен ли помощник. Без настроек LLM кнопка на сайте скрыта.
+         */
+        get: operations["config_v1_assistant_config_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/assistant/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Feedback
+         * @description Оценка ответа: только счётчик в метриках, текст ответа не сохраняется.
+         */
+        post: operations["feedback_v1_assistant_feedback_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/extra-points/score": {
         parameters: {
             query?: never;
@@ -452,6 +512,55 @@ export interface components {
             /** Valid Years */
             valid_years: number[];
         };
+        /** AssistantConfig */
+        AssistantConfig: {
+            /** Enabled */
+            enabled: boolean;
+            /** Model Label */
+            model_label: string | null;
+            /** Suggestions */
+            suggestions: string[];
+        };
+        /**
+         * AssistantEntity
+         * @description Карточка в ответе: открывает экран приложения.
+         */
+        AssistantEntity: {
+            /** Hint */
+            hint: string | null;
+            /** Id */
+            id: number;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "olympiad" | "program" | "university";
+            /** Label */
+            label: string;
+        };
+        /** AssistantSource */
+        AssistantSource: {
+            /** Title */
+            title: string;
+            /** Url */
+            url: string;
+        };
+        /**
+         * AssistantStreamEvent
+         * @description Данные одного события потока. Какие поля заполнены, зависит от типа события (event:).
+         */
+        AssistantStreamEvent: {
+            /** Code */
+            code: string | null;
+            /** Entities */
+            entities: components["schemas"]["AssistantEntity"][] | null;
+            /** Message Id */
+            message_id: string | null;
+            /** Sources */
+            sources: components["schemas"]["AssistantSource"][] | null;
+            /** Text */
+            text: string | null;
+        };
         /** Award */
         Award: {
             /**
@@ -522,6 +631,26 @@ export interface components {
             rows: components["schemas"]["Benefit"][];
             /** Type */
             type: string;
+        };
+        /** ChatMessage */
+        ChatMessage: {
+            /** Content */
+            content: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "user" | "assistant";
+        };
+        /** ChatRequest */
+        ChatRequest: {
+            /**
+             * Diplomas
+             * @description Строки дипломов, если ученик разрешил их учитывать
+             */
+            diplomas?: string[];
+            /** Messages */
+            messages: components["schemas"]["ChatMessage"][];
         };
         /** ClaimIn */
         ClaimIn: {
@@ -702,6 +831,16 @@ export interface components {
             text: string;
             /** University */
             university: string;
+        };
+        /** FeedbackRequest */
+        FeedbackRequest: {
+            /** Message Id */
+            message_id: string;
+            /**
+             * Rating
+             * @enum {integer}
+             */
+            rating: 1 | -1;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -1522,6 +1661,90 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["DiplomaForm"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    chat_v1_assistant_chat_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChatRequest"];
+            };
+        };
+        responses: {
+            /** @description Поток text/event-stream: status, delta, entities, sources, done, error */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssistantStreamEvent"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    config_v1_assistant_config_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssistantConfig"];
+                };
+            };
+        };
+    };
+    feedback_v1_assistant_feedback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {

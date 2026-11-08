@@ -75,6 +75,13 @@ services:
       # и хранит его дипломы) и публичное имя бота — значения из .env
       OLYMP_MAX_BOT_TOKEN: ${OLYMP_MAX_BOT_TOKEN:-}
       OLYMP_MAX_BOT_NAME: ${OLYMP_MAX_BOT_NAME:-}
+      # ИИ-помощник: ключ только в .env, без него кнопка чата скрыта
+      OLYMP_LLM_ENABLED: ${OLYMP_LLM_ENABLED:-true}
+      OLYMP_LLM_BASE_URL: ${OLYMP_LLM_BASE_URL:-https://openrouter.ai/api/v1}
+      OLYMP_LLM_API_KEY: ${OLYMP_LLM_API_KEY:-}
+      OLYMP_LLM_MODEL: ${OLYMP_LLM_MODEL:-}
+      OLYMP_LLM_FALLBACK_MODEL: ${OLYMP_LLM_FALLBACK_MODEL:-}
+      OLYMP_LLM_DAILY_REQUESTS: ${OLYMP_LLM_DAILY_REQUESTS:-45}
     ports: ["${OLYMP_API_PORT:-8000}:8000"]
     depends_on:
       migrate: {condition: service_completed_successfully}

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   friendlyError,
   getByOlympiad,
+  getAssistantConfig,
   getByProgram,
   getDiplomaForm,
   getMaxConfig,
@@ -24,10 +25,12 @@ import {
 import { type DiplomaEntry, upsertDiploma } from "@/lib/diplomas";
 import { fmt, place, plural } from "@/lib/format";
 import { haptic, whenMax } from "@/lib/max";
+import { entityIntent, type ScreenIntent } from "@/lib/navigation";
 import { shouldShowOnboarding } from "@/lib/onboarding";
 import { parseStartParam, type StartIntent } from "@/lib/startParam";
 import { showToast } from "@/lib/toast";
 import { AboutModal } from "./AboutModal";
+import { AssistantChat } from "./AssistantChat";
 import { Combo, type ComboItem } from "./Combo";
 import { TablesContext, useTablesStore } from "./DataTable";
 import { DiplomaSheet } from "./DiplomaSheet";
@@ -443,9 +446,37 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     window.scrollTo({ top: 0 });
   }
 
+  // ---------------------------------------------------------------- помощник
+  // без настроек LLM ответ enabled: false или ошибка: кнопки нет, приложение работает как обычно
+  const assistantQ = useQuery({
+    queryKey: ["assistant-config"],
+    queryFn: getAssistantConfig,
+    staleTime: Infinity,
+    retry: false,
+  });
+  const assistant = assistantQ.data?.enabled ? assistantQ.data : null;
+  const [chatOpen, setChatOpen] = useState(false);
+  // ученик ушёл из чата к карточке: «Назад» вернёт его в диалог
+  const [chatLeft, setChatLeft] = useState(false);
+
+  function navigate(intent: ScreenIntent) {
+    if (intent.kind === "program") return void openProgram(intent.id);
+    if (intent.kind === "olympiad") return goToOlympiad(intent.id, intent.name);
+    const found = universities.find((u) => u.id === intent.id);
+    setTab("uni");
+    if (found) pickUniversity(found);
+    scrollTop();
+  }
+
+  function openChat() {
+    setChatLeft(false);
+    setChatOpen(true);
+  }
+
   // ---------------------------------------------------------------- кнопка «Назад» в MAX
   useMaxBackButton(aboutOpen ? () => setAboutOpen(false) : null);
   useMaxBackButton(tab === "olymp" && olympState.kind === "university" ? backToList : null);
+  useMaxBackButton(chatOpen ? () => setChatOpen(false) : chatLeft ? openChat : null);
 
   // ---------------------------------------------------------------- запуск по ссылке
   // https://max.ru/<бот>?startapp=diplomas | olympiad-<id> | program-<id> | s_<token>
@@ -838,6 +869,29 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
           <ExtraPointsView active={tab === "extra"} />
         </section>
       </main>
+
+      {/* ПОМОЩНИК */}
+      {assistant ? (
+        <>
+          {!chatOpen && !sheet && !aboutOpen && !onboarding ? (
+            <button id="assistant-fab" className="btn-primary assistant-fab" type="button" onClick={openChat}>
+              <span aria-hidden="true">✦</span> Спросить ИИ
+              {chatLeft ? <span className="assistant-dot" aria-label="Есть диалог" /> : null}
+            </button>
+          ) : null}
+          <AssistantChat
+            open={chatOpen}
+            suggestions={assistant.suggestions}
+            diplomas={diplomas.entries.map((entry) => entry.spec)}
+            onClose={() => setChatOpen(false)}
+            onEntity={(entity) => {
+              setChatOpen(false);
+              setChatLeft(true);
+              navigate(entityIntent(entity));
+            }}
+          />
+        </>
+      ) : null}
 
       {/* ОНБОРДИНГ — первый запуск */}
       {onboarding ? <Onboarding onFinish={finishOnboarding} /> : null}

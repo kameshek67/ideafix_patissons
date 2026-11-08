@@ -1,4 +1,5 @@
-# Образ сайта (Next.js). Адрес API зашивается в прокси /api/v1/* при сборке.
+# Образ сайта (Next.js). Адрес API зашивается в прокси /api/v1/* при сборке, а поток помощника
+# читает его при запуске, поэтому переменная нужна на обоих этапах.
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
@@ -12,7 +13,8 @@ RUN npm run build --workspace olymp-web
 
 FROM node:22-alpine
 WORKDIR /app
-ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
+ARG OLYMP_API_URL=http://api:8000
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 OLYMP_API_URL=$OLYMP_API_URL
 COPY --from=build /app /app
 USER node
 EXPOSE 3000
