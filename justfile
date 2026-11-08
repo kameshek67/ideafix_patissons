@@ -27,6 +27,10 @@ validate *ARGS:
 refresh-sources *ARGS:
     uv run olymp-refresh-sources {{ARGS}}
 
+# ИИ-сверка строк льгот с документами вузов (F-07): --sample 20, --university итмо, --dry-run
+ai-verify *ARGS:
+    uv run olymp-ai-verify {{ARGS}}
+
 # воркер фоновых задач (Dramatiq + RabbitMQ)
 worker:
     uv run dramatiq olymp_workers.tasks --processes 1 --threads 2

@@ -1,7 +1,7 @@
 ---
 id: T-078
 title: "Обходчик сайтов: проверка TLS и фильтр схем ссылок"
-status: review
+status: done
 priority: P2
 area: workers
 estimate: S

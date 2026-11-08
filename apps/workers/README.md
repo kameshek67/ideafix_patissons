@@ -13,6 +13,7 @@
 | `just refresh-sources [--dry-run] [--only кфу]` | обойти страницы приёмных комиссий, обновить ссылки на документы |
 | `just max-check` / `uv run olymp-max-bot run` | проверить токен бота MAX / запустить приветствие бота (long polling) |
 | `just ai-cards sites` / `just ai-cards draft --top 50` | сайты олимпиад из перечня РСОШ / ИИ-черновики карточек олимпиад по этим сайтам (F-06) |
+| `just ai-verify [--sample N] [--university итмо] [--dry-run]` | ИИ-сверка строк льгот с документами вузов, отчёт CSV ([F-07](../../docs/specs/F-07-ai-parsers.md)) |
 | `just worker` | воркер Dramatiq (фоновые задачи refresh-sources и пересборки) |
 
 В Docker: сервис `migrate` собирает базу при первом старте, `worker` — очередь, `bot` — профиль `bot`.
@@ -30,8 +31,10 @@ src/olymp_workers/
   max_bot.py           бот MAX: приветствие и подсказка с кнопками мини-приложения и сайта, check
   ai_cards.py          сайты олимпиад (rsr-olymp.ru) → ИИ-черновики карточек; факт без дословной цитаты
                        со страницы отбрасывается
+  ai/                  ИИ-парсеры (F-07): documents.py — скачивание, кэш и текст страниц,
+                       verify.py — сверщик строк (olymp-ai-verify), prompts.py — промпты с версией
 tests/                 итоговые числа сборки на настоящем XLSX; бот — на поддельном API MAX;
-                       ИИ-карточки — на поддельных сайте и модели
+                       ИИ-карточки и сверщик — на поддельных сайтах, документах и модели
 ```
 
 Как устроена сборка и слои данных — [docs/architecture/data.md](../../docs/architecture/data.md).

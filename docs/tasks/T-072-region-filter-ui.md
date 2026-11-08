@@ -1,7 +1,7 @@
 ---
 id: T-072
 title: Фильтр по региону во вкладке «Олимпиады» (FR-1, FR-2)
-status: review
+status: done
 priority: P1
 area: web
 estimate: S

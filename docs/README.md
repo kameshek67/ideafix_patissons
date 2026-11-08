@@ -31,6 +31,7 @@
 | `apps/workers` | сборка базы, обход сайтов вузов, проверки, бот MAX | [README](../apps/workers/README.md) |
 | `packages/domain` | чистая логика: названия олимпиад, условия дипломов | [README](../packages/domain/README.md) |
 | `packages/db` | модели и миграции | [README](../packages/db/README.md) |
+| `packages/llm` | шлюз к языковым моделям для API и воркеров | [README](../packages/llm/README.md) |
 | `packages/api-client` | типы API для сайта (генерируются) | [README](../packages/api-client/README.md) |
 | `infra` | Docker, окружение разработки, стенд | [README](../infra/README.md) |
 | `scripts`, `data`, `design`, `presentation` | утилиты, исходные данные, макеты, презентация | [scripts](../scripts/README.md) · [data](../data/README.md) · [design](../design/README.md) · [presentation](../presentation/README.md) |

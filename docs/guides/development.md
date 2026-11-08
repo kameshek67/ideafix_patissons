@@ -62,6 +62,7 @@ just max-link --start diplomas   # открыть сайт «как из MAX» (
 | `OLYMP_LLM_BASE_URL`, `OLYMP_LLM_API_KEY`, `OLYMP_LLM_MODEL` | — | ИИ-помощник: без любого из них он выключен (ключ — секрет!). Подходит любой OpenAI-совместимый провайдер; OpenRouter: `https://openrouter.ai/api/v1`, на стенде — `https://ai.starimg.ru/v1` и `deepseek-v4.1-flash` |
 | `OLYMP_LLM_FALLBACK_MODEL` | — | резервная модель |
 | `OLYMP_LLM_ENABLED` | `true` | мгновенно выключить помощника |
+| `OLYMP_PARSER_MODEL` | как `OLYMP_LLM_MODEL` | отдельная модель для ИИ-парсеров (`just ai-verify`) |
 | `OLYMP_LLM_DAILY_REQUESTS` | 45 | обращений к модели в сутки на весь сервис; 0 — без ограничения |
 | `OLYMP_LLM_DENY_DATA_COLLECTION` | `true` | OpenRouter: не отправлять запросы провайдерам, которые хранят данные |
 | `OLYMP_TEST_DATABASE_URL` | как `DATABASE_URL` | сервер для временных баз тестов |
