@@ -114,10 +114,55 @@ interface ResultsProps {
   benefitType: string;
   onProfile: (id: number | null) => void;
   onUniversity: (university: UniversityInfo) => void;
+  /** группы регионов из /v1/universities; пусто — фильтр не показываем */
+  regions?: string[];
+  region?: string;
+  onRegion?: (region: string) => void;
+}
+
+/** «Регионы» — всё, что не столицы, поэтому в конце: Москва, Санкт-Петербург, Регионы. */
+export function orderRegions(regions: string[]): string[] {
+  return [...regions].sort((a, b) => Number(a === "Регионы") - Number(b === "Регионы") || a.localeCompare(b, "ru"));
+}
+
+/** Фильтр списка вузов по региону (FR-2): чипы над списком, как у профилей. */
+function RegionChips({
+  regions,
+  region,
+  onPick,
+}: {
+  regions: string[];
+  region: string;
+  onPick: (region: string) => void;
+}) {
+  if (regions.length < 2) return null;
+  return (
+    <div className="chip-group" role="group" aria-label="Регион вуза">
+      {["Все", ...orderRegions(regions)].map((name) => (
+        <button
+          key={name}
+          className={`chip ${region === name ? "chip-on" : ""}`}
+          aria-pressed={region === name}
+          onClick={() => onPick(name)}
+        >
+          {name === "Все" ? "Все регионы" : name}
+        </button>
+      ))}
+    </div>
+  );
 }
 
 /** Выдача по олимпиаде: шапка, профили, список вузов (или «не найдено»). */
-export function OlympiadResults({ data, profileId, benefitType, onProfile, onUniversity }: ResultsProps) {
+export function OlympiadResults({
+  data,
+  profileId,
+  benefitType,
+  onProfile,
+  onUniversity,
+  regions = [],
+  region = "Все",
+  onRegion,
+}: ResultsProps) {
   if (!data.matched_olympiads.length) {
     const fallback = (data.fallback || []).slice(0, 8);
     return (
@@ -151,6 +196,7 @@ export function OlympiadResults({ data, profileId, benefitType, onProfile, onUni
         <span className="badge badge-soft">{`${fmt(data.total_programs)} ${napravleniy(data.total_programs)}`}</span>
       </OlympiadHead>
       <ProfileChips data={data} profileId={profileId} onPick={onProfile} />
+      {onRegion ? <RegionChips regions={regions} region={region} onPick={onRegion} /> : null}
       {data.results.length ? (
         <div className="card uni-list overflow-hidden">
           <div className="list-caption">Выбери вуз, чтобы увидеть льготы по направлениям</div>
@@ -179,7 +225,11 @@ export function OlympiadResults({ data, profileId, benefitType, onProfile, onUni
           })}
         </div>
       ) : (
-        <EmptyState icon="🔍" title="Под фильтры ничего не попало" text="Сними фильтр по профилю или типу льготы." />
+        <EmptyState
+          icon="🔍"
+          title="Под фильтры ничего не попало"
+          text="Сними фильтр по профилю, региону или типу льготы."
+        />
       )}
     </>
   );
