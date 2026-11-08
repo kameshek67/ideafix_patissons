@@ -1,7 +1,7 @@
 ---
 id: T-083
 title: "Вкладка «Баллы»: поиск по всем вузам вместо кнопок"
-status: review
+status: done
 priority: P1
 area: web
 estimate: S

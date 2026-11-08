@@ -1,7 +1,7 @@
 ---
 id: T-085
 title: "Бот MAX: кнопка «Сайт», «ты» и подсказка вместо молчания"
-status: review
+status: done
 priority: P1
 area: workers
 estimate: S
@@ -29,7 +29,7 @@ updated: 2026-11-08
 ## Критерии приёмки
 - [x] `uv run pytest apps/workers/tests/test_max_bot.py` зелёный
 - [ ] После выкатки: «Начать» в боте → три кнопки, «Сайт» открывает https://ideafix.patissons.tech
-- [ ] `just check` зелёный
+- [x] `just check` зелёный (CI)
 
 ## Контекст
 `apps/workers/src/olymp_workers/max_bot.py`, тесты на поддельном API MAX. Типы кнопок MAX:
