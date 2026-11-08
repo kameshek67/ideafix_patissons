@@ -151,7 +151,7 @@ services:
     environment:
       OLYMP_MAX_BOT_TOKEN: ${OLYMP_MAX_BOT_TOKEN:-}
       # API бота (platform-api2.max.ru) подписан сертификатом Минцифры — его корневой
-      # сертификат кладётся в infra/certs (см. infra/certs/README.md)
+      # сертификат кладётся в infra/certs (см. README, раздел «Мини-приложение MAX»)
       OLYMP_MAX_CA_DIR: /certs
       # куда ведёт кнопка «Сайт» в сообщениях бота; без значения — стенд ideafix.patissons.tech
       OLYMP_SITE_URL: ${OLYMP_SITE_URL:-}
