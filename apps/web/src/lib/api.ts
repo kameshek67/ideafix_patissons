@@ -96,6 +96,18 @@ export const getAchievements = (diplomas: string[], query: AchievementsQuery = {
 
 export const getMaxConfig = () => unwrap(api.GET("/v1/max/config"));
 
+// ---------------------------------------------------------------- помощник
+// сам чат идёт потоком через /api/assistant/chat (см. lib/assistant.ts)
+
+export const getAssistantConfig = () => unwrap(api.GET("/v1/assistant/config"));
+
+export async function sendAssistantFeedback(messageId: string, rating: 1 | -1): Promise<void> {
+  const { response } = await api.POST("/v1/assistant/feedback", {
+    body: { message_id: messageId, rating },
+  });
+  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+}
+
 // дипломы пользователя MAX: API узнаёт его по подписанным данным запуска мини-приложения
 const maxHeaders = (initData: string) => ({ "X-Max-Init-Data": initData });
 

@@ -18,6 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from . import errors
 from .db import make_engine
+from .llm import make_provider
 from .metrics import install_metrics
 from .redis_support import LocalWindow, hit, make_redis
 from .settings import Settings
@@ -44,6 +45,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     install_metrics(app)
     app.state.redis = make_redis(settings.redis_url)
     app.state.local_window = LocalWindow()
+    app.state.llm = make_provider(settings)
 
     engine = make_engine(settings)
     app.state.engine = engine
@@ -112,6 +114,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return {"status": "ready", "built_at": str(built)}
 
     from .modules.achievements.router import router as achievements_router
+    from .modules.assistant.router import router as assistant_router
     from .modules.catalog.router import router as catalog_router
     from .modules.extra_points.router import router as extra_points_router
     from .modules.search.router import router as search_router
@@ -123,6 +126,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         achievements_router,
         sharing_router,
         extra_points_router,
+        assistant_router,
     ):
         app.include_router(router, prefix="/v1")
     return app

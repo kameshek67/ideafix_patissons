@@ -45,6 +45,10 @@ max-check:
 max-link *ARGS:
     uv run python scripts/max_dev_link.py {{ARGS}}
 
+# оценить модель из OLYMP_LLM_* на наборе вопросов: --limit 5 --pause 10 (тратит лимит провайдера)
+assistant-eval *ARGS:
+    uv run python -m olymp_api.modules.assistant.evaluate {{ARGS}}
+
 # пересоздать контракт API и клиент для сайта после изменения эндпоинтов
 openapi:
     uv run python -m olymp_api.openapi_cli > docs/openapi.json

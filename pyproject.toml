@@ -70,6 +70,14 @@ modules = [
 ]
 
 [[tool.importlinter.contracts]]
+name = "Помощник — верхний слой: модули поиска о нём не знают"
+type = "layers"
+layers = [
+    "olymp_api.modules.assistant",
+    "olymp_api.modules.achievements | olymp_api.modules.catalog | olymp_api.modules.search",
+]
+
+[[tool.importlinter.contracts]]
 name = "Домен не зависит от БД, API и воркеров"
 type = "forbidden"
 source_modules = ["olymp_domain"]
