@@ -1,5 +1,5 @@
 version = 1
-revision = 5
+revision = 3
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.15' and sys_platform == 'win32'",
@@ -818,6 +818,7 @@ source = { editable = "apps/api" }
 dependencies = [
     { name = "asyncpg" },
     { name = "fastapi" },
+    { name = "httpx" },
     { name = "olymp-db" },
     { name = "olymp-domain" },
     { name = "prometheus-client" },
@@ -832,6 +833,7 @@ dependencies = [
 requires-dist = [
     { name = "asyncpg", specifier = ">=0.30" },
     { name = "fastapi", specifier = ">=0.115" },
+    { name = "httpx", specifier = ">=0.27" },
     { name = "olymp-db", editable = "packages/db" },
     { name = "olymp-domain", editable = "packages/domain" },
     { name = "prometheus-client", specifier = ">=0.21" },

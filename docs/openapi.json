@@ -161,6 +161,173 @@
         "title": "AchievementsMatch",
         "type": "object"
       },
+      "AssistantConfig": {
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "model_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Label"
+          },
+          "suggestions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Suggestions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "enabled",
+          "model_label",
+          "suggestions"
+        ],
+        "title": "AssistantConfig",
+        "type": "object"
+      },
+      "AssistantEntity": {
+        "description": "Карточка в ответе: открывает экран приложения.",
+        "properties": {
+          "hint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hint"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "olympiad",
+              "program",
+              "university"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "label",
+          "hint"
+        ],
+        "title": "AssistantEntity",
+        "type": "object"
+      },
+      "AssistantSource": {
+        "properties": {
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "title"
+        ],
+        "title": "AssistantSource",
+        "type": "object"
+      },
+      "AssistantStreamEvent": {
+        "description": "Данные одного события потока. Какие поля заполнены, зависит от типа события (event:).",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "entities": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/AssistantEntity"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entities"
+          },
+          "message_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message Id"
+          },
+          "sources": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/AssistantSource"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sources"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "required": [
+          "text",
+          "entities",
+          "sources",
+          "message_id",
+          "code"
+        ],
+        "title": "AssistantStreamEvent",
+        "type": "object"
+      },
       "Award": {
         "properties": {
           "kind": {
@@ -356,6 +523,57 @@
           "count"
         ],
         "title": "BenefitGroup",
+        "type": "object"
+      },
+      "ChatMessage": {
+        "properties": {
+          "content": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Content",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "user",
+              "assistant"
+            ],
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "content"
+        ],
+        "title": "ChatMessage",
+        "type": "object"
+      },
+      "ChatRequest": {
+        "properties": {
+          "diplomas": {
+            "description": "Строки дипломов, если ученик разрешил их учитывать",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Diplomas",
+            "type": "array"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/ChatMessage"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Messages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messages"
+        ],
+        "title": "ChatRequest",
         "type": "object"
       },
       "ClaimIn": {
@@ -892,6 +1110,30 @@
           "university"
         ],
         "title": "FallbackHit",
+        "type": "object"
+      },
+      "FeedbackRequest": {
+        "properties": {
+          "message_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Message Id",
+            "type": "string"
+          },
+          "rating": {
+            "enum": [
+              1,
+              -1
+            ],
+            "title": "Rating",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "message_id",
+          "rating"
+        ],
+        "title": "FeedbackRequest",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -3062,6 +3304,105 @@
         "summary": "Diploma Form",
         "tags": [
           "achievements"
+        ]
+      }
+    },
+    "/v1/assistant/chat": {
+      "post": {
+        "description": "Ответ помощника потоком. История хранится на клиенте, сервер её не сохраняет.",
+        "operationId": "chat_v1_assistant_chat_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistantStreamEvent"
+                }
+              }
+            },
+            "description": "Поток text/event-stream: status, delta, entities, sources, done, error"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Chat",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/v1/assistant/config": {
+      "get": {
+        "description": "Доступен ли помощник. Без настроек LLM кнопка на сайте скрыта.",
+        "operationId": "config_v1_assistant_config_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistantConfig"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Config",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/v1/assistant/feedback": {
+      "post": {
+        "description": "Оценка ответа: только счётчик в метриках, текст ответа не сохраняется.",
+        "operationId": "feedback_v1_assistant_feedback_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Feedback",
+        "tags": [
+          "assistant"
         ]
       }
     },
