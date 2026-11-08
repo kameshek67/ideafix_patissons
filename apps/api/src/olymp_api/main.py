@@ -17,6 +17,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from . import errors
+from .clients import client_key
 from .db import make_engine
 from .llm import make_provider
 from .metrics import install_metrics
@@ -68,8 +69,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         request: Request, call_next: Callable[[Request], Awaitable[Response]]
     ) -> Response:
         if settings.rate_limit_requests and request.url.path.startswith("/v1/"):
-            ip = request.client.host if request.client else "unknown"
-            count, retry = await hit(request, ip, settings.rate_limit_window)
+            # пользователь MAX или адрес посетителя, а не адрес прокси (T-065)
+            count, retry = await hit(request, client_key(request), settings.rate_limit_window)
             if count > settings.rate_limit_requests:
                 resp = errors.problem(request, 429, "Too many requests")
                 resp.headers["Retry-After"] = str(retry)
