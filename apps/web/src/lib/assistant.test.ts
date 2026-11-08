@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   type ChatItem,
+  LEGACY_NOTICE,
+  lastContext,
   loadHistory,
   MAX_MESSAGES,
   parseEvents,
+  parseMarkdown,
   plainText,
   requestMessages,
   saveHistory,
@@ -41,6 +44,20 @@ describe("requestMessages", () => {
     expect(requestMessages([user("а"), item, user("б")])[1]).toEqual({ role: "assistant", content: "текст" });
   });
 
+  it("не отправляет оговорку: ни отдельным полем, ни вклеенной в старый ответ", () => {
+    const fresh: ChatItem = { ...bot("Попробуй НТО"), notice: "Проверь условия" };
+    const legacy = bot(`Попробуй МОШ${LEGACY_NOTICE}`);
+    const messages = requestMessages([user("а"), fresh, user("б"), legacy, user("в")]);
+    expect(messages[1]).toEqual({ role: "assistant", content: "Попробуй НТО" });
+    expect(messages[3]).toEqual({ role: "assistant", content: "Попробуй МОШ" });
+  });
+
+  it("вырезает только точную оговорку в конце ответа", () => {
+    const middle = bot(`Начало${LEGACY_NOTICE} и продолжение`);
+    expect(requestMessages([user("а"), middle, user("б")])[1]!.content).toBe(middle.content);
+    expect(requestMessages([user("а"), user(`вопрос${LEGACY_NOTICE}`)])[1]!.content).toBe(`вопрос${LEGACY_NOTICE}`);
+  });
+
   it("укладывается в лимит истории и начинает с вопроса", () => {
     const long = Array.from({ length: 30 }, (_, i) => (i % 2 ? bot("б".repeat(2000)) : user("в".repeat(2000))));
     const messages = requestMessages([...long, user("последний")]);
@@ -58,6 +75,43 @@ describe("plainText", () => {
 
   it("не превращает текст в HTML", () => {
     expect(plainText("<img src=x onerror=alert(1)>")).toBe("<img src=x onerror=alert(1)>");
+  });
+});
+
+describe("parseMarkdown", () => {
+  it("абзацы, списки и жирный", () => {
+    expect(parseMarkdown("Да, **дают**.\nВторая строка\n\n- раз\n* два\n1. первый\n\nИтог")).toEqual([
+      {
+        kind: "p",
+        lines: [
+          [
+            { text: "Да, ", bold: false },
+            { text: "дают", bold: true },
+            { text: ".", bold: false },
+          ],
+          [{ text: "Вторая строка", bold: false }],
+        ],
+      },
+      { kind: "ul", items: [[{ text: "раз", bold: false }], [{ text: "два", bold: false }]] },
+      { kind: "ol", items: [[{ text: "первый", bold: false }]] },
+      { kind: "p", lines: [[{ text: "Итог", bold: false }]] },
+    ]);
+  });
+
+  it("ссылки и заголовки — просто текст, HTML не разбирается", () => {
+    expect(parseMarkdown("## Итог\n[сайт](https://evil.example) <b>x</b>")).toEqual([
+      {
+        kind: "p",
+        lines: [[{ text: "Итог", bold: true }], [{ text: "сайт <b>x</b>", bold: false }]],
+      },
+    ]);
+  });
+});
+
+describe("lastContext", () => {
+  it("берёт контекст последнего ответа, где он есть", () => {
+    expect(lastContext([user("а"), { ...bot("б"), context: "c1" }, bot("ошибка"), user("в")])).toBe("c1");
+    expect(lastContext([user("а")])).toBeUndefined();
   });
 });
 

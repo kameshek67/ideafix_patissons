@@ -6,6 +6,7 @@ import {
   AssistantError,
   type ChatItem,
   ERROR_TEXT,
+  lastContext,
   loadHistory,
   MAX_MESSAGE_CHARS,
   plainText,
@@ -15,6 +16,7 @@ import {
 } from "@/lib/assistant";
 import { sendAssistantFeedback } from "@/lib/api";
 import { IconChevronRight, IconCloseModal } from "./icons";
+import { AssistantText } from "./AssistantText";
 import { useMax } from "./MaxProvider";
 import { SourceBlock } from "./SourceBlock";
 
@@ -38,12 +40,15 @@ function applyEvent(item: ChatItem, { event, data }: StreamEvent): ChatItem {
   switch (event) {
     case "delta":
       return { ...item, content: item.content + (data.text ?? "") };
+    case "notice":
+      // оговорка хранится отдельно от ответа: в историю для модели она не уходит
+      return { ...item, notice: data.text ?? undefined };
     case "entities":
       return { ...item, entities: data.entities ?? [] };
     case "sources":
       return { ...item, sources: data.sources ?? [] };
     case "done":
-      return { ...item, messageId: data.message_id ?? undefined };
+      return { ...item, messageId: data.message_id ?? undefined, context: data.context ?? undefined };
     case "error":
       return { ...item, error: ERROR_TEXT[data.code ?? ""] ?? ERROR_TEXT.unavailable };
     default:
@@ -104,16 +109,23 @@ export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity }
     abort.current = controller;
     const patchLast = (change: (item: ChatItem) => ChatItem) =>
       setItems((list) => [...list.slice(0, -1), change(list.at(-1)!)]);
+    // статусы («Ищу вузы…», «Пишу ответ…») видны, пока не пришёл текст ответа
+    let answering = false;
     try {
       await streamChat({
         items: history,
+        context: lastContext(items),
         diplomas: useDiplomas ? diplomas : [],
         initData: app?.initData ?? null,
         signal: controller.signal,
         onEvent: (event) => {
-          if (event.event === "status") setStatus(event.data.text ?? null);
-          else {
-            if (event.event === "delta") setStatus(null);
+          if (event.event === "status") {
+            if (!answering) setStatus(event.data.text ?? null);
+          } else {
+            if (event.event === "delta" || event.event === "error") {
+              answering = true;
+              setStatus(null);
+            }
             patchLast((item) => applyEvent(item, event));
           }
         },
@@ -227,7 +239,8 @@ export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity }
             </div>
           ) : (
             <div key={index} className="assistant-answer">
-              {item.content ? <div className="assistant-text">{plainText(item.content)}</div> : null}
+              {item.content ? <AssistantText text={item.content} /> : null}
+              {item.content && item.notice ? <p className="assistant-note mt-2">{item.notice}</p> : null}
               {item.error ? (
                 <div className="assistant-error" role="alert">
                   <p>{item.error}</p>
