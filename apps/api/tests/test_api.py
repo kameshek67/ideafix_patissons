@@ -171,3 +171,13 @@ async def test_table_rows_separate_text_rules_from_tables(client: httpx.AsyncCli
         await client.get("/v1/programs", params={"university_id": items["МФТИ"]["id"]})
     ).json()
     assert programs["items"] and all(p["table_rows"] == 0 for p in programs["items"])
+
+
+async def test_universities_beyond_limit_have_full_card(client: httpx.AsyncClient) -> None:
+    """Вузы, чьи направления не влезли в лимит, приходят в том же формате карточки (T-075)."""
+    data = (await client.get("/v1/search/by-olympiad", params={"q": "вышка", "limit": 1})).json()
+    assert data["truncated"] and len(data["results"]) > 1
+    empty = [r for r in data["results"] if not r["programs"]]
+    assert empty, "нужен вуз без показанных направлений"
+    keys = {frozenset(r["university"]) for r in data["results"]}
+    assert len(keys) == 1
