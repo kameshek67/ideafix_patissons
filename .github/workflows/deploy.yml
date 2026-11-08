@@ -1,5 +1,5 @@
 # Выкатка main на https://ideafix.patissons.tech (сервер 2.26.52.44) после зелёного ci.
-# Как устроено и как откатиться — infra/deploy/README.md. Секрет один: DEPLOY_SSH_KEY.
+# Секрет один: DEPLOY_SSH_KEY. Откат — повторный запуск workflow на нужном коммите main.
 name: deploy
 on:
   workflow_run:
@@ -92,7 +92,7 @@ jobs:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          [ -n "$DEPLOY_SSH_KEY" ] || { echo "::error::нет секрета DEPLOY_SSH_KEY (infra/deploy/README.md)"; exit 1; }
+          [ -n "$DEPLOY_SSH_KEY" ] || { echo "::error::нет секрета DEPLOY_SSH_KEY (Settings → Secrets → Actions)"; exit 1; }
           install -d -m 700 ~/.ssh
           printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
           printf '%s\n' "$DEPLOY_KNOWN_HOST" > ~/.ssh/known_hosts

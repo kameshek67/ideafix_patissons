@@ -16,9 +16,9 @@ apps/web/next-env.d.ts
 .env
 # кэш скачанных документов и отчёты ИИ-парсеров (F-07)
 .cache/
-# сертификаты для API бота MAX кладутся локально (см. infra/certs/README.md)
+# сертификаты для API бота MAX кладутся локально (см. README, раздел «Мини-приложение MAX»)
 infra/certs/*
-!infra/certs/README.md
+!infra/certs/.gitkeep
 .idea/
 .vscode/
 *.log
