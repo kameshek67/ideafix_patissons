@@ -37,4 +37,5 @@ tests/                 итоговые числа сборки на насто�
 Как устроена сборка и слои данных — [docs/architecture/data.md](../../docs/architecture/data.md).
 Как обновлять данные — [docs/runbooks/data-refresh.md](../../docs/runbooks/data-refresh.md).
 
-> Пока не сделана T-064, сборка блокирует API примерно на минуту.
+Сборка не блокирует API: таблицы очищаются `DELETE` (`tables.py`), до коммита сайт видит прежние
+данные (T-064).

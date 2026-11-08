@@ -209,8 +209,7 @@ def test_program_and_university_keys_are_unique(built_database_url: str) -> None
 
 
 def test_share_links_survive_data_tables() -> None:
-    """Пользовательские таблицы не ссылаются на таблицы сборки: TRUNCATE … CASCADE при
-    пересборке иначе молча очистил бы и их."""
+    """Ссылки не входят в таблицы сборки: пересборка удаляет только их строки."""
     assert "share_links" not in DATA_TABLES
     for table in Base.metadata.sorted_tables:
         if table.name in DATA_TABLES:

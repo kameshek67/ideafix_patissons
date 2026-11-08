@@ -50,6 +50,7 @@ just max-link --start diplomas   # открыть сайт «как из MAX» (
 | Переменная | По умолчанию | Что |
 |---|---|---|
 | `OLYMP_DATABASE_URL` | `postgresql+psycopg://olymp:olymp@localhost:5432/olymp` | БД (API сам переходит на asyncpg) |
+| `OLYMP_DB_STATEMENT_TIMEOUT_MS` / `OLYMP_DB_LOCK_TIMEOUT_MS` | 15000 / 3000 | потолок запроса к БД и ожидания блокировки; по таймауту API отвечает 503 |
 | `OLYMP_REDIS_URL` | — | кэш и лимиты; без него — в памяти |
 | `OLYMP_RABBITMQ_URL` | — | очередь Dramatiq |
 | `OLYMP_API_URL` | `http://127.0.0.1:8000` | куда сайт проксирует `/api/v1/*` |
