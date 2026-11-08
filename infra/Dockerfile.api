@@ -19,5 +19,7 @@ COPY --from=base /app /app
 ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONUTF8=1 OLYMP_DATA_DIR=/app/data
 USER olymp
 EXPOSE 8000
-HEALTHCHECK --interval=15s --timeout=4s CMD python -c "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"
+# первые 60 с проверяем каждые 2 с: сайт (depends_on: healthy) стартует сразу, как API готов,
+# а не через 15 с — это и есть простой при выкатке
+HEALTHCHECK --interval=15s --timeout=4s --start-period=60s --start-interval=2s CMD python -c "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"
 CMD ["uvicorn", "olymp_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
