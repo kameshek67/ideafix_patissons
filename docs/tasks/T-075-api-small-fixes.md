@@ -9,7 +9,7 @@ spec: ""
 depends: []
 owner: 34elo
 branch: fix/T-075-search-case
-pr: 42
+pr: 42, 50
 updated: 2026-11-08
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: T-064
 title: Пересборка базы без блокировки API и без CASCADE
-status: review
+status: done
 priority: P0
 area: workers
 estimate: M
@@ -9,7 +9,7 @@ spec: ""
 depends: []
 owner: 34elo
 branch: feat/T-064-nonblocking-rebuild
-pr: ""
+pr: 49
 updated: 2026-11-08
 ---
 
@@ -24,7 +24,7 @@ TRUNCATE … CASCADE в ingest.py блокирует API ~1 мин и молча
 ## Критерии приёмки
 - [x] Во время сборки API отвечает (старые данные или быстрая ошибка 503, без зависания)
 - [x] Тест на отсутствие FK из пользовательских таблиц и на порядок DATA_TABLES
-- [ ] `just check` зелёный
+- [x] `just check` зелёный (CI)
 
 ## Контекст
 По итогам ревью 2026-11-07.
