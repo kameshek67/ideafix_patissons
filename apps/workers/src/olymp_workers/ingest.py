@@ -68,6 +68,7 @@ from olymp_domain.textutils import (
 
 from .extra_points import load_extra_points
 from .olympiad_cards import CARDS_FILE, load_olympiad_cards
+from .tables import clear_tables
 from .university_pages import PAGES
 
 REPO = Path(__file__).resolve().parents[4]
@@ -1118,7 +1119,8 @@ class Ingestor:
                 + ", ".join(missing)
                 + ". Сначала примените миграции: cd packages/db && alembic upgrade head"
             )
-        self.conn.execute(f"TRUNCATE {', '.join(DATA_TABLES)} RESTART IDENTITY CASCADE")
+        # DELETE, а не TRUNCATE: API до коммита читает прежние данные, а не ждёт (tables.py)
+        clear_tables(self.conn, DATA_TABLES)
         self.programs = ProgramRegistry(self.conn)
 
     def executemany(self, sql: str, params: Iterable[Sequence]) -> None:

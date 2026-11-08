@@ -6,6 +6,10 @@ class Settings(BaseSettings):
 
     env: str = "local"
     database_url: str | None = None
+    # потолок одного запроса к БД и ожидания блокировки, мс: зависание (блокировка таблиц,
+    # тяжёлый запрос) становится быстрой ошибкой 503, а не висящим соединением (T-064)
+    db_statement_timeout_ms: int = 15_000
+    db_lock_timeout_ms: int = 3_000
     redis_url: str | None = None
     log_level: str = "INFO"
     # Лимит запросов с одного IP: окно в секундах и число запросов. 0 — без лимита.
