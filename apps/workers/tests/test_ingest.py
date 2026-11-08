@@ -1,7 +1,13 @@
 """Сборка базы из настоящего XLSX: числа совпадают со сборкой прототипа (ветка main)."""
 
+import json
+from pathlib import Path
+
 import psycopg
+import pytest
 from olymp_db.session import psycopg_dsn
+from olymp_domain.olympiad_cards import CardError
+from olymp_workers.olympiad_cards import CARDS_FILE, load_olympiad_cards
 
 # итог сборки прототипа на SQLite по тому же файлу data/Olimpiady_BVI_100ballov.xlsx
 EXPECTED = {
@@ -180,3 +186,82 @@ def test_fingerprint_depends_on_inputs(tmp_path) -> None:
     b.write_bytes(b"2")
     assert build_fingerprint(str(a)) == build_fingerprint(str(a))
     assert build_fingerprint(str(a)) != build_fingerprint(str(b))
+
+
+def test_olympiad_cards_loaded_with_sources(built_database_url: str) -> None:
+    """Справочник олимпиад (T-082): карточки и треки привязаны к олимпиаде и профилю."""
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        cards = conn.execute("SELECT COUNT(*) FROM olympiad_info").fetchone()[0]
+        no_source = conn.execute(
+            "SELECT COUNT(*) FROM olympiad_info WHERE source_url NOT LIKE 'https://%'"
+        ).fetchone()[0]
+        mobile = conn.execute(
+            """SELECT o.short_name, p.name FROM olympiad_tracks t
+               JOIN olympiads o ON o.id = t.olympiad_id
+               JOIN olympiad_profiles p ON p.id = t.profile_id
+               WHERE t.name ILIKE '%мобильных приложений%'"""
+        ).fetchall()
+    assert cards >= 4
+    assert no_source == 0
+    assert mobile == [("«Юниор»", "инженерные науки")]
+
+
+def _load(conn: psycopg.Connection, tmp_path: Path, card: dict) -> None:
+    (tmp_path / CARDS_FILE).write_text(json.dumps({"olympiads": [card]}), encoding="utf-8")
+    try:
+        # база уже собрана с настоящими карточками: очищаем их внутри транзакции, откат вернёт
+        conn.execute("TRUNCATE olympiad_tracks, olympiad_info")
+        load_olympiad_cards(conn, tmp_path)
+    finally:
+        conn.rollback()
+
+
+def test_card_with_unknown_olympiad_stops_build(built_database_url: str, tmp_path: Path) -> None:
+    card = {**_CARD, "olympiad": "Олимпиады Хогвартса нет"}
+    with (
+        psycopg.connect(psycopg_dsn(built_database_url)) as conn,
+        pytest.raises(CardError, match="Хогвартса.*нет в базе"),
+    ):
+        _load(conn, tmp_path, card)
+
+
+def test_track_with_unknown_profile_stops_build(built_database_url: str, tmp_path: Path) -> None:
+    track = {**_TRACK, "profile": "зельеварение"}
+    with (
+        psycopg.connect(psycopg_dsn(built_database_url)) as conn,
+        pytest.raises(CardError, match="нет профиля «зельеварение»"),
+    ):
+        _load(conn, tmp_path, {**_CARD, "tracks": [track]})
+
+
+_TRACK = {
+    "name": "Секция",
+    "profile": "инженерные науки",
+    "source_url": "https://example.org",
+    "checked": "2026-11-08",
+}
+_CARD = {
+    "olympiad": "Всероссийский конкурс научных работ школьников «Юниор»",
+    "site_url": "https://example.org",
+    "summary": "x",
+    "grades": "9–11",
+    "format": ["проект"],
+    "stages": [],
+    "source_url": "https://example.org",
+    "checked": "2026-11-08",
+    "tracks": [_TRACK],
+}
+
+
+def test_cards_file_changes_build_fingerprint(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Правка карточки пересобирает базу при выкатке (--if-stale)."""
+    from olymp_workers import ingest
+
+    cards = tmp_path / CARDS_FILE
+    cards.write_text('{"olympiads": []}', encoding="utf-8")
+    monkeypatch.setattr(ingest, "DATA_DIR", tmp_path)
+    before = ingest.build_fingerprint(ingest.DEFAULT_XLSX)
+    cards.write_text('{"olympiads": [] }', encoding="utf-8")
+    assert ingest.build_fingerprint(ingest.DEFAULT_XLSX) != before

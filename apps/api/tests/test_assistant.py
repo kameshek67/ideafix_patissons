@@ -346,6 +346,63 @@ async def test_olympiad_to_universities_with_sources(real: Any) -> None:
 MOBILE = tool("find_profiles", {"keywords": ["мобильные приложения", "программирование"]})
 
 
+async def test_track_finds_olympiad_with_wider_profile(real: Any) -> None:
+    """У «Юниора» профиль «инженерные науки», а секция про мобильные приложения — в треках.
+    Тема находит олимпиаду по треку и отдаёт льготы её профиля."""
+    _, fake = await real(
+        [[tool("find_profiles", {"keywords": ["мобильные приложения"]})], [TextDelta("ок")]]
+    )
+    profiles = tool_json(fake)[0]["profiles"]
+    junior = next(p for p in profiles if p["olympiad"] == "«Юниор»")
+    assert junior["track"] == "Разработка мобильных приложений под Android"
+    assert junior["profile"] == "инженерные науки"
+    assert junior["benefits"] and junior["universities"] > 0
+    assert any(p["olympiad"] == "НТО" for p in profiles)
+
+
+async def olympiad_id(real: Any, query: str) -> int:
+    _, fake = await real([[tool("find_olympiads", {"query": query})], [TextDelta("ок")]])
+    return int(tool_json(fake)[0]["olympiads"][0]["olympiad_id"])
+
+
+async def test_olympiad_card_has_format_and_site(real: Any) -> None:
+    junior = await olympiad_id(real, "юниор")
+    events, fake = await real(
+        [
+            [tool("find_olympiads", {"query": "юниор"})],
+            [tool("olympiad_card", {"olympiad_id": junior}, "c2")],
+            [TextDelta("Это конкурс научных работ.")],
+        ]
+    )
+    found = tool_json(fake)[0]["olympiads"]
+    assert any(o["olympiad"] == "«Юниор»" for o in found)
+    card = tool_json(fake)[1]
+    assert "проект" in card["format"]
+    assert card["site"].startswith("https://")
+    assert any(t["track"].startswith("Разработка мобильных") for t in card["tracks"])
+    urls = [source["url"] for source in data_of(events, "sources")["sources"]]
+    assert card["site"] in urls
+
+
+async def test_olympiad_card_needs_id_from_this_answer(real: Any) -> None:
+    _, fake = await real([[tool("olympiad_card", {"olympiad_id": 1})], [TextDelta("ок")]])
+    assert "find_profiles" in tool_json(fake)[0]["error"]
+
+
+async def test_olympiad_without_card_is_not_invented(real: Any) -> None:
+    vsosh = await olympiad_id(real, "всош")
+    _, fake = await real(
+        [
+            [tool("find_olympiads", {"query": "всош"})],
+            [tool("olympiad_card", {"olympiad_id": vsosh}, "c2")],
+            [TextDelta("ок")],
+        ]
+    )
+    card = tool_json(fake)[1]
+    assert "нет" in card["note"]
+    assert "format" not in card
+
+
 async def test_id_from_earlier_answer_needs_new_search(real: Any) -> None:
     """История чата — только текст, id из прошлого ответа модель придумывала и получала вузы
     чужой олимпиады («Ломоносов» под видом НТО). Без поиска в этом ответе id не принимается."""
@@ -451,7 +508,7 @@ async def test_tool_results_stay_small(real: Any) -> None:
 
 def test_eval_set_is_valid() -> None:
     cases = evaluate.load_cases(evaluate.DEFAULT_SET)
-    assert len(cases) == 31
+    assert len(cases) == 33
     assert len({case.id for case in cases}) == len(cases)
     assert {tool for case in cases for tool in case.tools} <= set(HANDLERS)
 
@@ -463,6 +520,9 @@ def test_judge() -> None:
     assert evaluate.judge(case, "Ничего", ["find_profiles"], None)
     assert evaluate.judge(case, "НТО и выдумка", ["find_profiles"], None)
     assert evaluate.judge(case, "НТО", ["find_profiles"], "unavailable")
+    both = evaluate.Case("y", "?", [], [], [], ["НТО", "Юниор"])
+    assert evaluate.judge(both, "НТО и «Юниор»", [], None) == []
+    assert evaluate.judge(both, "Только НТО", [], None)
 
 
 async def test_eval_runs_on_fake_provider(built_database_url: str) -> None:
