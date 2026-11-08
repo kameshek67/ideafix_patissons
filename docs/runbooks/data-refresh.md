@@ -24,6 +24,7 @@ just validate --check-links   # плюс HTTP-проверка ссылок на
 just refresh-sources --dry-run   # посмотреть, что найдётся
 just refresh-sources             # записать в БД и data/university_documents.json
 just refresh-sources --only кфу  # один вуз
+just refresh-sources --insecure  # без проверки TLS, если сайт с сертификатом Минцифры, а его нет в infra/certs
 ```
 
 Если у вуза сменилась страница раздела «Документы / Олимпиады» — правка в

@@ -13,13 +13,13 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures as cf
-import ssl
 import sys
 import urllib.request as request
 
 import psycopg
 from olymp_db.session import database_url, psycopg_dsn
 
+from .tls import is_tls_error, web_context
 from .university_pages import PAGES
 
 ERROR, WARN, INFO = "ERROR", "WARN", "INFO"
@@ -238,9 +238,7 @@ def validate(conn: psycopg.Connection, check_links: bool) -> Report:
             row[0]
             for row in q("SELECT DISTINCT source_url FROM programs WHERE source_url LIKE 'http%'")
         ]
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
+        ctx = web_context()  # с проверкой TLS и сертификатом Минцифры (T-078)
 
         def probe(url: str):
             # сайты вузов часто отвечают медленно, поэтому две попытки
@@ -252,6 +250,8 @@ def validate(conn: psycopg.Connection, check_links: bool) -> Report:
                         with request.urlopen(req, timeout=30, context=ctx) as resp:
                             return url, resp.status, resp.headers.get("Content-Type", "")
                     except Exception as exc:
+                        if is_tls_error(exc):
+                            return url, "TLS", ""
                         last = getattr(exc, "code", None) or type(exc).__name__
                         if last == 403:  # защита от ботов, ссылка рабочая
                             return url, 403, ""

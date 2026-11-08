@@ -19,7 +19,6 @@ import concurrent.futures as cf
 import json
 import os
 import re
-import ssl
 import sys
 import time
 import urllib.parse as up
@@ -30,6 +29,7 @@ import psycopg
 from olymp_db.session import database_url, psycopg_dsn
 from olymp_domain.textutils import clean_text, squash
 
+from .tls import is_tls_error, is_web_url, web_context
 from .university_pages import DOCUMENT_KEYWORDS, PAGES, Page
 
 DATA_DIR = Path(os.environ.get("OLYMP_DATA_DIR", Path(__file__).resolve().parents[4] / "data"))
@@ -47,9 +47,8 @@ RE_DOC = re.compile(r"\.(pdf|docx?|xlsx?)($|[?#])", re.IGNORECASE)
 # ВШЭ раздаёт приложения без расширения — по адресу вида /mirror/pubs/share/123
 RE_DOC_EXTRA = re.compile(r"/pubs/share/\d+", re.IGNORECASE)
 
-SSL_CTX = ssl.create_default_context()
-SSL_CTX.check_hostname = False
-SSL_CTX.verify_mode = ssl.CERT_NONE
+# проверка TLS с сертификатом Минцифры (T-078); --insecure заменяет контекст на непроверяющий
+SSL_CTX = web_context()
 
 
 def fetch(url: str, timeout: int = 30) -> tuple[object, str, str, str]:
@@ -63,6 +62,8 @@ def fetch(url: str, timeout: int = 30) -> tuple[object, str, str, str]:
                 body = resp.read(1_500_000).decode("utf-8", "ignore") if "html" in ctype else ""
                 return resp.status, ctype, body, resp.url
         except Exception as exc:
+            if is_tls_error(exc):
+                return "TLS", "", "", url  # повтор не поможет: сертификат не проходит проверку
             last = getattr(exc, "code", None) or type(exc).__name__
             if last == 403:
                 return 403, "", "", url
@@ -74,7 +75,10 @@ def documents_on_page(html: str, base_url: str) -> list[tuple[str, str]]:
     found: dict[str, str] = {}
     for href, inner in RE_LINK.findall(html):
         label = clean_text(RE_TAG.sub(" ", inner))
-        url = up.urljoin(base_url, href)
+        url = up.urljoin(base_url, href.strip())
+        # javascript:…/x.pdf и data:…pdf проходят регулярку по расширению — только http(s)
+        if not is_web_url(url):
+            continue
         if not (RE_DOC.search(url) or RE_DOC_EXTRA.search(url)):
             continue
         haystack = (label + " " + up.unquote(url)).lower().replace("ё", "е")
@@ -105,7 +109,15 @@ def main() -> int:
     )
     parser.add_argument("--dry-run", action="store_true", help="ничего не записывать")
     parser.add_argument("--only", default="", help="подстрока названия вуза")
+    parser.add_argument(
+        "--insecure",
+        action="store_true",
+        help="не проверять TLS-сертификаты (если сайт иначе недоступен; см. infra/certs)",
+    )
     args = parser.parse_args()
+    if args.insecure:
+        global SSL_CTX
+        SSL_CTX = web_context(insecure=True)
     return refresh(args.database_url, dry_run=args.dry_run, only=args.only)
 
 
