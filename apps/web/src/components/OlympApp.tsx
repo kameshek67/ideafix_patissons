@@ -105,7 +105,26 @@ function searchQuery(s: SearchState, extra: Partial<OlympiadQuery> = {}): Olympi
 export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   const queryClient = useQueryClient();
   const max = useMax();
-  const [tab, setTab] = useState<Tab>("uni");
+  const [tab, setTabState] = useState<Tab>("uni");
+  // вкладки, с которых ушли: «Назад» (MAX, браузер, Android) возвращает на прошлую (T-062)
+  const tabRef = useRef<Tab>("uni");
+  const tabTrail = useRef<Tab[]>([]);
+  const [trailSize, setTrailSize] = useState(0);
+  const setTab = useCallback((next: Tab) => {
+    if (next === tabRef.current) return;
+    tabTrail.current = [...tabTrail.current.slice(-9), tabRef.current];
+    tabRef.current = next;
+    setTabState(next);
+    setTrailSize(tabTrail.current.length);
+  }, []);
+  const backTab = useCallback(() => {
+    const previous = tabTrail.current.at(-1);
+    if (!previous) return;
+    tabTrail.current = tabTrail.current.slice(0, -1);
+    tabRef.current = previous;
+    setTabState(previous);
+    setTrailSize(tabTrail.current.length);
+  }, []);
   const [benefitType, setBenefitType] = useState("Все");
   // текущее значение фильтра для кода, который продолжается после await
   const benefitTypeRef = useRef(benefitType);
@@ -467,7 +486,9 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     setChatOpen(true);
   }
 
-  // ---------------------------------------------------------------- кнопка «Назад» в MAX
+  // ---------------------------------------------------------------- кнопка «Назад»
+  // срабатывает последний открытый шаг: окно, чат, вуз в выдаче, затем прошлая вкладка
+  useMaxBackButton(trailSize ? backTab : null);
   useMaxBackButton(aboutOpen ? () => setAboutOpen(false) : null);
   useMaxBackButton(tab === "olymp" && olympState.kind === "university" ? backToList : null);
   useMaxBackButton(chatOpen ? () => setChatOpen(false) : chatLeft ? openChat : null);
@@ -834,6 +855,8 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
                 entries={diplomas.entries}
                 storage={diplomas.storage}
                 sync={diplomas.sync}
+                ege={diplomas.ege}
+                onEge={diplomas.updateEge}
                 benefitType={benefitType}
                 onAdd={() => setSheet({ index: null, olympiadId: null })}
                 onEdit={(index: number, result: DiplomaResult | undefined) =>

@@ -355,3 +355,23 @@ def test_urfu_profile_rules_keep_profile_and_confirm_subjects(built_database_url
     assert profiles >= 20
     # предметы подтверждения НТО взяты из скобок «(подтв.: …)» правила УрФУ
     assert with_nto_confirm >= 3000
+
+
+def test_ege_requirements_are_parsed(built_database_url: str) -> None:
+    """Пороги ЕГЭ разобраны в колонки при сборке: ≥ 95% непустых строк (T-031)."""
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        nonempty, parsed, mismatched = conn.execute(
+            """SELECT count(*),
+                      count(*) FILTER (WHERE confirm_subjects IS NOT NULL),
+                      count(*) FILTER (WHERE min_ege ~ '^\\d+' AND min_ege_score IS NULL
+                                       AND confirm_subjects IS NOT NULL)
+               FROM benefits
+               WHERE confirm_subject NOT IN ('', '-') OR min_ege NOT IN ('', '-')"""
+        ).fetchone()
+        math = conn.execute(
+            """SELECT confirm_subjects, min_ege_score FROM benefits
+               WHERE confirm_subject = 'информатика, математика' AND min_ege = '75' LIMIT 1"""
+        ).fetchone()
+    assert parsed / nonempty >= 0.95
+    assert mismatched == 0
+    assert math == (["inf", "math"], 75)

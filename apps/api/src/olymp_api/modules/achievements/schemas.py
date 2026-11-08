@@ -1,3 +1,5 @@
+from typing import Annotated, Literal
+
 from pydantic import BaseModel, Field
 
 from olymp_api.schemas import Benefit, ResponseModel, UniversityInfo
@@ -60,6 +62,25 @@ class Rejected(ResponseModel):
     team: int
 
 
+EgeStatus = Literal["confirmed", "short", "missing_score", "no_threshold"]
+# коды предметов — olymp_domain.ege.SUBJECTS
+EgeSubject = Literal[
+    "rus", "math", "inf", "phys", "chem", "bio", "soc", "hist", "lit", "foreign", "geo"
+]
+
+
+class EgeSummary(ResponseModel):
+    """Подтверждение баллами ЕГЭ (только если баллы переданы, F-03)."""
+
+    # направления и вузы, где хотя бы одна льгота подтверждена баллами
+    confirmed_programs: int
+    confirmed_universities: int
+    # вузы без подтверждённых направлений, где до порога не хватает не больше 5 баллов
+    close_universities: int
+    # строки льгот по статусам
+    statuses: dict[EgeStatus, int]
+
+
 class AchievementUniversity(ResponseModel):
     university: UniversityInfo
     programs: int
@@ -68,6 +89,8 @@ class AchievementUniversity(ResponseModel):
     other: int
     # направления, где профиль в правилах вуза не указан — соответствие нужно проверить
     check: int
+    # направления, подтверждённые баллами ЕГЭ (только если баллы переданы)
+    ege_confirmed: int | None = None
 
 
 class AchievementProgram(ResponseModel):
@@ -84,6 +107,10 @@ class AchievementRow(ResponseModel):
     diplomas: list[int]
     # exact — профиль совпал, subject — совпал предмет, check — профиль в правилах не указан
     fit: str
+    # с баллами ЕГЭ: подтверждена ли льгота, сколько не хватает, по каким предметам
+    ege_status: EgeStatus | None = None
+    ege_gap: int | None = None
+    ege_subjects: list[str] = []
 
 
 class AchievementsMatch(ResponseModel):
@@ -95,6 +122,7 @@ class AchievementsMatch(ResponseModel):
     results: list[AchievementUniversity]
     university: UniversityInfo | None = None
     rows: list[AchievementRow] = []
+    ege: EgeSummary | None = None
     campaign_year: int
     valid_years: list[int]
 
@@ -128,6 +156,9 @@ class SavedDiploma(ResponseModel):
 class MyDiplomas(ResponseModel):
     user: MaxProfile
     diplomas: list[SavedDiploma]
+    # баллы ЕГЭ: предмет → балл; is_mock — пробные (ожидаемые) баллы
+    ege: dict[str, int] = {}
+    ege_is_mock: bool = False
 
 
 class MyDiplomasUpdate(BaseModel):
@@ -135,3 +166,6 @@ class MyDiplomasUpdate(BaseModel):
         max_length=20,
         description="Строки дипломов, например «высшаяпроба.математика.w.11.2025»",
     )
+    # None — баллы не трогать (старые клиенты), {} — удалить
+    ege: dict[EgeSubject, Annotated[int, Field(ge=0, le=100)]] | None = None
+    ege_is_mock: bool = False

@@ -11,6 +11,7 @@ import {
   type UniversityInfo,
 } from "@/lib/api";
 import { type DiplomaEntry, diplomaMeta, parseSpec } from "@/lib/diplomas";
+import { EGE_DATIVE, type EgeScores, type EgeSubject, egeQuery, hasEge, NO_EGE } from "@/lib/ege";
 import { conditionsLine } from "@/lib/conditions";
 import { codesOf, dash, fmt, place, plural } from "@/lib/format";
 import { diplomasShareText } from "@/lib/share";
@@ -18,6 +19,7 @@ import type { Column } from "@/lib/table";
 import { DataTable } from "./DataTable";
 import { IconChevronLeft, IconChevronRight, IconPlus, IconTrash } from "./icons";
 import { useMaxBackButton } from "./MaxProvider";
+import { EgeBlock } from "./EgeBlock";
 import { ShareButton } from "./ShareButton";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
 import type { DiplomaStorage, SyncState } from "./useMyDiplomas";
@@ -49,6 +51,9 @@ interface Props {
   readOnly?: boolean;
   /** «Проверить свои дипломы» — выйти из просмотра чужих */
   onCloseShared?: () => void;
+  /** баллы ЕГЭ ученика (F-03); у чужих дипломов по ссылке их нет */
+  ege?: EgeScores;
+  onEge?: (next: EgeScores) => void;
 }
 
 function storageNote(storage: DiplomaStorage, sync: SyncState): string {
@@ -65,17 +70,22 @@ function storageNote(storage: DiplomaStorage, sync: SyncState): string {
 export function DiplomasView(props: Props) {
   const { active, entries, benefitType } = props;
   const specs = entries.map((e) => e.spec);
-  const typeQuery = benefitType !== "Все" ? { benefit_type: benefitType } : {};
+  const ege = props.ege ?? NO_EGE;
+  const scores = egeQuery(ege);
+  const typeQuery = {
+    ...(benefitType !== "Все" ? { benefit_type: benefitType } : {}),
+    ...(scores.length ? { ege: scores } : {}),
+  };
   const [university, setUniversity] = useState<UniversityInfo | null>(null);
 
   const matchQ = useQuery({
-    queryKey: ["achievements", specs, benefitType],
+    queryKey: ["achievements", specs, benefitType, scores],
     queryFn: () => getAchievements(specs, typeQuery),
     enabled: specs.length > 0,
     placeholderData: keepPreviousData,
   });
   const detailQ = useQuery({
-    queryKey: ["achievements", specs, benefitType, university?.id],
+    queryKey: ["achievements", specs, benefitType, scores, university?.id],
     queryFn: () => getAchievements(specs, { ...typeQuery, university_id: university!.id }),
     enabled: specs.length > 0 && university !== null,
   });
@@ -97,6 +107,7 @@ export function DiplomasView(props: Props) {
   return (
     <>
       <DiplomaList {...props} data={data} />
+      {props.readOnly || !props.onEge ? null : <EgeBlock ege={ege} onChange={props.onEge} />}
       {matchQ.error ? (
         <LoadError message={matchQ.error.message} />
       ) : !data ? (
@@ -264,6 +275,9 @@ function Results({
 }) {
   const t = data.totals;
   const note = rejectedNote(data);
+  const [onlyConfirmed, setOnlyConfirmed] = useState(false);
+  const ege = data.ege;
+  const shown = ege && onlyConfirmed ? data.results.filter((u) => u.ege_confirmed) : data.results;
   if (!t.programs) {
     return (
       <>
@@ -303,11 +317,27 @@ function Results({
             {`«Проверить» — у ${fmt(check)} ${uNapravleniy(check)} вуз не указал профиль олимпиады: сверьтесь с правилами приёма.`}
           </p>
         ) : null}
+        {ege ? <p className="mt-2 text-[13px] leading-snug" id="ege-summary">{egeSummaryText(ege, t.universities)}</p> : null}
       </div>
       {share}
       <div className="card uni-list overflow-hidden" id="diploma-universities">
-        <div className="list-caption">Направления считаются по лучшей льготе. Выбери вуз, чтобы увидеть их</div>
-        {data.results.map((r) => (
+        <div className="list-caption">
+          Направления считаются по лучшей льготе. Выбери вуз, чтобы увидеть их
+          {ege ? (
+            <button
+              type="button"
+              className={`chip mt-2 ${onlyConfirmed ? "chip-on" : ""}`}
+              aria-pressed={onlyConfirmed}
+              onClick={() => setOnlyConfirmed(!onlyConfirmed)}
+            >
+              Только подтверждённые баллами
+            </button>
+          ) : null}
+        </div>
+        {shown.length === 0 ? (
+          <p className="px-4 py-3 text-[13px] meta-text">Пока ни в одном вузе баллы не подтверждают льготу.</p>
+        ) : null}
+        {shown.map((r) => (
           <button key={r.university.id} className="uni-row" onClick={() => onUniversity(r.university)}>
             <div className="uni-row-main">
               <div className="uni-row-name">{r.university.name}</div>
@@ -318,6 +348,9 @@ function Results({
                 {r.other ? <span className="badge badge-alt">{`${fmt(r.other)} др.`}</span> : null}
                 {r.check ? (
                   <span className="badge badge-soft" title={CHECK_HINT}>{`${fmt(r.check)} проверить`}</span>
+                ) : null}
+                {r.ege_confirmed ? (
+                  <span className="badge badge-ege-ok">{`ЕГЭ подтверждает: ${fmt(r.ege_confirmed)}`}</span>
                 ) : null}
               </div>
             </div>
@@ -341,12 +374,15 @@ interface DetailRow {
   role: string;
   grade: string;
   confirm: string;
+  ege: AchievementRow["ege_status"];
+  egeGap: number | null;
+  egeSubjects: string[];
   derived: boolean;
   check: boolean;
 }
 
 function detailRows(rows: AchievementRow[], entries: DiplomaEntry[]): DetailRow[] {
-  return rows.map(({ program, benefit: b, diplomas, fit }) => {
+  return rows.map(({ program, benefit: b, diplomas, fit, ege_status, ege_gap, ege_subjects }) => {
     // у части вузов название направления — это и есть перечень кодов, не дублируем
     const code =
       codesOf(program.code) && codesOf(program.code) !== codesOf(program.faculty_or_direction) ? program.code : "";
@@ -369,6 +405,9 @@ function detailRows(rows: AchievementRow[], entries: DiplomaEntry[]): DetailRow[
       confirm:
         [b.confirm_subject, b.min_ege && `≥${b.min_ege.replace(/\s*и\s+более\s*$/i, "")}`].filter(Boolean).join(" ") ||
         "—",
+      ege: ege_status ?? null,
+      egeGap: ege_gap ?? null,
+      egeSubjects: ege_subjects ?? [],
       derived: b.derived,
       check: fit === "check",
     };
@@ -426,7 +465,18 @@ function detailColumns(openProgram: (id: number) => void, several: boolean): Col
     },
     { key: "role", title: "Кому", width: "w-[11%]", hide: "sm" },
     { key: "grade", title: "Класс", width: "w-[8%]", hide: "sm", cell: (r) => <span className="nowrap">{r.grade}</span> },
-    { key: "confirm", title: "ЕГЭ", width: "w-[10%]", hide: "sm" },
+    {
+      key: "confirm",
+      title: "ЕГЭ",
+      width: "w-[10%]",
+      hide: "sm",
+      cell: (r) => (
+        <>
+          <span>{r.confirm}</span>
+          <EgeChip row={r} />
+        </>
+      ),
+    },
   ];
   // при нескольких дипломах важно, какой именно даёт строку
   if (several) {
@@ -506,4 +556,35 @@ function UniversityDetail({
       )}
     </>
   );
+}
+
+const egeNames = (codes: string[]) =>
+  codes.map((c) => EGE_DATIVE[c as EgeSubject] ?? c).join(" или ");
+
+/** Статус подтверждения льготы баллами ЕГЭ под порогом в таблице (F-03). */
+function EgeChip({ row }: { row: DetailRow }) {
+  if (!row.ege) return null;
+  if (row.ege === "confirmed") return <span className="badge badge-ege-ok ege-chip">подтверждено</span>;
+  if (row.ege === "short") return <span className="badge badge-ege-short ege-chip">{`не хватает ${row.egeGap}`}</span>;
+  if (row.ege === "missing_score")
+    return (
+      <span className="badge badge-soft ege-chip">
+        {row.egeSubjects.length ? `нужен балл по ${egeNames(row.egeSubjects)}` : "нужен балл по профилю"}
+      </span>
+    );
+  return (
+    <span className="badge badge-soft ege-chip" title="Порог не указан — проверь в правилах приёма вуза">
+      порог не указан
+    </span>
+  );
+}
+
+function egeSummaryText(ege: NonNullable<AchievementsMatch["ege"]>, universities: number): string {
+  const confirmed = ege.confirmed_universities;
+  const head = confirmed
+    ? `Баллы ЕГЭ подтверждают льготы в ${fmt(confirmed)} ${vuzah(confirmed)} из ${fmt(universities)}`
+    : "Пока баллы ЕГЭ не подтверждают ни одну льготу";
+  return ege.close_universities
+    ? `${head}; ещё в ${fmt(ege.close_universities)} — не хватает до 5 баллов.`
+    : `${head}.`;
 }

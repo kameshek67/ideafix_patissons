@@ -520,3 +520,16 @@ html[data-max="android"] .table-toolbar .chip-ghost { display: none; }
 .rule-on { border-color: var(--brand); }
 .points-total { position: sticky; top: 128px; /* под шапкой (56) и вкладками */ z-index: 2; box-shadow: 0 8px 24px rgba(60, 0, 90, .12); }
 .points-total details[open] ul { max-height: 40vh; overflow-y: auto; }
+
+/* «Нашли ошибку в данных?» под источниками (T-079) */
+.report-link { margin-top: 6px; font-size: 12.5px; color: var(--brand-ink); text-decoration: underline; text-underline-offset: 2px; }
+.report-form { margin-top: 10px; }
+.report-form .btn-primary, .report-form .btn-secondary { height: 40px; padding: 0 16px; }
+
+/* статусы подтверждения баллами ЕГЭ (F-03) */
+.badge-ege-ok { background: #E9F8EF; color: #17733F; border-color: #C7EBD5; }
+.badge-ege-short { background: #FFF4E5; color: #9A5B00; border-color: #FBDDB0; }
+.ege-chip { display: inline-flex; margin-top: 3px; }
+.ege-grid { margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px 12px; }
+.ege-field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.ege-field input { width: 100%; }

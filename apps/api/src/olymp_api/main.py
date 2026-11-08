@@ -17,6 +17,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from . import errors
+from .clients import client_key
 from .db import make_engine
 from .llm import make_provider
 from .metrics import install_metrics
@@ -68,8 +69,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         request: Request, call_next: Callable[[Request], Awaitable[Response]]
     ) -> Response:
         if settings.rate_limit_requests and request.url.path.startswith("/v1/"):
-            ip = request.client.host if request.client else "unknown"
-            count, retry = await hit(request, ip, settings.rate_limit_window)
+            # пользователь MAX или адрес посетителя, а не адрес прокси (T-065)
+            count, retry = await hit(request, client_key(request), settings.rate_limit_window)
             if count > settings.rate_limit_requests:
                 resp = errors.problem(request, 429, "Too many requests")
                 resp.headers["Retry-After"] = str(retry)
@@ -117,6 +118,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     from .modules.assistant.router import router as assistant_router
     from .modules.catalog.router import router as catalog_router
     from .modules.extra_points.router import router as extra_points_router
+    from .modules.reports.router import router as reports_router
     from .modules.search.router import router as search_router
     from .modules.sharing.router import router as sharing_router
 
@@ -125,6 +127,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         search_router,
         achievements_router,
         sharing_router,
+        reports_router,
         extra_points_router,
         assistant_router,
     ):

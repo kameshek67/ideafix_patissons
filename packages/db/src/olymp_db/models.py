@@ -15,6 +15,7 @@ from typing import Any
 
 from sqlalchemy import (
     BigInteger,
+    Boolean,
     CheckConstraint,
     Date,
     DateTime,
@@ -133,6 +134,10 @@ class Benefit(Base):
     grade: Mapped[str] = _text()
     confirm_subject: Mapped[str] = _text()
     min_ege: Mapped[str] = _text()
+    # разобранные confirm_subject и min_ege (olymp_domain.ege): коды предметов — NULL, если текст
+    # не разобран, пустой список — предмет не указан (по профилю олимпиады); порог — NULL, если нет
+    confirm_subjects: Mapped[list[str] | None] = mapped_column(ARRAY(CText), nullable=True)
+    min_ege_score: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
     award_subject: Mapped[str] = _text()
     years: Mapped[str] = _text()
     note: Mapped[str] = _text()
@@ -148,7 +153,8 @@ class Olympiad(Base):
     id: Mapped[int] = _pk()
     canonical_name: Mapped[str] = mapped_column(CText, unique=True)
     short_name: Mapped[str] = mapped_column(CText)
-    squash_key: Mapped[str] = mapped_column(CText)
+    # по ключу олимпиаду ищут дипломы и ссылки «Поделиться»: два одинаковых — ошибка сборки
+    squash_key: Mapped[str] = mapped_column(CText, unique=True)
     kind: Mapped[str] = _text("rsosh")
     is_featured: Mapped[int] = _int()
     mentions: Mapped[int] = _int()
@@ -409,6 +415,21 @@ class UserDiploma(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+class UserEgeScore(Base):
+    """Баллы ЕГЭ ученика (F-03): только в его профиле MAX, без истории и логов."""
+
+    __tablename__ = "user_ege_scores"
+    __table_args__ = (CheckConstraint("score BETWEEN 0 AND 100", name="score"),)
+
+    user_id: Mapped[int] = mapped_column(
+        BigInteger, ForeignKey("max_users.id", ondelete="CASCADE"), primary_key=True
+    )
+    subject: Mapped[str] = mapped_column(CText, primary_key=True)
+    score: Mapped[int] = mapped_column(SmallInteger)
+    # пробные (ожидаемые) баллы, а не результат экзамена
+    is_mock: Mapped[bool] = mapped_column(Boolean, server_default=sa_text("false"))
+
+
 class ShareLink(Base):
     """Снимок для ссылки «Поделиться»: что открыть получателю (F-01).
 
@@ -434,6 +455,28 @@ class ShareLink(Base):
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     opened_count: Mapped[int] = _int()
     last_opened: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class DataReport(Base):
+    """Сообщение «Нашли ошибку в данных» (T-079). Не таблица сборки: переживает пересборку,
+    поэтому хранит названия на момент сообщения, а id — только для справки (без внешних ключей)."""
+
+    __tablename__ = "data_reports"
+    __table_args__ = (
+        CheckConstraint("kind IN ('program', 'olympiad')", name="kind"),
+        Index(None, "created_at"),
+    )
+
+    id: Mapped[int] = _pk()
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    kind: Mapped[str] = mapped_column(CText)
+    program_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    olympiad_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    university_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # что было на экране: вуз, направление, олимпиада — названия из базы, не от клиента
+    context: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    message: Mapped[str] = mapped_column(CText)
+    status: Mapped[str] = _text("new")
 
 
 # Таблицы с данными сборки: их очищает и заново наполняет olymp-ingest.
