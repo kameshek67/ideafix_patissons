@@ -78,7 +78,7 @@ if [ ! -f "$root/shared/.env" ]; then
 # OLYMP_MAX_BOT_TOKEN=
 # OLYMP_MAX_BOT_NAME=
 # Бот с кнопкой «Открыть» — ещё и сертификат Минцифры в
-# /opt/ideafix/shared/files/infra/certs/ (infra/certs/README.md):
+# /opt/ideafix/shared/files/infra/certs/ (см. README, раздел «Мини-приложение MAX»):
 # COMPOSE_PROFILES=bot
 # Профили https и tunnel на стенде не включать: HTTPS даёт Caddy сервера.
 EOF

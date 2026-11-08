@@ -12,7 +12,7 @@ from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
-# Итоговые статусы строки (описаны в docs/specs/F-07-ai-parsers.md).
+# Итоговые статусы строки после сверки с документом вуза.
 CONFIRMED = "confirmed"
 CONTRADICTED = "contradicted"
 NOT_FOUND = "not_found"

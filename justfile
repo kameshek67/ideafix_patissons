@@ -89,19 +89,5 @@ app:
 migration MESSAGE:
     cd packages/db && uv run alembic revision --autogenerate -m "{{MESSAGE}}"
 
-# ---------------------------------------------------------------- задачи (docs/tasks)
-
-# доска задач по статусам (+ открытые PR, если есть gh)
-tasks:
-    uv run python scripts/tasks.py board
-
-# задачи, которые можно брать: todo, зависимости готовы, нет открытого PR
-tasks-next:
-    uv run python scripts/tasks.py next
-
-# проверка файлов задач (то же делает CI)
-tasks-check:
-    uv run python scripts/tasks.py check
-
 # всё, что проверяет CI (для тестов с базой нужен `just up`)
-check: lint test tasks-check
+check: lint test
