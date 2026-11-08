@@ -63,6 +63,8 @@ export interface OlympiadQuery {
   profile_id?: number;
   benefit_type?: string;
   university_id?: number;
+  /** группа регионов: «Москва», «Санкт-Петербург», «Регионы» */
+  region?: string;
 }
 
 export const getByOlympiad = (query: OlympiadQuery) =>
