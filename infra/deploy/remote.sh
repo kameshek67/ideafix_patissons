@@ -46,6 +46,12 @@ up() {  # up <каталог релиза>
   if networks_differ "$1"; then
     log "настройки сети стека меняются — down и up в чистую сеть"
     compose_in "$1" down --remove-orphans
+  else
+    # миграции и пересборка базы — пока работает прежний релиз: пересборка API не блокирует
+    # (T-064), а иначе up останавливает старый api и новый ждёт migrate — сайт лежал ~минуту.
+    # В up ниже migrate запускается ещё раз, но база уже свежая (--if-stale) — это секунды
+    log "миграции и пересборка базы при работающем прежнем релизе"
+    compose_in "$1" run --rm migrate || return 1  # внутри «if up …» set -e не действует
   fi
   compose_in "$1" up -d --no-build --remove-orphans
 }

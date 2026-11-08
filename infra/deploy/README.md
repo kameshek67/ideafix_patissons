@@ -7,7 +7,7 @@
 push main ─▶ ci (тесты) ─зелёный─▶ deploy: собрать образы всех сервисов с build: ─▶ GHCR
                                      │
                                      ├─ ssh deploy@2.26.52.44 upload <sha>   код релиза → /opt/ideafix/releases/<sha>
-                                     └─ ssh deploy@2.26.52.44 deploy <sha>   remote.sh: pull → up -d → проверка → current
+                                     └─ ssh deploy@2.26.52.44 deploy <sha>   remote.sh: pull → migrate → up -d → проверка → current
 посетитель ─https─▶ Caddy на сервере ─▶ 127.0.0.1:8080 (сайт стека)
 ```
 
