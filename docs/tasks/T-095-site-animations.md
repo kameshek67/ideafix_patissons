@@ -1,7 +1,7 @@
 ---
 id: T-095
 title: "Анимации интерфейса на сайте"
-status: review
+status: done
 priority: P2
 area: web
 estimate: S
