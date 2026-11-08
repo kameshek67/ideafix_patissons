@@ -69,6 +69,7 @@ from olymp_domain.textutils import (
 from .extra_points import load_extra_points
 from .olympiad_cards import CARDS_FILE, load_olympiad_cards
 from .tables import clear_tables
+from .tls import is_web_url
 from .university_pages import PAGES
 
 REPO = Path(__file__).resolve().parents[4]
@@ -1573,6 +1574,8 @@ class Ingestor:
             if not entry:
                 continue
             for doc in entry.get("documents", []):
+                if not is_web_url(doc.get("url", "")):
+                    continue  # в кэш могла попасть javascript:/data:-ссылка (T-078)
                 # повтор ссылки заменяет прежнюю запись и уходит в конец списка
                 self.conn.execute(
                     "DELETE FROM university_documents WHERE university_id=%s AND url=%s",

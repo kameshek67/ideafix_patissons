@@ -96,7 +96,9 @@ services:
     environment:
       OLYMP_DATABASE_URL: postgresql+psycopg://olymp:olymp@postgres:5432/olymp
       OLYMP_RABBITMQ_URL: amqp://olymp:olymp@rabbitmq:5672/
-    volumes: [./data:/app/data]
+      # обход сайтов вузов проверяет TLS; многие сайты подписаны сертификатом Минцифры (T-078)
+      OLYMP_MAX_CA_DIR: /certs
+    volumes: [./data:/app/data, ./infra/certs:/certs:ro]
     depends_on:
       migrate: {condition: service_completed_successfully}
       rabbitmq: {condition: service_healthy}

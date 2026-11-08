@@ -6,14 +6,13 @@
 
 import asyncio
 import json
-from collections.abc import AsyncIterator
+import os
+from collections.abc import AsyncIterator, Mapping
 from dataclasses import dataclass
 from typing import Any, Protocol
 
 import httpx
 import structlog
-
-from olymp_api.settings import Settings
 
 log = structlog.get_logger()
 
@@ -78,6 +77,7 @@ class OpenAICompatibleProvider:
         self.models = [model, *([fallback_model] if fallback_model else [])]
         self.timeout = timeout
         self.max_tokens = max_tokens
+        # None — значение провайдера по умолчанию: помощнику нужна низкая (0.2), парсерам — 0
         self.temperature = temperature
         self.top_p = top_p
         # параметр есть только у OpenRouter, другие серверы могут отвергнуть лишнее поле
@@ -183,23 +183,37 @@ def _events(chunk: dict[str, Any], pending: dict[int, dict[str, str]]) -> list[L
     return events
 
 
-def make_provider(settings: Settings) -> LLMProvider | None:
-    """Провайдер из настроек; None — помощник выключен."""
-    if not (
-        settings.llm_enabled
-        and settings.llm_base_url
-        and settings.llm_api_key
-        and settings.llm_model
-    ):
+async def complete(provider: LLMProvider, messages: list[dict[str, Any]]) -> str:
+    """Ответ модели целиком, без инструментов: для парсеров, которые ждут JSON."""
+    parts: list[str] = []
+    async for event in provider.stream(messages, []):
+        if isinstance(event, TextDelta):
+            parts.append(event.text)
+    return "".join(parts)
+
+
+def provider_from_env(
+    env: Mapping[str, str] | None = None, *, model_var: str = "OLYMP_LLM_MODEL"
+) -> OpenAICompatibleProvider | None:
+    """Провайдер из переменных OLYMP_LLM_*; None, если их нет или OLYMP_LLM_ENABLED=false.
+
+    model_var позволяет взять отдельную модель (например, OLYMP_PARSER_MODEL), а если она не
+    задана — общую OLYMP_LLM_MODEL.
+    """
+    env = os.environ if env is None else env
+    base_url = env.get("OLYMP_LLM_BASE_URL", "").strip()
+    api_key = env.get("OLYMP_LLM_API_KEY", "").strip()
+    model = (env.get(model_var) or env.get("OLYMP_LLM_MODEL") or "").strip()
+    enabled = env.get("OLYMP_LLM_ENABLED", "true").strip().lower() not in ("0", "false", "no")
+    if not (enabled and base_url and api_key and model):
         return None
     return OpenAICompatibleProvider(
-        settings.llm_base_url,
-        settings.llm_api_key,
-        settings.llm_model,
-        fallback_model=settings.llm_fallback_model,
-        timeout=settings.llm_timeout,
-        max_tokens=settings.llm_max_tokens,
-        temperature=settings.llm_temperature,
-        top_p=settings.llm_top_p,
-        deny_data_collection=settings.llm_deny_data_collection,
+        base_url,
+        api_key,
+        model,
+        fallback_model=env.get("OLYMP_LLM_FALLBACK_MODEL", "").strip() or None,
+        timeout=float(env.get("OLYMP_LLM_TIMEOUT", "60")),
+        max_tokens=int(env.get("OLYMP_LLM_MAX_TOKENS", "1500")),
+        deny_data_collection=env.get("OLYMP_LLM_DENY_DATA_COLLECTION", "true").strip().lower()
+        not in ("0", "false", "no"),
     )
