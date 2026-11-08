@@ -49,6 +49,10 @@ max-link *ARGS:
 assistant-eval *ARGS:
     uv run python -m olymp_api.modules.assistant.evaluate {{ARGS}}
 
+# ИИ-черновики карточек олимпиад: just ai-cards sites | just ai-cards draft --top 50 (нужны база и OLYMP_LLM_*)
+ai-cards *ARGS:
+    uv run olymp-ai-cards {{ARGS}}
+
 # пересоздать контракт API и клиент для сайта после изменения эндпоинтов
 openapi:
     uv run python -m olymp_api.openapi_cli > docs/openapi.json
