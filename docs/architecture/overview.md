@@ -61,6 +61,7 @@
 - `olymp_domain` — чистый код: не импортирует БД, API, воркеры, не ходит в сеть.
 - `olymp_api.modules.{catalog,search,achievements}` независимы друг от друга; общее — в
   `olymp_api/*.py`.
+- `olymp_api.modules.assistant` — верхний слой: вызывает сервисы этих модулей, они о нём не знают.
 - `olymp_api` не зависит от `olymp_workers`.
 
 ## Окружения

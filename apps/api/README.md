@@ -30,6 +30,7 @@ src/olymp_api/
     search/          /v1/search/by-program, /v1/search/by-olympiad
     achievements/    «Мои дипломы»: /v1/achievements/*, /v1/max/config, /v1/me/diplomas
     sharing/         «Поделиться»: /v1/shares (снимки экранов по стабильным ключам)
+    assistant/       ИИ-помощник: /v1/assistant/*, инструменты поиска, оценка модели
 tests/               тесты на собранной базе (httpx + ASGI)
 ```
 

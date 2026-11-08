@@ -30,6 +30,9 @@ Swagger — `http://localhost:8000/docs` (через сайт — `/docs`). Ко
 | `GET /v1/olympiads/{id}/profiles` | профили олимпиады со счётчиками БВИ / 100 баллов / вузов |
 | `GET /v1/search/by-program?program_id=` | строки таблиц по типам льгот, примечания, олимпиады, источники |
 | `GET /v1/search/by-olympiad?q=&olympiad_id=&profile_id=&university_id=&region=&benefit_type=` | обратный поиск: список вузов, а с `university_id` — все строки выбранного вуза |
+| `GET /v1/assistant/config` | доступен ли ИИ-помощник и подсказки |
+| `POST /v1/assistant/chat` | ответ помощника потоком `text/event-stream`: `status`, `delta`, `entities`, `sources`, `done`, `error`. Сайт ходит через `/api/assistant/chat` ([F-02](../specs/F-02-ai-chat.md)) |
+| `POST /v1/assistant/feedback` | оценка ответа: только счётчик в метриках |
 | `GET /v1/achievements/olympiads/{id}` | олимпиада для формы диплома: ключ и профили без мусора разбора таблиц |
 | `GET /v1/achievements/match?diploma=…&diploma=…&benefit_type=&university_id=` | «Мои дипломы»: итоги по каждому диплому, вузы, а с `university_id` — строки вуза |
 | `GET /v1/extra-points/universities?admission_year=` | вузы, у которых в базе есть баллы за индивидуальные достижения (ГТО, аттестат…) |

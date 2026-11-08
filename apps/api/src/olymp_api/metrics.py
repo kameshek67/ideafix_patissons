@@ -24,6 +24,14 @@ def install_metrics(app: FastAPI) -> None:
         buckets=(0.01, 0.025, 0.05, 0.1, 0.2, 0.5, 1, 2.5, 5),
     )
 
+    # оценки ответов помощника: только счётчик, без текста (F-02)
+    app.state.assistant_feedback = Counter(
+        "olymp_assistant_feedback_total",
+        "Оценки ответов помощника",
+        ["rating"],
+        registry=registry,
+    )
+
     @app.middleware("http")
     async def measure(
         request: Request, call_next: Callable[[Request], Awaitable[Response]]
