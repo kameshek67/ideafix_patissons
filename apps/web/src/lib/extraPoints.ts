@@ -1,6 +1,6 @@
 /** Подписи и помощники экрана «Баллы за достижения». */
 
-import type { ExtraClaim, ExtraRule } from "./api";
+import type { ExtraClaim, ExtraRule, ExtraUniversity, UniversityItem } from "./api";
 
 export const KIND_LABEL: Record<string, string> = {
   honors_document: "Аттестат / диплом",
@@ -68,4 +68,30 @@ export function toClaims(rules: ExtraRule[], picked: Record<string, Picked>): Ex
       variant: picked[r.id]?.variant ?? r.variants[0] ?? null,
       year: needsYear(r) ? (picked[r.id]?.year ?? null) : null,
     }));
+}
+
+/** Вуз в выборе вкладки «Баллы»: rules = 0 — правила баллов за достижения ещё не разобраны. */
+export interface PointsUniversity {
+  id: number;
+  name: string;
+  rules: number;
+}
+
+/**
+ * Все вузы базы для выбора: сначала те, где правила разобраны, затем остальные, внутри — по
+ * алфавиту. Вуз из списка баллов, которого почему-то нет в каталоге, тоже попадает в выбор.
+ */
+export function pointsUniversities(all: UniversityItem[], withRules: ExtraUniversity[]): PointsUniversity[] {
+  const rules = new Map(withRules.map((u) => [u.id, u.rules]));
+  const out = new Map<number, PointsUniversity>();
+  for (const u of all) out.set(u.id, { id: u.id, name: u.name, rules: rules.get(u.id) ?? 0 });
+  for (const u of withRules) if (!out.has(u.id)) out.set(u.id, { id: u.id, name: u.name, rules: u.rules });
+  return [...out.values()].sort((a, b) => Number(b.rules > 0) - Number(a.rules > 0) || a.name.localeCompare(b.name, "ru"));
+}
+
+/** Поиск вуза по подстроке названия без учёта регистра и «ё». */
+export function filterUniversities(items: PointsUniversity[], q: string): PointsUniversity[] {
+  const norm = (s: string) => s.toLowerCase().replace(/ё/g, "е");
+  const needle = norm(q.trim());
+  return needle ? items.filter((u) => norm(u.name).includes(needle)) : items;
 }

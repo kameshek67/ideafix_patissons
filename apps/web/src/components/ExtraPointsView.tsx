@@ -2,18 +2,22 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { type ExtraRule, friendlyError, getExtraRules, getExtraUniversities, scoreExtra } from "@/lib/api";
+import { type ExtraRule, friendlyError, getExtraRules, getExtraUniversities, getUniversities, scoreExtra } from "@/lib/api";
 import {
   KIND_LABEL,
   type Picked,
+  type PointsUniversity,
   SKIP_LABEL,
   VARIANT_LABEL,
+  filterUniversities,
   needsYear,
+  pointsUniversities,
   ruleTitle,
   toClaims,
   yearHint,
 } from "@/lib/extraPoints";
 import { plural } from "@/lib/format";
+import { Combo } from "./Combo";
 import { EmptyState, LoadError, Skeleton } from "./ui";
 
 function useDebounced<T>(value: T, ms = 300): T {
@@ -153,10 +157,19 @@ export function ExtraPointsView({ active }: { active: boolean }) {
   const [kind, setKind] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const unis = useQuery({ queryKey: ["extra-universities"], queryFn: getExtraUniversities, enabled: active, staleTime: Infinity });
+  // все вузы базы, тот же кэш, что во вкладке «Вузы»: кнопки только с разобранными правилами
+  // читались как полный список
+  const allUnis = useQuery({ queryKey: ["universities"], queryFn: getUniversities, enabled: active, staleTime: Infinity });
+  const choices = useMemo(
+    () => pointsUniversities(allUnis.data?.items ?? [], unis.data?.items ?? []),
+    [allUnis.data, unis.data],
+  );
+  const chosen = choices.find((c) => c.id === uid) ?? null;
+  const ready = choices.filter((c) => c.rules > 0);
   const rulesQ = useQuery({
     queryKey: ["extra-rules", uid],
     queryFn: () => getExtraRules(uid!),
-    enabled: uid !== null,
+    enabled: uid !== null && (chosen?.rules ?? 0) > 0,
     staleTime: Infinity,
   });
   const rules = rulesQ.data?.rules ?? [];
@@ -184,19 +197,42 @@ export function ExtraPointsView({ active }: { active: boolean }) {
       {unis.data && unis.data.items.length === 0 ? (
         <EmptyState icon="🏅" title="Пока нет данных" text="Баллы за достижения ещё не загружены." />
       ) : null}
-      <div className="chip-group" role="group" aria-label="Вузы с баллами за достижения">
-        {unis.data?.items.map((u) => (
-          <button
-            key={u.id}
-            type="button"
-            className={`chip ${uid === u.id ? "chip-on" : ""}`}
-            aria-pressed={uid === u.id}
-            onClick={() => pickUniversity(u.id)}
-          >
-            {u.short_name || u.name}
-          </button>
-        ))}
-      </div>
+      {choices.length > 0 ? (
+        <Combo<PointsUniversity>
+          id="combo-points-university"
+          ariaLabel="Вуз для подсчёта баллов"
+          placeholder="Выбери вуз"
+          searchPlaceholder="Поиск вуза…"
+          value={chosen?.name ?? null}
+          onSearch={(q) =>
+            filterUniversities(choices, q).map((u) => ({
+              key: u.id,
+              value: u,
+              label: u.name,
+              content: (
+                <>
+                  <span>{u.name}</span>
+                  <span className="meta">
+                    {u.rules > 0
+                      ? `${u.rules} ${plural(u.rules, "правило", "правила", "правил")} начисления баллов`
+                      : "баллы ещё не разобраны"}
+                  </span>
+                </>
+              ),
+            }))
+          }
+          onPick={(item) => pickUniversity(item.value.id)}
+        />
+      ) : null}
+      {chosen && chosen.rules === 0 ? (
+        <EmptyState
+          icon="🏅"
+          title="Баллы этого вуза ещё не разобраны"
+          text={`Это не значит, что вуз их не начисляет: правила есть в документах приёмной комиссии. Посчитать уже можно для: ${ready
+            .map((u) => u.name)
+            .join(", ")}.`}
+        />
+      ) : null}
       {uid !== null && rulesQ.isLoading ? <Skeleton /> : null}
       {rulesQ.error ? <LoadError message={friendlyError(rulesQ.error)} onRetry={() => void rulesQ.refetch()} /> : null}
       {uid !== null && rulesQ.data ? (
