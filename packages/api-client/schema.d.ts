@@ -237,7 +237,8 @@ export interface paths {
         get: operations["my_diplomas_v1_me_diplomas_get"];
         /**
          * Save My Diplomas
-         * @description Сохраняет список дипломов пользователя MAX целиком.
+         * @description Сохраняет список дипломов пользователя MAX целиком; баллы ЕГЭ — если переданы
+         *     (без поля ege сохранённые баллы не меняются).
          */
         put: operations["save_my_diplomas_v1_me_diplomas_put"];
         post?: never;
@@ -321,6 +322,29 @@ export interface paths {
         get: operations["regions_v1_regions_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Report
+         * @description Сообщение «Нашли ошибку в данных» к карточке направления или выдаче по олимпиаде.
+         *
+         *     Хранится текст и названия того, что было на экране; личные данные не нужны и не
+         *     запрашиваются. Выгрузка для команды — scripts/export_reports.py.
+         */
+        post: operations["create_report_v1_reports_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -472,6 +496,15 @@ export interface components {
             benefit: components["schemas"]["Benefit"];
             /** Diplomas */
             diplomas: number[];
+            /** Ege Gap */
+            ege_gap: number | null;
+            /** Ege Status */
+            ege_status: ("confirmed" | "short" | "missing_score" | "no_threshold") | null;
+            /**
+             * Ege Subjects
+             * @default []
+             */
+            ege_subjects: string[];
             /** Fit */
             fit: string;
             program: components["schemas"]["AchievementProgram"];
@@ -482,6 +515,8 @@ export interface components {
             bvi: number;
             /** Check */
             check: number;
+            /** Ege Confirmed */
+            ege_confirmed: number | null;
             /** Other */
             other: number;
             /** Programs */
@@ -499,6 +534,7 @@ export interface components {
             campaign_year: number;
             /** Diplomas */
             diplomas: components["schemas"]["DiplomaResult"][];
+            ege: components["schemas"]["EgeSummary"] | null;
             rejected: components["schemas"]["Rejected"];
             /** Results */
             results: components["schemas"]["AchievementUniversity"][];
@@ -770,6 +806,22 @@ export interface components {
              */
             kind: "diplomas";
         };
+        /**
+         * EgeSummary
+         * @description Подтверждение баллами ЕГЭ (только если баллы переданы, F-03).
+         */
+        EgeSummary: {
+            /** Close Universities */
+            close_universities: number;
+            /** Confirmed Programs */
+            confirmed_programs: number;
+            /** Confirmed Universities */
+            confirmed_universities: number;
+            /** Statuses */
+            statuses: {
+                [key: string]: number;
+            };
+        };
         /** ExtraRule */
         ExtraRule: {
             /** Exclusive Group */
@@ -907,6 +959,18 @@ export interface components {
         MyDiplomas: {
             /** Diplomas */
             diplomas: components["schemas"]["SavedDiploma"][];
+            /**
+             * Ege
+             * @default {}
+             */
+            ege: {
+                [key: string]: number;
+            };
+            /**
+             * Ege Is Mock
+             * @default false
+             */
+            ege_is_mock: boolean;
             user: components["schemas"]["MaxProfile"];
         };
         /** MyDiplomasUpdate */
@@ -916,6 +980,15 @@ export interface components {
              * @description Строки дипломов, например «высшаяпроба.математика.w.11.2025»
              */
             diplomas: string[];
+            /** Ege */
+            ege?: {
+                [key: string]: number;
+            } | null;
+            /**
+             * Ege Is Mock
+             * @default false
+             */
+            ege_is_mock: boolean;
         };
         /** Note */
         Note: {
@@ -975,6 +1048,23 @@ export interface components {
             kind: string | null;
             /** Short Name */
             short_name: string;
+        };
+        /**
+         * OlympiadReportIn
+         * @description Ошибка в выдаче по олимпиаде в конкретном вузе.
+         */
+        OlympiadReportIn: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "olympiad";
+            /** Message */
+            message: string;
+            /** Olympiad Id */
+            olympiad_id: number;
+            /** University Id */
+            university_id?: number | null;
         };
         /**
          * OlympiadSearch
@@ -1145,6 +1235,21 @@ export interface components {
             /** Source Url */
             source_url: string;
         };
+        /**
+         * ProgramReportIn
+         * @description Ошибка в карточке направления.
+         */
+        ProgramReportIn: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "program";
+            /** Message */
+            message: string;
+            /** Program Id */
+            program_id: number;
+        };
         /** ProgramResult */
         ProgramResult: {
             /** Benefits */
@@ -1220,6 +1325,11 @@ export interface components {
             team: number;
             /** Year */
             year: number;
+        };
+        /** ReportCreated */
+        ReportCreated: {
+            /** Id */
+            id: number;
         };
         /** SavedDiploma */
         SavedDiploma: {
@@ -1628,6 +1738,8 @@ export interface operations {
                 diploma: string[];
                 benefit_type?: string | null;
                 university_id?: number | null;
+                /** @description Баллы ЕГЭ «предмет:балл», повторяемый: ege=inf:82&ege=math:90. Предметы: rus, math, inf, phys, chem, bio, soc, hist, lit, foreign, geo. С баллами у строк есть статус подтверждения льготы, в итогах — сводка ege. */
+                ege?: string[];
             };
             header?: never;
             path?: never;
@@ -2055,6 +2167,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Regions"];
+                };
+            };
+        };
+    };
+    create_report_v1_reports_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProgramReportIn"] | components["schemas"]["OlympiadReportIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportCreated"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

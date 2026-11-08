@@ -8,7 +8,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from olymp_api import errors
-from olymp_api.max_auth import HEADER, InitDataError, validate_init_data
+from olymp_api.clients import client_key
 from olymp_api.modules.achievements.service import parse_specs
 from olymp_api.redis_support import hit
 
@@ -23,19 +23,6 @@ log = structlog.get_logger()
 
 DAY = 86_400
 MINUTE = 60
-
-
-def client_key(request: Request) -> str:
-    """Лимит считаем на пользователя MAX, если его подпись верна, иначе на IP."""
-    settings = request.app.state.settings
-    init_data = request.headers.get(HEADER, "")
-    if init_data and settings.max_bot_token:
-        try:
-            user = validate_init_data(init_data, settings.max_bot_token, settings.max_init_data_ttl)
-            return f"max:{user.id}"
-        except InitDataError:
-            pass
-    return f"ip:{request.client.host if request.client else 'unknown'}"
 
 
 async def vocabulary(request: Request, session: AsyncSession) -> Vocabulary | None:

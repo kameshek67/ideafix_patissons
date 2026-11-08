@@ -56,10 +56,43 @@ export function MaxProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // На сайте тот же стек работает через историю браузера (кнопка «Назад», жест на Android):
+  // пока есть шаги, сверху истории лежит одна наша запись; «Назад» снимает её и выполняет шаг.
+  const guard = useRef(false);
+  const skipPop = useRef(false);
+
   const syncBackButton = useCallback(() => {
-    if (!app) return;
-    safely(() => (stack.current.length ? app.BackButton.show() : app.BackButton.hide()));
+    if (app) {
+      safely(() => (stack.current.length ? app.BackButton.show() : app.BackButton.hide()));
+      return;
+    }
+    if (typeof window === "undefined") return;
+    if (stack.current.length && !guard.current) {
+      window.history.pushState({ olympBack: true }, "");
+      guard.current = true;
+    } else if (!stack.current.length && guard.current) {
+      // шаги закрыли кнопками на странице — убираем и нашу запись, иначе «Назад» сработал бы вхолостую
+      guard.current = false;
+      skipPop.current = true;
+      window.history.back();
+    }
   }, [app]);
+
+  useEffect(() => {
+    if (app) return;
+    const onPop = () => {
+      if (skipPop.current) {
+        skipPop.current = false;
+        return;
+      }
+      guard.current = false;
+      stack.current.at(-1)?.run();
+      // шаг выполнен; если остались ещё — запись истории для следующего «Назад»
+      queueMicrotask(syncBackButton);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [app, syncBackButton]);
 
   useEffect(() => {
     if (!app) return;
