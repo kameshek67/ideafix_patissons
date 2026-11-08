@@ -69,6 +69,11 @@ ln -sfn images.yml "$rel/.deploy/images.json"
 if [ -d "$root/shared/files" ]; then
   cp -a "$root/shared/files/." "$rel/"
 fi
+# cp -a принёс права shared/files (750), а бот MAX (uid 10001) читает /certs из контейнера:
+# без этого он падает с PermissionError и перезапускается по кругу. Сертификат публичный.
+if [ -d "$rel/infra/certs" ]; then
+  chmod -R a+rX "$rel/infra/certs"
+fi
 # воркер нового стека (uid 10001, infra/Dockerfile.api) пишет в ./data кэш источников
 if [ -d "$rel/data" ]; then
   setfacl -R -m u:10001:rwX -m d:u:10001:rwX "$rel/data" 2>/dev/null || chmod -R a+rwX "$rel/data"

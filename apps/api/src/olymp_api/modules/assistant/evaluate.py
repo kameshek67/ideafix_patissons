@@ -13,7 +13,7 @@ import json
 import sys
 import time
 from collections.abc import AsyncIterator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -38,6 +38,7 @@ class Case:
     tools: list[str]  # подойдёт любой; пусто — инструменты не обязательны
     include: list[str]  # подойдёт любой фрагмент; пусто — без проверки
     exclude: list[str]
+    include_all: list[str] = field(default_factory=list)  # нужны все фрагменты
 
 
 @dataclass
@@ -57,6 +58,7 @@ def load_cases(path: Path) -> list[Case]:
             row.get("tools", []),
             row.get("include", []),
             row.get("exclude", []),
+            row.get("include_all", []),
         )
         for row in map(json.loads, filter(str.strip, lines))
     ]
@@ -92,6 +94,7 @@ def judge(case: Case, answer: str, used: list[str], failure: str | None) -> list
         reasons.append(f"нет вызова {case.tools}, были {used}")
     if case.include and not any(item.lower() in text for item in case.include):
         reasons.append(f"в ответе нет ни одного из {case.include}")
+    reasons += [f"в ответе нет «{item}»" for item in case.include_all if item.lower() not in text]
     reasons += [f"есть запрещённое «{item}»" for item in case.exclude if item.lower() in text]
     return reasons
 

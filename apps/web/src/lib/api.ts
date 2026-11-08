@@ -135,6 +135,7 @@ export const getShare = (token: string) =>
 // ---------------------------------------------------------------- баллы за достижения (ГТО…)
 
 export type ExtraUniversities = Schemas["ExtraUniversities"];
+export type ExtraUniversity = Schemas["ExtraUniversity"];
 export type ExtraRules = Schemas["ExtraRules"];
 export type ExtraRule = Schemas["ExtraRule"];
 export type ExtraScore = Schemas["Score"];

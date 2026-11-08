@@ -67,6 +67,7 @@ from olymp_domain.textutils import (
 )
 
 from .extra_points import load_extra_points
+from .olympiad_cards import CARDS_FILE, load_olympiad_cards
 from .university_pages import PAGES
 
 REPO = Path(__file__).resolve().parents[4]
@@ -1187,6 +1188,9 @@ class Ingestor:
         log("[6/7] Полнотекстовый индекс")
         self.build_fts()
 
+        cards = load_olympiad_cards(self.conn, DATA_DIR)
+        log(f"      карточки олимпиад: {cards['cards']}, треков {cards['tracks']}")
+
         extra = load_extra_points(self.conn, DATA_DIR)
         log(f"      баллы за ИД: правил {extra['rules']}, лимитов {extra['limits']}")
 
@@ -2205,10 +2209,11 @@ def build_fingerprint(xlsx_path: str) -> str:
     Меняется, если поменяли XLSX, кэш ссылок на документы вузов или код разбора (этот файл,
     нормализация текста, справочник олимпиад, страницы вузов). Тогда `--if-stale` пересоберёт базу.
     """
+    import olymp_domain.olympiad_cards as cards
     import olymp_domain.olympiad_seeds as seeds
     import olymp_domain.textutils as textutils
 
-    from . import university_pages
+    from . import olympiad_cards, university_pages
 
     parts = [
         Path(xlsx_path),
@@ -2217,6 +2222,9 @@ def build_fingerprint(xlsx_path: str) -> str:
         Path(university_pages.__file__),
         Path(textutils.__file__),
         Path(seeds.__file__),
+        DATA_DIR / CARDS_FILE,
+        Path(olympiad_cards.__file__),
+        Path(cards.__file__),
     ]
     digest = hashlib.sha256()
     for part in parts:
