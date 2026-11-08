@@ -13,6 +13,14 @@ from typing import Any
 import structlog
 from fastapi import HTTPException
 from olymp_domain import squash
+from olymp_domain.diplomas import is_real_profile
+from olymp_domain.interests import (
+    display_name,
+    is_list_profile,
+    phrase_matches,
+    query_words,
+    words_of,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from olymp_api.db import fetch_all
@@ -26,12 +34,22 @@ MAX_RESULT_BYTES = 4096
 MAX_KEYWORDS = 6
 ROWS = 12
 NO_DATA = "В базе нет данных. Это не значит, что льготы нет: нужно проверить на сайте вуза."
+UNKNOWN_ID = (
+    "Этого id нет в результатах поиска в этом ответе. Id из прошлых сообщений не сохраняются: "
+    "сначала найди олимпиаду через find_profiles или find_olympiads"
+)
 
 
 @dataclass
 class ToolContext:
+    """Один ответ помощника. История чата приходит только текстом, без id из прошлых ответов:
+    модель их придумывала и получала вузы чужой олимпиады («Ломоносов» под видом НТО).
+    Поэтому вузы ищутся только по id, которые поиск вернул в этом же ответе."""
+
     session: AsyncSession
     diplomas: list[str]
+    olympiads: set[int] = field(default_factory=set)
+    profiles: dict[int, int] = field(default_factory=dict)  # профиль → его олимпиада
 
 
 @dataclass
@@ -89,35 +107,76 @@ def university_name(u: dict[str, Any]) -> str:
     return str(u.get("short_name") or u.get("name") or "")
 
 
+def benefit_kinds(bvi: int, sto: int) -> list[str]:
+    """Какие льготы есть. Число строк базы ученику ничего не говорит, а модель его пересказывала:
+    «28 строк с БВИ». Сколько вузов и направлений — в соседних полях."""
+    return [kind for kind, count in (("БВИ", bvi), ("100 баллов", sto)) if count]
+
+
+def pick_profiles(themes: list[list[str]], rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Профили под темы ученика: у каждой темы свой список, и списки берутся по очереди.
+
+    Иначе общая тема («информатика», сотни строк льгот) вытесняла конкретную («мобильные
+    приложения» у НТО). Сначала — фразы из нескольких слов, внутри темы — профили, которые
+    дают льготы в большем числе вузов. Обрывки разбора таблиц и дубли с опечаткой пропускаются.
+    """
+    candidates = [
+        (row, words_of(row["profile"]))
+        for row in rows
+        if is_real_profile(row["profile"]) and not is_list_profile(row["profile"])
+    ]
+    per_theme = []
+    for words in sorted(themes, key=len, reverse=True):
+        found = [row for row, name_words in candidates if phrase_matches(words, name_words)]
+        found.sort(
+            key=lambda r: (-r["uni_count"], -(r["bvi_count"] + r["sto_count"]), r["profile_id"])
+        )
+        per_theme.append(found)
+    picked: list[dict[str, Any]] = []
+    seen: set[tuple[int, str]] = set()
+    while len(picked) < ROWS and any(per_theme):
+        for found in per_theme:
+            while found:
+                row = found.pop(0)
+                key = (row["olympiad_id"], squash(display_name(row["profile"])))
+                if key not in seen:
+                    seen.add(key)
+                    picked.append(row)
+                    break
+            if len(picked) >= ROWS:
+                break
+    return picked
+
+
 async def find_profiles(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
     raw = args.get("keywords")
     if not isinstance(raw, list) or not raw:
         raise ValueError("нужен список keywords")
-    keys = [key for key in (squash(str(word)) for word in raw[:MAX_KEYWORDS]) if len(key) >= 3]
-    if not keys:
+    themes = [words for words in (query_words(str(k)) for k in raw[:MAX_KEYWORDS]) if words]
+    if not themes:
         raise ValueError("ключевые слова слишком короткие")
-    # названия в collation C: регистр кириллицы не сворачивается, поэтому сравниваем по squash_key
-    rows = await fetch_all(
-        ctx.session,
-        """SELECT p.id AS profile_id, p.name AS profile, p.level, p.bvi_count, p.sto_count,
-                  p.uni_count, o.id AS olympiad_id, o.short_name, o.canonical_name
-           FROM olympiad_profiles p JOIN olympiads o ON o.id = p.olympiad_id
-           WHERE p.bvi_count + p.sto_count > 0
-             AND EXISTS (SELECT 1 FROM unnest(CAST(:keys AS text[])) AS k
-                         WHERE strpos(p.squash_key, k) > 0)
-           ORDER BY p.bvi_count + p.sto_count DESC, p.id
-           LIMIT :limit""",
-        {"keys": keys, "limit": ROWS},
+    # профилей с льготами несколько сотен: сопоставляем по основам слов в коде, а не в SQL
+    rows = pick_profiles(
+        themes,
+        await fetch_all(
+            ctx.session,
+            """SELECT p.id AS profile_id, p.name AS profile, p.level, p.bvi_count, p.sto_count,
+                      p.uni_count, o.id AS olympiad_id, o.short_name, o.canonical_name
+               FROM olympiad_profiles p JOIN olympiads o ON o.id = p.olympiad_id
+               WHERE p.bvi_count + p.sto_count > 0
+               ORDER BY p.id""",
+        ),
     )
+    ctx.olympiads.update(r["olympiad_id"] for r in rows)
+    ctx.profiles.update((r["profile_id"], r["olympiad_id"]) for r in rows)
     items = [
         {
             "olympiad_id": r["olympiad_id"],
             "olympiad": r["short_name"],
             "profile_id": r["profile_id"],
-            "profile": r["profile"],
+            "profile": display_name(r["profile"]),
             "level": r["level"],
-            "bvi_rows": r["bvi_count"],
-            "sto_rows": r["sto_count"],
+            "benefits": benefit_kinds(r["bvi_count"], r["sto_count"]),
             "universities": r["uni_count"],
         }
         for r in rows
@@ -128,7 +187,13 @@ async def find_profiles(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
     return ToolResult(
         compact(payload, "profiles"),
         entities=[
-            entity("olympiad", r["olympiad_id"], r["short_name"], r["profile"], r["canonical_name"])
+            entity(
+                "olympiad",
+                r["olympiad_id"],
+                r["short_name"],
+                display_name(r["profile"]),
+                r["canonical_name"],
+            )
             for r in rows
         ],
     )
@@ -139,13 +204,13 @@ async def find_olympiads(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
     if len(query) < 2:
         raise ValueError("нужен query")
     found = (await catalog.olympiads(ctx.session, query, False, 8))["items"]
+    ctx.olympiads.update(o["id"] for o in found)
     items = [
         {
             "olympiad_id": o["id"],
             "olympiad": o["short_name"],
             "name": o["canonical_name"],
-            "bvi_rows": o["bvi_count"],
-            "sto_rows": o["sto_count"],
+            "benefits": benefit_kinds(o["bvi_count"], o["sto_count"]),
             "universities": o["uni_count"],
             "profiles": o.get("profiles", 0),
         }
@@ -164,11 +229,19 @@ async def find_olympiads(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
 
 async def universities_for_olympiad(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
     olympiad_id = need_int(args, "olympiad_id")
+    profile_id = optional_int(args, "profile_id")
+    if olympiad_id not in ctx.olympiads:
+        return error(UNKNOWN_ID)
+    if profile_id is not None and ctx.profiles.get(profile_id) != olympiad_id:
+        return error(
+            "Этот profile_id не от этой олимпиады или не из поиска в этом ответе: возьми "
+            "olympiad_id и profile_id из одной строки find_profiles"
+        )
     data = await search.by_olympiad(
         ctx.session,
         "олимпиада",  # запрос нужен сервису, но при известном id не используется
         olympiad_id,
-        optional_int(args, "profile_id"),
+        profile_id,
         None,
         args.get("region") or None,
         args.get("benefit_type") or None,
@@ -189,8 +262,7 @@ async def universities_for_olympiad(ctx: ToolContext, args: dict[str, Any]) -> T
                 "university": name,
                 "city": info.get("city"),
                 "programs": result["programs_total"],
-                "bvi_rows": result["bvi"],
-                "sto_rows": result["sto"],
+                "benefits": benefit_kinds(result["bvi"], result["sto"]),
                 "examples": examples,
             }
         )
@@ -249,6 +321,7 @@ async def olympiads_for_program(ctx: ToolContext, args: dict[str, Any]) -> ToolR
     program = max(fitting, key=lambda p: p["benefits"])
     data = await search.by_program(ctx.session, program["id"])
     olympiads = data["olympiads"][:ROWS]
+    ctx.olympiads.update(o["id"] for o in olympiads)
     title = str(program["faculty_or_direction"])
     name = university_name(university)
     payload: dict[str, Any] = {
@@ -333,8 +406,7 @@ async def list_universities(ctx: ToolContext, args: dict[str, Any]) -> ToolResul
             "university": university_name(u),
             "city": u["city"],
             "programs": u["programs"],
-            "bvi_rows": u["bvi"],
-            "sto_rows": u["sto"],
+            "benefits": benefit_kinds(u["bvi"], u["sto"]),
         }
         for u in found
     ]
@@ -383,7 +455,9 @@ TOOLS: list[dict[str, Any]] = [
     _tool(
         "find_profiles",
         "Ищет профили олимпиад по темам. Вызывай, когда ученик рассказывает об увлечениях или "
-        "предмете. Ключевые слова — основы слов: «робот», «программир», «биолог».",
+        "предмете. Каждая тема — слово или короткая фраза: «мобильные приложения», «робот», "
+        "«биолог». Профиль находится, если в его названии есть все слова темы в любых формах. "
+        "Конкретное увлечение передавай отдельной темой, а общий предмет — другой темой.",
         {"keywords": {"type": "array", "items": _STRING, "maxItems": MAX_KEYWORDS}},
         "keywords",
     ),
@@ -395,7 +469,9 @@ TOOLS: list[dict[str, Any]] = [
     ),
     _tool(
         "universities_for_olympiad",
-        "Вузы, где олимпиада даёт льготы. Id берутся из результатов поиска.",
+        "Вузы, где олимпиада даёт льготы. olympiad_id и profile_id бери из результатов "
+        "find_profiles или find_olympiads в этом же ответе: id из прошлых сообщений не "
+        "сохраняются, поэтому про олимпиаду из прошлого ответа сначала снова вызови поиск.",
         {
             "olympiad_id": _INTEGER,
             "profile_id": _INTEGER,
