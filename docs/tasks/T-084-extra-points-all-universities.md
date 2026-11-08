@@ -9,7 +9,7 @@ spec: docs/specs/F-05-extra-points.md
 depends: [T-051, T-083]
 owner: Raytist
 branch: feat/T-084-extra-points-all
-pr: null
+pr: 38
 updated: 2026-11-08
 ---
 
