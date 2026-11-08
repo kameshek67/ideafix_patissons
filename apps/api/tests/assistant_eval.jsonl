@@ -29,3 +29,5 @@
 {"id": "plan-hse", "question": "Что писать в этом году, чтобы попасть в ВШЭ на ПМИ?", "tools": ["olympiads_for_program", "find_profiles", "find_olympiads"], "include": ["олимпиад"], "exclude": []}
 {"id": "plan-dates", "question": "Когда точно отборочный этап Высшей пробы?", "tools": [], "include": ["сайт", "уточн"], "exclude": []}
 {"id": "hobby-mobile", "question": "Хочу делать мобильные приложения, какие олимпиады подойдут?", "tools": ["find_profiles"], "include": ["НТО", "мобильн"], "exclude": ["нет в базе", "строк"]}
+{"id": "hobby-mobile-both", "question": "Хочу делать мобильные приложения, какие олимпиады подойдут?", "tools": ["find_profiles"], "include": [], "include_all": ["НТО", "Юниор"], "exclude": ["строк"]}
+{"id": "card-junior", "question": "Что такое «Юниор», как он проходит?", "tools": ["olympiad_card"], "include": [], "include_all": ["проект"], "exclude": []}

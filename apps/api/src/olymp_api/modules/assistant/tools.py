@@ -113,21 +113,44 @@ def benefit_kinds(bvi: int, sto: int) -> list[str]:
     return [kind for kind, count in (("БВИ", bvi), ("100 баллов", sto)) if count]
 
 
-def pick_profiles(themes: list[list[str]], rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def track_for(
+    words: list[str], profile: list[str], tracks: list[dict[str, Any]]
+) -> tuple[bool, str | None]:
+    """Подходит ли профиль теме и по какому треку. Трек ищется по названию и ключевым темам:
+    у «Юниора» профиль «инженерные науки», а секция «разработка мобильных приложений под Android»
+    есть только в треках."""
+    by_profile = phrase_matches(words, profile)
+    for track in tracks:
+        if phrase_matches(words, words_of(f"{track['name']} {' '.join(track['topics'])}")):
+            return True, str(track["name"])
+    return by_profile, None
+
+
+def pick_profiles(
+    themes: list[list[str]],
+    rows: list[dict[str, Any]],
+    tracks: dict[int, list[dict[str, Any]]] | None = None,
+) -> list[dict[str, Any]]:
     """Профили под темы ученика: у каждой темы свой список, и списки берутся по очереди.
 
     Иначе общая тема («информатика», сотни строк льгот) вытесняла конкретную («мобильные
     приложения» у НТО). Сначала — фразы из нескольких слов, внутри темы — профили, которые
     дают льготы в большем числе вузов. Обрывки разбора таблиц и дубли с опечаткой пропускаются.
+    Профиль подходит и по названию трека: в строке тогда поле track.
     """
+    tracks = tracks or {}
     candidates = [
-        (row, words_of(row["profile"]))
+        (row, words_of(row["profile"]), tracks.get(row["profile_id"], []))
         for row in rows
         if is_real_profile(row["profile"]) and not is_list_profile(row["profile"])
     ]
     per_theme = []
     for words in sorted(themes, key=len, reverse=True):
-        found = [row for row, name_words in candidates if phrase_matches(words, name_words)]
+        found = []
+        for row, name_words, own_tracks in candidates:
+            hit, track = track_for(words, name_words, own_tracks)
+            if hit:
+                found.append({**row, "track": track})
         found.sort(
             key=lambda r: (-r["uni_count"], -(r["bvi_count"] + r["sto_count"]), r["profile_id"])
         )
@@ -156,6 +179,11 @@ async def find_profiles(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
     if not themes:
         raise ValueError("ключевые слова слишком короткие")
     # профилей с льготами несколько сотен: сопоставляем по основам слов в коде, а не в SQL
+    tracks: dict[int, list[dict[str, Any]]] = {}
+    for track in await fetch_all(
+        ctx.session, "SELECT profile_id, name, topics FROM olympiad_tracks ORDER BY id"
+    ):
+        tracks.setdefault(track["profile_id"], []).append(track)
     rows = pick_profiles(
         themes,
         await fetch_all(
@@ -166,6 +194,7 @@ async def find_profiles(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
                WHERE p.bvi_count + p.sto_count > 0
                ORDER BY p.id""",
         ),
+        tracks,
     )
     ctx.olympiads.update(r["olympiad_id"] for r in rows)
     ctx.profiles.update((r["profile_id"], r["olympiad_id"]) for r in rows)
@@ -175,6 +204,7 @@ async def find_profiles(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
             "olympiad": r["short_name"],
             "profile_id": r["profile_id"],
             "profile": display_name(r["profile"]),
+            **({"track": r["track"]} if r["track"] else {}),
             "level": r["level"],
             "benefits": benefit_kinds(r["bvi_count"], r["sto_count"]),
             "universities": r["uni_count"],
@@ -289,6 +319,68 @@ async def universities_for_olympiad(ctx: ToolContext, args: dict[str, Any]) -> T
         compact(payload, "universities"),
         entities=[entity("olympiad", olympiad_id, label, None), *entities],
         sources=[s for s in sources if s],
+    )
+
+
+async def olympiad_card(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
+    olympiad_id = need_int(args, "olympiad_id")
+    if olympiad_id not in ctx.olympiads:
+        return error(UNKNOWN_ID)
+    info = await fetch_all(
+        ctx.session,
+        """SELECT o.short_name, o.canonical_name, i.site_url, i.summary, i.grades, i.formats,
+                  i.stages, i.source_url, i.checked
+           FROM olympiads o LEFT JOIN olympiad_info i ON i.olympiad_id = o.id
+           WHERE o.id = :id""",
+        {"id": olympiad_id},
+    )
+    if not info:
+        return error("Олимпиада с таким id не найдена: сначала вызови поиск")
+    card = info[0]
+    label = card["short_name"]
+    if not card["site_url"]:
+        return ToolResult(
+            dumps(
+                {
+                    "olympiad": label,
+                    "note": "Карточки этой олимпиады в базе нет: формат, классы и секции "
+                    "неизвестны. Не выдумывай их, посоветуй официальный сайт олимпиады.",
+                }
+            ),
+            entities=[entity("olympiad", olympiad_id, label, None, card["canonical_name"])],
+        )
+    tracks = await fetch_all(
+        ctx.session,
+        """SELECT t.name, t.topics, p.id AS profile_id, p.name AS profile
+           FROM olympiad_tracks t JOIN olympiad_profiles p ON p.id = t.profile_id
+           WHERE t.olympiad_id = :id ORDER BY t.id""",
+        {"id": olympiad_id},
+    )
+    for track in tracks:
+        ctx.profiles[track["profile_id"]] = olympiad_id
+    payload: dict[str, Any] = {
+        "olympiad": label,
+        "name": card["canonical_name"],
+        "summary": card["summary"],
+        "grades": card["grades"],
+        "format": card["formats"] or "в карточке не указан",
+        "stages": card["stages"] or "в карточке не указаны",
+        "site": card["site_url"],
+        "checked": str(card["checked"]),
+        "tracks": [
+            {
+                "track": t["name"],
+                "profile_id": t["profile_id"],
+                "profile": display_name(t["profile"]),
+                **({"topics": t["topics"]} if t["topics"] else {}),
+            }
+            for t in tracks
+        ],
+    }
+    return ToolResult(
+        compact(payload, "tracks"),
+        entities=[entity("olympiad", olympiad_id, label, None, card["canonical_name"])],
+        sources=[s for s in [source(card["source_url"], "Официальный сайт олимпиады", label)] if s],
     )
 
 
@@ -424,6 +516,7 @@ HANDLERS: dict[str, Handler] = {
     "find_profiles": find_profiles,
     "find_olympiads": find_olympiads,
     "universities_for_olympiad": universities_for_olympiad,
+    "olympiad_card": olympiad_card,
     "olympiads_for_program": olympiads_for_program,
     "match_diplomas": match_diplomas,
     "list_universities": list_universities,
@@ -457,7 +550,9 @@ TOOLS: list[dict[str, Any]] = [
         "Ищет профили олимпиад по темам. Вызывай, когда ученик рассказывает об увлечениях или "
         "предмете. Каждая тема — слово или короткая фраза: «мобильные приложения», «робот», "
         "«биолог». Профиль находится, если в его названии есть все слова темы в любых формах. "
-        "Конкретное увлечение передавай отдельной темой, а общий предмет — другой темой.",
+        "Конкретное увлечение передавай отдельной темой, а общий предмет — другой темой. Тема "
+        "находит и секции олимпиад (поле track): у «Юниора» секция есть, хотя профиль называется "
+        "шире.",
         {"keywords": {"type": "array", "items": _STRING, "maxItems": MAX_KEYWORDS}},
         "keywords",
     ),
@@ -466,6 +561,14 @@ TOOLS: list[dict[str, Any]] = [
         "Ищет олимпиаду по названию или сокращению: «вышка», «всош», «нто».",
         {"query": _STRING},
         "query",
+    ),
+    _tool(
+        "olympiad_card",
+        "Карточка олимпиады: что это, формат, классы, этапы, секции и официальный сайт. Для "
+        "вопросов «что это», «как проходит», «где сайт». olympiad_id бери из поиска в этом же "
+        "ответе. Если карточки нет, так и скажи: формат и секции не выдумывай.",
+        {"olympiad_id": _INTEGER},
+        "olympiad_id",
     ),
     _tool(
         "universities_for_olympiad",

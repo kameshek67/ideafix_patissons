@@ -10,12 +10,13 @@ share_links (снимки для ссылок «Поделиться»).
 прототипе на SQLite. От этого зависит порядок вузов, направлений и профилей в выдаче.
 """
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from sqlalchemy import (
     BigInteger,
     CheckConstraint,
+    Date,
     DateTime,
     ForeignKey,
     Index,
@@ -184,6 +185,40 @@ class OlympiadProfile(Base):
     bvi_count: Mapped[int] = _int()
     sto_count: Mapped[int] = _int()
     uni_count: Mapped[int] = _int()
+
+
+class OlympiadInfo(Base):
+    """Карточка олимпиады из data/olympiad_cards.json: что внутри и где официальный сайт."""
+
+    __tablename__ = "olympiad_info"
+
+    id: Mapped[int] = _pk()
+    olympiad_id: Mapped[int] = mapped_column(
+        ForeignKey("olympiads.id", ondelete="CASCADE"), unique=True
+    )
+    site_url: Mapped[str] = _text()
+    summary: Mapped[str] = _text()
+    grades: Mapped[str] = _text()
+    formats: Mapped[list[str]] = mapped_column(ARRAY(CText), server_default=sa_text("'{}'"))
+    stages: Mapped[list[str]] = mapped_column(ARRAY(CText), server_default=sa_text("'{}'"))
+    source_url: Mapped[str] = _text()
+    checked: Mapped[date] = mapped_column(Date)
+
+
+class OlympiadTrack(Base):
+    """Секция или трек олимпиады. Льготы у трека те же, что у его профиля РСОШ."""
+
+    __tablename__ = "olympiad_tracks"
+    __table_args__ = (UniqueConstraint("olympiad_id", "squash_key"), Index(None, "profile_id"))
+
+    id: Mapped[int] = _pk()
+    olympiad_id: Mapped[int] = mapped_column(ForeignKey("olympiads.id", ondelete="CASCADE"))
+    profile_id: Mapped[int] = mapped_column(ForeignKey("olympiad_profiles.id", ondelete="CASCADE"))
+    name: Mapped[str] = mapped_column(CText)
+    squash_key: Mapped[str] = mapped_column(CText)
+    topics: Mapped[list[str]] = mapped_column(ARRAY(CText), server_default=sa_text("'{}'"))
+    source_url: Mapped[str] = _text()
+    checked: Mapped[date] = mapped_column(Date)
 
 
 class BenefitOlympiad(Base):
@@ -403,6 +438,8 @@ class ShareLink(Base):
 
 # Таблицы с данными сборки: их очищает и заново наполняет olymp-ingest.
 DATA_TABLES = [
+    "olympiad_tracks",
+    "olympiad_info",
     "search_index",
     "benefit_keywords",
     "benefit_olympiads",
