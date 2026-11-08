@@ -16,6 +16,8 @@ import psycopg
 from olymp_db.session import psycopg_dsn
 from olymp_domain.extra_points import KINDS
 
+from .tables import clear_tables
+
 ACHIEVEMENTS_CSV = "individual_achievements.csv"
 LIMITS_CSV = "individual_achievement_limits.csv"
 
@@ -129,9 +131,7 @@ def reload_extra_points(database_url: str | None, data_dir: Path) -> dict[str, i
     API до коммита видит прежние данные, а при ошибке в CSV прежние данные остаются.
     """
     with psycopg.connect(psycopg_dsn(database_url)) as conn:
-        conn.execute(
-            "TRUNCATE individual_achievements, individual_achievement_limits RESTART IDENTITY"
-        )
+        clear_tables(conn, ["individual_achievements", "individual_achievement_limits"])
         stats = load_extra_points(conn, data_dir)
         conn.commit()
     return stats

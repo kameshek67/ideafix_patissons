@@ -68,6 +68,7 @@ from olymp_domain.textutils import (
 
 from .extra_points import load_extra_points
 from .olympiad_cards import CARDS_FILE, load_olympiad_cards
+from .tables import clear_tables
 from .university_pages import PAGES
 
 REPO = Path(__file__).resolve().parents[4]
@@ -366,6 +367,11 @@ class OlympiadCatalog:
 
 RE_GROUP = re.compile(r"групп[аы]\s*№?\s*(\d+)", re.IGNORECASE)
 RE_SUBJ_IN_QUOTES = re.compile(r"предмету\s*[«\"]([^»\"]+)[»\"]", re.IGNORECASE)
+# порядковый номер программы в списке ВШЭ: «№24. Экономика (38.03.01)» в «Базе»,
+# а в подробных листах та же программа называется просто «Экономика»
+RE_LIST_NUMBER = re.compile(r"^\s*№\s*\d+\s*[.)]?\s*")
+# «Игры (по направлению 09.03.04 Программная инженерия)» — название программы до скобки
+RE_BY_DIRECTION = re.compile(r"\s*\(\s*по\s+направлени\w*\s.*$", re.IGNORECASE)
 
 
 def program_keys(name: str, code: str = "", profile: str = "") -> list[str]:
@@ -375,10 +381,14 @@ def program_keys(name: str, code: str = "", profile: str = "") -> list[str]:
     codes = extract_codes(text) or ([code] if code else [])
     codes = sorted({c for c in codes if c})
     name_wo_codes = squash(re.sub(r"\d{2}\.\d{2}\.\d{2}", " ", text))
+    # без номера в списке и без «(по направлению …)»: так программу называют подробные листы.
+    # Только вместе с кодом: одно название бывает у программ с разными кодами
+    bare = RE_BY_DIRECTION.sub("", RE_LIST_NUMBER.sub("", text))
+    bare_key = squash(re.sub(r"\d{2}\.\d{2}\.\d{2}", " ", bare))
     profile_key = squash(profile)
 
-    if name_wo_codes and codes:
-        keys.append("nc:" + name_wo_codes + "|" + ",".join(codes))
+    if bare_key and codes:
+        keys.append("nc:" + bare_key + "|" + ",".join(codes))
     if name_wo_codes and profile_key:
         keys.append("np:" + name_wo_codes + "|" + profile_key)
     if name_wo_codes and len(name_wo_codes) >= 4:
@@ -398,6 +408,10 @@ class ProgramRegistry:
     def __init__(self, conn: psycopg.Connection) -> None:
         self.conn = conn
         self._keys: dict[tuple[int, str], int] = {}
+        # ключ «c:<код>» -> все программы вуза с этим кодом (D2): по одному коду программу
+        # можно узнать, только если она единственная, иначе склеятся разные программы
+        self._by_code: dict[tuple[int, str], list[int]] = defaultdict(list)
+        self._codes: dict[int, set[str]] = {}  # коды созданных программ
         self._order: dict[int, int] = defaultdict(int)
         # (note, source_title, source_url) созданных программ: чтобы не перечитывать их из БД
         self._info: dict[int, list[str]] = {}
@@ -411,14 +425,36 @@ class ProgramRegistry:
         note: str = "",
         source_url: str = "",
         source_sheet: str = "",
+        match_by_code: bool = True,
     ) -> int:
+        """
+        Находит программу вуза по любому ключу или создаёт новую. `match_by_code=False` —
+        для «Базы», где у каждой строки своя программа: одинаковый код (у ВШЭ — десятки
+        программ на одном коде) не повод склеивать строки.
+        """
         name = clean_text(name) or "Без названия"
         keys = program_keys(name, code, profile)
+        incoming = set(extract_codes(name) or extract_codes(code) or ([code] if code else []))
         for key in keys:
-            pid = self._keys.get((university_id, key))
+            if key.startswith("c:"):
+                same_code = self._by_code.get((university_id, key), [])
+                pid = same_code[0] if match_by_code and len(same_code) == 1 else None
+            else:
+                pid = self._keys.get((university_id, key))
+                # одно и то же название при разных кодах — разные программы
+                # (ВШЭ: «Разработка игр и цифровых продуктов» есть и на 09.03.04, и на 54.03.01)
+                if pid is not None and key[:2] in ("n:", "np") and incoming:
+                    known = self._codes.get(pid, set())
+                    if known and known != incoming:
+                        pid = None
             if pid is not None:
                 self._enrich(pid, note, source_url)
                 return pid
+
+        pid = self._truncated_name_match(university_id, keys, incoming) if match_by_code else None
+        if pid is not None:
+            self._enrich(pid, note, source_url)
+            return pid
 
         codes = extract_codes(name) or ([code] if code else [])
         self._order[university_id] += 1
@@ -441,10 +477,34 @@ class ProgramRegistry:
             ),
         )
         pid = int(cur.fetchone()[0])
+        self._codes[pid] = incoming
         self._info[pid] = [clean_text(note), source_title, source_link]
         for key in keys:
-            self._keys.setdefault((university_id, key), pid)
+            if key.startswith("c:"):
+                self._by_code[(university_id, key)].append(pid)
+            else:
+                self._keys.setdefault((university_id, key), pid)
         return pid
+
+    def _truncated_name_match(self, university_id: int, keys: list[str], incoming: set[str]):
+        """
+        В подробных листах длинные названия бывают обрезаны (КФУ: «… (профиль: Иностранный
+        (английский) язык и второй иностранный я»). Обрезок узнаём по началу названия, но только
+        если ему подходит ровно одна программа вуза с тем же кодом.
+        """
+        stem = next((k[2:] for k in keys if k.startswith("n:")), "")
+        if len(stem) < 60:
+            return None
+        found = {
+            pid
+            for (uid, key), pid in self._keys.items()
+            if uid == university_id
+            and key.startswith("n:")
+            and key[2:] != stem
+            and key[2:].startswith(stem)
+            and (not incoming or not self._codes.get(pid) or self._codes[pid] == incoming)
+        }
+        return found.pop() if len(found) == 1 else None
 
     def _enrich(self, program_id: int, note: str, source_url: str) -> None:
         """Подробный лист может дать источник/примечание там, где «База» промолчала."""
@@ -1118,7 +1178,8 @@ class Ingestor:
                 + ", ".join(missing)
                 + ". Сначала примените миграции: cd packages/db && alembic upgrade head"
             )
-        self.conn.execute(f"TRUNCATE {', '.join(DATA_TABLES)} RESTART IDENTITY CASCADE")
+        # DELETE, а не TRUNCATE: API до коммита читает прежние данные, а не ждёт (tables.py)
+        clear_tables(self.conn, DATA_TABLES)
         self.programs = ProgramRegistry(self.conn)
 
     def executemany(self, sql: str, params: Iterable[Sequence]) -> None:
@@ -1345,6 +1406,7 @@ class Ingestor:
                 note=note,
                 source_url=source,
                 source_sheet=SHEET_BASE,
+                match_by_code=False,
             )
             for idx, benefit_type in ((4, BVI), (5, STO)):
                 text = cell(row, idx)
@@ -1881,8 +1943,28 @@ class Ingestor:
                 # раскрытие её «по профилю» дало бы только дубли
                 if rule.scope == "vsosh":
                     continue
-                for token in rule.profiles:
-                    for profile_id in index.find(token):
+                rule_confirm = ", ".join(rule.confirm) or confirm
+                # «НТО (все профили)» — все профили олимпиады из справочника
+                whole = set()
+                for name in rule.whole_olympiads:
+                    whole.update(h.olympiad_id for h in self.matcher.find(name))
+                    short = self.short_aliases.get(squash(name), -1)
+                    if short > 0:
+                        whole.add(short)
+                candidates = [(token, index.find(token)) for token in rule.profiles]
+                if whole:
+                    candidates.append(
+                        (
+                            "",
+                            [
+                                pid
+                                for pid, meta_item in sorted(meta.items())
+                                if meta_item[0] in whole
+                            ],
+                        )
+                    )
+                for _token, profile_ids in candidates:
+                    for profile_id in profile_ids:
                         olympiad_id, profile_name, profile_level = meta[profile_id]
                         kind = self.olympiad_kinds.get(olympiad_id, "rsosh")
                         # «перечневые олимпиады» — это РСОШ, ВсОШ идёт отдельным правилом
@@ -1907,7 +1989,7 @@ class Ingestor:
                                 olympiad_profile=profile_name,
                                 level=level,
                                 winner_role=rule.role or "победители и призёры",
-                                confirm_subject=confirm,
+                                confirm_subject=rule_confirm,
                                 min_ege=min_ege,
                                 note="Правило вуза: любая олимпиада перечня с этим профилем",
                                 source_url=url,

@@ -6,6 +6,7 @@ from olymp_domain.textutils import (
     find_levels,
     norm_level,
     parse_enumeration,
+    parse_profile_rules,
     split_source,
 )
 
@@ -88,3 +89,78 @@ def test_other_enumerations_are_not_affected_by_subject_lists_parser():
         ("«Высшая проба»", "информатика", "I"),
         ("«Ломоносов»", "математика", "I"),
     ]
+
+
+# строка УрФУ из листа «База» (по направлению 01.03.04), как она лежит в XLSX
+URFU_RAW_RULE = (
+    "Перечневые олимпиады I–III уровня, победители и призёры, дипломы 2022–2026 за 9–11 кл., "
+    "профили: Астрономия (подтв.: математика, физика); Анализ данных (подтв.: информатика, "
+    "математика, физика); Инженерное дело, Инженерные науки, Инженерные системы (подтв.: "
+    "информатика, математика, физика); НТО (все профили) (подтв.: биология, информатика, "
+    "математика, физика, химия); Робототехника (подтв.: информатика и икт, математика, физика) "
+    "| ВсОШ (финал): информатика, математика, труд (технология), физика"
+)
+
+
+def test_urfu_confirm_subjects_are_not_profiles() -> None:
+    """D1: «Астрономия (подтв.: математика, физика)» — профиль «Астрономия», а не «математика»."""
+    rules = parse_profile_rules(URFU_RAW_RULE)
+    by_profile = {tuple(r.profiles): r for r in rules if r.scope == "rsosh"}
+
+    astronomy = by_profile[("Астрономия",)]
+    assert astronomy.confirm == ["математика", "физика"]
+    assert astronomy.levels == ["I", "II", "III"]
+    assert astronomy.role == "победители и призёры"
+
+    # скобки относятся ко всей группе через запятую
+    engineering = by_profile[("Инженерное дело", "Инженерные науки", "Инженерные системы")]
+    assert engineering.confirm == ["информатика", "математика", "физика"]
+
+    robotics = by_profile[("Робототехника",)]
+    assert robotics.confirm == ["информатика и икт", "математика", "физика"]
+    # хвост после «|» — отдельное правило ВсОШ, оно не портит область предыдущего
+    assert robotics.scope == "rsosh"
+
+    # ни один предмет подтверждения не стал профилем
+    all_profiles = {p for r in rules for p in r.profiles if r.scope == "rsosh"}
+    assert not all_profiles & {"математика", "физика", "информатика", "биология", "химия"}
+
+
+def test_urfu_nto_all_profiles_is_a_whole_olympiad() -> None:
+    """D1: «НТО (все профили)» — вся олимпиада НТО, а не профиль «все профили»."""
+    rules = parse_profile_rules(URFU_RAW_RULE)
+    nto = [r for r in rules if r.whole_olympiads]
+    assert len(nto) == 1
+    assert nto[0].whole_olympiads == ["НТО"]
+    assert nto[0].profiles == []
+    assert nto[0].confirm == ["биология", "информатика", "математика", "физика", "химия"]
+    assert not any("все профили" in p for r in rules for p in r.profiles)
+
+
+def test_urfu_detailed_rule_without_confirm_keeps_nto() -> None:
+    """Лист «УрФУ подробно» (без «подтв.»): НТО в общем списке не теряет остальные профили."""
+    text = (
+        "Перечневые олимпиады I–III уровня по профилям: Астрономия, Анализ данных, Математика, "
+        "НТО (все профили), Программирование, Физика"
+    )
+    rules = parse_profile_rules(text)
+    assert [r.whole_olympiads for r in rules] == [["НТО"]]
+    assert rules[0].profiles == [
+        "Астрономия",
+        "Анализ данных",
+        "Математика",
+        "Программирование",
+        "Физика",
+    ]
+    assert rules[0].confirm == []
+
+
+def test_profile_list_in_brackets_still_works() -> None:
+    """Перечисление профилей в скобках (ИТМО) разбирается как раньше."""
+    text = (
+        "все технологические профили (мобильные приложения, большие данные, "
+        "искусственный интеллект) — БВИ"
+    )
+    rules = parse_profile_rules(text)
+    assert rules and rules[0].confirm == [] and rules[0].whole_olympiads == []
+    assert "мобильные приложения" in rules[0].profiles

@@ -475,6 +475,8 @@ async def save_my_diplomas(
             r.profile["name"] if r.profile else old.get("profile_name", ""),
         )
 
+    # upsert блокирует строку пользователя до коммита: сохранения с двух устройств идут по
+    # очереди, и DELETE+INSERT не упирается в уникальный (user_id, position). Не переносить ниже.
     await touch_user(session, user)
     await session.execute(text("DELETE FROM user_diplomas WHERE user_id = :uid"), {"uid": user.id})
     if resolved:

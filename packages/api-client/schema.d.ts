@@ -552,13 +552,21 @@ export interface components {
         AssistantStreamEvent: {
             /** Code */
             code: string | null;
+            /**
+             * Context
+             * @description done — подписанный контекст диалога (id найденного и сводка фактов): хранить и прислать в следующем запросе в поле context
+             */
+            context: string | null;
             /** Entities */
             entities: components["schemas"]["AssistantEntity"][] | null;
             /** Message Id */
             message_id: string | null;
             /** Sources */
             sources: components["schemas"]["AssistantSource"][] | null;
-            /** Text */
+            /**
+             * Text
+             * @description status — что делает помощник; delta — кусок ответа; notice — оговорка под ответом (показывать отдельно, в историю не отправлять)
+             */
             text: string | null;
         };
         /** Award */
@@ -644,6 +652,11 @@ export interface components {
         };
         /** ChatRequest */
         ChatRequest: {
+            /**
+             * Context
+             * @description Контекст диалога из события done прошлого ответа, как есть. Подписан сервером: изменённый или устаревший контекст молча не учитывается
+             */
+            context?: string | null;
             /**
              * Diplomas
              * @description Строки дипломов, если ученик разрешил их учитывать
@@ -1686,7 +1699,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Поток text/event-stream: status, delta, entities, sources, done, error */
+            /** @description Поток text/event-stream. Порядок: status (что делает помощник, пока ответа нет; может быть несколько, последний — «Проверяю ответ…») → delta (ответ кусками, уже проверенный целиком) → notice (оговорка под ответом, не часть ответа и не для истории; только если был поиск) → entities → sources → done (message_id и context для следующего запроса). При сбое — error с code. */
             200: {
                 headers: {
                     [name: string]: unknown;
