@@ -243,3 +243,22 @@ async def test_me_diplomas_round_trip(max_client: httpx.AsyncClient) -> None:
 def test_user_tables_survive_rebuild() -> None:
     # olymp-ingest очищает только таблицы данных сборки
     assert "max_users" not in DATA_TABLES and "user_diplomas" not in DATA_TABLES
+
+
+async def test_parallel_saves_from_two_devices(max_client: httpx.AsyncClient) -> None:
+    """Два устройства сохраняют дипломы одновременно: без 500, побеждает последняя запись.
+
+    Сохранения одного пользователя идут по очереди: touch_user (upsert max_users) держит
+    блокировку строки пользователя до коммита, поэтому DELETE+INSERT не пересекаются (T-075).
+    """
+    import asyncio
+
+    headers = {"X-Max-Init-Data": init_data(9_000_010)}
+    hse = await form(max_client, "вышка")
+    lists = [[spec(hse, "математика", f"w.11.{year}")] for year in (2023, 2024, 2025, 2026)] * 3
+    responses = await asyncio.gather(
+        *(max_client.put("/v1/me/diplomas", headers=headers, json={"diplomas": d}) for d in lists)
+    )
+    assert [r.status_code for r in responses] == [200] * len(lists)
+    final = (await max_client.get("/v1/me/diplomas", headers=headers)).json()["diplomas"]
+    assert len(final) == 1 and [final[0]["spec"]] in lists

@@ -55,6 +55,27 @@ async def test_streams_text_and_denies_data_collection() -> None:
     assert seen[0]["provider"] == {"data_collection": "deny"}
     assert seen[0]["stream"] is True
     assert "tools" not in seen[0]
+    assert "temperature" not in seen[0]
+
+
+async def test_sends_generation_parameters() -> None:
+    seen: list[dict[str, object]] = []
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        seen.append(json.loads(request.content))
+        return httpx.Response(200, content=sse(text_chunk("ok")))
+
+    await collect(provider(httpx.MockTransport(handle), temperature=0.2, top_p=0.9))
+    assert seen[0]["temperature"] == 0.2
+    assert seen[0]["top_p"] == 0.9
+
+
+def test_settings_pass_low_temperature() -> None:
+    settings = Settings(_env_file=None, llm_base_url="https://x/v1", llm_api_key="k", llm_model="m")
+    p = make_provider(settings)
+    assert isinstance(p, OpenAICompatibleProvider)
+    assert p.temperature == 0.2
+    assert p.top_p is None
 
 
 async def test_other_servers_do_not_get_openrouter_field() -> None:

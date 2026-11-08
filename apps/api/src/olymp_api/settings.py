@@ -6,6 +6,10 @@ class Settings(BaseSettings):
 
     env: str = "local"
     database_url: str | None = None
+    # потолок одного запроса к БД и ожидания блокировки, мс: зависание (блокировка таблиц,
+    # тяжёлый запрос) становится быстрой ошибкой 503, а не висящим соединением (T-064)
+    db_statement_timeout_ms: int = 15_000
+    db_lock_timeout_ms: int = 3_000
     redis_url: str | None = None
     log_level: str = "INFO"
     # Лимит запросов с одного IP: окно в секундах и число запросов. 0 — без лимита.
@@ -30,6 +34,9 @@ class Settings(BaseSettings):
     llm_fallback_model: str | None = None
     llm_timeout: float = 30
     llm_max_tokens: int = 1500
+    # низкая температура — меньше «творчества» и выдумок; None — значение провайдера
+    llm_temperature: float | None = 0.2
+    llm_top_p: float | None = None
     # OpenRouter: не отправлять запросы провайдерам, которые хранят данные и учатся на них
     llm_deny_data_collection: bool = True
     # общий бюджет обращений к модели в сутки на весь сервис; 0 — без ограничения. Одно сообщение
@@ -38,6 +45,9 @@ class Settings(BaseSettings):
     # лимиты сообщений на пользователя MAX, вне MAX — на IP
     assistant_rate_per_minute: int = 10
     assistant_rate_per_day: int = 100
+    # ключ подписи контекста диалога помощника (HMAC-SHA256). Без него — случайный ключ на
+    # процесс: после рестарта контекст прошлых ответов перестаёт приниматься, и только
+    assistant_context_secret: str | None = None
     # «Поделиться»: сколько ссылок можно создать с одного адреса в минуту и всего за сутки
     # (0 — без лимита) и сколько дней живёт ссылка после последнего «Поделиться».
     # Сайт готовит ссылку заранее, когда экран открыт, поэтому лимит в минуту с запасом.

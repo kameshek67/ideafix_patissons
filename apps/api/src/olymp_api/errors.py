@@ -39,4 +39,25 @@ def install(app: FastAPI) -> None:
 
     @app.exception_handler(Exception)
     async def _unhandled(request: Request, exc: Exception) -> JSONResponse:
+        if is_db_timeout(exc):
+            response = problem(request, 503, "База данных занята, повтори через минуту")
+            response.headers["Retry-After"] = "30"
+            return response
         return problem(request, 500, "Internal server error")
+
+
+# SQLSTATE отмены по statement_timeout и по lock_timeout
+DB_TIMEOUT_CODES = {"57014", "55P03"}
+
+
+def is_db_timeout(exc: BaseException) -> bool:
+    """Запрос к БД отменён по таймауту (см. db.make_engine): клиенту — 503, а не 500."""
+    seen: set[int] = set()
+    current: BaseException | None = exc
+    while current is not None and id(current) not in seen:
+        seen.add(id(current))
+        code = getattr(current, "sqlstate", None) or getattr(current, "pgcode", None)
+        if code in DB_TIMEOUT_CODES:
+            return True
+        current = getattr(current, "orig", None) or current.__cause__
+    return False

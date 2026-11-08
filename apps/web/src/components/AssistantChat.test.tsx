@@ -28,6 +28,9 @@ function sentBody() {
   return JSON.parse(init.body as string) as { messages: unknown[]; diplomas: string[] };
 }
 
+const isAnswer = (text: string) => (_: string, element: Element | null) =>
+  element?.tagName === "P" && element.textContent === text;
+
 function ask(text: string) {
   fireEvent.change(screen.getByLabelText("Сообщение помощнику"), { target: { value: text } });
   fireEvent.click(screen.getByLabelText("Отправить"));
@@ -48,14 +51,15 @@ describe("AssistantChat", () => {
   it("показывает подсказки и отправляет выбранную", async () => {
     render(<AssistantChat {...props} />);
     fireEvent.click(screen.getByText("Люблю программирование"));
-    await screen.findByText("Попробуй НТО");
+    await screen.findByText(isAnswer("Попробуй НТО"));
     expect(sentBody().messages).toEqual([{ role: "user", content: "Люблю программирование" }]);
   });
 
-  it("показывает ответ без разметки, карточку и источник", async () => {
+  it("показывает ответ с жирным, карточку и источник", async () => {
     render(<AssistantChat {...props} />);
     ask("Люблю роботов");
-    await screen.findByText("Попробуй НТО");
+    await screen.findByText(isAnswer("Попробуй НТО"));
+    expect(screen.getAllByText("НТО").some((node) => node.tagName === "STRONG")).toBe(true);
     expect(await screen.findByText("Робототехника")).toBeTruthy();
     expect(screen.getByRole("link").getAttribute("href")).toBe("https://hse.ru/doc.pdf");
   });
@@ -80,6 +84,41 @@ describe("AssistantChat", () => {
     expect(screen.queryByRole("link")).toBeNull();
   });
 
+  it("список из ответа — элементами, HTML из текста не исполняется", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        stream([
+          'event: delta\ndata: {"text": "Есть варианты:\\n- **НТО**\\n- <img src=x onerror=alert(1)>"}\n\n',
+          'event: done\ndata: {"message_id": "m"}\n\n',
+        ]),
+      ),
+    );
+    const { container } = render(<AssistantChat {...props} />);
+    ask("вопрос");
+    await screen.findByText("Есть варианты:");
+    expect(container.querySelectorAll(".assistant-text li")).toHaveLength(2);
+    expect(container.querySelector(".assistant-text img")).toBeNull();
+    expect(screen.getByText("<img src=x onerror=alert(1)>")).toBeTruthy();
+  });
+
+  it("контекст из done уходит со следующим вопросом", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        stream(['event: delta\ndata: {"text": "ок"}\n\n', 'event: done\ndata: {"message_id": "m", "context": "ctx.sig"}\n\n']),
+      ),
+    );
+    render(<AssistantChat {...props} />);
+    ask("вопрос");
+    await waitFor(() => expect(screen.getByLabelText("Полезный ответ")).toBeTruthy());
+    expect(sentBody()).not.toHaveProperty("context");
+    ask("а какой балл?");
+    await waitFor(() => expect(vi.mocked(fetch).mock.calls.length).toBe(2));
+    const [, init] = vi.mocked(fetch).mock.calls[1] as unknown as [string, RequestInit];
+    expect((JSON.parse(init.body as string) as { context?: string }).context).toBe("ctx.sig");
+  });
+
   it("сообщает об ошибке провайдера и оставляет начало ответа", async () => {
     vi.stubGlobal(
       "fetch",
@@ -89,6 +128,54 @@ describe("AssistantChat", () => {
     ask("вопрос");
     expect((await screen.findByRole("alert")).textContent).toContain("перегружен");
     expect(screen.getByText("Начало")).toBeTruthy();
+  });
+
+  it("оговорка — под ответом, но не уходит в историю", async () => {
+    const notice = "Проверь условия в правилах приёма вуза: они меняются каждый год.";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        stream([
+          'event: delta\ndata: {"text": "Попробуй НТО"}\n\n',
+          `event: notice\ndata: {"text": "${notice}"}\n\n`,
+          'event: done\ndata: {"message_id": "m"}\n\n',
+        ]),
+      ),
+    );
+    render(<AssistantChat {...props} />);
+    ask("вопрос");
+    expect(await screen.findByText(notice)).toBeTruthy();
+    expect(screen.getByText("Попробуй НТО").textContent).toBe("Попробуй НТО");
+    await waitFor(() => expect(screen.getByLabelText("Полезный ответ")).toBeTruthy());
+    ask("ещё");
+    await waitFor(() => expect(vi.mocked(fetch).mock.calls.length).toBe(2));
+    const [, init] = vi.mocked(fetch).mock.calls[1] as unknown as [string, RequestInit];
+    const { messages } = JSON.parse(init.body as string) as { messages: { content: string }[] };
+    expect(messages.map((m) => m.content)).toEqual(["вопрос", "Попробуй НТО", "ещё"]);
+  });
+
+  it("показывает статус, пока нет ответа", async () => {
+    let finish: () => void = () => undefined;
+    const body = new ReadableStream({
+      start(controller) {
+        const encoder = new TextEncoder();
+        controller.enqueue(encoder.encode('event: status\ndata: {"text": "Ищу вузы для олимпиады…"}\n\n'));
+        finish = () => {
+          controller.enqueue(encoder.encode('event: status\ndata: {"text": "Пишу ответ…"}\n\n'));
+          controller.enqueue(encoder.encode('event: delta\ndata: {"text": "Готово"}\n\n'));
+          controller.enqueue(encoder.encode('event: status\ndata: {"text": "лишний"}\n\n'));
+          controller.close();
+        };
+      },
+    });
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(body, { status: 200 })));
+    render(<AssistantChat {...props} />);
+    ask("вопрос");
+    expect(await screen.findByText("Ищу вузы для олимпиады…")).toBeTruthy();
+    finish();
+    await screen.findByText("Готово");
+    expect(screen.queryByText("Ищу вузы для олимпиады…")).toBeNull();
+    expect(screen.queryByText("лишний")).toBeNull();
   });
 
   it("«Повторить» отправляет тот же вопрос заново без неудачного ответа", async () => {
@@ -101,7 +188,7 @@ describe("AssistantChat", () => {
     ask("вопрос");
     await screen.findByRole("alert");
     fireEvent.click(screen.getByText("Повторить"));
-    await screen.findByText("Попробуй НТО");
+    await screen.findByText(isAnswer("Попробуй НТО"));
     expect(screen.queryByRole("alert")).toBeNull();
     expect(screen.getAllByText("вопрос")).toHaveLength(1);
     const [, init] = fetchMock.mock.calls[1] as [string, RequestInit];
@@ -139,28 +226,28 @@ describe("AssistantChat", () => {
     render(<AssistantChat {...props} diplomas={[spec]} />);
     fireEvent.click(screen.getByLabelText("Учитывать мои дипломы (1)"));
     ask("вопрос");
-    await screen.findByText("Попробуй НТО");
+    await screen.findByText(isAnswer("Попробуй НТО"));
     expect(sentBody().diplomas).toEqual([]);
   });
 
   it("очищает историю со второго нажатия", async () => {
     render(<AssistantChat {...props} />);
     ask("вопрос");
-    await screen.findByText("Попробуй НТО");
+    await screen.findByText(isAnswer("Попробуй НТО"));
     fireEvent.click(screen.getByText("Очистить"));
     fireEvent.click(screen.getByText("Точно очистить?"));
-    await waitFor(() => expect(screen.queryByText("Попробуй НТО")).toBeNull());
+    await waitFor(() => expect(screen.queryByText(isAnswer("Попробуй НТО"))).toBeNull());
     expect(localStorage.getItem("olymp.assistant.v1")).toBeNull();
   });
 
   it("история восстанавливается после закрытия", async () => {
     const { unmount } = render(<AssistantChat {...props} />);
     ask("вопрос");
-    await screen.findByText("Попробуй НТО");
+    await screen.findByText(isAnswer("Попробуй НТО"));
     await waitFor(() => expect(localStorage.getItem("olymp.assistant.v1")).toContain("НТО"));
     unmount();
     render(<AssistantChat {...props} />);
-    expect(await screen.findByText("Попробуй НТО")).toBeTruthy();
+    expect(await screen.findByText(isAnswer("Попробуй НТО"))).toBeTruthy();
   });
 
   it("оценка отправляется один раз", async () => {
