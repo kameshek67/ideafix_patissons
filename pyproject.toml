@@ -5,11 +5,12 @@ description = "Олимп: монорепозиторий (поиск олимп
 requires-python = ">=3.13"
 
 [tool.uv.workspace]
-members = ["packages/domain", "packages/db", "apps/api", "apps/workers"]
+members = ["packages/domain", "packages/db", "packages/llm", "apps/api", "apps/workers"]
 
 [tool.uv.sources]
 olymp-domain = { workspace = true }
 olymp-db = { workspace = true }
+olymp-llm = { workspace = true }
 olymp-api = { workspace = true }
 olymp-workers = { workspace = true }
 
@@ -56,7 +57,7 @@ module = [
 ignore_errors = true
 
 [tool.importlinter]
-root_packages = ["olymp_api", "olymp_domain", "olymp_db", "olymp_workers"]
+root_packages = ["olymp_api", "olymp_domain", "olymp_db", "olymp_llm", "olymp_workers"]
 
 [[tool.importlinter.contracts]]
 name = "Модули API не лезут во внутренности друг друга"
@@ -81,7 +82,13 @@ layers = [
 name = "Домен не зависит от БД, API и воркеров"
 type = "forbidden"
 source_modules = ["olymp_domain"]
-forbidden_modules = ["olymp_api", "olymp_db", "olymp_workers"]
+forbidden_modules = ["olymp_api", "olymp_db", "olymp_llm", "olymp_workers"]
+
+[[tool.importlinter.contracts]]
+name = "Шлюз LLM не зависит от БД, API и воркеров"
+type = "forbidden"
+source_modules = ["olymp_llm"]
+forbidden_modules = ["olymp_api", "olymp_db", "olymp_domain", "olymp_workers"]
 
 [[tool.importlinter.contracts]]
 name = "API не зависит от воркеров"

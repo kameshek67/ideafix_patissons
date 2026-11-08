@@ -2,17 +2,17 @@ import json
 
 import httpx
 import pytest
-from olymp_api.llm import (
+from olymp_llm import (
     LLMError,
     OpenAICompatibleProvider,
     TextDelta,
     ToolCall,
     ToolCalls,
-    make_provider,
+    complete,
+    provider_from_env,
 )
-from olymp_api.llm import gateway as gateway_module
-from olymp_api.llm.fake import FakeProvider
-from olymp_api.settings import Settings
+from olymp_llm import gateway as gateway_module
+from olymp_llm.fake import FakeProvider
 
 MESSAGES = [{"role": "user", "content": "привет"}]
 
@@ -68,14 +68,6 @@ async def test_sends_generation_parameters() -> None:
     await collect(provider(httpx.MockTransport(handle), temperature=0.2, top_p=0.9))
     assert seen[0]["temperature"] == 0.2
     assert seen[0]["top_p"] == 0.9
-
-
-def test_settings_pass_low_temperature() -> None:
-    settings = Settings(_env_file=None, llm_base_url="https://x/v1", llm_api_key="k", llm_model="m")
-    p = make_provider(settings)
-    assert isinstance(p, OpenAICompatibleProvider)
-    assert p.temperature == 0.2
-    assert p.top_p is None
 
 
 async def test_other_servers_do_not_get_openrouter_field() -> None:
@@ -158,27 +150,50 @@ async def test_no_retry_after_first_event() -> None:
     assert len(calls) == 1
 
 
+async def test_temperature_is_sent_only_when_set() -> None:
+    seen: list[dict[str, object]] = []
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        seen.append(json.loads(request.content))
+        return httpx.Response(200, content=sse(text_chunk("ok")))
+
+    await collect(provider(httpx.MockTransport(handle)))
+    await collect(provider(httpx.MockTransport(handle), temperature=0))
+    assert "temperature" not in seen[0]
+    assert seen[1]["temperature"] == 0
+
+
+async def test_complete_joins_text() -> None:
+    fake = FakeProvider([[TextDelta('{"a"'), TextDelta(": 1}")]])
+    assert await complete(fake, MESSAGES) == '{"a": 1}'
+    assert fake.requests[0]["tools"] == []
+
+
+ENV = {"OLYMP_LLM_BASE_URL": "https://x/v1", "OLYMP_LLM_API_KEY": "k", "OLYMP_LLM_MODEL": "chat"}
+
+
 @pytest.mark.parametrize(
-    "overrides",
+    "env",
     [
         {},
-        {"llm_base_url": "https://x/v1", "llm_model": "m"},
-        {"llm_base_url": "https://x/v1", "llm_api_key": "k"},
-        {
-            "llm_base_url": "https://x/v1",
-            "llm_api_key": "k",
-            "llm_model": "m",
-            "llm_enabled": False,
-        },
+        {**ENV, "OLYMP_LLM_API_KEY": ""},
+        {**ENV, "OLYMP_LLM_MODEL": ""},
+        {**ENV, "OLYMP_LLM_ENABLED": "false"},
     ],
 )
-def test_provider_is_off_without_settings(overrides: dict[str, object]) -> None:
-    assert make_provider(Settings(_env_file=None, **overrides)) is None
+def test_provider_from_env_is_off(env: dict[str, str]) -> None:
+    assert provider_from_env(env) is None
 
 
-def test_provider_is_on_with_settings() -> None:
-    settings = Settings(_env_file=None, llm_base_url="https://x/v1", llm_api_key="k", llm_model="m")
-    assert make_provider(settings) is not None
+def test_provider_from_env_picks_parser_model() -> None:
+    chat = provider_from_env(ENV)
+    parser = provider_from_env(
+        {**ENV, "OLYMP_PARSER_MODEL": "parser"}, model_var="OLYMP_PARSER_MODEL"
+    )
+    fallback = provider_from_env(ENV, model_var="OLYMP_PARSER_MODEL")
+    assert chat is not None and chat.model_label == "chat"
+    assert parser is not None and parser.model_label == "parser"
+    assert fallback is not None and fallback.model_label == "chat"
 
 
 async def test_fake_provider_plays_rounds() -> None:
