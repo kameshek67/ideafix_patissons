@@ -84,10 +84,11 @@ def test_extra_points_loaded_with_sources(built_database_url: str) -> None:
             "SELECT COUNT(*) FROM individual_achievements"
             " WHERE source_url NOT LIKE 'https://%' OR source_quote = '' OR source_page IS NULL"
         ).fetchone()[0]
+    # T-084: к 7 вузам T-051 добавлены правила ещё 19 записей вузов (Бауманка — вместе с филиалами)
     assert (meta["extra_rules"], meta["extra_universities"], meta["extra_limits"]) == (
-        "223",
-        "7",
-        "6",
+        "999",
+        "26",
+        "24",
     )
     assert no_source == 0
 
@@ -116,7 +117,7 @@ def test_extra_points_reload_is_idempotent_and_keeps_data_on_error(
         return rules, limits, version
 
     before = counts()
-    assert reload_extra_points(built_database_url, data) == {"rules": 223, "limits": 6}
+    assert reload_extra_points(built_database_url, data) == {"rules": 999, "limits": 24}
     assert counts() == before
 
     broken = tmp_path / "data"
