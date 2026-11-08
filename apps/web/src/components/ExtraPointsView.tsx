@@ -10,7 +10,6 @@ import {
   SKIP_LABEL,
   VARIANT_LABEL,
   filterUniversities,
-  needsYear,
   pointsUniversities,
   ruleTitle,
   toClaims,
@@ -29,8 +28,18 @@ function useDebounced<T>(value: T, ms = 300): T {
   return v;
 }
 
-function Total({ universityId, rules, picked }: { universityId: number; rules: ExtraRule[]; picked: Record<string, Picked> }) {
-  const claims = useDebounced(useMemo(() => toClaims(rules, picked), [rules, picked]));
+function Total({
+  universityId,
+  admissionYear,
+  rules,
+  picked,
+}: {
+  universityId: number;
+  admissionYear: number;
+  rules: ExtraRule[];
+  picked: Record<string, Picked>;
+}) {
+  const claims = useDebounced(useMemo(() => toClaims(rules, picked, admissionYear), [rules, picked, admissionYear]));
   const q = useQuery({
     queryKey: ["extra-score", universityId, claims],
     queryFn: () => scoreExtra(universityId, claims),
@@ -42,7 +51,7 @@ function Total({ universityId, rules, picked }: { universityId: number; rules: E
   };
   const s = q.data;
   return (
-    <div className="card p-4" aria-live="polite">
+    <div className="card p-4 points-total" aria-live="polite">
       {q.error ? <LoadError message={friendlyError(q.error)} onRetry={() => void q.refetch()} /> : null}
       {s ? (
         <>
@@ -58,19 +67,24 @@ function Total({ universityId, rules, picked }: { universityId: number; rules: E
           {s.max_total === null ? (
             <p className="field-note">Потолок суммы в документе вуза не найден: уточни в приёмной комиссии.</p>
           ) : null}
-          <ul className="notes-list">
-            {s.awards.map((a) => (
-              <li key={a.rule_id} className="text-sm">
-                <b>+{a.points}</b> {titleOf(a.rule_id, a.label)}
-                {a.source.page ? <span className="meta-text"> · стр. {a.source.page}</span> : null}
-              </li>
-            ))}
-            {s.skipped.map((k) => (
-              <li key={k.rule_id} className="text-sm meta-text">
-                <b>0</b> {titleOf(k.rule_id, k.label)}: {SKIP_LABEL[k.reason] ?? k.reason}
-              </li>
-            ))}
-          </ul>
+          {s.awards.length + s.skipped.length ? (
+            <details className="mt-1">
+              <summary className="card-kicker cursor-pointer">Из чего сложилось</summary>
+              <ul className="notes-list">
+                {s.awards.map((a) => (
+                  <li key={a.rule_id} className="text-sm">
+                    <b>+{a.points}</b> {titleOf(a.rule_id, a.label)}
+                    {a.source.page ? <span className="meta-text"> · стр. {a.source.page}</span> : null}
+                  </li>
+                ))}
+                {s.skipped.map((k) => (
+                  <li key={k.rule_id} className="text-sm meta-text">
+                    <b>0</b> {titleOf(k.rule_id, k.label)}: {SKIP_LABEL[k.reason] ?? k.reason}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : null}
           {s.unverified ? (
             <p className="field-note">Правила разобраны автоматически и ещё не сверены человеком: проверь по документу вуза.</p>
           ) : null}
@@ -82,11 +96,23 @@ function Total({ universityId, rules, picked }: { universityId: number; rules: E
   );
 }
 
-function RuleCard({ rule, picked, onChange }: { rule: ExtraRule; picked: Picked | undefined; onChange: (p: Picked) => void }) {
+/** Достижение: отметка «у меня есть», условие срока и степень видны сразу, без всплывающих полей. */
+function RuleCard({
+  rule,
+  admissionYear,
+  picked,
+  onChange,
+}: {
+  rule: ExtraRule;
+  admissionYear: number;
+  picked: Picked | undefined;
+  onChange: (p: Picked) => void;
+}) {
   const on = picked?.on ?? false;
-  const year = needsYear(rule);
+  const hint = yearHint(rule, admissionYear);
+  const variant = picked?.variant ?? rule.variants[0];
   return (
-    <div className="card p-3">
+    <div className={`card p-3 ${on ? "rule-on" : ""}`}>
       <label className="flex cursor-pointer items-start gap-3">
         <input
           type="checkbox"
@@ -96,11 +122,12 @@ function RuleCard({ rule, picked, onChange }: { rule: ExtraRule; picked: Picked 
         />
         <span className="min-w-0 flex-1">
           <span className="flex flex-wrap items-center gap-1">
+            <span className="badge badge-sto">{`+${rule.points} ${plural(rule.points, "балл", "балла", "баллов")}`}</span>
             <span className="badge badge-soft">{KIND_LABEL[rule.kind] ?? rule.kind}</span>
-            <span className="badge badge-sto">{rule.points} б.</span>
-            {rule.exclusive_group ? <span className="card-kicker">засчитывается лучшее из группы</span> : null}
           </span>
-          <span className="block text-sm font-medium">{ruleTitle(rule)}</span>
+          <span className="mt-1 block text-sm font-medium">{ruleTitle(rule)}</span>
+          {hint ? <span className="card-kicker block">{hint}</span> : null}
+          {rule.exclusive_group ? <span className="card-kicker block">из этой группы засчитывается одно — лучшее</span> : null}
           <a
             className="card-kicker underline"
             href={rule.source.url}
@@ -112,38 +139,19 @@ function RuleCard({ rule, picked, onChange }: { rule: ExtraRule; picked: Picked 
           </a>
         </span>
       </label>
-      {on && (rule.variants.length > 1 || year) ? (
-        <div className="mt-2 flex flex-wrap items-center gap-2 pl-8">
-          {rule.variants.length > 1 ? (
-            <select
-              className="table-filter"
-              aria-label="Вид"
-              value={picked?.variant ?? rule.variants[0]}
-              onChange={(e) => onChange({ ...picked, on: true, variant: e.target.value })}
+      {rule.variants.length > 1 ? (
+        <div className="chip-group mt-2 pl-8" role="group" aria-label={`Что именно: ${ruleTitle(rule)}`}>
+          {rule.variants.map((v) => (
+            <button
+              key={v}
+              type="button"
+              className={`chip ${on && variant === v ? "chip-on" : ""}`}
+              aria-pressed={on && variant === v}
+              onClick={() => onChange({ on: true, variant: v })}
             >
-              {rule.variants.map((v) => (
-                <option key={v} value={v}>
-                  {VARIANT_LABEL[v] ?? v}
-                </option>
-              ))}
-            </select>
-          ) : null}
-          {year ? (
-            <>
-              <input
-                className="table-filter"
-                type="number"
-                inputMode="numeric"
-                min={2000}
-                max={2100}
-                placeholder="Год получения"
-                aria-label={`Год получения: ${ruleTitle(rule)}`}
-                value={picked?.year ?? ""}
-                onChange={(e) => onChange({ ...picked, on: true, year: Number(e.target.value) || undefined })}
-              />
-              <span className="card-kicker">{yearHint(rule)}</span>
-            </>
-          ) : null}
+              {VARIANT_LABEL[v] ?? v}
+            </button>
+          ))}
         </div>
       ) : null}
     </div>
@@ -173,6 +181,10 @@ export function ExtraPointsView({ active }: { active: boolean }) {
     staleTime: Infinity,
   });
   const rules = rulesQ.data?.rules ?? [];
+  const admissionYear = rulesQ.data?.admission_year ?? new Date().getFullYear();
+  // фильтр и поиск — только длинным спискам (у МИФИ больше сотни правил); у ВШЭ и ИТМО
+  // список короче, а девять кнопок типов над ним только путали
+  const long = rules.length > 30;
   const kinds = useMemo(() => [...new Set(rules.map((r) => KIND_LABEL[r.kind] ?? r.kind))], [rules]);
   const needle = query.trim().toLowerCase();
   const shown = rules.filter(
@@ -237,20 +249,24 @@ export function ExtraPointsView({ active }: { active: boolean }) {
       {rulesQ.error ? <LoadError message={friendlyError(rulesQ.error)} onRetry={() => void rulesQ.refetch()} /> : null}
       {uid !== null && rulesQ.data ? (
         <>
-          <div className="chip-group" role="group" aria-label="Тип достижения">
-            {[null, ...kinds].map((k) => (
-              <button
-                key={k ?? "all"}
-                type="button"
-                className={`chip ${kind === k ? "chip-on" : ""}`}
-                aria-pressed={kind === k}
-                onClick={() => setKind(k)}
-              >
-                {k ?? "Все"}
-              </button>
-            ))}
-          </div>
-          {rules.length > 12 ? (
+          <Total universityId={uid} admissionYear={admissionYear} rules={rules} picked={picked} />
+          <p className="field-note">Отметь, что у тебя есть, — сумма выше пересчитается сама.</p>
+          {long && kinds.length > 1 ? (
+            <div className="chip-group" role="group" aria-label="Тип достижения">
+              {[null, ...kinds].map((k) => (
+                <button
+                  key={k ?? "all"}
+                  type="button"
+                  className={`chip ${kind === k ? "chip-on" : ""}`}
+                  aria-pressed={kind === k}
+                  onClick={() => setKind(k)}
+                >
+                  {k ?? "Все"}
+                </button>
+              ))}
+            </div>
+          ) : null}
+          {long ? (
             <input
               className="table-filter w-full"
               placeholder="Найти достижение, например «ГТО» или «олимпиада»"
@@ -261,9 +277,14 @@ export function ExtraPointsView({ active }: { active: boolean }) {
           ) : null}
           {shown.length === 0 ? <p className="field-note">Ничего не найдено.</p> : null}
           {shown.map((r) => (
-            <RuleCard key={r.id} rule={r} picked={picked[r.id]} onChange={(p) => setPicked({ ...picked, [r.id]: p })} />
+            <RuleCard
+              key={r.id}
+              rule={r}
+              admissionYear={admissionYear}
+              picked={picked[r.id]}
+              onChange={(p) => setPicked({ ...picked, [r.id]: p })}
+            />
           ))}
-          <Total universityId={uid} rules={rules} picked={picked} />
         </>
       ) : null}
     </div>

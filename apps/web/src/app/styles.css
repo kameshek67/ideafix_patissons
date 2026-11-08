@@ -508,3 +508,8 @@ html[data-max="android"] .table-toolbar .chip-ghost { display: none; }
 .assistant-input textarea:focus { border-color: var(--brand); }
 .assistant-input .btn-primary { flex: none; width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 18px; }
 
+
+/* «Баллы»: отмеченное достижение; сумма прилипает сверху, пока листаешь список */
+.rule-on { border-color: var(--brand); }
+.points-total { position: sticky; top: 128px; /* под шапкой (56) и вкладками */ z-index: 2; box-shadow: 0 8px 24px rgba(60, 0, 90, .12); }
+.points-total details[open] ul { max-height: 40vh; overflow-y: auto; }
