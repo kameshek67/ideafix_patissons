@@ -9,7 +9,7 @@
 (GET /updates); для большой нагрузки MAX советует вебхуки.
 
 Переменные: OLYMP_MAX_BOT_TOKEN — токен бота; OLYMP_MAX_CA_DIR — каталог с сертификатом
-Минцифры, которым подписан platform-api2.max.ru (см. infra/certs/README.md); OLYMP_SITE_URL —
+Минцифры, которым подписан platform-api2.max.ru (см. README, раздел «Мини-приложение MAX»); OLYMP_SITE_URL —
 адрес сайта для кнопки «Сайт» (по умолчанию стенд https://ideafix.patissons.tech).
 """
 
@@ -70,7 +70,7 @@ def http_call(token: str, base: str = API_URL, ca_dir: str | None = None) -> Cal
             if isinstance(exc.reason, ssl.SSLCertVerificationError):
                 raise MaxApiError(
                     "сертификат platform-api2.max.ru не проверен: положите корневой сертификат "
-                    "Минцифры в каталог OLYMP_MAX_CA_DIR (см. infra/certs/README.md)"
+                    "Минцифры в каталог OLYMP_MAX_CA_DIR (см. README, раздел «Мини-приложение MAX»)"
                 ) from None
             raise MaxApiError(str(exc.reason)) from None
         except TimeoutError:

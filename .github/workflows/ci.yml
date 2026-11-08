@@ -79,15 +79,6 @@ jobs:
           for _ in $(seq 1 30); do curl -fs http://127.0.0.1:8000/healthz && exit 0; sleep 1; done
           docker logs api; exit 1
 
-  # файлы задач docs/tasks/T-*.md: шапки, статусы, зависимости (ADR 0009)
-  tasks:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.13"}
-      - run: python scripts/tasks.py check
-
   secrets:
     runs-on: ubuntu-latest
     # gitleaks на PR читает список коммитов PR: без pull-requests: read — 403

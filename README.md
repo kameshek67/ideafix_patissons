@@ -11,7 +11,8 @@
 - **ИИ-помощник.** Рассказал, чем увлекаешься, — он подбирает олимпиады и вузы по базе льгот.
 
 Данные — приёмная кампания 2026: 31 вуз (39 с филиалами), 659 направлений, 48 973 строки льгот,
-173 олимпиады, 637 профилей.
+173 олимпиады, 637 профилей. Источник — `data/Olimpiady_BVI_100ballov.xlsx` и документы приёмных
+комиссий; данные справочные, перед подачей документов сверяйтесь с правилами приёма вуза.
 
 ```
 Python 3.13 · FastAPI · SQLAlchemy/Alembic · PostgreSQL 17 · Redis · Dramatiq/RabbitMQ
@@ -71,54 +72,71 @@ curl "http://localhost:8000/v1/search/by-program?program_id=130"
 обновляется командой `uv export --all-packages --no-hashes --no-emit-workspace -o requirements.txt`.
 Зависимости сайта — `package.json` и `package-lock.json`.
 
-Для разработки (нужны uv, Node.js 22+, Docker, just):
+## Разработка
+
+Нужны `uv`, Node.js 22+, Docker и `just` (без `just` команды из `justfile` можно запускать напрямую).
 
 ```bash
 cp .env.example .env && uv sync --all-packages && npm install
-just up && just seed      # инфраструктура и база
-just api                  # :8000
-just web                  # :3000
+just up && just seed      # PostgreSQL, Redis, RabbitMQ; миграции и сборка базы из XLSX
+just api                  # API на :8000, Swagger — /docs
+just web                  # сайт на :3000
 ```
 
-Подробно, а также Windows без just — [docs/guides/development.md](docs/guides/development.md).
-Мини-приложение в MAX — [docs/runbooks/max-setup.md](docs/runbooks/max-setup.md).
-
-## Стенд
-
-`main` выкатывается на https://ideafix.patissons.tech сам, после зелёного `ci`. HTTPS там даёт
-Caddy сервера, профили `https` и `tunnel` не нужны. Токен бота MAX и другие секреты стенда лежат
-в `/opt/ideafix/shared/.env` на сервере. Как это устроено и как откатиться —
-[infra/deploy/README.md](infra/deploy/README.md).
-
-## Документация
-
-| | |
+| Что | Команда |
 |---|---|
-| Как всё устроено | [docs/architecture/overview.md](docs/architecture/overview.md) |
-| ТЗ продукта и фич | [docs/product/spec.md](docs/product/spec.md), [docs/specs/](docs/specs/README.md) |
-| Архитектурные решения | [docs/adr/](docs/adr/README.md) |
-| Задачи и план | [docs/tasks/ROADMAP.md](docs/tasks/ROADMAP.md), `just tasks` |
-| Как вносить изменения | [CONTRIBUTING.md](CONTRIBUTING.md) |
-| Вся документация | [docs/README.md](docs/README.md) |
+| Все проверки, как в CI | `just check` (= `just lint` + `just test`) |
+| Проверка качества данных | `just validate` (`--check-links` — плюс ссылки по сети) |
+| Обновить ссылки на документы вузов | `just refresh-sources` |
+| После изменения эндпоинтов | `just openapi`: пересоздаёт `docs/openapi.json` и типы `packages/api-client` |
+| Новая миграция БД | `just migration "описание"` |
+| Весь стек в Docker (сайт :8080) | `just app` |
 
-## Ветки
+Тесты с базой пропускаются, если PostgreSQL не запущен: перед проверкой поднимите `just up`.
 
-`main` — стабильная версия для демо, `dev` — разработка. Работа идёт в ветках от `dev` через PR
-([CONTRIBUTING.md](CONTRIBUTING.md)). Прежние версии: тег `prototype-v1` (прототип на SQLite и JS),
-`archive/olymp-rebuild` (эксперимент с LLM-конвейером).
+### Переменные окружения
+
+| Переменная | По умолчанию | Что это |
+|---|---|---|
+| `OLYMP_DATABASE_URL` | `postgresql+psycopg://olymp:olymp@localhost:5432/olymp` | база данных |
+| `OLYMP_REDIS_URL` | — | кэш и лимиты; без него — в памяти процесса |
+| `OLYMP_RABBITMQ_URL` | — | очередь фоновых задач (Dramatiq) |
+| `OLYMP_API_URL` | `http://127.0.0.1:8000` | куда сайт проксирует `/api/v1/*` |
+| `OLYMP_MAX_BOT_TOKEN`, `OLYMP_MAX_BOT_NAME` | — | мини-приложение MAX (токен — секрет) |
+| `OLYMP_LLM_BASE_URL`, `OLYMP_LLM_API_KEY`, `OLYMP_LLM_MODEL` | — | ИИ-помощник, любой OpenAI-совместимый провайдер; без них помощник выключен |
+| `OLYMP_LLM_DAILY_REQUESTS` | 45 | обращений к модели в сутки на весь сервис; 0 — без ограничения |
+| `OLYMP_WEB_PORT`, `OLYMP_API_PORT` | 8080, 8000 | порты Docker-стека |
+
+Полный список — `.env.example`.
+
+### Мини-приложение MAX
+
+Сайт открывается в MAX как мини-приложение: API проверяет подпись данных запуска токеном бота и
+хранит дипломы пользователя на сервере, вне MAX они хранятся в браузере. Бот (`olymp-max-bot`,
+профиль `bot` в `docker-compose.yml`) ходит в `platform-api2.max.ru`, подписанный сертификатом
+Минцифры: скачайте «Russian Trusted Root CA» с https://www.gosuslugi.ru/crt, положите файл
+`*.pem`/`*.crt` в `infra/certs/` и запустите `docker compose --profile bot up -d`.
 
 ## Структура
 
-| Папка | Что | |
-|---|---|---|
-| `apps/api` | FastAPI: каталог, поиск, «Мои дипломы», вход через MAX | [README](apps/api/README.md) |
-| `apps/web` | Next.js: сайт и мини-приложение MAX | [README](apps/web/README.md) |
-| `apps/workers` | сборка базы из XLSX, обход сайтов вузов, проверки данных, бот MAX | [README](apps/workers/README.md) |
-| `packages/domain` | чистая логика: нормализация названий, условия дипломов | [README](packages/domain/README.md) |
-| `packages/db` | модели и миграции | [README](packages/db/README.md) |
-| `packages/api-client` | типы API (генерируются из `docs/openapi.json`) | [README](packages/api-client/README.md) |
-| `infra` | Docker, окружение разработки, стенд | [README](infra/README.md) |
-| `data`, `scripts` | исходный XLSX и ссылки на документы; утилиты | [data](data/README.md) · [scripts](scripts/README.md) |
-| `docs` | документация, ТЗ, ADR, задачи, ревью | [README](docs/README.md) |
+| Папка | Что |
+|---|---|
+| `apps/api` | FastAPI, модульный монолит: каталог, поиск, «Мои дипломы», «Поделиться», баллы, ИИ-помощник |
+| `apps/web` | Next.js: сайт и мини-приложение MAX |
+| `apps/workers` | сборка базы из XLSX, обход сайтов вузов, проверки данных, бот MAX, фоновые задачи |
+| `packages/domain` | чистая логика: нормализация названий, справочник олимпиад, условия дипломов |
+| `packages/db` | модели SQLAlchemy и миграции Alembic — единственное место схемы БД |
+| `packages/llm` | шлюз к языковым моделям для API и воркеров |
+| `packages/api-client` | типы API для сайта, генерируются из `docs/openapi.json` |
+| `infra` | Dockerfile'ы, окружение разработки, скрипты стенда |
+| `data` | исходный XLSX, баллы за достижения, карточки олимпиад, ссылки на документы вузов |
+| `scripts`, `design`, `presentation` | утилиты, макеты, презентация |
 
-Данные справочные: перед подачей документов сверяйтесь с правилами приёма вуза.
+Правила кода: Python 3.13 (ruff, mypy `--strict`), TypeScript strict; схема БД меняется только
+миграциями; контракт API — `docs/openapi.json`, он генерируется из FastAPI и руками не правится;
+исходный XLSX не редактируется — исправления данных вносятся в код сборки с тестом.
+
+## Стенд
+
+`main` выкатывается на https://ideafix.patissons.tech после зелёного CI (workflow `deploy`, нужен
+секрет `DEPLOY_SSH_KEY`). Ветки: `main` — стабильная версия, `dev` — разработка.
