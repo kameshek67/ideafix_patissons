@@ -35,38 +35,50 @@ export const SKIP_LABEL: Record<string, string> = {
   same_group_better: "засчитано другое достижение этой группы (берётся лучшее)",
 };
 
-/** Название правила; степень знака стоит в названии, если правило одно на степень. */
+/** Название правила; степень знака стоит в названии, если правило одно на степень.
+ *  Разборщик обрезает длинные названия на полуслове: такие заканчиваем многоточием. */
 export function ruleTitle(r: Pick<ExtraRule, "label" | "kind" | "variants">): string {
   const v = r.variants.length === 1 ? VARIANT_LABEL[r.variants[0]!] : undefined;
-  return (r.label || r.kind) + (v ? ` — ${v}` : "");
+  let label = (r.label || KIND_LABEL[r.kind] || r.kind).trim();
+  if (label.length >= 100 && !/[.)»"]$/.test(label)) label = `${label.replace(/[\s,;:–—-]+$/, "")}…`;
+  return label + (v ? ` — ${v}` : "");
 }
 
 export const needsYear = (r: Pick<ExtraRule, "years" | "recency_years">) =>
   r.years.length > 0 || r.recency_years !== null;
 
-/** Пояснение к полю года: за какой срок достижение засчитывается. */
-export function yearHint(r: Pick<ExtraRule, "years" | "recency_years">): string {
-  if (r.recency_years === 1) return "текущий или прошлый год";
-  if (r.recency_years !== null) return `не старше ${r.recency_years} лет`;
-  if (r.years.length) return `годы: ${r.years.join(", ")}`;
+/** Условие срока прямо под правилом: ученик видит его до отметки, а не в поле ввода после. */
+export function yearHint(r: Pick<ExtraRule, "years" | "recency_years">, admissionYear: number): string {
+  if (r.recency_years !== null) {
+    return `засчитывается, если получено в ${admissionYear - r.recency_years}–${admissionYear} годах`;
+  }
+  if (r.years.length) return `засчитывается, если получено в ${r.years.join(", ")} году`;
   return "";
+}
+
+/** Год для подсчёта: отметка значит «есть и получено в срок», поэтому берём год внутри срока. */
+export function claimYear(r: Pick<ExtraRule, "years" | "recency_years">, admissionYear: number): number | null {
+  if (r.years.length) {
+    const fit = r.years.filter((y) => y <= admissionYear);
+    return fit.length ? Math.max(...fit) : r.years[0]!;
+  }
+  return r.recency_years !== null ? admissionYear : null;
 }
 
 export interface Picked {
   on: boolean;
-  year?: number;
   variant?: string;
 }
 
 /** Отмеченные правила -> достижения для API; правило передаётся по id, чтобы не засчитать соседние. */
-export function toClaims(rules: ExtraRule[], picked: Record<string, Picked>): ExtraClaim[] {
+export function toClaims(rules: ExtraRule[], picked: Record<string, Picked>, admissionYear: number): ExtraClaim[] {
   return rules
     .filter((r) => picked[r.id]?.on)
     .map((r) => ({
       kind: r.kind,
       rule_id: r.id,
       variant: picked[r.id]?.variant ?? r.variants[0] ?? null,
-      year: needsYear(r) ? (picked[r.id]?.year ?? null) : null,
+      year: needsYear(r) ? claimYear(r, admissionYear) : null,
     }));
 }
 

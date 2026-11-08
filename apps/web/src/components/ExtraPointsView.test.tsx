@@ -108,19 +108,24 @@ describe("вкладка «Баллы»", () => {
     expect(screen.getByText("0 баллов", { exact: false })).toBeTruthy();
   });
 
-  it("отметка ГТО просит год, а с годом добавляет баллы и ссылку на документ", async () => {
+  it("срок виден сразу, без поля года; отметка ГТО добавляет баллы и ссылку на документ", async () => {
     renderView();
     await pickUniversity("НИЯУ МИФИ");
+    // условие срока написано до отметки, полей ввода года нет
+    expect(await screen.findByText("засчитывается, если получено в 2025–2026 годах")).toBeTruthy();
     const box = (await screen.findAllByRole("checkbox"))[1]!; // ГТО: правила идут по убыванию баллов
     fireEvent.click(box);
-    await waitFor(() => expect(screen.getByText(/укажи год получения/)).toBeTruthy());
-    expect(screen.getByText("текущий или прошлый год")).toBeTruthy();
-    fireEvent.change(screen.getByPlaceholderText("Год получения"), { target: { value: "2025" } });
-    await waitFor(() => expect(screen.getByText("2 балла", { exact: false })).toBeTruthy());
-    const last = bodies.at(-1) as { claims: { rule_id: string; variant: string; year: number }[] };
-    expect(last.claims).toEqual([{ kind: "gto_badge", rule_id: "r-gto", variant: "gold", year: 2025 }]);
+    expect(screen.queryByPlaceholderText("Год получения")).toBeNull();
+    await waitFor(() => {
+      const last = bodies.at(-1) as { claims: { rule_id: string; variant: string; year: number }[] };
+      expect(last.claims).toEqual([{ kind: "gto_badge", rule_id: "r-gto", variant: "gold", year: 2026 }]);
+    });
+    await waitFor(() => expect(screen.getByText(/^2 балла/)).toBeTruthy());
     expect(screen.getAllByRole("link", { name: /документ вуза, стр\. 2/ })[0]!.getAttribute("href")).toBe(source.url);
     expect(screen.getByText(/ещё не сверены человеком/)).toBeTruthy();
+    // короткий список — без фильтра по типам и без поиска
+    expect(screen.queryByRole("group", { name: "Тип достижения" })).toBeNull();
+    expect(screen.queryByLabelText("Поиск достижения")).toBeNull();
   });
 
   it("достижение передаётся по id правила, чтобы не засчитать соседние", async () => {
