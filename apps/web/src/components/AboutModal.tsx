@@ -49,8 +49,8 @@ export function AboutModal({ open, onClose, campaign }: Props) {
       aria-modal="true"
       aria-labelledby="about-title"
     >
-      <div className="absolute inset-0 bg-[#2A0038]/40 backdrop-blur-[2px]" onClick={onClose} />
-      <div className="about-sheet absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:h-fit sm:max-w-[520px] bg-white rounded-t-[30px] sm:rounded-[30px] p-5 pb-[calc(20px+env(safe-area-inset-bottom))] sm:p-6 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
+      <div className="sheet-backdrop absolute inset-0 bg-[#2A0038]/40 backdrop-blur-[2px]" onClick={onClose} />
+      <div className="sheet-panel about-sheet absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:h-fit sm:max-w-[520px] bg-white rounded-t-[30px] sm:rounded-[30px] p-5 pb-[calc(20px+env(safe-area-inset-bottom))] sm:p-6 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="sheet-handle sm:hidden" />
         <div className="flex items-center justify-between">
           <h2 id="about-title" className="text-[20px] font-medium">
