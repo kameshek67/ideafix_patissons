@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { MaxWebApp } from "@/lib/max";
-import { markOnboardingDone, ONBOARDING_KEY, shouldShowOnboarding } from "@/lib/onboarding";
+import { markOnboardingDone, ONBOARDING_DONE, ONBOARDING_KEY, onboardingMode, shouldShowOnboarding } from "@/lib/onboarding";
 import { Onboarding } from "./Onboarding";
 import { OlympApp } from "./OlympApp";
 
@@ -31,9 +31,16 @@ describe("когда показывать", () => {
 
   it("не мешает, если открыли ссылкой на экран", () => {
     expect(shouldShowOnboarding(max("diplomas"), site)).toBe(false);
-    expect(localStorage.getItem(ONBOARDING_KEY)).toBe("done");
+    expect(localStorage.getItem(ONBOARDING_KEY)).toBe(ONBOARDING_DONE);
     localStorage.clear();
     expect(shouldShowOnboarding(null, new URL("http://localhost/?WebAppStartParam=program-12"))).toBe(false);
+  });
+
+  it("кто проходил прежний онбординг, видит только «Что нового», один раз", () => {
+    localStorage.setItem(ONBOARDING_KEY, "done");
+    expect(onboardingMode(null, site)).toBe("news");
+    markOnboardingDone();
+    expect(onboardingMode(null, site)).toBeNull();
   });
 
   it("?onboarding показывает принудительно", () => {
@@ -43,22 +50,37 @@ describe("когда показывать", () => {
 });
 
 describe("экраны", () => {
-  it("три шага: «Далее», «Пропустить» и кнопки последнего шага", () => {
+  it("четыре шага: «Далее», «Пропустить» и кнопки последнего шага", () => {
     const onFinish = vi.fn();
     render(<Onboarding onFinish={onFinish} />);
-    expect(screen.getByText("1 из 3")).toBeTruthy();
+    expect(screen.getByText("1 из 4")).toBeTruthy();
     expect(screen.getByText("узнай олимпиады")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Далее" }));
-    expect(screen.getByText("2 из 3")).toBeTruthy();
+    expect(screen.getByText("2 из 4")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Далее" }));
-    expect(screen.getByText("3 из 3")).toBeTruthy();
+    expect(screen.getByText("3 из 4")).toBeTruthy();
+    expect(screen.getByText("и посчитай баллы")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Далее" }));
+    expect(screen.getByText("4 из 4")).toBeTruthy();
     // на последнем шаге пропускать уже нечего
     expect(screen.queryByRole("button", { name: "Пропустить" })).toBeNull();
     // на сайте (не в MAX) дипломы хранятся на устройстве
     expect(screen.getByText(/Список сохранится на этом устройстве\./)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Добавить диплом" }));
     expect(onFinish).toHaveBeenCalledWith("add-diploma");
-    expect(localStorage.getItem(ONBOARDING_KEY)).toBe("done");
+    expect(localStorage.getItem(ONBOARDING_KEY)).toBe(ONBOARDING_DONE);
+  });
+
+  it("«Что нового» — один экран про помощника и баллы с кнопкой «Понятно»", () => {
+    const onFinish = vi.fn();
+    render(<Onboarding mode="news" onFinish={onFinish} />);
+    expect(screen.getByText("Что нового")).toBeTruthy();
+    expect(screen.getByText("и посчитай баллы")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Далее" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Пропустить" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Понятно" }));
+    expect(onFinish).toHaveBeenCalledWith("uni");
+    expect(localStorage.getItem(ONBOARDING_KEY)).toBe(ONBOARDING_DONE);
   });
 
   // лента экранов в jsdom не прокручивается: ширина и положение — вручную
@@ -82,16 +104,16 @@ describe("экраны", () => {
     expect(scrollTo).toHaveBeenLastCalledWith({ left: 390, behavior: "smooth" });
     // лента только тронулась: ближе ещё первый экран, но шаг уже второй
     scrollAt(40);
-    expect(screen.getByText("2 из 3")).toBeTruthy();
+    expect(screen.getByText("2 из 4")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Далее" }));
-    expect(screen.getByText("3 из 3")).toBeTruthy();
+    expect(screen.getByText("3 из 4")).toBeTruthy();
     expect(scrollTo).toHaveBeenLastCalledWith({ left: 780, behavior: "smooth" });
     scrollAt(500);
     scrollAt(780);
-    expect(screen.getByText("3 из 3")).toBeTruthy();
+    expect(screen.getByText("3 из 4")).toBeTruthy();
     // доехали — дальше шаг снова следует за свайпом
     scrollAt(390);
-    expect(screen.getByText("2 из 3")).toBeTruthy();
+    expect(screen.getByText("2 из 4")).toBeTruthy();
   });
 
   it("если прокрутку перехватили свайпом, шаг сверяется с лентой после остановки", () => {
@@ -102,9 +124,9 @@ describe("экраны", () => {
       // палец вернул ленту назад, не дав доехать до второго экрана
       scrollAt(120);
       scrollAt(30);
-      expect(screen.getByText("2 из 3")).toBeTruthy();
+      expect(screen.getByText("2 из 4")).toBeTruthy();
       act(() => vi.advanceTimersByTime(200));
-      expect(screen.getByText("1 из 3")).toBeTruthy();
+      expect(screen.getByText("1 из 4")).toBeTruthy();
     } finally {
       vi.useRealTimers();
     }
@@ -133,6 +155,7 @@ describe("в приложении", () => {
     renderApp();
     await waitFor(() => expect(document.querySelector("#onboarding")).toBeTruthy());
     const dialog = within(document.querySelector<HTMLElement>("#onboarding")!);
+    fireEvent.click(dialog.getByRole("button", { name: "Далее" }));
     fireEvent.click(dialog.getByRole("button", { name: "Далее" }));
     fireEvent.click(dialog.getByRole("button", { name: "Далее" }));
     fireEvent.click(dialog.getByRole("button", { name: "Добавить диплом" }));

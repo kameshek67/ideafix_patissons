@@ -2,7 +2,7 @@
 
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { haptic } from "@/lib/max";
-import { markOnboardingDone } from "@/lib/onboarding";
+import { markOnboardingDone, type OnboardingMode } from "@/lib/onboarding";
 import { IconHeroArrow } from "./icons";
 import { useMax, useMaxBackButton } from "./MaxProvider";
 
@@ -92,6 +92,28 @@ const SLIDES: Slide[] = [
     size: [240, 260],
   },
   {
+    line1: "Спроси ИИ",
+    line2: "и посчитай баллы",
+    body: () =>
+      "Расскажи помощнику, чем увлекаешься, — подберёт олимпиады и вузы. А во вкладке «Баллы» узнаешь, сколько добавят к ЕГЭ ГТО, аттестат с отличием и другие достижения.",
+    art: (
+      <div className="onboarding-collage">
+        <div className="onboarding-bubble is-question">Люблю программирование — какие олимпиады?</div>
+        <div className="onboarding-bubble is-answer">
+          Попробуй НТО: там есть профиль про мобильные приложения. Показать вузы, где диплом даёт БВИ?
+        </div>
+        <DiplomaCard
+          className="is-points"
+          name="Баллы за достижения"
+          profile="к сумме ЕГЭ"
+          meta="ГТО · аттестат с отличием · волонтёрство"
+          badges={[["обычно до +10 баллов", "badge-sto"]]}
+        />
+      </div>
+    ),
+    size: [372, 330],
+  },
+  {
     line1: "Мои дипломы",
     line2: "все льготы сразу",
     body: (inMax) =>
@@ -130,9 +152,20 @@ const SLIDES: Slide[] = [
   },
 ];
 
-/** Знакомство с приложением при первом запуске: три шага, свайп или «Далее». */
-export function Onboarding({ onFinish }: { onFinish: (exit: OnboardingExit) => void }) {
+/** Экран о новых функциях: его одного видят те, кто проходил онбординг раньше. */
+const NEWS = SLIDES.findIndex((slide) => slide.line1 === "Спроси ИИ");
+
+/** Знакомство с приложением при первом запуске: четыре шага, свайп или «Далее».
+ *  mode="news" — только экран о новых функциях. */
+export function Onboarding({
+  onFinish,
+  mode = "full",
+}: {
+  onFinish: (exit: OnboardingExit) => void;
+  mode?: OnboardingMode;
+}) {
   const app = useMax();
+  const slides = mode === "news" ? [SLIDES[NEWS]!] : SLIDES;
   const [step, setStepState] = useState(0);
   // текущий шаг сразу, без ожидания перерисовки (для выравнивания ленты)
   const stepRef = useRef(0);
@@ -141,7 +174,7 @@ export function Onboarding({ onFinish }: { onFinish: (exit: OnboardingExit) => v
     setStepState(value);
   };
   const track = useRef<HTMLDivElement>(null);
-  const last = step === SLIDES.length - 1;
+  const last = step === slides.length - 1;
 
   function finish(exit: OnboardingExit) {
     markOnboardingDone();
@@ -155,7 +188,7 @@ export function Onboarding({ onFinish }: { onFinish: (exit: OnboardingExit) => v
   useEffect(() => () => clearTimeout(scrolling.current?.timer), []);
 
   function go(next: number) {
-    const target = Math.max(0, Math.min(SLIDES.length - 1, next));
+    const target = Math.max(0, Math.min(slides.length - 1, next));
     const el = track.current;
     if (el && typeof el.scrollTo === "function") {
       clearTimeout(scrolling.current?.timer);
@@ -231,8 +264,10 @@ export function Onboarding({ onFinish }: { onFinish: (exit: OnboardingExit) => v
     <div id="onboarding" className="onboarding" role="dialog" aria-modal="true" aria-label="Знакомство с «Олимпом»">
       <div className="onboarding-card">
         <div className="onboarding-top">
-          <span className="onboarding-step">{`${step + 1} из ${SLIDES.length}`}</span>
-          {last ? null : (
+          <span className="onboarding-step">
+            {mode === "news" ? "Что нового" : `${step + 1} из ${slides.length}`}
+          </span>
+          {last || mode === "news" ? null : (
             <button className="onboarding-skip" onClick={() => finish("uni")}>
               Пропустить
             </button>
@@ -240,7 +275,7 @@ export function Onboarding({ onFinish }: { onFinish: (exit: OnboardingExit) => v
         </div>
 
         <div className="onboarding-track" ref={track} onScroll={onScroll}>
-          {SLIDES.map((slide, i) => (
+          {slides.map((slide, i) => (
             <section key={slide.line1} className="onboarding-slide" aria-hidden={i !== step}>
               <h2 className="onboarding-title">
                 <span className="flex items-center gap-4">
@@ -256,13 +291,19 @@ export function Onboarding({ onFinish }: { onFinish: (exit: OnboardingExit) => v
         </div>
 
         <div className="onboarding-sheet">
-          <div className="onboarding-dots" aria-hidden="true">
-            {SLIDES.map((slide, i) => (
-              <span key={slide.line1} className={i === step ? "is-active" : ""} />
-            ))}
-          </div>
+          {slides.length > 1 ? (
+            <div className="onboarding-dots" aria-hidden="true">
+              {slides.map((slide, i) => (
+                <span key={slide.line1} className={i === step ? "is-active" : ""} />
+              ))}
+            </div>
+          ) : null}
           <div className="onboarding-actions">
-            {last ? (
+            {mode === "news" ? (
+              <button className="btn-primary w-full" onClick={() => finish("uni")}>
+                Понятно
+              </button>
+            ) : last ? (
               <>
                 <button className="btn-primary w-full" onClick={() => finish("add-diploma")}>
                   Добавить диплом

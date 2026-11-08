@@ -64,6 +64,24 @@ async def test_profiles(client: httpx.AsyncClient) -> None:
     assert mentions == sorted(mentions, reverse=True)
 
 
+async def test_search_ignores_case(client: httpx.AsyncClient) -> None:
+    async def names(q: str) -> list[str]:
+        data = (await client.get("/v1/universities", params={"q": q})).json()
+        return [u["name"] for u in data["items"]]
+
+    assert await names("мгу") == await names("МГУ") != []
+    hse = (await client.get("/v1/universities", params={"q": "ниу вшэ (москва)"})).json()
+    university_id = hse["items"][0]["id"]
+
+    async def programs(q: str) -> int:
+        params = {"university_id": university_id, "q": q}
+        return len((await client.get("/v1/programs", params=params)).json()["items"])
+
+    assert await programs("МАТЕМАТИКА") == await programs("математика") > 0
+    # % в запросе — обычный символ, а не «что угодно»
+    assert await programs("%") == 0
+
+
 async def test_by_program(client: httpx.AsyncClient) -> None:
     hse = (await client.get("/v1/universities", params={"q": "НИУ ВШЭ (Москва)"})).json()["items"][
         0

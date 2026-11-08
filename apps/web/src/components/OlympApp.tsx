@@ -26,7 +26,7 @@ import { type DiplomaEntry, upsertDiploma } from "@/lib/diplomas";
 import { fmt, place, plural } from "@/lib/format";
 import { haptic, whenMax } from "@/lib/max";
 import { entityIntent, type ScreenIntent } from "@/lib/navigation";
-import { shouldShowOnboarding } from "@/lib/onboarding";
+import { type OnboardingMode, onboardingMode } from "@/lib/onboarding";
 import { parseStartParam, type StartIntent } from "@/lib/startParam";
 import { showToast } from "@/lib/toast";
 import { AboutModal } from "./AboutModal";
@@ -426,11 +426,13 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
 
   // ---------------------------------------------------------------- онбординг
   // при первом запуске; решаем после проверки MAX: по ссылке startapp=… его не показываем
-  const [onboarding, setOnboarding] = useState(false);
+  // «news» — тем, кто проходил онбординг до ИИ-помощника и «Баллов»: только экран о них
+  const [onboarding, setOnboarding] = useState<OnboardingMode | null>(null);
   useEffect(() => {
     let alive = true;
     void whenMax().then((app) => {
-      if (alive && shouldShowOnboarding(app, new URL(window.location.href))) setOnboarding(true);
+      const mode = onboardingMode(app, new URL(window.location.href));
+      if (alive && mode) setOnboarding(mode);
     });
     return () => {
       alive = false;
@@ -438,7 +440,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   }, []);
 
   function finishOnboarding(exit: OnboardingExit) {
-    setOnboarding(false);
+    setOnboarding(null);
     if (exit === "add-diploma") {
       setTab("diplomas");
       setSheet({ index: null, olympiadId: null });
@@ -894,7 +896,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
       ) : null}
 
       {/* ОНБОРДИНГ — первый запуск */}
-      {onboarding ? <Onboarding onFinish={finishOnboarding} /> : null}
+      {onboarding ? <Onboarding mode={onboarding} onFinish={finishOnboarding} /> : null}
 
       {/* ФОРМА ДИПЛОМА */}
       {sheet ? (

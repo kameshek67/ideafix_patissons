@@ -140,7 +140,7 @@ services:
     profiles: [https]
     restart: unless-stopped
 
-  # приветствие бота с кнопкой «Открыть» (необязательно; long polling):
+  # приветствие бота с кнопками «Открыть», «Мои дипломы» и «Сайт» (необязательно; long polling):
   #   docker compose --profile bot up --build -d
   bot:
     <<: *python
@@ -150,6 +150,8 @@ services:
       # API бота (platform-api2.max.ru) подписан сертификатом Минцифры — его корневой
       # сертификат кладётся в infra/certs (см. infra/certs/README.md)
       OLYMP_MAX_CA_DIR: /certs
+      # куда ведёт кнопка «Сайт» в сообщениях бота; без значения — стенд ideafix.patissons.tech
+      OLYMP_SITE_URL: ${OLYMP_SITE_URL:-}
     volumes: [./infra/certs:/certs:ro]
     healthcheck: {disable: true}
     profiles: [bot]

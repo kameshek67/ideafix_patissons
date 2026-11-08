@@ -1,7 +1,7 @@
 """Бот мини-приложения «Олимп» в MAX.
 
     olymp-max-bot check   — проверить токен: имя бота и ссылки на мини-приложение
-    olymp-max-bot run     — приветствовать по кнопке «Начать» и /start кнопкой «Открыть»
+    olymp-max-bot run     — отвечать в личке: приветствие с кнопками мини-приложения и сайта
 
 Мини-приложению бот не нужен: кнопка запуска появляется в чате с ботом, как только в его
 настройках на business.max.ru указан адрес сайта. Этот процесс только отвечает на первое
@@ -9,7 +9,8 @@
 (GET /updates); для большой нагрузки MAX советует вебхуки.
 
 Переменные: OLYMP_MAX_BOT_TOKEN — токен бота; OLYMP_MAX_CA_DIR — каталог с сертификатом
-Минцифры, которым подписан platform-api2.max.ru (см. infra/certs/README.md).
+Минцифры, которым подписан platform-api2.max.ru (см. infra/certs/README.md); OLYMP_SITE_URL —
+адрес сайта для кнопки «Сайт» (по умолчанию стенд https://ideafix.patissons.tech).
 """
 
 import json
@@ -25,6 +26,7 @@ from pathlib import Path
 from typing import Any
 
 API_URL = "https://platform-api2.max.ru"
+SITE_URL = "https://ideafix.patissons.tech"
 UPDATE_TYPES = "bot_started,message_created"
 
 # (method, path, query, body) -> JSON-ответ
@@ -87,37 +89,62 @@ def open_app_button(text: str, bot: str, payload: str | None = None) -> dict[str
     return button
 
 
-def welcome(bot: str, first_name: str = "") -> dict[str, Any]:
+def link_button(text: str, url: str) -> dict[str, Any]:
+    return {"type": "link", "text": text, "url": url}
+
+
+def keyboard(bot: str, site: str) -> dict[str, Any]:
+    """Кнопки под сообщением: мини-приложение, сразу «Дипломы» и сайт в браузере."""
+    return {
+        "type": "inline_keyboard",
+        "payload": {
+            "buttons": [
+                [open_app_button("Открыть «Олимп»", bot)],
+                [open_app_button("Мои дипломы", bot, "diplomas")],
+                [link_button("Сайт «Олимпа»", site)],
+            ]
+        },
+    }
+
+
+def welcome(bot: str, first_name: str = "", site: str = SITE_URL) -> dict[str, Any]:
     """Первое сообщение: что умеет мини-приложение, и кнопки запуска."""
     hello = f"Привет, {first_name}!" if first_name else "Привет!"
     return {
         "text": (
             f"{hello} «Олимп» показывает, в каких вузах олимпиады дают БВИ "
             "и 100 баллов по правилам приёма 2026 года.\n\n"
-            "Добавьте свои дипломы во вкладке «Дипломы» — увидите все вузы и направления, "
-            "где они дают льготы, с учётом степени диплома, класса и года."
+            "Добавь свои дипломы во вкладке «Дипломы» — увидишь все вузы и направления, "
+            "где они дают льготы, с учётом степени диплома, класса и года. "
+            "А ИИ-помощник подберёт олимпиады под твои увлечения.\n\n"
+            f"Удобнее с компьютера — открой сайт: {site}"
         ),
-        "attachments": [
-            {
-                "type": "inline_keyboard",
-                "payload": {
-                    "buttons": [
-                        [open_app_button("Открыть «Олимп»", bot)],
-                        [open_app_button("Мои дипломы", bot, "diplomas")],
-                    ]
-                },
-            }
-        ],
+        "attachments": [keyboard(bot, site)],
     }
 
 
-def reply_for(update: dict[str, Any], bot: str) -> tuple[int, dict[str, Any]] | None:
+def hint(bot: str, site: str = SITE_URL) -> dict[str, Any]:
+    """Ответ на любое другое сообщение: бот не ведёт диалог, всё — в мини-приложении."""
+    return {
+        "text": (
+            "Я не отвечаю на сообщения — всё происходит в мини-приложении «Олимп». "
+            "Там можно найти льготы по вузу или олимпиаде, добавить дипломы "
+            f"и спросить ИИ-помощника. Сайт: {site}"
+        ),
+        "attachments": [keyboard(bot, site)],
+    }
+
+
+def reply_for(
+    update: dict[str, Any], bot: str, site: str = SITE_URL
+) -> tuple[int, dict[str, Any]] | None:
     """Кому и что ответить на событие; None — событие без ответа."""
     kind = update.get("update_type")
     if kind == "bot_started":
         user = update.get("user") or {}
         if isinstance(user.get("user_id"), int):
-            return user["user_id"], welcome(bot, user.get("first_name") or user.get("name") or "")
+            name = user.get("first_name") or user.get("name") or ""
+            return user["user_id"], welcome(bot, name, site)
         return None
     if kind == "message_created":
         message = update.get("message") or {}
@@ -127,8 +154,11 @@ def reply_for(update: dict[str, Any], bot: str) -> tuple[int, dict[str, Any]] | 
         # только личные сообщения людей: в группах и от ботов молчим
         if recipient.get("chat_type") != "dialog" or sender.get("is_bot"):
             return None
-        if isinstance(sender.get("user_id"), int) and text in {"/start", "start", "начать"}:
-            return sender["user_id"], welcome(bot, sender.get("first_name") or "")
+        if not isinstance(sender.get("user_id"), int):
+            return None
+        if text in {"/start", "start", "начать", "/help", "помощь", "привет"}:
+            return sender["user_id"], welcome(bot, sender.get("first_name") or "", site)
+        return sender["user_id"], hint(bot, site)
     return None
 
 
@@ -142,7 +172,7 @@ def bot_name(me: dict[str, Any]) -> str:
     return str(name)
 
 
-def check(call: Call) -> str:
+def check(call: Call, site: str = SITE_URL) -> str:
     me = call("GET", "/me", None, None)
     name = bot_name(me)
     return "\n".join(
@@ -150,12 +180,19 @@ def check(call: Call) -> str:
             f"Токен рабочий: бот «{me.get('first_name') or me.get('name') or name}» (@{name}).",
             f"Мини-приложение:   https://max.ru/{name}?startapp",
             f"Сразу «Дипломы»:   https://max.ru/{name}?startapp=diplomas",
+            f"Кнопка «Сайт»:     {site}",
             f"Для .env:          OLYMP_MAX_BOT_NAME={name}",
         ]
     )
 
 
-def run(call: Call, *, once: bool = False, sleep: Callable[[float], None] = time.sleep) -> int:
+def run(
+    call: Call,
+    *,
+    site: str = SITE_URL,
+    once: bool = False,
+    sleep: Callable[[float], None] = time.sleep,
+) -> int:
     """Отвечает на события, пока процесс не остановят; возвращает число отправленных ответов."""
     name = bot_name(call("GET", "/me", None, None))
     print(f"Бот @{name} слушает обновления (long polling)", flush=True)
@@ -170,7 +207,7 @@ def run(call: Call, *, once: bool = False, sleep: Callable[[float], None] = time
             data = call("GET", "/updates", query, None) or {}
             marker = data.get("marker", marker)
             for update in data.get("updates") or []:
-                reply = reply_for(update, name)
+                reply = reply_for(update, name, site)
                 if reply:
                     user_id, body = reply
                     call("POST", "/messages", {"user_id": user_id}, body)
@@ -197,11 +234,12 @@ def main(argv: list[str] | None = None) -> int:
         print("Не задан OLYMP_MAX_BOT_TOKEN — токен бота с business.max.ru", file=sys.stderr)
         return 1
     call = http_call(token, ca_dir=os.environ.get("OLYMP_MAX_CA_DIR") or None)
+    site = os.environ.get("OLYMP_SITE_URL", "").strip().rstrip("/") or SITE_URL
     try:
         if command == "check":
-            print(check(call))
+            print(check(call, site))
         else:
-            run(call)
+            run(call, site=site)
     except MaxApiError as exc:
         print(f"Ошибка API MAX: {exc}", file=sys.stderr)
         return 1
