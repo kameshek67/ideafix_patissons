@@ -22,6 +22,7 @@ from olymp_domain.diplomas import (
     match,
     profile_keys,
 )
+from olymp_domain.ege import EgeRequirement, EgeStatus, ege_status, subject_of_profile
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -208,11 +209,60 @@ def counts(best: dict[int, ProgramBest]) -> dict[str, int]:
     }
 
 
+# отметка «не хватает до N баллов» в итогах (F-03)
+CLOSE_GAP = 5
+
+
+def ege_statuses(
+    best_link: dict[int, Row], scores: dict[str, int]
+) -> dict[int, tuple[EgeStatus, int | None, tuple[str, ...]]]:
+    """Статус подтверждения ЕГЭ каждой подходящей льготы по колонкам, разобранным при сборке
+    (T-031). Предмет не указан — по профилю олимпиады, через которую льгота подошла."""
+    return {
+        benefit_id: ege_status(
+            None
+            if row["confirm_subjects"] is None  # текст не разобран
+            else EgeRequirement(tuple(row["confirm_subjects"]), row["min_ege_score"]),
+            scores,
+            subject_of_profile(row["link_profile"]),
+        )
+        for benefit_id, row in best_link.items()
+    }
+
+
+def ege_summary(
+    matched: dict[int, "Matched"],
+    statuses: dict[int, tuple[EgeStatus, int | None, tuple[str, ...]]],
+) -> tuple[dict[str, Any], dict[int, int]]:
+    """Итоги подтверждения баллами и число подтверждённых направлений по вузам."""
+    confirmed_programs: dict[int, int] = {}  # направление → вуз
+    close: set[int] = set()
+    by_status = {"confirmed": 0, "short": 0, "missing_score": 0, "no_threshold": 0}
+    for benefit_id, (status, gap, _) in statuses.items():
+        m = matched[benefit_id]
+        by_status[status] += 1
+        if status == "confirmed":
+            confirmed_programs[m.program_id] = m.university_id
+        elif status == "short" and gap is not None and gap <= CLOSE_GAP:
+            close.add(m.university_id)
+    per_university: dict[int, int] = {}
+    for uid in confirmed_programs.values():
+        per_university[uid] = per_university.get(uid, 0) + 1
+    summary = {
+        "confirmed_programs": len(confirmed_programs),
+        "confirmed_universities": len(per_university),
+        "close_universities": len(close - per_university.keys()),
+        "statuses": by_status,
+    }
+    return summary, per_university
+
+
 async def match_diplomas(
     session: AsyncSession,
     specs: list[DiplomaSpec],
     benefit_type: str | None,
     university_id: int | None,
+    ege: dict[str, int] | None = None,
 ) -> dict[str, Any]:
     resolved = await resolve(session, specs)
     diplomas = [r.diploma() for r in resolved]
@@ -228,7 +278,7 @@ async def match_diplomas(
         f"""SELECT bo.benefit_id, bo.olympiad_id, bo.profile_id,
                    COALESCE(NULLIF(bo.winner_role, ''), b.winner_role) AS role,
                    b.grade, b.years, b.olympiad_subject AS subject, b.benefit_type,
-                   b.program_id, p.university_id,
+                   b.confirm_subjects, b.min_ege_score, b.program_id, p.university_id,
                    COALESCE(pr.name, bo.profile) AS link_profile, bo.level AS link_level,
                    bo.matched_via
             FROM benefit_olympiads bo
@@ -303,7 +353,16 @@ async def match_diplomas(
             info[uid]["university"],
         ),
     )
-    results = [{"university": university_of(info[uid]), **universities[uid]} for uid in order]
+    statuses = ege_statuses(best_link, ege) if ege else {}
+    summary, confirmed = ege_summary(matched, statuses) if ege else (None, {})
+    results: list[dict[str, Any]] = [
+        {
+            "university": university_of(info[uid]),
+            **universities[uid],
+            **({"ege_confirmed": confirmed.get(uid, 0)} if ege else {}),
+        }
+        for uid in order
+    ]
 
     out: dict[str, Any] = {
         "diplomas": [
@@ -328,11 +387,14 @@ async def match_diplomas(
             if reason is not Reject.PROFILE
         },
         "results": results,
+        "ege": summary,
         "campaign_year": CAMPAIGN_YEAR,
         "valid_years": list(DIPLOMA_YEARS),
     }
     if university_id is not None:
-        out.update(await university_rows(session, university_id, matched, best_link, resolved))
+        out.update(
+            await university_rows(session, university_id, matched, best_link, resolved, statuses)
+        )
     return out
 
 
@@ -342,6 +404,7 @@ async def university_rows(
     matched: dict[int, Matched],
     best_link: dict[int, Row],
     resolved: list[Resolved],
+    statuses: dict[int, tuple[EgeStatus, int | None, tuple[str, ...]]],
 ) -> dict[str, Any]:
     university = await fetch_one(
         session,
@@ -388,6 +451,15 @@ async def university_rows(
                 "benefit": benefit,
                 "diplomas": sorted(m.diplomas),
                 "fit": m.fit.value,
+                **(
+                    {
+                        "ege_status": statuses[row["id"]][0],
+                        "ege_gap": statuses[row["id"]][1],
+                        "ege_subjects": list(statuses[row["id"]][2]),
+                    }
+                    if row["id"] in statuses
+                    else {}
+                ),
             }
         )
     return {"university": university_of(university), "rows": out}
@@ -454,14 +526,53 @@ async def saved_diplomas(session: AsyncSession, user_id: int) -> list[dict[str, 
     ]
 
 
+async def saved_ege(session: AsyncSession, user_id: int) -> dict[str, Any]:
+    rows = await fetch_all(
+        session,
+        "SELECT subject, score, is_mock FROM user_ege_scores WHERE user_id = :uid ORDER BY subject",
+        {"uid": user_id},
+    )
+    return {
+        "ege": {r["subject"]: r["score"] for r in rows},
+        "ege_is_mock": any(r["is_mock"] for r in rows),
+    }
+
+
+async def save_ege(
+    session: AsyncSession, user_id: int, scores: dict[str, int], is_mock: bool
+) -> None:
+    await session.execute(
+        text("DELETE FROM user_ege_scores WHERE user_id = :uid"), {"uid": user_id}
+    )
+    if scores:
+        await session.execute(
+            text(
+                """INSERT INTO user_ege_scores (user_id, subject, score, is_mock)
+                   VALUES (:uid, :subject, :score, :mock)"""
+            ),
+            [
+                {"uid": user_id, "subject": subject, "score": score, "mock": is_mock}
+                for subject, score in scores.items()
+            ],
+        )
+
+
 async def my_diplomas(session: AsyncSession, user: MaxUser) -> dict[str, Any]:
     await touch_user(session, user)
     await session.commit()
-    return {"user": profile_out(user), "diplomas": await saved_diplomas(session, user.id)}
+    return {
+        "user": profile_out(user),
+        "diplomas": await saved_diplomas(session, user.id),
+        **await saved_ege(session, user.id),
+    }
 
 
 async def save_my_diplomas(
-    session: AsyncSession, user: MaxUser, specs: list[DiplomaSpec]
+    session: AsyncSession,
+    user: MaxUser,
+    specs: list[DiplomaSpec],
+    ege: dict[str, int] | None = None,
+    ege_is_mock: bool = False,
 ) -> dict[str, Any]:
     """Заменяет список дипломов пользователя целиком (последняя запись побеждает)."""
     resolved = await resolve(session, specs)
@@ -502,5 +613,11 @@ async def save_my_diplomas(
                 for position, r in enumerate(resolved)
             ],
         )
+    if ege is not None:  # None — старый клиент, баллы не трогаем
+        await save_ege(session, user.id, ege, ege_is_mock)
     await session.commit()
-    return {"user": profile_out(user), "diplomas": await saved_diplomas(session, user.id)}
+    return {
+        "user": profile_out(user),
+        "diplomas": await saved_diplomas(session, user.id),
+        **await saved_ege(session, user.id),
+    }

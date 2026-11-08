@@ -525,3 +525,11 @@ html[data-max="android"] .table-toolbar .chip-ghost { display: none; }
 .report-link { margin-top: 6px; font-size: 12.5px; color: var(--brand-ink); text-decoration: underline; text-underline-offset: 2px; }
 .report-form { margin-top: 10px; }
 .report-form .btn-primary, .report-form .btn-secondary { height: 40px; padding: 0 16px; }
+
+/* статусы подтверждения баллами ЕГЭ (F-03) */
+.badge-ege-ok { background: #E9F8EF; color: #17733F; border-color: #C7EBD5; }
+.badge-ege-short { background: #FFF4E5; color: #9A5B00; border-color: #FBDDB0; }
+.ege-chip { display: inline-flex; margin-top: 3px; }
+.ege-grid { margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px 12px; }
+.ege-field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.ege-field input { width: 100%; }

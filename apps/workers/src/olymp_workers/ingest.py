@@ -42,6 +42,7 @@ import openpyxl
 import psycopg
 from olymp_db.models import DATA_TABLES
 from olymp_db.session import database_url, psycopg_dsn
+from olymp_domain.ege import parse_ege_requirement
 from olymp_domain.olympiad_seeds import JUNK_KEYS, SEEDS
 from olymp_domain.textutils import (
     SUBJECT_LIST_ALIASES,
@@ -1246,6 +1247,8 @@ class Ingestor:
         if merged:
             log(f"      склеено обрывков профилей: {merged}")
         self.extract_keywords()
+        parsed, total = self.parse_ege_requirements()
+        log(f"      пороги ЕГЭ разобраны: {parsed} из {total} непустых строк")
 
         log("[6/7] Полнотекстовый индекс")
         self.build_fts()
@@ -1258,6 +1261,29 @@ class Ingestor:
 
         log("[7/7] Статистика")
         self.finalize(started)
+
+    def parse_ege_requirements(self) -> tuple[int, int]:
+        """confirm_subjects и min_ege_score из текста (T-031). Различных пар текста — пара сотен,
+        поэтому обновляем по паре, а не по строке."""
+        pairs = self.conn.execute(
+            """SELECT confirm_subject, min_ege, count(*) FROM benefits
+               GROUP BY confirm_subject, min_ege"""
+        ).fetchall()
+        parsed = total = 0
+        with self.conn.cursor() as cur:
+            for subject, minimum, count in pairs:
+                requirement = parse_ege_requirement(subject, minimum)
+                if (subject or "").strip() or (minimum or "").strip():
+                    total += count
+                    parsed += count if requirement is not None else 0
+                if requirement is None:
+                    continue  # не разобрано: колонки остаются NULL
+                cur.execute(
+                    """UPDATE benefits SET confirm_subjects = %s, min_ege_score = %s
+                       WHERE confirm_subject = %s AND min_ege = %s""",
+                    (list(requirement.subjects), requirement.min_score, subject, minimum),
+                )
+        return parsed, total
 
     # -- справочник -------------------------------------------------------
     def save_catalog(self) -> None:
@@ -2294,6 +2320,7 @@ def build_fingerprint(xlsx_path: str) -> str:
     Меняется, если поменяли XLSX, кэш ссылок на документы вузов или код разбора (этот файл,
     нормализация текста, справочник олимпиад, страницы вузов). Тогда `--if-stale` пересоберёт базу.
     """
+    import olymp_domain.ege as ege
     import olymp_domain.olympiad_cards as cards
     import olymp_domain.olympiad_seeds as seeds
     import olymp_domain.textutils as textutils
@@ -2310,6 +2337,7 @@ def build_fingerprint(xlsx_path: str) -> str:
         DATA_DIR / CARDS_FILE,
         Path(olympiad_cards.__file__),
         Path(cards.__file__),
+        Path(ege.__file__),
     ]
     digest = hashlib.sha256()
     for part in parts:

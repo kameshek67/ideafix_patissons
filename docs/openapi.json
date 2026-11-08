@@ -41,6 +41,42 @@
             "title": "Diplomas",
             "type": "array"
           },
+          "ege_gap": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ege Gap"
+          },
+          "ege_status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "confirmed",
+                  "short",
+                  "missing_score",
+                  "no_threshold"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ege Status"
+          },
+          "ege_subjects": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Ege Subjects",
+            "type": "array"
+          },
           "fit": {
             "title": "Fit",
             "type": "string"
@@ -53,7 +89,10 @@
           "program",
           "benefit",
           "diplomas",
-          "fit"
+          "fit",
+          "ege_status",
+          "ege_gap",
+          "ege_subjects"
         ],
         "title": "AchievementRow",
         "type": "object"
@@ -67,6 +106,17 @@
           "check": {
             "title": "Check",
             "type": "integer"
+          },
+          "ege_confirmed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ege Confirmed"
           },
           "other": {
             "title": "Other",
@@ -90,7 +140,8 @@
           "bvi",
           "sto",
           "other",
-          "check"
+          "check",
+          "ege_confirmed"
         ],
         "title": "AchievementUniversity",
         "type": "object"
@@ -108,6 +159,16 @@
             },
             "title": "Diplomas",
             "type": "array"
+          },
+          "ege": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EgeSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "rejected": {
             "$ref": "#/components/schemas/Rejected"
@@ -155,6 +216,7 @@
           "results",
           "university",
           "rows",
+          "ege",
           "campaign_year",
           "valid_years"
         ],
@@ -904,6 +966,46 @@
         "title": "DiplomasShareIn",
         "type": "object"
       },
+      "EgeSummary": {
+        "description": "Подтверждение баллами ЕГЭ (только если баллы переданы, F-03).",
+        "properties": {
+          "close_universities": {
+            "title": "Close Universities",
+            "type": "integer"
+          },
+          "confirmed_programs": {
+            "title": "Confirmed Programs",
+            "type": "integer"
+          },
+          "confirmed_universities": {
+            "title": "Confirmed Universities",
+            "type": "integer"
+          },
+          "statuses": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "confirmed",
+                "short",
+                "missing_score",
+                "no_threshold"
+              ]
+            },
+            "title": "Statuses",
+            "type": "object"
+          }
+        },
+        "required": [
+          "confirmed_programs",
+          "confirmed_universities",
+          "close_universities",
+          "statuses"
+        ],
+        "title": "EgeSummary",
+        "type": "object"
+      },
       "ExtraRule": {
         "properties": {
           "exclusive_group": {
@@ -1298,13 +1400,28 @@
             "title": "Diplomas",
             "type": "array"
           },
+          "ege": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "default": {},
+            "title": "Ege",
+            "type": "object"
+          },
+          "ege_is_mock": {
+            "default": false,
+            "title": "Ege Is Mock",
+            "type": "boolean"
+          },
           "user": {
             "$ref": "#/components/schemas/MaxProfile"
           }
         },
         "required": [
           "user",
-          "diplomas"
+          "diplomas",
+          "ege",
+          "ege_is_mock"
         ],
         "title": "MyDiplomas",
         "type": "object"
@@ -1319,6 +1436,42 @@
             "maxItems": 20,
             "title": "Diplomas",
             "type": "array"
+          },
+          "ege": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "maximum": 100.0,
+                  "minimum": 0.0,
+                  "type": "integer"
+                },
+                "propertyNames": {
+                  "enum": [
+                    "rus",
+                    "math",
+                    "inf",
+                    "phys",
+                    "chem",
+                    "bio",
+                    "soc",
+                    "hist",
+                    "lit",
+                    "foreign",
+                    "geo"
+                  ]
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ege"
+          },
+          "ege_is_mock": {
+            "default": false,
+            "title": "Ege Is Mock",
+            "type": "boolean"
           }
         },
         "required": [
@@ -3339,6 +3492,21 @@
               ],
               "title": "University Id"
             }
+          },
+          {
+            "description": "Баллы ЕГЭ «предмет:балл», повторяемый: ege=inf:82&ege=math:90. Предметы: rus, math, inf, phys, chem, bio, soc, hist, lit, foreign, geo. С баллами у строк есть статус подтверждения льготы, в итогах — сводка ege.",
+            "in": "query",
+            "name": "ege",
+            "required": false,
+            "schema": {
+              "default": [],
+              "description": "Баллы ЕГЭ «предмет:балл», повторяемый: ege=inf:82&ege=math:90. Предметы: rus, math, inf, phys, chem, bio, soc, hist, lit, foreign, geo. С баллами у строк есть статус подтверждения льготы, в итогах — сводка ege.",
+              "items": {
+                "type": "string"
+              },
+              "title": "Ege",
+              "type": "array"
+            }
           }
         ],
         "responses": {
@@ -3700,7 +3868,7 @@
         ]
       },
       "put": {
-        "description": "Сохраняет список дипломов пользователя MAX целиком.",
+        "description": "Сохраняет список дипломов пользователя MAX целиком; баллы ЕГЭ — если переданы\n(без поля ege сохранённые баллы не меняются).",
         "operationId": "save_my_diplomas_v1_me_diplomas_put",
         "requestBody": {
           "content": {

@@ -855,6 +855,8 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
                 entries={diplomas.entries}
                 storage={diplomas.storage}
                 sync={diplomas.sync}
+                ege={diplomas.ege}
+                onEge={diplomas.updateEge}
                 benefitType={benefitType}
                 onAdd={() => setSheet({ index: null, olympiadId: null })}
                 onEdit={(index: number, result: DiplomaResult | undefined) =>

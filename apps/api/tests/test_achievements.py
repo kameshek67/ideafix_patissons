@@ -262,3 +262,76 @@ async def test_parallel_saves_from_two_devices(max_client: httpx.AsyncClient) ->
     assert [r.status_code for r in responses] == [200] * len(lists)
     final = (await max_client.get("/v1/me/diplomas", headers=headers)).json()["diplomas"]
     assert len(final) == 1 and [final[0]["spec"]] in lists
+
+
+# ---------------------------------------------------------------- баллы ЕГЭ (F-03, T-032)
+
+
+async def test_ege_statuses_in_match(client: httpx.AsyncClient) -> None:
+    hse = await form(client, "вышка")
+    diploma = spec(hse, "математика", "w.11.2025")
+    plain = await match(client, diploma)
+    assert plain["ege"] is None and all(u["ege_confirmed"] is None for u in plain["results"])
+
+    strong = await match(client, diploma, ege=["math:95", "inf:95", "phys:95"])
+    weak = await match(client, diploma, ege=["math:73"])
+    # без ege ответ прежний: те же вузы и итоги
+    assert [u["university"]["id"] for u in strong["results"]] == [
+        u["university"]["id"] for u in plain["results"]
+    ]
+    assert strong["totals"] == plain["totals"]
+    assert strong["ege"]["confirmed_universities"] > weak["ege"]["confirmed_universities"]
+    assert weak["ege"]["close_universities"] > 0  # 73 при пороге 75 — «не хватает до 5»
+    assert sum(strong["ege"]["statuses"].values()) == sum(weak["ege"]["statuses"].values())
+
+    university = next(u for u in weak["results"] if u["programs"])["university"]["id"]
+    rows = (await match(client, diploma, ege=["math:73"], university_id=university))["rows"]
+    statuses = {r["ege_status"] for r in rows}
+    assert statuses <= {"confirmed", "short", "missing_score", "no_threshold"}
+    short = [r for r in rows if r["ege_status"] == "short"]
+    if short:
+        assert all(r["ege_gap"] and r["ege_subjects"] for r in short)
+    plain_rows = (await match(client, diploma, university_id=university))["rows"]
+    assert all(r["ege_status"] is None for r in plain_rows)
+
+
+async def test_ege_validation(client: httpx.AsyncClient) -> None:
+    hse = await form(client, "вышка")
+    diploma = spec(hse, "математика", "w.11.2025")
+    for bad in ("math:101", "latin:80", "math", "math:-1"):
+        response = await client.get(
+            "/v1/achievements/match", params={"diploma": diploma, "ege": bad}
+        )
+        assert response.status_code == 422, bad
+
+
+async def test_ege_saved_in_max_profile(max_client: httpx.AsyncClient) -> None:
+    headers = {"X-Max-Init-Data": init_data(9_000_020)}
+    hse = await form(max_client, "вышка")
+    diplomas = [spec(hse, "математика", "w.11.2025")]
+    body = {"diplomas": diplomas, "ege": {"math": 88, "rus": 90}, "ege_is_mock": True}
+    saved = (await max_client.put("/v1/me/diplomas", headers=headers, json=body)).json()
+    assert saved["ege"] == {"math": 88, "rus": 90} and saved["ege_is_mock"] is True
+    # старый клиент без поля ege баллы не стирает
+    kept = (
+        await max_client.put("/v1/me/diplomas", headers=headers, json={"diplomas": diplomas})
+    ).json()
+    assert kept["ege"] == {"math": 88, "rus": 90}
+    # пустой словарь — удалить
+    cleared = await max_client.put(
+        "/v1/me/diplomas", headers=headers, json={"diplomas": diplomas, "ege": {}}
+    )
+    assert cleared.json()["ege"] == {} and cleared.json()["ege_is_mock"] is False
+    bad = await max_client.put(
+        "/v1/me/diplomas", headers=headers, json={"diplomas": diplomas, "ege": {"math": 140}}
+    )
+    assert bad.status_code == 422
+
+
+def test_ege_subject_codes_match_domain() -> None:
+    from typing import get_args
+
+    from olymp_api.modules.achievements.schemas import EgeSubject
+    from olymp_domain.ege import SUBJECTS
+
+    assert set(get_args(EgeSubject)) == set(SUBJECTS)

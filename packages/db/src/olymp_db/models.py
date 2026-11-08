@@ -15,6 +15,7 @@ from typing import Any
 
 from sqlalchemy import (
     BigInteger,
+    Boolean,
     CheckConstraint,
     Date,
     DateTime,
@@ -133,6 +134,10 @@ class Benefit(Base):
     grade: Mapped[str] = _text()
     confirm_subject: Mapped[str] = _text()
     min_ege: Mapped[str] = _text()
+    # разобранные confirm_subject и min_ege (olymp_domain.ege): коды предметов — NULL, если текст
+    # не разобран, пустой список — предмет не указан (по профилю олимпиады); порог — NULL, если нет
+    confirm_subjects: Mapped[list[str] | None] = mapped_column(ARRAY(CText), nullable=True)
+    min_ege_score: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
     award_subject: Mapped[str] = _text()
     years: Mapped[str] = _text()
     note: Mapped[str] = _text()
@@ -408,6 +413,21 @@ class UserDiploma(Base):
     olympiad_name: Mapped[str] = _text()
     profile_name: Mapped[str] = _text()
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class UserEgeScore(Base):
+    """Баллы ЕГЭ ученика (F-03): только в его профиле MAX, без истории и логов."""
+
+    __tablename__ = "user_ege_scores"
+    __table_args__ = (CheckConstraint("score BETWEEN 0 AND 100", name="score"),)
+
+    user_id: Mapped[int] = mapped_column(
+        BigInteger, ForeignKey("max_users.id", ondelete="CASCADE"), primary_key=True
+    )
+    subject: Mapped[str] = mapped_column(CText, primary_key=True)
+    score: Mapped[int] = mapped_column(SmallInteger)
+    # пробные (ожидаемые) баллы, а не результат экзамена
+    is_mock: Mapped[bool] = mapped_column(Boolean, server_default=sa_text("false"))
 
 
 class ShareLink(Base):
