@@ -1,7 +1,7 @@
 ---
 id: T-022
 title: Инструменты помощника поверх поиска
-status: review
+status: done
 priority: P0
 area: api
 estimate: M

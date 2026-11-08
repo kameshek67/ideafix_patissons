@@ -1,7 +1,7 @@
 ---
 id: T-082
 title: "Справочник олимпиад: карточки и треки"
-status: review
+status: done
 priority: P1
 area: api
 estimate: L
