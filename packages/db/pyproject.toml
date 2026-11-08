@@ -3,7 +3,7 @@ name = "olymp-db"
 version = "0.0.0"
 description = "Модели SQLAlchemy, миграции Alembic, сессии PostgreSQL"
 requires-python = ">=3.13"
-dependencies = ["sqlalchemy>=2.0.36", "alembic>=1.14", "psycopg[binary]>=3.2", "asyncpg>=0.30"]
+dependencies = ["sqlalchemy>=2.0.36", "alembic>=1.14", "psycopg[binary]>=3.3.8", "asyncpg>=0.30"]
 
 [build-system]
 requires = ["hatchling"]
