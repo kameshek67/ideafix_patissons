@@ -533,3 +533,71 @@ html[data-max="android"] .table-toolbar .chip-ghost { display: none; }
 .ege-grid { margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px 12px; }
 .ege-field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); }
 .ege-field input { width: 100%; }
+
+/* ---------- анимации сайта ----------
+   Только на сайте: в мини-приложении MAX (data-max ставит MaxProvider, data-max-boot — загрузчик
+   Bridge ещё до первой отрисовки) интерфейс остаётся спокойным, как в нативных экранах MAX.
+   Кто попросил систему уменьшить движение, анимаций не видит. */
+@keyframes rise-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes drop-in { from { opacity: 0; transform: translateY(-6px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes pop-in { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes tab-pop { 0% { transform: scale(.94); } 60% { transform: scale(1.02); } 100% { transform: none; } }
+@keyframes arrow-nudge { 0%, 100% { transform: none; } 50% { transform: translateX(6px); } }
+@keyframes float-soft { 0%, 100% { transform: none; } 50% { transform: translateY(-4px); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-max]):not([data-max-boot]) {
+    /* заголовок: строки появляются по очереди, стрелка мягко зовёт вправо */
+    & .hero-title > * { animation: rise-in .5s cubic-bezier(.2,.7,.2,1) both; }
+    & .hero-title > :nth-child(2) { animation-delay: .08s; }
+    & .hero-title svg { animation: arrow-nudge 2.4s ease-in-out 1s 2; }
+
+    /* вкладки: активная «пружинит», содержимое вкладки выезжает снизу */
+    & .tab-active { animation: tab-pop .32s cubic-bezier(.2,.7,.2,1); }
+    & .tab-btn:active { transform: scale(.97); }
+    & section[id^="tab-"]:not(.hidden) { animation: rise-in .32s cubic-bezier(.2,.7,.2,1) both; }
+
+    /* выпадающий список и подсказки */
+    & .combo-panel, & .suggest { animation: drop-in .18s ease-out both; transform-origin: top center; }
+    & .combo-item { animation: fade-in .2s ease-out both; }
+
+    /* карточки и строки списков появляются лесенкой (первые десять) */
+    & .card, & .uni-row, & .diploma-row, & .empty-state { animation: rise-in .34s cubic-bezier(.2,.7,.2,1) both; }
+    & :is(.card, .uni-row, .diploma-row):nth-child(2) { animation-delay: .04s; }
+    & :is(.card, .uni-row, .diploma-row):nth-child(3) { animation-delay: .08s; }
+    & :is(.card, .uni-row, .diploma-row):nth-child(4) { animation-delay: .12s; }
+    & :is(.card, .uni-row, .diploma-row):nth-child(5) { animation-delay: .16s; }
+    & :is(.card, .uni-row, .diploma-row):nth-child(6) { animation-delay: .2s; }
+    & :is(.card, .uni-row, .diploma-row):nth-child(7) { animation-delay: .24s; }
+    & :is(.card, .uni-row, .diploma-row):nth-child(8) { animation-delay: .28s; }
+    & :is(.card, .uni-row, .diploma-row):nth-child(n+9) { animation-delay: .32s; }
+    & .data-table tbody tr { animation: fade-in .3s ease-out both; }
+    & .uni-row { transition: background .12s, transform .15s; }
+    & .uni-row:active { transform: scale(.99); }
+    & .empty-icon { animation: float-soft 3s ease-in-out infinite; }
+
+    /* чипы и бейджи */
+    & .chip { transition: border-color .15s, background .15s, transform .12s; }
+    & .chip:active { transform: scale(.95); }
+    & .chip-on { animation: pop-in .2s ease-out; }
+    & .badge { animation: pop-in .25s ease-out both; }
+
+    /* кнопки */
+    & .btn-primary:active:not(:disabled), & .btn-secondary:active, & .share-btn:active { transform: scale(.97); }
+    & .btn-secondary, & .share-btn { transition: border-color .15s, background .15s, transform .1s; }
+    & .icon-btn { transition: background .15s, transform .15s; }
+    & .icon-btn:active { transform: scale(.9); }
+    & .assistant-fab { animation: pop-in .4s cubic-bezier(.2,.7,.2,1) .6s both; transition: transform .15s, box-shadow .15s; }
+    & .assistant-fab:hover { transform: translateY(-2px); }
+
+    /* шторки и окна: фон темнеет, лист выезжает снизу (на широком экране — всплывает) */
+    & .sheet-backdrop { animation: fade-in .2s ease-out both; }
+    & .sheet-panel { animation: sheet-up .32s cubic-bezier(.2,.8,.2,1) both; }
+    & .assistant-sheet:not([hidden]) { animation: sheet-up .32s cubic-bezier(.2,.8,.2,1) both; }
+    @media (min-width: 640px) {
+      & .sheet-panel, & .assistant-sheet:not([hidden]) { animation: pop-in .22s ease-out both; }
+    }
+  }
+}
