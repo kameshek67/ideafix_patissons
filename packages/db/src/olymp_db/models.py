@@ -437,6 +437,28 @@ class ShareLink(Base):
     last_opened: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class DataReport(Base):
+    """Сообщение «Нашли ошибку в данных» (T-079). Не таблица сборки: переживает пересборку,
+    поэтому хранит названия на момент сообщения, а id — только для справки (без внешних ключей)."""
+
+    __tablename__ = "data_reports"
+    __table_args__ = (
+        CheckConstraint("kind IN ('program', 'olympiad')", name="kind"),
+        Index(None, "created_at"),
+    )
+
+    id: Mapped[int] = _pk()
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    kind: Mapped[str] = mapped_column(CText)
+    program_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    olympiad_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    university_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # что было на экране: вуз, направление, олимпиада — названия из базы, не от клиента
+    context: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    message: Mapped[str] = mapped_column(CText)
+    status: Mapped[str] = _text("new")
+
+
 # Таблицы с данными сборки: их очищает и заново наполняет olymp-ingest.
 DATA_TABLES = [
     "olympiad_tracks",

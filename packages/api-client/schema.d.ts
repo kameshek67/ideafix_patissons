@@ -327,6 +327,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Report
+         * @description Сообщение «Нашли ошибку в данных» к карточке направления или выдаче по олимпиаде.
+         *
+         *     Хранится текст и названия того, что было на экране; личные данные не нужны и не
+         *     запрашиваются. Выгрузка для команды — scripts/export_reports.py.
+         */
+        post: operations["create_report_v1_reports_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/search/by-olympiad": {
         parameters: {
             query?: never;
@@ -977,6 +1000,23 @@ export interface components {
             short_name: string;
         };
         /**
+         * OlympiadReportIn
+         * @description Ошибка в выдаче по олимпиаде в конкретном вузе.
+         */
+        OlympiadReportIn: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "olympiad";
+            /** Message */
+            message: string;
+            /** Olympiad Id */
+            olympiad_id: number;
+            /** University Id */
+            university_id?: number | null;
+        };
+        /**
          * OlympiadSearch
          * @description «Куда поступить с моей олимпиадой»: список вузов, а с university_id — строки вуза.
          */
@@ -1145,6 +1185,21 @@ export interface components {
             /** Source Url */
             source_url: string;
         };
+        /**
+         * ProgramReportIn
+         * @description Ошибка в карточке направления.
+         */
+        ProgramReportIn: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "program";
+            /** Message */
+            message: string;
+            /** Program Id */
+            program_id: number;
+        };
         /** ProgramResult */
         ProgramResult: {
             /** Benefits */
@@ -1220,6 +1275,11 @@ export interface components {
             team: number;
             /** Year */
             year: number;
+        };
+        /** ReportCreated */
+        ReportCreated: {
+            /** Id */
+            id: number;
         };
         /** SavedDiploma */
         SavedDiploma: {
@@ -2055,6 +2115,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Regions"];
+                };
+            };
+        };
+    };
+    create_report_v1_reports_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProgramReportIn"] | components["schemas"]["OlympiadReportIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportCreated"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

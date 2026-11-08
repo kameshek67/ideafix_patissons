@@ -53,4 +53,7 @@ class Settings(BaseSettings):
     # Сайт готовит ссылку заранее, когда экран открыт, поэтому лимит в минуту с запасом.
     share_rate_limit: int = 60
     share_daily_limit: int = 20000
+    # «Нашли ошибку в данных»: с одного посетителя в час и всего в сутки (T-079)
+    report_rate_limit: int = 5
+    report_daily_limit: int = 500
     share_ttl_days: int = 90
