@@ -82,7 +82,8 @@ services:
       OLYMP_LLM_MODEL: ${OLYMP_LLM_MODEL:-}
       OLYMP_LLM_FALLBACK_MODEL: ${OLYMP_LLM_FALLBACK_MODEL:-}
       OLYMP_LLM_DAILY_REQUESTS: ${OLYMP_LLM_DAILY_REQUESTS:-45}
-    ports: ["${OLYMP_API_PORT:-8000}:8000"]
+    # только с этой машины: снаружи сайт открывается через Caddy (профиль https) (T-065)
+    ports: ["127.0.0.1:${OLYMP_API_PORT:-8000}:8000"]
     depends_on:
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_started}
@@ -110,7 +111,7 @@ services:
       context: .
       dockerfile: infra/Dockerfile.web
       args: {OLYMP_API_URL: "http://api:8000"}
-    ports: ["${OLYMP_WEB_PORT:-8080}:3000"]
+    ports: ["127.0.0.1:${OLYMP_WEB_PORT:-8080}:3000"]
     depends_on:
       api: {condition: service_healthy}
     restart: unless-stopped
