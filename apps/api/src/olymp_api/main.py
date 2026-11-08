@@ -118,6 +118,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     from .modules.assistant.router import router as assistant_router
     from .modules.catalog.router import router as catalog_router
     from .modules.extra_points.router import router as extra_points_router
+    from .modules.reports.router import router as reports_router
     from .modules.search.router import router as search_router
     from .modules.sharing.router import router as sharing_router
 
@@ -126,6 +127,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         search_router,
         achievements_router,
         sharing_router,
+        reports_router,
         extra_points_router,
         assistant_router,
     ):

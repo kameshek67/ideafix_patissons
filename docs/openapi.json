@@ -1503,6 +1503,44 @@
         "title": "OlympiadRef",
         "type": "object"
       },
+      "OlympiadReportIn": {
+        "description": "Ошибка в выдаче по олимпиаде в конкретном вузе.",
+        "properties": {
+          "kind": {
+            "const": "olympiad",
+            "title": "Kind",
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 1000,
+            "minLength": 5,
+            "title": "Message",
+            "type": "string"
+          },
+          "olympiad_id": {
+            "title": "Olympiad Id",
+            "type": "integer"
+          },
+          "university_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "University Id"
+          }
+        },
+        "required": [
+          "kind",
+          "olympiad_id",
+          "message"
+        ],
+        "title": "OlympiadReportIn",
+        "type": "object"
+      },
       "OlympiadSearch": {
         "description": "«Куда поступить с моей олимпиадой»: список вузов, а с university_id — строки вуза.",
         "properties": {
@@ -1952,6 +1990,33 @@
         "title": "ProgramRef",
         "type": "object"
       },
+      "ProgramReportIn": {
+        "description": "Ошибка в карточке направления.",
+        "properties": {
+          "kind": {
+            "const": "program",
+            "title": "Kind",
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 1000,
+            "minLength": 5,
+            "title": "Message",
+            "type": "string"
+          },
+          "program_id": {
+            "title": "Program Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "kind",
+          "program_id",
+          "message"
+        ],
+        "title": "ProgramReportIn",
+        "type": "object"
+      },
       "ProgramResult": {
         "properties": {
           "benefits": {
@@ -2159,6 +2224,19 @@
           "team"
         ],
         "title": "Rejected",
+        "type": "object"
+      },
+      "ReportCreated": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "ReportCreated",
         "type": "object"
       },
       "SavedDiploma": {
@@ -3876,6 +3954,63 @@
         "summary": "Regions",
         "tags": [
           "catalog"
+        ]
+      }
+    },
+    "/v1/reports": {
+      "post": {
+        "description": "Сообщение «Нашли ошибку в данных» к карточке направления или выдаче по олимпиаде.\n\nХранится текст и названия того, что было на экране; личные данные не нужны и не\nзапрашиваются. Выгрузка для команды — scripts/export_reports.py.",
+        "operationId": "create_report_v1_reports_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "discriminator": {
+                  "mapping": {
+                    "olympiad": "#/components/schemas/OlympiadReportIn",
+                    "program": "#/components/schemas/ProgramReportIn"
+                  },
+                  "propertyName": "kind"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ProgramReportIn"
+                  },
+                  {
+                    "$ref": "#/components/schemas/OlympiadReportIn"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportCreated"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Report",
+        "tags": [
+          "reports"
         ]
       }
     },

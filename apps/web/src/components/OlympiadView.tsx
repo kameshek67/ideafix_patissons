@@ -9,6 +9,7 @@ import type { Column } from "@/lib/table";
 import { DataTable } from "./DataTable";
 import { IconChevronLeft, IconChevronRight } from "./icons";
 import { ShareButton } from "./ShareButton";
+import { ReportError } from "./ReportError";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
 import { badgeClass, Clamp2, DerivedMark, EmptyState } from "./ui";
 
@@ -387,6 +388,9 @@ export function UniversityBenefits({
         <h3 className="card-title mt-1">{u.name}</h3>
         {u.note ? <p className="mt-2 text-[12.5px] leading-snug meta-text">{u.note}</p> : null}
         <SourceBlock sources={universitySource(data, u)} />
+        {data.matched_olympiads[0] ? (
+          <ReportError target={{ kind: "olympiad", olympiad_id: data.matched_olympiads[0].id, university_id: u.id }} />
+        ) : null}
         <div className="mt-3">
           <DataTable
             id={`uni-${u.id}-${profileId || "all"}`}

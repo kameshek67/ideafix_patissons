@@ -10,6 +10,7 @@ import { IconSummaryChevron } from "./icons";
 import { ShareButton } from "./ShareButton";
 import { badgeClass, Clamp2, DerivedMark, EmptyState, TYPE_STYLE } from "./ui";
 import { conditionsLine } from "@/lib/conditions";
+import { ReportError } from "./ReportError";
 import { SourceBlock } from "./SourceBlock";
 
 interface ProgramRow {
@@ -144,6 +145,7 @@ export function ProgramView({ data, benefitType, goToOlympiad }: Props) {
         </div>
         {university.note ? <p className="mt-2 text-[12.5px] leading-snug meta-text">{university.note}</p> : null}
         <SourceBlock sources={data.sources} />
+        <ReportError target={{ kind: "program", program_id: program.id }} />
       </div>
 
       {visible.length ? (
