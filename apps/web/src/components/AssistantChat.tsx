@@ -64,20 +64,37 @@ export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity }
   const [copied, setCopied] = useState<number | null>(null);
   const abort = useRef<AbortController | null>(null);
   const bottom = useRef<HTMLDivElement>(null);
+  const log = useRef<HTMLDivElement>(null);
+  const input = useRef<HTMLTextAreaElement>(null);
+  // ученик внизу ленты: только тогда новый текст ответа прокручивает её сам
+  const stick = useRef(true);
 
   useEffect(() => setItems(loadHistory()), []);
   useEffect(() => {
     if (!busy) saveHistory(items);
   }, [items, busy]);
   useEffect(() => {
-    if (open) bottom.current?.scrollIntoView?.({ block: "end" });
+    if (open && stick.current) bottom.current?.scrollIntoView?.({ block: "end" });
   }, [open, items, status]);
   useEffect(() => () => abort.current?.abort(), []);
+  // поле ввода растёт с текстом (до max-height в стилях)
+  useEffect(() => {
+    const el = input.current;
+    if (!el) return;
+    el.style.height = "auto";
+    if (el.scrollHeight) el.style.height = `${el.scrollHeight}px`;
+  }, [text]);
 
-  async function send(question: string) {
+  function onScroll() {
+    const el = log.current;
+    if (el) stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+  }
+
+  async function send(question: string, base: ChatItem[] = items) {
     const content = question.trim();
     if (!content || busy) return;
-    const history: ChatItem[] = [...items, { role: "user", content }];
+    const history: ChatItem[] = [...base, { role: "user", content }];
+    stick.current = true;
     setItems([...history, { role: "assistant", content: "" }]);
     setText("");
     setConfirmClear(false);
@@ -107,9 +124,25 @@ export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity }
         patchLast((item) => ({ ...item, error: ERROR_TEXT[code] }));
       }
     } finally {
+      // остановленный до первого слова ответ — пустой пузырь, его не оставляем
+      setItems((list) => {
+        const last = list.at(-1);
+        return last?.role === "assistant" && !last.content && !last.error ? list.slice(0, -1) : list;
+      });
       setBusy(false);
       setStatus(null);
     }
+  }
+
+  function stop() {
+    abort.current?.abort();
+  }
+
+  /** Повторить вопрос, на который пришла ошибка: убираем вопрос и неудачный ответ и шлём снова. */
+  function retry(index: number) {
+    const question = items[index - 1];
+    if (busy || question?.role !== "user") return;
+    void send(question.content, items.slice(0, index - 1));
   }
 
   function clear() {
@@ -173,7 +206,7 @@ export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity }
         </button>
       </header>
 
-      <div className="assistant-log">
+      <div className="assistant-log" ref={log} onScroll={onScroll}>
         {items.length === 0 ? (
           <div className="assistant-empty">
             <p className="text-[15px]">Расскажи, чем увлекаешься, а я подберу олимпиады и вузы, где они дают льготы.</p>
@@ -196,9 +229,14 @@ export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity }
             <div key={index} className="assistant-answer">
               {item.content ? <div className="assistant-text">{plainText(item.content)}</div> : null}
               {item.error ? (
-                <p className="assistant-error" role="alert">
-                  {item.error}
-                </p>
+                <div className="assistant-error" role="alert">
+                  <p>{item.error}</p>
+                  {index === items.length - 1 && !busy ? (
+                    <button className="chip" type="button" onClick={() => retry(index)}>
+                      Повторить
+                    </button>
+                  ) : null}
+                </div>
               ) : null}
               {item.entities?.length ? (
                 <div className="card uni-list overflow-hidden assistant-entities">
@@ -263,6 +301,7 @@ export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity }
         <p className="assistant-note">Не пиши имя, телефон и номер школы: текст уходит внешнему сервису ИИ</p>
         <div className="assistant-input">
           <textarea
+            ref={input}
             aria-label="Сообщение помощнику"
             placeholder="Расскажи о своих увлечениях"
             rows={1}
@@ -272,9 +311,15 @@ export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity }
             onChange={(e) => setText(e.target.value)}
             onKeyDown={onKeyDown}
           />
-          <button className="btn-primary" type="submit" disabled={busy || !text.trim()} aria-label="Отправить">
-            ↑
-          </button>
+          {busy ? (
+            <button className="btn-primary" type="button" onClick={stop} aria-label="Остановить ответ">
+              ■
+            </button>
+          ) : (
+            <button className="btn-primary" type="submit" disabled={!text.trim()} aria-label="Отправить">
+              ↑
+            </button>
+          )}
         </div>
       </form>
     </div>
