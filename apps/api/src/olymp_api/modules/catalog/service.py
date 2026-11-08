@@ -88,14 +88,27 @@ async def regions(session: AsyncSession) -> dict[str, Any]:
     return {"items": sorted(groups.values(), key=lambda g: REGION_ORDER.get(g["name"], 9))}
 
 
+# Текстовые колонки в COLLATE "C" (models.CText): в ней ILIKE не складывает регистр кириллицы.
+# Сравниваем в сортировке базы по умолчанию (en_US.utf8 в образе Postgres).
+def ilike(column: str) -> str:
+    return f'{column} COLLATE "default" ILIKE :q'
+
+
+def contains(q: str) -> str:
+    """Шаблон ILIKE «где-то внутри»: % и _ из запроса ищутся как обычные символы."""
+    escaped = q.strip().replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    return f"%{escaped}%"
+
+
 async def universities(session: AsyncSession, region: str | None, q: str | None) -> dict[str, Any]:
     where, params = [], {}
     if region and region != "Все":
         where.append("u.region_group = :region")
         params["region"] = region
     if q:
-        where.append("(u.name LIKE :q OR u.short_name LIKE :q)")
-        params["q"] = f"%{q}%"
+        # без учёта регистра: «мгу» находит МГУ
+        where.append(f"({ilike('u.name')} OR {ilike('u.short_name')})")
+        params["q"] = contains(q)
     items = await fetch_all(
         session,
         f"""SELECT u.id, u.name, u.short_name, u.region, u.city, u.note, u.region_group,
@@ -120,8 +133,9 @@ async def programs(
         where.append("p.university_id = :university_id")
         params["university_id"] = university_id
     if q:
-        where.append("(p.faculty_or_direction LIKE :q OR p.profile_name LIKE :q OR p.code LIKE :q)")
-        params["q"] = f"%{q}%"
+        columns = ("p.faculty_or_direction", "p.profile_name", "p.code")
+        where.append("(" + " OR ".join(ilike(c) for c in columns) + ")")
+        params["q"] = contains(q)
     items = await fetch_all(
         session,
         f"""SELECT p.id, p.university_id, p.faculty_or_direction, p.profile_name, p.code,
