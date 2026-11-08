@@ -2,6 +2,7 @@
 
 from olymp_domain.interests import (
     display_name,
+    expand_keywords,
     is_list_profile,
     phrase_matches,
     query_words,
@@ -50,3 +51,12 @@ def test_junk_and_typo_profiles() -> None:
     assert not is_list_profile(legit)
     assert display_name("разработка мобильных предложений") == "разработка мобильных приложений"
     assert display_name("математика") == "математика"
+
+
+def test_interests_add_school_subject() -> None:
+    assert expand_keywords(["программирование"]) == ["программирование", "информатика"]
+    assert expand_keywords(["ИИ", "нейросети"]) == ["ИИ", "нейросети", "искусственный интеллект"]
+    assert expand_keywords(["собираю роботов"]) == ["собираю роботов", "робототехника"]
+    # «код» — только целым словом: «кодекс» и «декодер» не про программирование
+    assert expand_keywords(["кодекс"]) == ["кодекс"]
+    assert expand_keywords(["химия"]) == ["химия"]

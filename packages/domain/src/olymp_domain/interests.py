@@ -20,6 +20,16 @@ LIST_PROFILE_COMMAS = 6
 
 RE_WORD = re.compile(r"[^\W\d_]+")
 
+# увлечение -> школьный профиль РСОШ, который так называется в перечне: «программирование»
+# у большинства олимпиад — профиль «информатика», и без этого олимпиада ИТМО и ВсОШ
+# по информатике на «люблю программировать» не находились
+INTEREST_SUBJECTS: tuple[tuple[tuple[str, ...], str], ...] = (
+    (("программ", "кодинг", "код", "разработ", "алгоритм"), "информатика"),
+    (("нейросет", "ии", "машинн", "искусствен"), "искусственный интеллект"),
+    (("хакер", "кибер"), "информационная безопасность"),
+    (("робот",), "робототехника"),
+)
+
 
 def words_of(text: str) -> list[str]:
     """Слова длиннее двух букв в нижнем регистре, ё → е."""
@@ -29,6 +39,18 @@ def words_of(text: str) -> list[str]:
 def query_words(keyword: str) -> list[str]:
     """Значимые слова темы: без служебных и без «олимпиада», «профиль» и т. п."""
     return [w for w in words_of(keyword) if w not in STOP_WORDS and not w.startswith(STOP_STEMS)]
+
+
+def expand_keywords(keywords: list[str]) -> list[str]:
+    """Темы модели плюс школьные профили, которыми их называет перечень."""
+    out = list(keywords)
+    for keyword in keywords:
+        words = words_of(keyword) or [keyword.lower()]
+        for stems, subject in INTEREST_SUBJECTS:
+            hit = any(w == s or (len(s) > 3 and w.startswith(s)) for w in words for s in stems)
+            if hit and subject not in out:
+                out.append(subject)
+    return out
 
 
 def word_matches(query: str, word: str) -> bool:

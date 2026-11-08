@@ -4,13 +4,13 @@
 инструментов, оговорку о проверке условий дописывает тоже он: это не зависит от модели.
 """
 
+import re
 import time
 import uuid
 from collections.abc import AsyncIterator, Awaitable, Callable
 from typing import Any
 
 import structlog
-from olymp_domain import squash
 from olymp_domain.pii import mask_personal_data
 
 from olymp_api.llm import LLMError, LLMProvider, TextDelta, ToolCalls
@@ -50,21 +50,54 @@ def build_history(messages: list[ChatMessage], diplomas: list[str]) -> list[dict
     ]
 
 
-def mentioned(items: list[dict[str, Any]], answer: str, limit: int) -> list[dict[str, Any]]:
-    """Сначала то, что названо в ответе; если ничего не названо — первые из найденных.
+def words(value: str) -> str:
+    """Слова через пробел и с пробелами по краям: так ищутся целые слова, а не куски.
 
+    Склеенные строки давали ложные совпадения коротких названий («НТО» в «он то»).
+    """
+    return " " + " ".join(re.findall(r"[^\W_]+", value.lower().replace("ё", "е"))) + " "
+
+
+def acronym(value: str) -> str | None:
+    """«Московская олимпиада школьников» → «мош»: модель часто пишет сокращение."""
+    parts = [w for w in words(value).split() if len(w) > 2 and w.isalpha()]
+    return "".join(w[0] for w in parts) if len(parts) >= 3 else None
+
+
+def position(item: dict[str, Any], key: str) -> int | None:
+    """Где в ответе впервые названа карточка или источник; None — не названы."""
+    found: list[int] = []
+    for name in item["match"]:
+        if not name:
+            continue
+        for variant in (words(name), f" {acronym(name)} " if acronym(name) else None):
+            if variant and variant.strip() and (at := key.find(variant)) >= 0:
+                found.append(at)
+    return min(found) if found else None
+
+
+def mentioned(items: list[dict[str, Any]], answer: str, limit: int) -> list[dict[str, Any]]:
+    """Сначала то, что названо в ответе, в порядке упоминания; если ничего не названо — первые
+    из найденных.
+
+    У одной олимпиады бывает несколько профилей: остаётся тот, чей профиль (hint) тоже назван.
     Служебное поле match наружу не уходит, повторы убираются.
     """
-    key = squash(answer)
-    named = [i for i in items if any(m and squash(m) in key for m in i["match"])]
-    seen: set[tuple[Any, ...]] = set()
-    out: list[dict[str, Any]] = []
-    for item in named or items:
+    key = words(answer)
+    best: dict[tuple[Any, ...], tuple[tuple[int, int, int], dict[str, Any]]] = {}
+    for order, item in enumerate(items):
+        at = position(item, key)
+        hint = item.get("hint")
+        hint_named = bool(hint) and words(str(hint)) in key
+        rank = (0 if at is not None else 1, 0 if hint_named else 1, order)
         marker = (item.get("kind"), item.get("id"), item.get("url"))
-        if marker not in seen:
-            seen.add(marker)
-            out.append({k: v for k, v in item.items() if k != "match"})
-    return out[:limit]
+        if marker not in best or rank < best[marker][0]:
+            best[marker] = (rank, {**item, "_at": at})
+    chosen = [entry for _, entry in sorted(best.values(), key=lambda v: v[0][2])]
+    named = sorted((e for e in chosen if e["_at"] is not None), key=lambda e: e["_at"])
+    return [{k: v for k, v in e.items() if k not in {"match", "_at"}} for e in (named or chosen)][
+        :limit
+    ]
 
 
 async def conversation(

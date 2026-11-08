@@ -238,6 +238,35 @@ def test_mentioned_prefers_named_items() -> None:
     assert len(service.mentioned(items, "Ничего", 5)) == 2
 
 
+def test_mentioned_follows_answer_order() -> None:
+    def olympiad(id_: int, label: str, hint: str, *also: str) -> dict[str, Any]:
+        return {
+            "kind": "olympiad",
+            "id": id_,
+            "label": label,
+            "hint": hint,
+            "match": [label, *also],
+        }
+
+    items = [
+        olympiad(1, "Всесибирская олимпиада", "информатика"),
+        olympiad(2, "«Высшая проба»", "математика"),
+        olympiad(2, "«Высшая проба»", "промышленное программирование"),
+        olympiad(3, "НТО", "большие данные"),
+        olympiad(4, "Олимпиада школьников", "информатика", "Московская олимпиада школьников"),
+    ]
+    answer = "1. МОШ, информатика. 2. «Высшая проба», промышленное программирование. Ещё есть Всесибирская олимпиада."
+    named = service.mentioned(items, answer, 5)
+    # порядок — как в ответе, профиль — названный, сокращение МОШ узнаётся
+    assert [(e["id"], e["hint"]) for e in named] == [
+        (4, "информатика"),
+        (2, "промышленное программирование"),
+        (1, "информатика"),
+    ]
+    # короткое название не находится внутри других слов
+    assert [e["id"] for e in service.mentioned(items, "Он то знает", 5)] == [1, 2, 3, 4]
+
+
 # ---------------------------------------------------------------- на собранной базе
 
 
