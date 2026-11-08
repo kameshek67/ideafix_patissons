@@ -29,6 +29,48 @@ docker compose up --build -d
 Сайт — http://localhost:8080, API и Swagger — http://localhost:8000/docs. Первая сборка базы
 занимает около минуты (`docker compose logs -f migrate`).
 
+### Docker-образы
+
+Проект собирается в два образа: `infra/Dockerfile.api` (API, сборка базы, воркеры, бот) и
+`infra/Dockerfile.web` (сайт). Описание всех сервисов — `docker-compose.yml`.
+
+```bash
+# собрать образы
+docker build -f infra/Dockerfile.api -t olymp-api .
+docker build -f infra/Dockerfile.web -t olymp-web .
+# или все образы проекта сразу
+docker compose build
+
+# запустить по шагам: база → миграции и сборка данных из XLSX → API и сайт
+docker compose up -d postgres redis
+docker compose run --rm migrate
+docker compose up -d api web
+
+# остановить и удалить контейнеры (данные базы остаются в томе pgdata)
+docker compose down
+```
+
+### Пример запуска из командной строки
+
+```bash
+# пересобрать базу из data/Olimpiady_BVI_100ballov.xlsx и проверить качество данных
+docker compose run --rm migrate olymp-ingest
+docker compose run --rm migrate olymp-validate
+
+# найти вузы, где «Высшая проба» даёт льготы
+curl "http://localhost:8000/v1/search/by-olympiad?q=высшая%20проба"
+
+# олимпиады, которые дают льготы на направление (id — из /v1/programs)
+curl "http://localhost:8000/v1/search/by-program?program_id=130"
+```
+
+### Зависимости
+
+Полный список Python-библиотек с версиями — [requirements.txt](requirements.txt). В разработке
+зависимости ведёт `uv` (`pyproject.toml` + `uv.lock`); после их изменения `requirements.txt`
+обновляется командой `uv export --all-packages --no-hashes --no-emit-workspace -o requirements.txt`.
+Зависимости сайта — `package.json` и `package-lock.json`.
+
 Для разработки (нужны uv, Node.js 22+, Docker, just):
 
 ```bash
