@@ -1,7 +1,7 @@
 ---
 id: T-065
 title: Закрыть порты и починить лимит запросов (X-Forwarded-For)
-status: review
+status: done
 priority: P0
 area: infra
 estimate: S
@@ -9,7 +9,7 @@ spec: ""
 depends: []
 owner: 34elo
 branch: fix/T-065-rate-limit
-pr: ""
+pr: 60
 updated: 2026-11-08
 ---
 
@@ -24,7 +24,7 @@ updated: 2026-11-08
 ## Критерии приёмки
 - [x] Запрос с поддельным XFF не сбрасывает лимит (test_clients.py)
 - [x] Снаружи доступен только 80/443 в профиле https
-- [ ] `just check` зелёный
+- [x] `just check` зелёный (CI)
 
 ## Контекст
 По итогам ревью 2026-11-07.

@@ -1,7 +1,7 @@
 ---
 id: T-071
 title: "Усилить CI: тесты без БД падают, одна голова Alembic, сборка Docker"
-status: review
+status: done
 priority: P1
 area: infra
 estimate: M
@@ -9,7 +9,7 @@ spec: ""
 depends: []
 owner: 34elo
 branch: chore/T-071-ci-hardening
-pr: ""
+pr: 64
 updated: 2026-11-08
 ---
 
@@ -23,7 +23,7 @@ updated: 2026-11-08
 
 ## Критерии приёмки
 - [x] CI падает, если тесты с базой пропущены (проверено локально: 5 errors вместо 5 skipped)
-- [ ] `just check` зелёный
+- [x] `just check` зелёный (CI)
 
 ## Контекст
 По итогам ревью 2026-11-07.

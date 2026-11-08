@@ -1,7 +1,7 @@
 ---
 id: T-079
 title: Кнопка «Сообщить об ошибке в данных»
-status: review
+status: done
 priority: P1
 area: web
 estimate: M
@@ -9,8 +9,8 @@ spec: ""
 depends: []
 owner: 34elo
 branch: feat/T-079-report-error
-pr: ""
-updated: 2026-11-07
+pr: 66
+updated: 2026-11-08
 ---
 
 ## Цель
@@ -22,7 +22,7 @@ updated: 2026-11-07
 
 ## Критерии приёмки
 - [x] Сообщение сохраняется, лимит работает (test_reports.py, ReportError.test.tsx)
-- [ ] `just check` зелёный
+- [x] `just check` зелёный (CI)
 
 ## Контекст
 По итогам ревью 2026-11-07.

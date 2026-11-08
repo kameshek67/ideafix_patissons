@@ -1,7 +1,7 @@
 ---
 id: T-062
 title: Навигация navigate(intent) и «Назад» между вкладками
-status: review
+status: done
 priority: P0
 area: web
 estimate: M
@@ -9,7 +9,7 @@ spec: ""
 depends: []
 owner: 34elo
 branch: feat/T-062-navigation
-pr: ""
+pr: 61
 updated: 2026-11-08
 ---
 
@@ -24,7 +24,7 @@ updated: 2026-11-08
 ## Критерии приёмки
 - [x] Системная «назад» на Android возвращает на предыдущий экран, а не закрывает приложение (на сайте — через историю браузера; в MAX — BackButton)
 - [x] Есть тесты parseStartParam (T-013) и «Назад» (BackNavigation.test.tsx)
-- [ ] `just check` зелёный
+- [x] `just check` зелёный (CI)
 
 ## Контекст
 По итогам ревью 2026-11-07.

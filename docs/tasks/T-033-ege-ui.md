@@ -1,7 +1,7 @@
 ---
 id: T-033
 title: Блок «Мои баллы ЕГЭ» и статусы в «Дипломах»
-status: review
+status: done
 priority: P0
 area: web
 estimate: M
@@ -9,7 +9,7 @@ spec: docs/specs/F-03-ege-check.md
 depends: [T-032]
 owner: 34elo
 branch: feat/T-032-ege-api
-pr: ""
+pr: 68
 updated: 2026-11-08
 ---
 

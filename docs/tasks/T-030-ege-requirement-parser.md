@@ -1,7 +1,7 @@
 ---
 id: T-030
 title: "Разбор порогов ЕГЭ: parse_ege_requirement"
-status: review
+status: done
 priority: P0
 area: domain
 estimate: M
@@ -9,7 +9,7 @@ spec: docs/specs/F-03-ege-check.md
 depends: [T-073]
 owner: 34elo
 branch: feat/T-030-ege-parser
-pr: ""
+pr: 67
 updated: 2026-11-08
 ---
 
@@ -24,7 +24,7 @@ updated: 2026-11-08
 ## Критерии приёмки
 - [x] ≥ 95% непустых значений разобраны — 99,5%
 - [x] Неразобранные возвращают None без исключений
-- [ ] `just check` зелёный
+- [x] `just check` зелёный (CI)
 
 ## Контекст
 ТЗ: [F-03-ege-check.md](../specs/F-03-ege-check.md). packages/domain/src/olymp_domain/diplomas.py — похожий стиль разбора условий.

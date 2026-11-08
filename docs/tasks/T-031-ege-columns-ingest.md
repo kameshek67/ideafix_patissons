@@ -1,7 +1,7 @@
 ---
 id: T-031
 title: Колонки confirm_subjects / min_ege_score при сборке
-status: review
+status: done
 priority: P0
 area: workers
 estimate: S
@@ -9,7 +9,7 @@ spec: docs/specs/F-03-ege-check.md
 depends: [T-030]
 owner: 34elo
 branch: feat/T-032-ege-api
-pr: ""
+pr: 68
 updated: 2026-11-08
 ---
 

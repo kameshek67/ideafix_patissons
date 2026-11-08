@@ -1,7 +1,7 @@
 ---
 id: T-024
 title: Кнопка и шторка «Помощник» в интерфейсе
-status: review
+status: done
 priority: P0
 area: web
 estimate: L

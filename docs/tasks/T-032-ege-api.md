@@ -1,7 +1,7 @@
 ---
 id: T-032
 title: Параметр ege в /v1/achievements/match и хранение баллов в профиле
-status: review
+status: done
 priority: P0
 area: api
 estimate: M
@@ -9,7 +9,7 @@ spec: docs/specs/F-03-ege-check.md
 depends: [T-031]
 owner: 34elo
 branch: feat/T-032-ege-api
-pr: ""
+pr: 68
 updated: 2026-11-08
 ---
 

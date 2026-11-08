@@ -1,7 +1,7 @@
 ---
 id: T-075
 title: "Мелкие баги API: регистр поиска направлений, N+1, гонка сохранения дипломов"
-status: review
+status: done
 priority: P2
 area: api
 estimate: M
@@ -9,7 +9,7 @@ spec: ""
 depends: []
 owner: 34elo
 branch: fix/T-075-search-case
-pr: 42, 50
+pr: 42, 50, 62
 updated: 2026-11-08
 ---
 

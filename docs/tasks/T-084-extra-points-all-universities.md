@@ -1,7 +1,7 @@
 ---
 id: T-084
-title: "Баллы за ИД для остальных вузов базы"
-status: review
+title: Баллы за ИД для остальных вузов базы
+status: done
 priority: P1
 area: data
 estimate: L
