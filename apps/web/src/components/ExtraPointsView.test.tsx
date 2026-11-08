@@ -40,8 +40,10 @@ beforeEach(() => {
       const req = typeof input === "string" ? new Request(new URL(input, "http://localhost"), init) : input;
       const url = new URL(req.url);
       let body: unknown;
-      if (url.pathname === "/api/v1/extra-points/universities") {
-        body = { admission_year: 2026, items: [{ id: 1, name: "Вуз", short_name: "МИФИ", rules: 2 }] };
+      if (url.pathname === "/api/v1/universities") {
+        body = { items: [{ id: 2, name: "Сибирский университет" }, { id: 1, name: "НИЯУ МИФИ" }] };
+      } else if (url.pathname === "/api/v1/extra-points/universities") {
+        body = { admission_year: 2026, items: [{ id: 1, name: "НИЯУ МИФИ", short_name: "МИФИ", rules: 2 }] };
       } else if (url.pathname === "/api/v1/extra-points/universities/1") {
         body = { university_id: 1, admission_year: 2026, max_total: 10, max_total_source: source, rules: [honors, gto] };
       } else if (url.pathname === "/api/v1/extra-points/score") {
@@ -68,10 +70,39 @@ function renderView() {
   );
 }
 
+async function pickUniversity(name: string) {
+  fireEvent.click(await screen.findByLabelText("Вуз для подсчёта баллов"));
+  await waitFor(() =>
+    expect(document.querySelector("#combo-points-university .combo-list")?.textContent).toContain(name),
+  );
+  const item = [...document.querySelectorAll("#combo-points-university .combo-item")].find((el) =>
+    el.textContent?.includes(name),
+  );
+  fireEvent.click(item!);
+}
+
 describe("вкладка «Баллы»", () => {
+  it("в выборе все вузы базы: сначала те, где баллы разобраны", async () => {
+    renderView();
+    fireEvent.click(await screen.findByLabelText("Вуз для подсчёта баллов"));
+    await waitFor(() => expect(document.querySelectorAll("#combo-points-university .combo-item").length).toBe(2));
+    const items = [...document.querySelectorAll("#combo-points-university .combo-item")].map((el) => el.textContent);
+    expect(items[0]).toContain("НИЯУ МИФИ");
+    expect(items[0]).toContain("2 правила");
+    expect(items[1]).toContain("баллы ещё не разобраны");
+  });
+
+  it("вуз без разобранных правил: сказано, что данных нет, и где посчитать можно", async () => {
+    renderView();
+    await pickUniversity("Сибирский университет");
+    expect(await screen.findByText("Баллы этого вуза ещё не разобраны")).toBeTruthy();
+    expect(screen.getByText(/Посчитать уже можно для: НИЯУ МИФИ/)).toBeTruthy();
+    expect(screen.queryAllByRole("checkbox")).toHaveLength(0);
+  });
+
   it("без отмеченных достижений показывает 0 баллов и лимит вуза", async () => {
     renderView();
-    fireEvent.click(await screen.findByRole("button", { name: "МИФИ" }));
+    await pickUniversity("НИЯУ МИФИ");
     await screen.findByText("Аттестат с отличием");
     await waitFor(() => expect(screen.getByText(/из 10 возможных/)).toBeTruthy());
     expect(screen.getByText("0 баллов", { exact: false })).toBeTruthy();
@@ -79,7 +110,7 @@ describe("вкладка «Баллы»", () => {
 
   it("отметка ГТО просит год, а с годом добавляет баллы и ссылку на документ", async () => {
     renderView();
-    fireEvent.click(await screen.findByRole("button", { name: "МИФИ" }));
+    await pickUniversity("НИЯУ МИФИ");
     const box = (await screen.findAllByRole("checkbox"))[1]!; // ГТО: правила идут по убыванию баллов
     fireEvent.click(box);
     await waitFor(() => expect(screen.getByText(/укажи год получения/)).toBeTruthy());
@@ -94,7 +125,7 @@ describe("вкладка «Баллы»", () => {
 
   it("достижение передаётся по id правила, чтобы не засчитать соседние", async () => {
     renderView();
-    fireEvent.click(await screen.findByRole("button", { name: "МИФИ" }));
+    await pickUniversity("НИЯУ МИФИ");
     fireEvent.click((await screen.findAllByRole("checkbox"))[0]!);
     await waitFor(() => expect(bodies.length).toBeGreaterThan(0));
     await waitFor(() => {
