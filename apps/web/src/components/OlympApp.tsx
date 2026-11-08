@@ -36,7 +36,7 @@ import { TablesContext, useTablesStore } from "./DataTable";
 import { DiplomaSheet } from "./DiplomaSheet";
 import { DiplomasView } from "./DiplomasView";
 import { ExtraPointsView } from "./ExtraPointsView";
-import { IconClose, IconHeroArrow, IconMore, IconSearch } from "./icons";
+import { IconHeroArrow, IconMore, IconSearch } from "./icons";
 import { useMax, useMaxBackButton } from "./MaxProvider";
 import { OlympiadResults, UniversityBenefits } from "./OlympiadView";
 import { Onboarding, type OnboardingExit } from "./Onboarding";
@@ -82,6 +82,8 @@ interface SearchState {
   olympiad: OlympiadRef | null;
   profileId: number | null;
   benefitType: string;
+  /** группа регионов вузов; «Все» — без фильтра (FR-2) */
+  region: string;
 }
 
 const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
@@ -93,6 +95,7 @@ function searchQuery(s: SearchState, extra: Partial<OlympiadQuery> = {}): Olympi
     ...(s.olympiad?.id ? { olympiad_id: s.olympiad.id } : {}),
     ...(s.profileId ? { profile_id: s.profileId } : {}),
     ...(s.benefitType !== "Все" ? { benefit_type: s.benefitType } : {}),
+    ...(s.region !== "Все" ? { region: s.region } : {}),
     ...extra,
   };
 }
@@ -259,15 +262,6 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     scrollTop();
   }
 
-  function resetUniversityTab() {
-    programSeq.current++;
-    setUniversity(null);
-    setUniversityLabel(null);
-    setProgramLabel(null);
-    setProgramDisabled(true);
-    setProgramState({ kind: "start", text: UNI_START });
-  }
-
   // ---------------------------------------------------------------- вкладка «Олимпиады»
   const [input, setInput] = useState("");
   const [search, setSearch] = useState<SearchState>({
@@ -275,6 +269,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     olympiad: null,
     profileId: null,
     benefitType: "Все",
+    region: "Все",
   });
   const [olympState, setOlympState] = useState<OlympState>({ kind: "start" });
   const [listData, setListData] = useState<OlympiadSearch | null>(null);
@@ -348,7 +343,14 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     setTab("olymp");
     setInput(name);
     hideSuggest();
-    void runOlympiadSearch({ query: name, olympiad: { id, short_name: name }, profileId: null, benefitType });
+    // регион — выбор ученика, а не олимпиады: при переходе к другой олимпиаде он сохраняется
+    void runOlympiadSearch({
+      query: name,
+      olympiad: { id, short_name: name },
+      profileId: null,
+      benefitType,
+      region: search.region,
+    });
     scrollTop();
   }
 
@@ -378,15 +380,6 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     scrollTop();
   }
 
-  function resetOlympiadTab() {
-    olympSeq.current++;
-    setSearch({ query: "", olympiad: null, profileId: null, benefitType });
-    setListData(null);
-    setInput("");
-    hideSuggest();
-    setOlympState({ kind: "start" });
-  }
-
   // клик мимо поля и подсказок закрывает подсказки
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -402,7 +395,6 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   const configQ = useQuery({ queryKey: ["max-config"], queryFn: getMaxConfig, staleTime: Infinity });
   const campaign = configQ.data ?? FALLBACK_CAMPAIGN;
   const [sheet, setSheet] = useState<SheetState | null>(null);
-  const [diplomaReset, setDiplomaReset] = useState(0);
   // дипломы из ссылки «Поделиться»: показываются только для просмотра, в свой список
   // (и в localStorage или профиль MAX) не попадают
   const [sharedDiplomas, setSharedDiplomas] = useState<DiplomaEntry[] | null>(null);
@@ -498,7 +490,14 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     setTab("olymp");
     setInput(olympiad.short_name);
     hideSuggest();
-    const state: SearchState = { query: olympiad.short_name, olympiad, profileId, benefitType: type };
+    // выдача по ссылке «Поделиться» показывается как у отправителя — без фильтра по региону
+    const state: SearchState = {
+      query: olympiad.short_name,
+      olympiad,
+      profileId,
+      benefitType: type,
+      region: "Все",
+    };
     setSearch(state);
     setOlympState({ kind: "loading" });
     const seq = ++olympSeq.current;
@@ -607,6 +606,9 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
             profileId={search.profileId}
             benefitType={search.benefitType}
             onProfile={(profileId) => void runOlympiadSearch({ ...search, profileId, benefitType })}
+            regions={universitiesQ.data?.regions ?? []}
+            region={search.region}
+            onRegion={(region) => void runOlympiadSearch({ ...search, region, benefitType })}
             onUniversity={(u) => void pickResultUniversity(u)}
           />
         );
@@ -630,27 +632,8 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
       {/* ШАПКА */}
       <header className="app-header">
         <div className="mx-auto max-w-5xl h-14 px-2 flex items-center">
-          <button
-            id="reset-btn"
-            className="icon-btn"
-            type="button"
-            aria-label="Сбросить выбор"
-            title="Сбросить выбор"
-            onClick={() => {
-              // крестик в шапке макета — сброс выбора на обеих вкладках
-              resetUniversityTab();
-              resetOlympiadTab();
-              resetProgramTables();
-              resetOlympTables();
-              // дипломы сброс не удаляет — только возвращает к списку вузов
-              resetDiplomaTables();
-              setDiplomaReset((n) => n + 1);
-              if (sharedDiplomas) closeShared();
-              scrollTop();
-            }}
-          >
-            <IconClose />
-          </button>
+          {/* место под кнопку слева, чтобы название было по центру */}
+          <span className="w-10 shrink-0" aria-hidden="true" />
           <div className="flex-1 text-center text-[17px] font-medium">Олимп</div>
           <button
             id="about-btn"
@@ -835,7 +818,6 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
                 storage="device"
                 sync="idle"
                 benefitType={benefitType}
-                resetSignal={diplomaReset}
                 onAdd={closeShared}
                 onEdit={() => undefined}
                 onRemove={() => undefined}
@@ -853,7 +835,6 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
                 storage={diplomas.storage}
                 sync={diplomas.sync}
                 benefitType={benefitType}
-                resetSignal={diplomaReset}
                 onAdd={() => setSheet({ index: null, olympiadId: null })}
                 onEdit={(index: number, result: DiplomaResult | undefined) =>
                   setSheet({ index, olympiadId: result?.olympiad?.id ?? null })
