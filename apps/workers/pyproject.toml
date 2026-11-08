@@ -11,6 +11,9 @@ dependencies = [
   "psycopg[binary]>=3.2",
   "dramatiq[rabbitmq]>=1.17",
   "structlog>=24.4",
+  "olymp-llm",
+  "pdfplumber>=0.11",
+  "httpx>=0.27",
 ]
 
 [project.scripts]
@@ -20,6 +23,7 @@ olymp-refresh-sources = "olymp_workers.refresh_sources:main"
 olymp-validate = "olymp_workers.validate:main"
 olymp-max-bot = "olymp_workers.max_bot:main"
 olymp-ai-cards = "olymp_workers.ai_cards:main"
+olymp-ai-verify = "olymp_workers.ai.verify:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -27,3 +31,4 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/olymp_workers"]
+
