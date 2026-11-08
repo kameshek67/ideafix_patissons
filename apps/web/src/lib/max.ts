@@ -59,7 +59,7 @@ export const MAX_BRIDGE_EVENT = "olymp:max-bridge";
    а Bridge сохраняет их в sessionStorage — так он работает и после перезагрузки страницы. */
 export const MAX_BRIDGE_LOADER = `(function(){try{var h=location.hash||"";
 if(h.indexOf("WebAppData=")<0&&!sessionStorage.getItem("WebAppData"))return;
-window.__olympMax="loading";var s=document.createElement("script");s.src=${JSON.stringify(MAX_BRIDGE_URL)};
+document.documentElement.setAttribute("data-max-boot","");window.__olympMax="loading";var s=document.createElement("script");s.src=${JSON.stringify(MAX_BRIDGE_URL)};
 s.onload=s.onerror=function(){window.__olympMax="done";window.dispatchEvent(new Event(${JSON.stringify(MAX_BRIDGE_EVENT)}));};
 document.head.appendChild(s);}catch(e){}})();`;
 

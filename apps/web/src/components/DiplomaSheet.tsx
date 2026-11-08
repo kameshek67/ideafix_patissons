@@ -159,8 +159,8 @@ export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSav
 
   return (
     <div id="diploma-sheet" className="fixed inset-0 z-40" role="dialog" aria-modal="true" aria-labelledby="diploma-sheet-title">
-      <div className="absolute inset-0 bg-[#2A0038]/40 backdrop-blur-[2px]" onClick={close} />
-      <div className="absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:h-fit sm:max-w-xl bg-white rounded-t-[30px] sm:rounded-[30px] p-5 pb-0 max-h-[90vh] overflow-y-auto overscroll-contain">
+      <div className="sheet-backdrop absolute inset-0 bg-[#2A0038]/40 backdrop-blur-[2px]" onClick={close} />
+      <div className="sheet-panel absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:h-fit sm:max-w-xl bg-white rounded-t-[30px] sm:rounded-[30px] p-5 pb-0 max-h-[90vh] overflow-y-auto overscroll-contain">
         <div className="sheet-handle sm:hidden" />
         <div className="flex items-center justify-between mb-3">
           <h2 id="diploma-sheet-title" className="text-[20px] font-medium">
