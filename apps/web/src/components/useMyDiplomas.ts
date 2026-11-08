@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getMaxConfig, getMyDiplomas, putMyDiplomas } from "@/lib/api";
 import { type DiplomaEntry, loadLocalDiplomas, saveLocalDiplomas } from "@/lib/diplomas";
+import { cleanEge, type EgeScores, hasEge, loadLocalEge, NO_EGE, saveLocalEge } from "@/lib/ege";
 import { useMax } from "./MaxProvider";
 
 /** где живут дипломы: на этом устройстве или в профиле пользователя MAX (на сервере) */
@@ -15,6 +16,8 @@ export function useMyDiplomas() {
   const app = useMax();
   const initData = app?.initData ?? null;
   const [entries, setEntries] = useState<DiplomaEntry[]>([]);
+  const [ege, setEge] = useState<EgeScores>(NO_EGE);
+  const currentEge = useRef<EgeScores>(NO_EGE);
   const [loaded, setLoaded] = useState(false);
   const [storage, setStorage] = useState<DiplomaStorage>("device");
   const [sync, setSync] = useState<SyncState>("idle");
@@ -29,6 +32,8 @@ export function useMyDiplomas() {
     const local = loadLocalDiplomas();
     current.current = local;
     setEntries(local);
+    currentEge.current = loadLocalEge();
+    setEge(currentEge.current);
     setLoaded(true);
   }, []);
 
@@ -40,7 +45,7 @@ export function useMyDiplomas() {
       pending.current = null;
       setSync("saving");
       try {
-        await putMyDiplomas(initData, specs);
+        await putMyDiplomas(initData, specs, currentEge.current);
         setSync(pending.current ? "saving" : "saved");
       } catch {
         setSync("error");
@@ -63,7 +68,11 @@ export function useMyDiplomas() {
         if (!alive) return;
         server.current = true;
         setStorage("max");
-        if (dirty.current || (!mine.diplomas.length && current.current.length)) {
+        const serverEge = cleanEge({ scores: mine.ege, mock: mine.ege_is_mock });
+        // на устройстве есть дипломы или баллы, а в профиле MAX ещё нет — отправляем свои
+        const localOnly =
+          (!mine.diplomas.length && current.current.length > 0) || (!hasEge(serverEge) && hasEge(currentEge.current));
+        if (dirty.current || localOnly) {
           // первый запуск в MAX с дипломами на устройстве или правки во время загрузки
           pending.current = current.current.map((d) => d.spec);
           void flush();
@@ -77,6 +86,9 @@ export function useMyDiplomas() {
         current.current = list;
         setEntries(list);
         saveLocalDiplomas(list);
+        currentEge.current = serverEge;
+        setEge(serverEge);
+        saveLocalEge(serverEge);
         setSync("saved");
       } catch {
         if (alive) setSync("error");
@@ -99,5 +111,17 @@ export function useMyDiplomas() {
     [flush],
   );
 
-  return { entries, loaded, storage, sync, update };
+  const updateEge = useCallback(
+    (next: EgeScores) => {
+      dirty.current = true;
+      currentEge.current = next;
+      setEge(next);
+      saveLocalEge(next);
+      pending.current = current.current.map((d) => d.spec);
+      void flush();
+    },
+    [flush],
+  );
+
+  return { entries, ege, loaded, storage, sync, update, updateEge };
 }

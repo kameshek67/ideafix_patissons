@@ -237,7 +237,8 @@ export interface paths {
         get: operations["my_diplomas_v1_me_diplomas_get"];
         /**
          * Save My Diplomas
-         * @description Сохраняет список дипломов пользователя MAX целиком.
+         * @description Сохраняет список дипломов пользователя MAX целиком; баллы ЕГЭ — если переданы
+         *     (без поля ege сохранённые баллы не меняются).
          */
         put: operations["save_my_diplomas_v1_me_diplomas_put"];
         post?: never;
@@ -495,6 +496,15 @@ export interface components {
             benefit: components["schemas"]["Benefit"];
             /** Diplomas */
             diplomas: number[];
+            /** Ege Gap */
+            ege_gap: number | null;
+            /** Ege Status */
+            ege_status: ("confirmed" | "short" | "missing_score" | "no_threshold") | null;
+            /**
+             * Ege Subjects
+             * @default []
+             */
+            ege_subjects: string[];
             /** Fit */
             fit: string;
             program: components["schemas"]["AchievementProgram"];
@@ -505,6 +515,8 @@ export interface components {
             bvi: number;
             /** Check */
             check: number;
+            /** Ege Confirmed */
+            ege_confirmed: number | null;
             /** Other */
             other: number;
             /** Programs */
@@ -522,6 +534,7 @@ export interface components {
             campaign_year: number;
             /** Diplomas */
             diplomas: components["schemas"]["DiplomaResult"][];
+            ege: components["schemas"]["EgeSummary"] | null;
             rejected: components["schemas"]["Rejected"];
             /** Results */
             results: components["schemas"]["AchievementUniversity"][];
@@ -793,6 +806,22 @@ export interface components {
              */
             kind: "diplomas";
         };
+        /**
+         * EgeSummary
+         * @description Подтверждение баллами ЕГЭ (только если баллы переданы, F-03).
+         */
+        EgeSummary: {
+            /** Close Universities */
+            close_universities: number;
+            /** Confirmed Programs */
+            confirmed_programs: number;
+            /** Confirmed Universities */
+            confirmed_universities: number;
+            /** Statuses */
+            statuses: {
+                [key: string]: number;
+            };
+        };
         /** ExtraRule */
         ExtraRule: {
             /** Exclusive Group */
@@ -930,6 +959,18 @@ export interface components {
         MyDiplomas: {
             /** Diplomas */
             diplomas: components["schemas"]["SavedDiploma"][];
+            /**
+             * Ege
+             * @default {}
+             */
+            ege: {
+                [key: string]: number;
+            };
+            /**
+             * Ege Is Mock
+             * @default false
+             */
+            ege_is_mock: boolean;
             user: components["schemas"]["MaxProfile"];
         };
         /** MyDiplomasUpdate */
@@ -939,6 +980,15 @@ export interface components {
              * @description Строки дипломов, например «высшаяпроба.математика.w.11.2025»
              */
             diplomas: string[];
+            /** Ege */
+            ege?: {
+                [key: string]: number;
+            } | null;
+            /**
+             * Ege Is Mock
+             * @default false
+             */
+            ege_is_mock: boolean;
         };
         /** Note */
         Note: {
@@ -1688,6 +1738,8 @@ export interface operations {
                 diploma: string[];
                 benefit_type?: string | null;
                 university_id?: number | null;
+                /** @description Баллы ЕГЭ «предмет:балл», повторяемый: ege=inf:82&ege=math:90. Предметы: rus, math, inf, phys, chem, bio, soc, hist, lit, foreign, geo. С баллами у строк есть статус подтверждения льготы, в итогах — сводка ege. */
+                ege?: string[];
             };
             header?: never;
             path?: never;

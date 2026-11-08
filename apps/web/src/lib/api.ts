@@ -1,4 +1,5 @@
 import { apiClient, type Schemas } from "@olymp/api-client";
+import type { EgeScores } from "./ege";
 
 export type UniversityItem = Schemas["UniversityItem"];
 export type ProgramItem = Schemas["ProgramItem"];
@@ -91,6 +92,8 @@ export const getDiplomaForm = (olympiadId: number) =>
 export interface AchievementsQuery {
   benefit_type?: string;
   university_id?: number;
+  /** баллы ЕГЭ «предмет:балл» (F-03) */
+  ege?: string[];
 }
 
 export const getAchievements = (diplomas: string[], query: AchievementsQuery = {}) =>
@@ -124,8 +127,14 @@ const maxHeaders = (initData: string) => ({ "X-Max-Init-Data": initData });
 export const getMyDiplomas = (initData: string) =>
   unwrap(api.GET("/v1/me/diplomas", { headers: maxHeaders(initData) }));
 
-export const putMyDiplomas = (initData: string, diplomas: string[]) =>
-  unwrap(api.PUT("/v1/me/diplomas", { body: { diplomas }, headers: maxHeaders(initData) }));
+export const putMyDiplomas = (initData: string, diplomas: string[], ege?: EgeScores) =>
+  unwrap(
+    api.PUT("/v1/me/diplomas", {
+      // без ege сервер баллы не трогает (ege_is_mock тогда не читается)
+      body: { diplomas, ege_is_mock: ege?.mock ?? false, ...(ege ? { ege: ege.scores } : {}) },
+      headers: maxHeaders(initData),
+    }),
+  );
 
 // «Поделиться» (F-01): снимок экрана по id текущей сборки и открытие ссылки по токену
 export type ShareRequest = Schemas["ProgramShareIn"] | Schemas["OlympiadShareIn"] | Schemas["DiplomasShareIn"];
