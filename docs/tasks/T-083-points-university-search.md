@@ -9,7 +9,7 @@ spec: ""
 depends: []
 owner: Raytist
 branch: feat/T-083-points-university-search
-pr: null
+pr: 35
 updated: 2026-11-08
 ---
 
