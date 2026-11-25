@@ -12,6 +12,10 @@
 #   docker compose --profile tunnel up --build -d   # временный адрес https://….trycloudflare.com
 #   docker compose --profile https up --build -d    # свой сервер и домен (OLYMP_DOMAIN в .env)
 # Подробно — README, раздел «Мини-приложение в MAX».
+#
+# Фоновые задачи (rabbitmq и worker) по умолчанию не запускаются: задачи ставят вручную,
+# а на сервере на 2 ГБ они только занимают память. Включить: --profile worker.
+# mem_limit у основных сервисов рассчитан на сервер с 2 ГБ, где ещё работает VPN.
 name: olymp-app
 
 x-python: &python
@@ -31,10 +35,12 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    mem_limit: 512m
     restart: unless-stopped
 
   redis:
     image: redis:7-alpine
+    mem_limit: 128m
     restart: unless-stopped
 
   rabbitmq:
@@ -47,6 +53,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    profiles: [worker]
     restart: unless-stopped
 
   # миграции + сборка базы, если её нет или изменились данные/код разбора + баллы за достижения из data/*.csv (при каждом
@@ -87,9 +94,11 @@ services:
     depends_on:
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_started}
+    mem_limit: 384m
     restart: unless-stopped
 
-  # фоновые задачи (Dramatiq): обход сайтов вузов и пересборка базы
+  # фоновые задачи (Dramatiq): обход сайтов вузов и пересборка базы; по умолчанию выключены
+  #   docker compose --profile worker up -d worker
   #   docker compose exec worker python -m olymp_workers.tasks refresh-sources
   worker:
     <<: *python
@@ -104,6 +113,7 @@ services:
       migrate: {condition: service_completed_successfully}
       rabbitmq: {condition: service_healthy}
     healthcheck: {disable: true}
+    profiles: [worker]
     restart: unless-stopped
 
   web:
@@ -114,6 +124,7 @@ services:
     ports: ["127.0.0.1:${OLYMP_WEB_PORT:-8080}:3000"]
     depends_on:
       api: {condition: service_healthy}
+    mem_limit: 384m
     restart: unless-stopped
 
   # ---------------------------------------------------------------- HTTPS для MAX
@@ -157,6 +168,7 @@ services:
       OLYMP_SITE_URL: ${OLYMP_SITE_URL:-}
     volumes: [./infra/certs:/certs:ro]
     healthcheck: {disable: true}
+    mem_limit: 128m
     profiles: [bot]
     restart: unless-stopped
 
