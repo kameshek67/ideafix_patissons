@@ -46,6 +46,20 @@ RE_TAG = re.compile(r"<[^>]+>")
 RE_DOC = re.compile(r"\.(pdf|docx?|xlsx?)($|[?#])", re.IGNORECASE)
 # ВШЭ раздаёт приложения без расширения — по адресу вида /mirror/pubs/share/123
 RE_DOC_EXTRA = re.compile(r"/pubs/share/\d+", re.IGNORECASE)
+# списки поступающих, рейтинги и приказы о зачислении — в них фамилии живых людей,
+# в справочник им не место (в кэше, лежащем в публичном репозитории, тем более)
+RE_PERSONAL_LIST = re.compile(
+    r"спис(?:ок|к\w*)\s+(?:\w+\s+)?(?:победител|призер|подавш|поступающ|зачисл|абитуриент|рекомендован)"
+    r"|подавш\w+\s+документ"
+    r"|конкурсн\w+\s+спис(?:ок|к)"
+    r"|рейтинг\w*\s+спис(?:ок|к)"
+    r"|рейтинг\w*\s+(?:поступающ|абитуриент)"
+    r"|приказ\w*\s+(?:\S+\s+){0,4}?о\s+зачисл"
+    r"|приказ\w*\s+(?:\S+\s+){0,4}?о\s+рекомендаци"
+    r"|(?<![a-z])(?:spisok|spiski|spisky|reiting|rating|ranzh|zachisl)",
+    re.IGNORECASE,
+)
+RE_RANKING_RULE = re.compile(r"ранжировани\w*\s+списк\w*", re.IGNORECASE)
 
 # проверка TLS с сертификатом Минцифры; --insecure заменяет контекст на непроверяющий
 SSL_CTX = web_context()
@@ -70,6 +84,14 @@ def fetch(url: str, timeout: int = 30) -> tuple[object, str, str, str]:
     return last, "", "", url
 
 
+def is_personal_list(title: str, url: str) -> bool:
+    """Список поступающих, рейтинг или приказ о зачислении: персональные данные."""
+    haystack = f"{title} {up.unquote(url)}".replace("_", " ").replace("ё", "е").replace("Ё", "Е")
+    # «приоритетность испытаний при ранжировании списков поступающих» — это правила, не список
+    haystack = RE_RANKING_RULE.sub(" ", haystack)
+    return bool(RE_PERSONAL_LIST.search(haystack))
+
+
 def documents_on_page(html: str, base_url: str) -> list[tuple[str, str]]:
     """Ссылки на файлы, подписи которых похожи на документы об олимпиадах и приёме."""
     found: dict[str, str] = {}
@@ -80,6 +102,8 @@ def documents_on_page(html: str, base_url: str) -> list[tuple[str, str]]:
         if not is_web_url(url):
             continue
         if not (RE_DOC.search(url) or RE_DOC_EXTRA.search(url)):
+            continue
+        if is_personal_list(label, url):
             continue
         haystack = (label + " " + up.unquote(url)).lower().replace("ё", "е")
         if not any(word.replace("ё", "е") in haystack for word in DOCUMENT_KEYWORDS):
