@@ -12,6 +12,7 @@ import argparse
 import csv
 import json
 import sys
+from typing import TextIO
 
 import psycopg
 from olymp_db.session import database_url, psycopg_dsn
@@ -29,6 +30,49 @@ COLUMNS = [
 ]
 
 
+# Excel и LibreOffice считают формулой любую ячейку, начинающуюся с этих знаков
+FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
+
+
+def safe_cell(value: object) -> object:
+    """Текст, который начинается как формула, получает впереди апостроф: в таблице он виден как текст."""
+    if isinstance(value, str) and value.startswith(FORMULA_PREFIXES):
+        return "'" + value
+    return value
+
+
+def export(conn: psycopg.Connection, out: TextIO, *, include_all: bool, mark_seen: bool) -> int:
+    """Пишет CSV в out, возвращает число выгруженных сообщений."""
+    where = "" if include_all else "WHERE status = 'new'"
+    rows = conn.execute(
+        f"SELECT id, created_at, kind, context, message, status FROM data_reports {where} ORDER BY id"  # noqa: S608
+    ).fetchall()
+    writer = csv.writer(out)
+    writer.writerow(COLUMNS)
+    for report_id, created_at, kind, context, message, status in rows:
+        context = context if isinstance(context, dict) else json.loads(context)
+        cells = [
+            report_id,
+            created_at.isoformat(timespec="minutes"),
+            kind,
+            context.get("university", ""),
+            context.get("program", ""),
+            context.get("code", ""),
+            context.get("olympiad", ""),
+            message,
+            status,
+        ]
+        writer.writerow([safe_cell(cell) for cell in cells])
+    if mark_seen and rows:
+        # только выгруженные id: сообщения, пришедшие во время выгрузки, остаются новыми
+        conn.execute(
+            "UPDATE data_reports SET status = 'seen' WHERE status = 'new' AND id = ANY(%s)",
+            ([row[0] for row in rows],),
+        )
+        conn.commit()
+    return len(rows)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--all", action="store_true", help="все сообщения, а не только новые")
@@ -36,32 +80,9 @@ def main() -> int:
         "--mark-seen", action="store_true", help="отметить выгруженные новые как seen"
     )
     args = parser.parse_args()
-    where = "" if args.all else "WHERE status = 'new'"
     with psycopg.connect(psycopg_dsn(database_url())) as conn:
-        rows = conn.execute(
-            f"SELECT id, created_at, kind, context, message, status FROM data_reports {where} ORDER BY id"  # noqa: S608
-        ).fetchall()
-        writer = csv.writer(sys.stdout)
-        writer.writerow(COLUMNS)
-        for report_id, created_at, kind, context, message, status in rows:
-            context = context if isinstance(context, dict) else json.loads(context)
-            writer.writerow(
-                [
-                    report_id,
-                    created_at.isoformat(timespec="minutes"),
-                    kind,
-                    context.get("university", ""),
-                    context.get("program", ""),
-                    context.get("code", ""),
-                    context.get("olympiad", ""),
-                    message,
-                    status,
-                ]
-            )
-        if args.mark_seen and rows:
-            conn.execute("UPDATE data_reports SET status = 'seen' WHERE status = 'new'")
-            conn.commit()
-    print(f"сообщений: {len(rows)}", file=sys.stderr)
+        count = export(conn, sys.stdout, include_all=args.all, mark_seen=args.mark_seen)
+    print(f"сообщений: {count}", file=sys.stderr)
     return 0
 
 
