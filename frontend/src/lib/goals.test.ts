@@ -27,6 +27,9 @@ describe("подписи цели", () => {
     expect(whoLabel({ who: "winners_prizes" })).toBe(
       "Кому: победителям и призёрам",
     );
+    expect(whoLabel({ who: "unknown" })).toBe(
+      "Кому: проверить в правилах вуза",
+    );
     expect(
       goalTitle({ short_name: "НТО", profile_name: "Робототехника" }),
     ).toBe("НТО — Робототехника");

@@ -18,7 +18,7 @@ async def test_goal_single_program(client: httpx.AsyncClient) -> None:
     for item in items:
         assert item["bvi_programs"] or item["hundred_programs"]
         assert set(item["bvi_programs"] + item["hundred_programs"]) == {pid}
-        assert item["who"] in ("winners", "winners_prizes", "team")
+        assert item["who"] in ("winners", "winners_prizes", "team", "unknown")
     # вне перечня 2026/27 — только в конце
     flags = [i["in_list_2026_27"] for i in items]
     assert flags == sorted(flags, reverse=True)

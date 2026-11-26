@@ -1854,7 +1854,8 @@
             "enum": [
               "winners",
               "winners_prizes",
-              "team"
+              "team",
+              "unknown"
             ],
             "title": "Who",
             "type": "string"

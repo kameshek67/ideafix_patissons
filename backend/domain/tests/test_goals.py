@@ -1,3 +1,4 @@
+from olymp_domain.diplomas import VSOSH_KEY
 from olymp_domain.goals import BVI, HUNDRED, GoalLink, PairInfo, build_goal
 
 
@@ -58,6 +59,13 @@ def test_who_and_ege() -> None:
     assert winners.who == "winners" and winners.prize_programs == []
     team = build_goal({a.key: a}, [link(a, 1, role="члены сборных команд РФ")])[0]
     assert team.who == "team"
+    unknown = build_goal({a.key: a}, [link(a, 1, role="   ", has_subject=True)])[0]
+    assert unknown.who == "unknown" and unknown.prize_programs == []
+    assert not unknown.prize_hundred_2027
+    mixed = build_goal({a.key: a}, [link(a, 1, role=""), link(a, 2, role="победители и призёры")])[
+        0
+    ]
+    assert mixed.who == "winners_prizes" and mixed.prize_programs == [2]
     got = build_goal(
         {a.key: a},
         [
@@ -84,10 +92,14 @@ def test_prize_hundred_2027() -> None:
     # победителям БВИ остаётся
     win = link(a, 1, role="победители", has_subject=True)
     assert not build_goal({a.key: a}, [win])[0].prize_hundred_2027
-    # ВсОШ и международные правила 2027 не затрагивают
-    for kind in ("vsosh", "international"):
-        v = pair(2, kind=kind)
-        assert not build_goal({v.key: v}, [link(v, 1, has_subject=True)])[0].prize_hundred_2027
+    # ВсОШ и международные правила 2027 не затрагивают; ВсОШ — по ключу, не по kind
+    v = pair(2, kind="vsosh", olympiad_key=VSOSH_KEY)
+    assert not build_goal({v.key: v}, [link(v, 1, has_subject=True)])[0].prize_hundred_2027
+    i = pair(3, kind="international")
+    assert not build_goal({i.key: i}, [link(i, 1, has_subject=True)])[0].prize_hundred_2027
+    # ВОШ ЛНР/ДНР тоже kind="vsosh", но правила 2027 для неё работают
+    lnr = pair(4, kind="vsosh", olympiad_key="республиканскаяолимпиадапонунымпредметамлнр")
+    assert build_goal({lnr.key: lnr}, [link(lnr, 1, has_subject=True)])[0].prize_hundred_2027
     # 100 баллов и так не БВИ
     assert not build_goal({a.key: a}, [link(a, 1, HUNDRED, has_subject=True)])[0].prize_hundred_2027
 

@@ -26,6 +26,7 @@ async def goal_olympiads(session: AsyncSession, program_ids: list[int]) -> dict[
     rows = await fetch_all(
         session,
         """SELECT bo.olympiad_id, bo.profile_id, o.short_name, o.canonical_name, o.kind,
+                   o.squash_key,
                   o.in_rsosh_2026_27, pr.name AS profile_name, bo.profile AS link_profile,
                   pr.level, pr.level_2026_27, b.program_id, b.benefit_type,
                   COALESCE(NULLIF(bo.winner_role, ''), b.winner_role) AS role,
@@ -57,6 +58,7 @@ async def goal_olympiads(session: AsyncSession, program_ids: list[int]) -> dict[
                 level=(row["level_2026_27"] or row["level"] or "") if row["profile_id"] else "",
                 in_list=bool(in_list),
                 kind=row["kind"],
+                olympiad_key=row["squash_key"] or "",
             )
             meta[key] = row
         links.append(

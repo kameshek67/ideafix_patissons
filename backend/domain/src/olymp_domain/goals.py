@@ -7,12 +7,20 @@ from collections import Counter
 from dataclasses import dataclass, field
 from typing import Literal
 
-from .diplomas import RULES_2027_FROM_YEAR, Change, Diploma, Role, bvi_change, roles_allowed
+from .diplomas import (
+    RULES_2027_FROM_YEAR,
+    VSOSH_KEY,
+    Change,
+    Diploma,
+    Role,
+    bvi_change,
+    roles_allowed,
+)
 
 BVI = "БВИ"
 HUNDRED = "100 баллов"
 
-Who = Literal["winners", "winners_prizes", "team"]
+Who = Literal["winners", "winners_prizes", "team", "unknown"]
 # ключ пары «олимпиада + профиль»; профиль None — льгота дана за олимпиаду целиком
 PairKey = tuple[int, int | None]
 
@@ -28,6 +36,8 @@ class PairInfo:
     # в перечне РСОШ на 2026/27 (для ВсОШ и международных перечень не применим — True)
     in_list: bool
     kind: str = "rsosh"
+    # ключ олимпиады в базе: по нему определяем ВсОШ (kind="vsosh" и у ВОШ ЛНР/ДНР)
+    olympiad_key: str = ""
 
     @property
     def key(self) -> PairKey:
@@ -71,6 +81,8 @@ def level_rank(level: str) -> int:
 
 
 def _roles(link: GoalLink) -> frozenset[Role]:
+    if not link.role.strip():
+        return frozenset()
     return roles_allowed(link.role) or frozenset()
 
 
@@ -78,7 +90,11 @@ def _who(links: list[GoalLink]) -> Who:
     roles = [_roles(link) for link in links]
     if any(Role.PRIZE in r for r in roles):
         return "winners_prizes"
-    return "winners" if any(Role.WINNER in r for r in roles) else "team"
+    if any(Role.WINNER in r for r in roles):
+        return "winners"
+    if any(not link.role.strip() for link in links):
+        return "unknown"
+    return "team"
 
 
 def _prize_hundred_2027(pair: PairInfo, links: list[GoalLink]) -> bool:
@@ -91,7 +107,7 @@ def _prize_hundred_2027(pair: PairInfo, links: list[GoalLink]) -> bool:
         grade=None,
         year=RULES_2027_FROM_YEAR,
         international=pair.kind == "international",
-        vsosh=pair.kind == "vsosh",
+        vsosh=pair.olympiad_key == VSOSH_KEY,
     )
     return any(
         bvi_change([diploma], link.has_subject) is Change.HUNDRED

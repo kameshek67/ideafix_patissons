@@ -8,6 +8,7 @@ const WHO = {
   winners: "победителям",
   winners_prizes: "победителям и призёрам",
   team: "членам сборных",
+  unknown: "проверить в правилах вуза",
 } as const;
 
 export const whoLabel = (item: Pick<GoalOlympiad, "who">): string =>

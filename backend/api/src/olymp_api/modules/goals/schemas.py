@@ -24,8 +24,9 @@ class GoalOlympiad(ResponseModel):
     # направления цели (id), где пара даёт БВИ; и где только 100 баллов
     bvi_programs: list[int]
     hundred_programs: list[int]
-    # winners — победителям, winners_prizes — победителям и призёрам, team — членам сборных
-    who: Literal["winners", "winners_prizes", "team"]
+    # winners — победителям, winners_prizes — победителям и призёрам, team — членам сборных,
+    # unknown — вуз не указал, кому: проверить в правилах вуза
+    who: Literal["winners", "winners_prizes", "team", "unknown"]
     # уровень по перечню РСОШ на 2026/27; вне перечня — по документам вузов
     level: str = ""
     in_list_2026_27: bool

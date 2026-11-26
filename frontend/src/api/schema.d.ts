@@ -1167,7 +1167,7 @@ export interface components {
              * Who
              * @enum {string}
              */
-            who: "winners" | "winners_prizes" | "team";
+            who: "winners" | "winners_prizes" | "team" | "unknown";
         };
         /** GoalOlympiads */
         GoalOlympiads: {
