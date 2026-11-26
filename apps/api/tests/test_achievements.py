@@ -93,6 +93,24 @@ async def test_diploma_form_profiles(client: httpx.AsyncClient) -> None:
     assert (await client.get("/v1/achievements/olympiads/999999")).status_code == 404
 
 
+async def test_diploma_form_and_match_carry_rsosh_2026_27(client: httpx.AsyncClient) -> None:
+    hse = await form(client, "вышка")
+    assert hse["olympiad"]["in_rsosh_2026_27"] is True
+    chemistry = next(p for p in hse["profiles"] if p["name"] == "химия")
+    assert chemistry["level_2026_27"] == "I"
+
+    robofest = await form(client, "робофест")
+    assert robofest["olympiad"]["in_rsosh_2026_27"] is False
+    assert all(p["level_2026_27"] == "" for p in robofest["profiles"])
+
+    data = await match(client, spec(hse, "химия", "w.11.2025"), spec(robofest, None, "w.11.2025"))
+    by_olympiad = {d["olympiad"]["short_name"]: d for d in data["diplomas"]}
+    assert by_olympiad["«Высшая проба»"]["profile"]["level_2026_27"] == "I"
+    assert by_olympiad["«Высшая проба»"]["olympiad"]["in_rsosh_2026_27"] is True
+    assert by_olympiad["«Робофест»"]["olympiad"]["in_rsosh_2026_27"] is False
+    assert by_olympiad["«Робофест»"]["profile"] is None
+
+
 # ---------------------------------------------------------------- подбор
 
 

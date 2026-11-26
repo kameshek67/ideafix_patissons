@@ -196,7 +196,7 @@ async def olympiad_profiles(session: AsyncSession, olympiad_id: int) -> dict[str
         raise HTTPException(status_code=404, detail="Олимпиада не найдена")
     items = await fetch_all(
         session,
-        """SELECT id, name, mentions, bvi_count, sto_count, uni_count
+        """SELECT id, name, mentions, bvi_count, sto_count, uni_count, level, level_2026_27
            FROM olympiad_profiles WHERE olympiad_id = :id
            ORDER BY mentions DESC, name""",
         {"id": olympiad_id},

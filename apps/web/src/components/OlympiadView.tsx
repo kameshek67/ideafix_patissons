@@ -4,6 +4,7 @@ import { type ReactNode, useLayoutEffect, useRef } from "react";
 import { type OlympiadSearch, shareBenefitType, type UniversityInfo } from "@/lib/api";
 import { conditionsLine } from "@/lib/conditions";
 import { codesOf, dash, fmt, place, plural } from "@/lib/format";
+import { levelChange } from "@/lib/rsosh";
 import { olympiadShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
 import { DataTable } from "./DataTable";
@@ -11,7 +12,7 @@ import { IconChevronLeft, IconChevronRight } from "./icons";
 import { ShareButton } from "./ShareButton";
 import { ReportError } from "./ReportError";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
-import { badgeClass, Clamp2, DerivedMark, EmptyState } from "./ui";
+import { badgeClass, Clamp2, DerivedMark, EmptyState, NotInListBadge } from "./ui";
 
 const vuzov = (n: number) => plural(n, "вуз", "вуза", "вузов");
 const napravleniy = (n: number) => plural(n, "направление", "направления", "направлений");
@@ -53,11 +54,13 @@ function OlympiadHead({
       {profile ? (
         <div className="mt-2 text-[13.5px]">
           <span className="meta-text">Профиль:</span> <span className="font-medium">{profile.name}</span>
+          {levelChange(profile) ? <span className="meta-text">{` · ${levelChange(profile)}`}</span> : null}
         </div>
       ) : null}
       <div className="mt-3 flex flex-wrap gap-1.5">
         <span className="badge badge-bvi">{`БВИ: ${fmt(profile ? profile.bvi_count : o.bvi_count)}`}</span>
         <span className="badge badge-sto">{`100 баллов: ${fmt(profile ? profile.sto_count : o.sto_count)}`}</span>
+        <NotInListBadge olympiad={o} />
         {children}
       </div>
     </div>
@@ -97,7 +100,7 @@ function ProfileChips({
           <button
             key={p.id}
             className={`chip ${profileId === p.id ? "chip-on" : ""}`}
-            title={p.name}
+            title={levelChange(p) ? `${p.name} · ${levelChange(p)}` : p.name}
             onClick={() => onPick(p.id)}
           >
             {p.name.length > 44 ? p.name.slice(0, 43) + "…" : p.name}

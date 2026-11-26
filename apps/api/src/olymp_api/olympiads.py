@@ -16,7 +16,7 @@ BENEFIT_FIELDS = """
 """
 
 OLYMPIAD_FIELDS = """o.id, o.canonical_name, o.short_name, o.kind, o.mentions,
-                     o.bvi_count, o.sto_count, o.uni_count"""
+                     o.bvi_count, o.sto_count, o.uni_count, o.in_rsosh_2026_27"""
 
 
 async def resolve_olympiads(session: AsyncSession, q: str, limit: int = 12) -> list[Row]:

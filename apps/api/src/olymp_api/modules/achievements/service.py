@@ -63,6 +63,7 @@ def olympiad_of(row: Row) -> dict[str, Any]:
         "key": row["key"],
         "short_name": row["short_name"],
         "canonical_name": row["canonical_name"],
+        "in_rsosh_2026_27": row["in_rsosh_2026_27"],
     }
 
 
@@ -72,6 +73,7 @@ def profile_of(row: Row) -> dict[str, Any]:
         "key": row["key"],
         "name": row["name"],
         "level": row["level"],
+        "level_2026_27": row["level_2026_27"],
         "mentions": row["mentions"],
     }
 
@@ -79,7 +81,7 @@ def profile_of(row: Row) -> dict[str, Any]:
 async def diploma_form(session: AsyncSession, olympiad_id: int) -> dict[str, Any]:
     olympiad = await fetch_one(
         session,
-        """SELECT id, squash_key AS key, short_name, canonical_name
+        """SELECT id, squash_key AS key, short_name, canonical_name, in_rsosh_2026_27
            FROM olympiads WHERE id = :id""",
         {"id": olympiad_id},
     )
@@ -87,7 +89,8 @@ async def diploma_form(session: AsyncSession, olympiad_id: int) -> dict[str, Any
         raise HTTPException(404, "Олимпиада не найдена")
     profiles = await fetch_all(
         session,
-        """SELECT id, squash_key AS key, name, level, mentions FROM olympiad_profiles
+        """SELECT id, squash_key AS key, name, level, level_2026_27, mentions
+           FROM olympiad_profiles
            WHERE olympiad_id = :id ORDER BY mentions DESC, name, id""",
         {"id": olympiad_id},
     )
@@ -132,7 +135,7 @@ async def resolve(session: AsyncSession, specs: list[DiplomaSpec]) -> list[Resol
         row["key"]: row
         for row in await fetch_all(
             session,
-            """SELECT id, squash_key AS key, short_name, canonical_name
+            """SELECT id, squash_key AS key, short_name, canonical_name, in_rsosh_2026_27
                FROM olympiads WHERE squash_key = ANY(:keys)""",
             {"keys": keys},
         )
@@ -142,7 +145,7 @@ async def resolve(session: AsyncSession, specs: list[DiplomaSpec]) -> list[Resol
         (row["olympiad_id"], row["key"]): row
         for row in await fetch_all(
             session,
-            """SELECT id, olympiad_id, squash_key AS key, name, level, mentions
+            """SELECT id, olympiad_id, squash_key AS key, name, level, level_2026_27, mentions
                FROM olympiad_profiles WHERE olympiad_id = ANY(:ids)""",
             {"ids": ids},
         )

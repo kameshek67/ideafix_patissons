@@ -23,6 +23,8 @@ class OlympiadHit(ResponseModel):
     bvi_count: int
     sto_count: int
     uni_count: int
+    # в перечне РСОШ на 2026/27; None — перечень не применим (ВсОШ, настоящие международные)
+    in_rsosh_2026_27: bool | None = None
     # насколько точно совпал запрос (0 — точное совпадение сокращения); только при поиске по q
     rank: int | None = None
     is_featured: int | None = None
@@ -38,6 +40,9 @@ class ProfileHit(ResponseModel):
     bvi_count: int
     sto_count: int
     uni_count: int
+    # уровень по документам вузов и по перечню РСОШ на 2026/27 (пусто, если пары в перечне нет)
+    level: str = ""
+    level_2026_27: str = ""
 
 
 class OlympiadRef(ResponseModel):

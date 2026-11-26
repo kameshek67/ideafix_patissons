@@ -64,6 +64,35 @@ async def test_profiles(client: httpx.AsyncClient) -> None:
     assert mentions == sorted(mentions, reverse=True)
 
 
+async def test_rsosh_2026_27_flag_and_profile_level(client: httpx.AsyncClient) -> None:
+    """Каталог, профили и поиск по олимпиаде отдают признак перечня РСОШ на 2026/27."""
+
+    async def first(q: str) -> dict:
+        return (await client.get("/v1/olympiads", params={"q": q, "limit": 1})).json()["items"][0]
+
+    hse, robofest, vsosh = await first("вышка"), await first("робофест"), await first("всош")
+    assert hse["in_rsosh_2026_27"] is True
+    assert robofest["in_rsosh_2026_27"] is False
+    assert vsosh["in_rsosh_2026_27"] is None  # перечень не применим
+
+    profiles = (await client.get(f"/v1/olympiads/{hse['id']}/profiles")).json()
+    assert profiles["olympiad"]["in_rsosh_2026_27"] is True
+    chemistry = next(p for p in profiles["items"] if p["name"] == "химия")
+    assert (chemistry["level"], chemistry["level_2026_27"]) == ("II", "I")
+
+    found = (
+        await client.get("/v1/search/by-olympiad", params={"q": "вышка", "olympiad_id": hse["id"]})
+    ).json()
+    assert found["matched_olympiads"][0]["in_rsosh_2026_27"] is True
+    assert {"level", "level_2026_27"} <= set(found["profiles"][0])
+    off = (
+        await client.get(
+            "/v1/search/by-olympiad", params={"q": "робофест", "olympiad_id": robofest["id"]}
+        )
+    ).json()
+    assert off["matched_olympiads"][0]["in_rsosh_2026_27"] is False
+
+
 async def test_search_ignores_case(client: httpx.AsyncClient) -> None:
     async def names(q: str) -> list[str]:
         data = (await client.get("/v1/universities", params={"q": q})).json()

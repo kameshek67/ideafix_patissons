@@ -14,6 +14,7 @@ import { type DiplomaEntry, diplomaMeta, parseSpec } from "@/lib/diplomas";
 import { EGE_DATIVE, type EgeScores, type EgeSubject, egeQuery, hasEge, NO_EGE } from "@/lib/ege";
 import { conditionsLine } from "@/lib/conditions";
 import { codesOf, dash, fmt, place, plural } from "@/lib/format";
+import { levelChange } from "@/lib/rsosh";
 import { diplomasShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
 import { DataTable } from "./DataTable";
@@ -23,7 +24,7 @@ import { EgeBlock } from "./EgeBlock";
 import { ShareButton } from "./ShareButton";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
 import type { DiplomaStorage, SyncState } from "./useMyDiplomas";
-import { badgeClass, Clamp2, DerivedMark, EmptyState, LoadError, Skeleton } from "./ui";
+import { badgeClass, Clamp2, DerivedMark, EmptyState, LoadError, NotInListBadge, Skeleton } from "./ui";
 
 const vuzov = (n: number) => plural(n, "вуз", "вуза", "вузов");
 const vuzah = (n: number) => plural(n, "вузе", "вузах", "вузах");
@@ -200,6 +201,12 @@ function DiplomaList({
                 </span>
                 {parts ? <span className="diploma-meta">{diplomaMeta(parts)}</span> : null}
                 <span className="uni-row-badges">
+                  <NotInListBadge olympiad={result?.olympiad} />
+                  {levelChange(result?.profile) ? (
+                    <span className="badge badge-soft" title="Уровень профиля по перечню РСОШ на 2026/27">
+                      {levelChange(result?.profile)}
+                    </span>
+                  ) : null}
                   {!result ? (
                     <span className="badge badge-soft">считаем…</span>
                   ) : !result.found ? (

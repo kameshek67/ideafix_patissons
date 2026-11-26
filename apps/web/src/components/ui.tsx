@@ -1,5 +1,7 @@
 /* Общие куски разметки прототипа: заглушки, пустые состояния, стили льгот. */
 
+import { NOT_IN_LIST_BADGE, NOT_IN_LIST_HINT, notInList } from "@/lib/rsosh";
+
 export const TYPES = ["Все", "БВИ", "100 баллов"] as const;
 
 export const TYPE_STYLE: Record<string, { badge: string; section: string; title: string }> = {
@@ -96,5 +98,15 @@ export function DerivedMark({ derived }: { derived: boolean }) {
         по профилю
       </span>
     </>
+  );
+}
+
+/** Олимпиады нет в перечне РСОШ на 2026/27: диплом этого года льгот не даст. */
+export function NotInListBadge({ olympiad }: { olympiad: { in_rsosh_2026_27?: boolean | null } | null | undefined }) {
+  if (!notInList(olympiad)) return null;
+  return (
+    <span className="badge badge-alt" title={NOT_IN_LIST_HINT}>
+      {NOT_IN_LIST_BADGE}
+    </span>
   );
 }

@@ -796,6 +796,17 @@
             "title": "Id",
             "type": "integer"
           },
+          "in_rsosh_2026_27": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "In Rsosh 2026 27"
+          },
           "key": {
             "title": "Key",
             "type": "string"
@@ -809,7 +820,8 @@
           "id",
           "key",
           "short_name",
-          "canonical_name"
+          "canonical_name",
+          "in_rsosh_2026_27"
         ],
         "title": "DiplomaOlympiad",
         "type": "object"
@@ -828,6 +840,10 @@
             "title": "Level",
             "type": "string"
           },
+          "level_2026_27": {
+            "title": "Level 2026 27",
+            "type": "string"
+          },
           "mentions": {
             "title": "Mentions",
             "type": "integer"
@@ -842,6 +858,7 @@
           "key",
           "name",
           "level",
+          "level_2026_27",
           "mentions"
         ],
         "title": "DiplomaProfile",
@@ -1513,6 +1530,17 @@
             "title": "Id",
             "type": "integer"
           },
+          "in_rsosh_2026_27": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "In Rsosh 2026 27"
+          },
           "is_featured": {
             "anyOf": [
               {
@@ -1576,6 +1604,7 @@
           "bvi_count",
           "sto_count",
           "uni_count",
+          "in_rsosh_2026_27",
           "rank",
           "is_featured",
           "profiles"
@@ -1869,6 +1898,16 @@
             "title": "Id",
             "type": "integer"
           },
+          "level": {
+            "default": "",
+            "title": "Level",
+            "type": "string"
+          },
+          "level_2026_27": {
+            "default": "",
+            "title": "Level 2026 27",
+            "type": "string"
+          },
           "mentions": {
             "title": "Mentions",
             "type": "integer"
@@ -1904,7 +1943,9 @@
           "mentions",
           "bvi_count",
           "sto_count",
-          "uni_count"
+          "uni_count",
+          "level",
+          "level_2026_27"
         ],
         "title": "ProfileHit",
         "type": "object"

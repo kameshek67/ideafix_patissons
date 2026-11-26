@@ -12,8 +12,10 @@ import {
 import { buildSpec, type DiplomaEntry, GRADES, parseSpec, ROLE_LABEL, type Role } from "@/lib/diplomas";
 import { fmt, plural } from "@/lib/format";
 import { haptic } from "@/lib/max";
+import { levelChange, notInList } from "@/lib/rsosh";
 import { IconCloseModal, IconSearch } from "./icons";
 import { useMax, useMaxBackButton, useMaxClosingConfirmation } from "./MaxProvider";
+import { NotInListBadge } from "./ui";
 
 interface Props {
   /** редактируемый диплом и id его олимпиады в текущей базе; null — новый диплом */
@@ -179,6 +181,11 @@ export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSav
               <div className="min-w-0">
                 <div className="font-medium text-[15px]">{form.olympiad.short_name}</div>
                 <div className="text-[12.5px] meta-text truncate">{form.olympiad.canonical_name}</div>
+                {notInList(form.olympiad) ? (
+                  <div className="mt-1">
+                    <NotInListBadge olympiad={form.olympiad} />
+                  </div>
+                ) : null}
               </div>
               <button
                 className="chip chip-ghost shrink-0"
@@ -259,7 +266,7 @@ export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSav
                 <button
                   key={p.id}
                   className={`chip ${profile?.id === p.id ? "chip-on" : ""}`}
-                  title={p.name}
+                  title={levelChange(p) ? `${p.name} · ${levelChange(p)}` : p.name}
                   onClick={() => choose(setProfile, p)}
                 >
                   {p.name}
@@ -269,6 +276,7 @@ export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSav
                 Не помню профиль
               </button>
             </div>
+            {profile && levelChange(profile) ? <p className="field-note">{`Уровень профиля в 2026/27: ${profile.level_2026_27}`}</p> : null}
             {profile === null ? (
               <p className="field-note">
                 Без профиля покажем все льготы олимпиады — соответствие направлению придётся проверить самим.

@@ -755,6 +755,8 @@ export interface components {
             canonical_name: string;
             /** Id */
             id: number;
+            /** In Rsosh 2026 27 */
+            in_rsosh_2026_27: boolean | null;
             /** Key */
             key: string;
             /** Short Name */
@@ -768,6 +770,8 @@ export interface components {
             key: string;
             /** Level */
             level: string;
+            /** Level 2026 27 */
+            level_2026_27: string;
             /** Mentions */
             mentions: number;
             /** Name */
@@ -1008,6 +1012,8 @@ export interface components {
             canonical_name: string;
             /** Id */
             id: number;
+            /** In Rsosh 2026 27 */
+            in_rsosh_2026_27: boolean | null;
             /** Is Featured */
             is_featured: number | null;
             /** Kind */
@@ -1138,6 +1144,16 @@ export interface components {
             bvi_count: number;
             /** Id */
             id: number;
+            /**
+             * Level
+             * @default
+             */
+            level: string;
+            /**
+             * Level 2026 27
+             * @default
+             */
+            level_2026_27: string;
             /** Mentions */
             mentions: number;
             /** Name */

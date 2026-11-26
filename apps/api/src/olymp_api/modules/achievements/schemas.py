@@ -11,6 +11,8 @@ class DiplomaOlympiad(ResponseModel):
     key: str
     short_name: str
     canonical_name: str
+    # в перечне РСОШ на 2026/27; None — перечень не применим
+    in_rsosh_2026_27: bool | None
 
 
 class DiplomaProfile(ResponseModel):
@@ -18,6 +20,8 @@ class DiplomaProfile(ResponseModel):
     key: str
     name: str
     level: str
+    # уровень по перечню РСОШ на 2026/27; пусто, если пары в перечне нет
+    level_2026_27: str
     mentions: int
 
 

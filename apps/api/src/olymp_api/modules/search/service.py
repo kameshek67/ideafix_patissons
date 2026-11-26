@@ -201,7 +201,8 @@ async def by_olympiad(
     # профили выбранной олимпиады — для чипов-фильтров на фронте
     profiles = await fetch_all(
         session,
-        """SELECT id, olympiad_id, name, mentions, bvi_count, sto_count, uni_count
+        """SELECT id, olympiad_id, name, mentions, bvi_count, sto_count, uni_count,
+                  level, level_2026_27
            FROM olympiad_profiles WHERE olympiad_id = ANY(:ids)
            ORDER BY mentions DESC, name, olympiad_id, id""",
         {"ids": ids},
