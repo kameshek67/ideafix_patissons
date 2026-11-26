@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Any
 
 import psycopg
 from olymp_domain.extraction import ExtractionError, Record, load_dir, profile_key
-from olymp_domain.textutils import clean_text
+from olymp_domain.textutils import clean_text, squash
 
 from .eval_extract import ANY_CODE, pick_university
 
@@ -29,6 +29,9 @@ EXTRACTED_DIR = "extracted"
 RE_CODE = re.compile(r"\d{2}\.\d{2}\.\d{2}")
 BENEFIT_TYPES = {"bvi": "БВИ", "100": "100 баллов", "extra_points": "ИД (доп. баллы)"}
 ROLES = {"winner": "победители", "prizewinner": "призёры", "both": "победители и призёры"}
+# «Все из перечня олимпиад школьников», «Все олимпиады … включённые в Перечень»
+RE_UMBRELLA = re.compile(r"^все\b.*перечн|перечен", re.IGNORECASE)
+RE_PARENS = re.compile(r"\s*\([^)]*\)")
 ROMAN = {1: "I", 2: "II", 3: "III"}
 SUBJECT_TEXT = {
     "rus": "русский язык",
@@ -138,7 +141,8 @@ def apply_documents(
             f"      документы, {uni_name}: записей {stats['records']}, добавлено {stats['added']},"
             f" заменено строк XLSX {stats['replaced']}, направлений создано {stats['programs']},"
             f" олимпиад не сопоставлено {stats['unmatched']} (записей {stats['unmatched_records']}),"
-            f" повторов {stats['duplicates']}"
+            f" повторов {stats['duplicates']}, по перечню раскрыто {stats['umbrella']}"
+            f" (уже были {stats['umbrella_dups']}, профиль не найден {stats['umbrella_empty']})"
         )
         ing.sheet_log.append(
             (
@@ -175,10 +179,13 @@ def _apply_university(
 
     # олимпиады — через справочник; несопоставленные в базу не попадают
     matched: list[tuple[DocRecord, int]] = []
+    umbrella: list[DocRecord] = []
     unmatched: Counter[str] = Counter()
     for rec in recs:
         olympiad_id = ing.olympiad_id_for(rec.record.olympiad)
-        if olympiad_id is None:
+        if olympiad_id is None and RE_UMBRELLA.search(clean_text(rec.record.olympiad)):
+            umbrella.append(rec)
+        elif olympiad_id is None:
             unmatched[rec.record.olympiad] += 1
         else:
             matched.append((rec, olympiad_id))
@@ -240,6 +247,98 @@ def _apply_university(
                 source_sheet=DOC_SHEET,
             )
             stats["added"] += 1
+    if umbrella:
+        _apply_umbrella(ing, umbrella, by_code, coded, stats, log)
+
+
+def _apply_umbrella(
+    ing: Ingestor,
+    recs: list[DocRecord],
+    by_code: dict[str, list[int]],
+    coded: list[int],
+    stats: Counter[str],
+    log: Callable[[str], None],
+) -> None:
+    """Записи «все олимпиады перечня» раскрываются в пары «олимпиада + профиль» РСОШ.
+
+    Профиль записи ищется в справочнике профилей так же, как в правилах «по профилю»; без
+    профиля берутся все пары. ВсОШ и международные не входят, уровень пары — из levels записи.
+    Строки идут слоем derived; пары, которые у направления уже есть, не повторяются.
+    """
+    from .ingest import join_parts
+
+    conn = ing.conn
+    index, meta = ing.profile_index()
+    rsosh = {pid: m for pid, m in meta.items() if ing.olympiad_kinds.get(m[0], "rsosh") == "rsosh"}
+    pids = sorted({pid for pids in by_code.values() for pid in pids} | set(coded))
+    have_ids: set[tuple[int, int, int, str]] = set()
+    have_text: set[tuple[int, int, str, str]] = set()
+    for pid, btype, olympiad_id, profile_id, profile in conn.execute(
+        """SELECT b.program_id, b.benefit_type, bo.olympiad_id, bo.profile_id,
+                  COALESCE(NULLIF(bo.profile, ''), b.olympiad_profile)
+           FROM benefits b JOIN benefit_olympiads bo ON bo.benefit_id = b.id
+           WHERE b.program_id = ANY(%s) AND b.layer IN ('detailed', 'derived', 'document')""",
+        (pids,),
+    ):
+        have_ids.add((pid, olympiad_id, profile_id or 0, btype))
+        have_text.add((pid, olympiad_id, profile_key(profile or ""), btype))
+    pairs_of: dict[tuple[str, tuple[int, ...]], list[int]] = {}
+    warned: set[tuple[str, tuple[int, ...]]] = set()
+    for rec in recs:
+        r = rec.record
+        btype = BENEFIT_TYPES[r.benefit_type]
+        levels = {ROMAN[n] for n in r.levels}
+        query = RE_PARENS.sub("", clean_text(r.profile)).strip()
+        cache_key = (squash(query), tuple(r.levels))
+        if cache_key not in pairs_of:
+            ids = index.find(query) if query else list(meta)
+            pairs_of[cache_key] = [
+                i
+                for i in ids
+                if i in rsosh and (not levels or not meta[i][2] or meta[i][2] in levels)
+            ]
+        if not pairs_of[cache_key]:
+            stats["umbrella_empty"] += 1
+            if cache_key not in warned:
+                warned.add(cache_key)
+                log(
+                    f"      ! «{r.olympiad[:40]}»: профиль «{r.profile}» не найден среди олимпиад перечня"
+                )
+            continue
+        star = r.program_code == ANY_CODE
+        for pid in coded if star else by_code.get(r.program_code, []):
+            for profile_id in pairs_of[cache_key]:
+                olympiad_id, profile_name, profile_level = meta[profile_id]
+                if (pid, olympiad_id, profile_id, btype) in have_ids or (
+                    pid,
+                    olympiad_id,
+                    profile_key(profile_name),
+                    btype,
+                ) in have_text:
+                    stats["umbrella_dups"] += 1
+                    continue
+                have_ids.add((pid, olympiad_id, profile_id, btype))
+                name = ing.olympiad_names.get(olympiad_id, "")
+                detail = _detail(ing, rec, olympiad_id)
+                detail.olympiad_name = name
+                detail.olympiad_profile = profile_name
+                detail.level = profile_level or detail.level
+                detail.conditions = join_parts(
+                    name,
+                    f"профиль: {profile_name}",
+                    f"уровень {detail.level}" if detail.level else "",
+                )
+                detail.note = " · ".join(
+                    x
+                    for x in (
+                        "Правило документа: любая олимпиада перечня с этим профилем",
+                        detail.note,
+                    )
+                    if x
+                )
+                ing.insert_benefit(detail, program_id=pid, layer="derived", source_sheet=DOC_SHEET)
+                stats["umbrella"] += 1
+                stats["added"] += 1
 
 
 def _drop_xlsx_twins(ing: Ingestor, uid: int, keys: set[tuple[int, int, str, str]]) -> int:

@@ -2098,13 +2098,8 @@ class Ingestor:
         )
 
     # -- правила «любая олимпиада перечня по профилю X» ---------------------
-    def expand_profile_rules(self) -> None:
-        """
-        Часть вузов (ИТМО, УрФУ, Горный) задаёт льготу профилем олимпиады, а не её
-        названием: «любая олимпиада перечня I–III уровня по информатике», «все
-        технологические профили (… мобильные приложения …) — БВИ». Раскрываем такие
-        правила в конкретные пары «олимпиада + профиль» по справочнику профилей.
-        """
+    def profile_index(self) -> tuple[ProfileIndex, dict[int, tuple[int, str, str]]]:
+        """Справочник профилей для поиска по написанию вуза: индекс и (олимпиада, имя, уровень)."""
         index = ProfileIndex()
         meta: dict[int, tuple[int, str, str]] = {}
         for pid, olympiad_id, name, level in self.conn.execute(
@@ -2113,6 +2108,16 @@ class Ingestor:
         ).fetchall():
             index.add(pid, name)
             meta[pid] = (olympiad_id, name, level)
+        return index, meta
+
+    def expand_profile_rules(self) -> None:
+        """
+        Часть вузов (ИТМО, УрФУ, Горный) задаёт льготу профилем олимпиады, а не её
+        названием: «любая олимпиада перечня I–III уровня по информатике», «все
+        технологические профили (… мобильные приложения …) — БВИ». Раскрываем такие
+        правила в конкретные пары «олимпиада + профиль» по справочнику профилей.
+        """
+        index, meta = self.profile_index()
 
         sources = self.conn.execute(
             """SELECT b.id, b.program_id, b.benefit_type, b.raw_conditions_text, b.note,

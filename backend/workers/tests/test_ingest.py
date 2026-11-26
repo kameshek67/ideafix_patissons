@@ -24,22 +24,24 @@ from olymp_workers.olympiad_cards import CARDS_FILE, load_olympiad_cards
 #    +123 направления вузов, у которых не было направления с таким кодом (МАИ, МЭИ, МГУ, РАНХиГС, КФУ);
 #  - C1: разбор условий — диапазоны классов («9–11 кл.»), падежи предметов («по математике»), роль «только
 #    победители» -> «победители»: ключевых слов 137963 -> 142261 (классов 8510 -> 11376).
+#  - C3: записи документов «все олимпиады перечня» раскрываются по профилю в пары «олимпиада + профиль»
+#    РСОШ (слой derived): +976 строк (ИТМО 27, МГУ 949), documents_added 5657 -> 6633.
 EXPECTED = {
     "universities": "39",
     "programs": "833",
-    "benefits": "59220",
-    "benefits_bvi": "36305",
-    "benefits_sto": "22111",
+    "benefits": "60196",
+    "benefits_bvi": "36374",
+    "benefits_sto": "23018",
     "benefits_raw": "859",
-    "benefits_rows": "58743",
-    "benefits_derived": "26678",
+    "benefits_rows": "59719",
+    "benefits_derived": "27654",
     "benefits_notes": "477",
     "olympiads": "176",
     "profiles": "658",
-    "links": "68878",
+    "links": "69854",
     "keywords": "142261",
     "fts": "on",
-    "documents_added": "5657",
+    "documents_added": "6633",
     "documents_replaced": "164",
 }
 
@@ -401,7 +403,8 @@ def test_document_layer_rows_have_document_source(built_database_url: str) -> No
                                                    WHERE bo.benefit_id = benefits.id))"""
         ).fetchone()[0]
         others = conn.execute(
-            "SELECT COUNT(*) FROM benefits WHERE layer <> 'document' AND source_page IS NOT NULL"
+            "SELECT COUNT(*) FROM benefits WHERE layer NOT IN ('document', 'derived')"
+            " AND source_page IS NOT NULL"
         ).fetchone()[0]
     assert total == 5657
     assert (bad, others) == (0, 0)
