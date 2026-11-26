@@ -17,6 +17,8 @@ from __future__ import annotations
 
 import re
 from collections.abc import Sequence
+from dataclasses import dataclass
+from typing import Any
 
 Cell = str | None
 Table = Sequence[Sequence[Cell]]
@@ -40,6 +42,17 @@ def _short(cell: Cell) -> str:
     return " ".join(words[:HEADER_CELL_WORDS]) + ("…" if len(words) > HEADER_CELL_WORDS else "")
 
 
+@dataclass(frozen=True)
+class TableLine:
+    """Строка таблицы страницы: kind — columns | section | row; text — как она попадёт в текст."""
+
+    kind: str
+    text: str
+    cells: tuple[str, ...] = ()
+    code: str = ""  # код направления из заголовка раздела, действующий для строки
+    filled: tuple[bool, ...] = ()  # ячейки строки, заполненные значением сверху
+
+
 class TableReader:
     """Читает таблицы документа страница за страницей; состояние переходит между страницами."""
 
@@ -55,13 +68,15 @@ class TableReader:
             and sum(bool(HEADER_WORDS.search(cell or "")) for cell in row) >= 2
         )
 
-    def page_lines(self, tables: Sequence[Table]) -> list[str]:
-        lines: list[str] = []
+    def page_items(self, tables: Sequence[Table]) -> list[TableLine]:
+        items: list[TableLine] = []
         for table in tables:
             width = max((len(row) for row in table), default=0)
             if self.header and width:
-                columns = [_short(c) for c in self.header[-width:]]
-                lines.append("Колонки: " + " | ".join(columns))
+                head = self.header[-width:]
+                columns = [_short(c) for c in head]
+                cells = tuple(c or "" for c in head)
+                items.append(TableLine("columns", "Колонки: " + " | ".join(columns), cells))
             for raw in table:
                 row = [_clean(cell) for cell in raw]
                 filled = [cell for cell in row if cell]
@@ -69,16 +84,24 @@ class TableReader:
                     continue
                 if self._is_header(row):
                     self.header = row
-                    lines.append("Колонки: " + " | ".join(_short(c) for c in row))
+                    cells = tuple(c or "" for c in row)
+                    items.append(
+                        TableLine(
+                            "columns", "Колонки: " + " | ".join(_short(c) for c in row), cells
+                        )
+                    )
                     continue
                 # заголовок раздела — заполнена только первая ячейка; строка-продолжение
                 # с одной ячейкой справа («Право на 100 баллов») — это данные, а не раздел
                 if len(filled) == 1 and len(row) >= 3 and row[0]:
                     match = PROGRAM_CODE.search(filled[0])
                     self.code = match.group(0) if match else ""
-                    lines.append(f"Раздел: {filled[0]}")
+                    items.append(
+                        TableLine("section", f"Раздел: {filled[0]}", (filled[0],), self.code)
+                    )
                     continue
                 previous = self.previous.get(len(row))
+                merged = tuple(cell is None for cell in row)
                 if previous:
                     row = [
                         cell if cell is not None else above
@@ -86,8 +109,38 @@ class TableReader:
                     ]
                 self.previous[len(row)] = row
                 prefix = f"[{self.code}] " if self.code else ""
-                lines.append(prefix + " | ".join(cell or "" for cell in row))
-        return lines
+                cells = tuple(cell or "" for cell in row)
+                items.append(TableLine("row", prefix + " | ".join(cells), cells, self.code, merged))
+        return items
+
+    def page_lines(self, tables: Sequence[Table]) -> list[str]:
+        return [item.text for item in self.page_items(tables)]
+
+
+def page_tables(page: Any) -> list[list[list[Cell]]]:
+    """Таблицы страницы pdfplumber; пустое место вместо ячейки без геометрии — «», а не None.
+
+    None у pdfplumber — и «ячейка объединена с верхней», и «ячейки нет вовсе» (линии сетки оборваны
+    у края страницы). Заполнять сверху можно только первое: ячейка выше должна доходить до строки."""
+    tables = []
+    for table in page.find_tables():
+        data = [list(row) for row in table.extract()]
+        # нижняя граница самой длинной ячейки выше, по каждой колонке
+        reach: dict[int, float] = {}
+        for r, row in enumerate(table.rows):
+            top = min((c[1] for c in row.cells if c is not None), default=None)
+            for c, box in enumerate(row.cells):
+                if box is not None:
+                    reach[c] = max(reach.get(c, 0.0), box[3])
+                elif (
+                    r < len(data)
+                    and c < len(data[r])
+                    and data[r][c] is None
+                    and (top is None or reach.get(c, 0.0) <= top + 1.0)
+                ):
+                    data[r][c] = ""  # выше ячейка до этой строки не доходит: объединения нет
+        tables.append(data)
+    return tables
 
 
 def page_text(plain: str, table_lines: Sequence[str]) -> str:

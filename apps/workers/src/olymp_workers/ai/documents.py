@@ -22,7 +22,7 @@ from pathlib import Path
 import httpx
 import pdfplumber
 
-from .tables import TableReader, page_text
+from .tables import TableReader, page_tables, page_text
 
 MAX_BYTES = 25 * 1024 * 1024
 MAX_PAGES = 800
@@ -31,7 +31,7 @@ TIMEOUT = 30.0
 USER_AGENT = "OlympBot/1.0 (+https://ideafix.patissons.tech; admission documents check)"
 DEFAULT_CACHE = Path(".cache/olymp/documents")
 # меняется вместе со способом извлечения текста: старый кэш страниц перестаёт использоваться
-EXTRACTOR_VERSION = "v2-tables"
+EXTRACTOR_VERSION = "v3-tables"
 
 # pdfminer шумно предупреждает о каждом нестандартном шрифте
 logging.getLogger("pdfminer").setLevel(logging.ERROR)
@@ -85,7 +85,7 @@ def pdf_pages(data: bytes) -> tuple[str, ...]:
                 raise DocumentError(f"слишком много страниц: {len(pdf.pages)}")
             reader = TableReader()  # таблица продолжается со страницы на страницу
             return tuple(
-                page_text(page.extract_text() or "", reader.page_lines(page.extract_tables()))
+                page_text(page.extract_text() or "", reader.page_lines(page_tables(page)))
                 for page in pdf.pages
             )
     except DocumentError:
@@ -195,7 +195,8 @@ class DocumentStore:
         except (OSError, ValueError, KeyError):
             return None  # повреждённый кэш — скачаем заново
 
-    def _download(self, url: str) -> Document:
+    def _fetch(self, url: str) -> tuple[bytes, str, str | None, str]:
+        """Файл по адресу: (байты, content-type, кодировка, итоговый адрес)."""
         self.downloads += 1
         try:
             with self.client.stream("GET", url) as response:
@@ -210,10 +211,12 @@ class DocumentStore:
                     if size > MAX_BYTES:
                         raise DocumentError("файл больше 25 МБ")
                     chunks.append(chunk)
-                data = b"".join(chunks)
-                content_type = response.headers.get("content-type", "")
-                encoding = response.charset_encoding
-                final_url = str(response.url)
+                return (
+                    b"".join(chunks),
+                    response.headers.get("content-type", ""),
+                    response.charset_encoding,
+                    str(response.url),
+                )
         except httpx.ConnectError as exc:
             if "CERTIFICATE" in str(exc).upper() or "SSL" in str(exc).upper():
                 raise DocumentError(
@@ -224,6 +227,25 @@ class DocumentStore:
             raise DocumentError("таймаут") from None
         except httpx.HTTPError as exc:
             raise DocumentError(f"сеть: {type(exc).__name__}") from None
+
+    def raw(self, url: str) -> bytes:
+        """Исходный файл документа; хранится в кэше рядом с текстом страниц."""
+        url = safe_url(url)
+        raw_path = self._paths(url)[0].with_suffix(".raw")
+        try:
+            return raw_path.read_bytes()
+        except OSError:
+            pass
+        data = self._fetch(url)[0]
+        try:
+            self.cache_dir.mkdir(parents=True, exist_ok=True)
+            raw_path.write_bytes(data)
+        except OSError:
+            pass
+        return data
+
+    def _download(self, url: str) -> Document:
+        data, content_type, encoding, final_url = self._fetch(url)
 
         kind = detect_kind(data, content_type)
         pages = pdf_pages(data) if kind == "pdf" else (html_text(data, encoding),)

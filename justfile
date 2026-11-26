@@ -39,6 +39,10 @@ refresh-sources *ARGS:
 ai-verify *ARGS:
     uv run olymp-ai-verify {{ARGS}}
 
+# льготы из документа вуза в JSON кодом: just extract --url URL --university ВУЗ | --from-gold
+extract *ARGS:
+    uv run olymp-extract {{ARGS}}
+
 # оценка извлечения льгот по эталону: just eval-extract --pred data/extracted | --pred db [--check-quotes --json out.json]
 eval-extract *ARGS:
     uv run olymp-eval-extract {{ARGS}}

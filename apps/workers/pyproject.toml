@@ -28,6 +28,7 @@ olymp-report-regressions = "olymp_workers.report_regressions:main"
 olymp-ai-cards = "olymp_workers.ai_cards:main"
 olymp-ai-verify = "olymp_workers.ai.verify:main"
 olymp-eval-extract = "olymp_workers.eval_extract:main"
+olymp-extract = "olymp_workers.extract.cli:main"
 
 [build-system]
 requires = ["hatchling"]
