@@ -12,6 +12,7 @@ from olymp_llm import (
     ToolCall,
     ToolCalls,
     Usage,
+    is_tool_markup,
 )
 
 from olymp_api.settings import Settings
@@ -25,6 +26,7 @@ __all__ = [
     "ToolCall",
     "ToolCalls",
     "Usage",
+    "is_tool_markup",
     "make_provider",
     "provider_name",
 ]

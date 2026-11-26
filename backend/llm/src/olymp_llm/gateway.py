@@ -7,6 +7,7 @@
 import asyncio
 import json
 import os
+import re
 from collections.abc import AsyncIterator, Mapping
 from dataclasses import dataclass
 from typing import Any, Protocol
@@ -18,6 +19,22 @@ log = structlog.get_logger()
 
 ATTEMPTS_PER_MODEL = 2
 RETRY_DELAY = 0.5
+
+# модели иногда пишут разметку вызова вместо текста: `<｜｜DSML｜｜ calls>`, `<|tool_call|>`,
+# `<tool_call>` и их варианты с закрывающим тегом
+TOOL_MARKUP = re.compile(
+    r"<\s*/?\s*(?:"
+    r"\|[^>]*?(?:tool|call|dsml)[^>]*?\|[^>]*"
+    r"|｜｜[^>]*(?:DSML|tool|call)[^>]*"
+    r"|(?:tool|function)[_\s-]?calls?\b[^>]*"
+    r")\s*>",
+    re.I,
+)
+
+
+def is_tool_markup(text: str) -> bool:
+    """В тексте — сырая разметка вызова инструмента, а не ответ ученику."""
+    return bool(TOOL_MARKUP.search(text))
 
 
 @dataclass(frozen=True)

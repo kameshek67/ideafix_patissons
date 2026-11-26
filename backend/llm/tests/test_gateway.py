@@ -10,12 +10,25 @@ from olymp_llm import (
     ToolCalls,
     Usage,
     complete,
+    is_tool_markup,
     provider_from_env,
 )
 from olymp_llm import gateway as gateway_module
 from olymp_llm.fake import FakeProvider
 
 MESSAGES = [{"role": "user", "content": "привет"}]
+
+
+def test_raw_tool_markup_is_not_an_answer() -> None:
+    for text in (
+        '<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name="find_olympiads">',
+        '<|tool_call|>{"name": "find_olympiads"}',
+        "<tool_call>find_olympiads</tool_call>",
+        "Сначала <｜｜DSML｜｜tool_calls> — это не ответ.",
+    ):
+        assert is_tool_markup(text), text
+    assert not is_tool_markup("БВИ дают только победителям.")
+    assert not is_tool_markup("Найди олимпиаду и расскажи про БВИ.")
 
 
 def sse(*chunks: object) -> bytes:

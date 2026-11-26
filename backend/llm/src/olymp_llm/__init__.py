@@ -10,6 +10,7 @@ from .gateway import (
     ToolCalls,
     Usage,
     complete,
+    is_tool_markup,
     provider_from_env,
 )
 
@@ -23,5 +24,6 @@ __all__ = [
     "ToolCalls",
     "Usage",
     "complete",
+    "is_tool_markup",
     "provider_from_env",
 ]

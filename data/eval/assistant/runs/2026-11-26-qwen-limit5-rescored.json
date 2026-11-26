@@ -1,0 +1,366 @@
+{
+ "date": "2026-11-26T13:13:05+00:00",
+ "provider": "qwen",
+ "model": "qwen/qwen3.7-flash",
+ "prompt_version": "6",
+ "data_version": "2026-11-26 13:41:46",
+ "cases_file": "assistant_cases.jsonl",
+ "summary": {
+  "cases": 5,
+  "passed": 1,
+  "passed_share": 0.2,
+  "answered_turns": 3,
+  "model_errors": 0,
+  "retried_share": 0.0,
+  "dialogs_passed_share": null,
+  "facts_found_share": 0.333,
+  "violations": 0,
+  "first_visible_p50": 6.067755841999315,
+  "first_visible_p95": 16.442074107995722,
+  "first_delta_p50": 17.02943536499515,
+  "first_delta_p95": 30.908416529011447,
+  "answer_p50": 17.030121668998618,
+  "answer_p95": 30.909282147011254,
+  "rounds_mean": 3.2,
+  "tools_mean": 2.4,
+  "tokens_prompt": 49850,
+  "tokens_completion": 6745,
+  "cost_total": 0.0016,
+  "cost_per_answer": 0.0005,
+  "cost_source": "провайдер",
+  "error_share_raw": 0.0,
+  "who_type_errors_raw": 0,
+  "hedge_share_raw": 0.0,
+  "no_data_where_data_raw": 0.0,
+  "fabrication_raw": null,
+  "error_share_final": 0.0,
+  "who_type_errors_final": 0,
+  "hedge_share_final": 0.0,
+  "no_data_where_data_final": 0.0,
+  "fabrication_final": null,
+  "error_kinds_raw": {},
+  "error_kinds_final": {}
+ },
+ "gate": {
+  "who_type_errors": true,
+  "other_errors": true,
+  "p95": false,
+  "passed": false
+ },
+ "cases": [
+  {
+   "id": "pair-vp-hse",
+   "kind": "pair",
+   "passed": true,
+   "reasons": [],
+   "violations": 0,
+   "seconds": 17.03,
+   "turns": [
+    {
+     "question": "Дают ли в ВШЭ БВИ за Высшую пробу?",
+     "answer": "Да, в НИУ ВШЭ дают **БВИ** за олимпиаду **«Высшая проба»**, но условия зависят от выбранного направления.\n\n- **Математика**: БВИ получают и победители, и призёры (10–11 классы). Нужно подтвердить результат ЕГЭ по математике на **75 баллов**.\n- **Прикладная математика и информатика**: БВИ только для победителей 11 класса. Порог ЕГЭ по математике — **85 баллов**, по информатике — **90 баллов**.\n- **Совместный бакалавриат**: БВИ для победителей и призёров 10–11 классов по профилю «математика» (ЕГЭ математика ≥ 75) и только для победителей 11 класса по профилю «информатика» (ЕГЭ информатика ≥ 75).\n\nДальше: уточни, какое направление тебе интересно, чтобы я проверил детали.",
+     "raw_answer": "Да, в НИУ ВШЭ дают **БВИ** за олимпиаду **«Высшая проба»**, но условия зависят от выбранного направления.\n\n- **Математика**: БВИ получают и победители, и призёры (10–11 классы). Нужно подтвердить результат ЕГЭ по математике на **75 баллов**.\n- **Прикладная математика и информатика**: БВИ только для победителей 11 класса. Порог ЕГЭ по математике — **85 баллов**, по информатике — **90 баллов**.\n- **Совместный бакалавриат**: БВИ для победителей и призёров 10–11 классов по профилю «математика» (ЕГЭ математика ≥ 75) и только для победителей 11 класса по профилю «информатика» (ЕГЭ информатика ≥ 75).\n\nДальше: уточни, какое направление тебе интересно, чтобы я проверил детали.",
+     "tools": [
+      "find_olympiads",
+      "universities_for_olympiad"
+     ],
+     "rounds": 3,
+     "first_visible": 6.067755841999315,
+     "first_delta": 17.02943536499515,
+     "seconds": 17.030121668998618,
+     "notice": "Проверь условия в правилах приёма вуза: они меняются каждый год.",
+     "failure": null,
+     "retried": false,
+     "model_error": false,
+     "reasons": [],
+     "violations": [],
+     "raw_violations": [],
+     "expected": {
+      "found": [
+       true
+      ],
+      "missing": [],
+      "hits": [],
+      "hits_who": 0,
+      "hits_type": 0,
+      "no_data": false,
+      "asserts": true
+     },
+     "raw_expected": {
+      "found": [
+       true
+      ],
+      "missing": [],
+      "hits": [],
+      "hits_who": 0,
+      "hits_type": 0,
+      "no_data": false,
+      "asserts": true
+     },
+     "prompt_tokens": 10562,
+     "completion_tokens": 1033,
+     "cost": 0.000322126,
+     "tool_results_count": 0
+    }
+   ]
+  },
+  {
+   "id": "pair-vp-hse-ege",
+   "kind": "pair",
+   "passed": false,
+   "reasons": [
+    "ошибка: empty"
+   ],
+   "violations": 0,
+   "seconds": 15.57,
+   "turns": [
+    {
+     "question": "Какой балл ЕГЭ нужен для БВИ в ВШЭ за Высшую пробу?",
+     "answer": "",
+     "raw_answer": "",
+     "tools": [
+      "find_olympiads",
+      "benefit_conditions",
+      "list_universities",
+      "benefit_conditions"
+     ],
+     "rounds": 4,
+     "first_visible": 3.1782265399815515,
+     "first_delta": null,
+     "seconds": 15.56807900799322,
+     "notice": null,
+     "failure": "empty",
+     "retried": false,
+     "model_error": false,
+     "reasons": [
+      "ошибка: empty"
+     ],
+     "violations": [],
+     "raw_violations": [],
+     "expected": {
+      "found": [
+       false
+      ],
+      "missing": [
+       "НИУ ВШЭ (Москва) · «Высшая проба» · БВИ"
+      ],
+      "hits": [],
+      "hits_who": 0,
+      "hits_type": 0,
+      "no_data": false,
+      "asserts": false
+     },
+     "raw_expected": {
+      "found": [
+       false
+      ],
+      "missing": [
+       "НИУ ВШЭ (Москва) · «Высшая проба» · БВИ"
+      ],
+      "hits": [],
+      "hits_who": 0,
+      "hits_type": 0,
+      "no_data": false,
+      "asserts": false
+     },
+     "prompt_tokens": 10889,
+     "completion_tokens": 868,
+     "cost": 0.000249046,
+     "tool_results_count": 0
+    }
+   ]
+  },
+  {
+   "id": "pair-nto-itmo-parent",
+   "kind": "pair",
+   "passed": false,
+   "reasons": [
+    "ошибка: unavailable"
+   ],
+   "violations": 0,
+   "seconds": 18.77,
+   "turns": [
+    {
+     "question": "Сын победитель НТО. Возьмут ли его в ИТМО без экзаменов?",
+     "answer": "",
+     "raw_answer": "",
+     "tools": [
+      "find_olympiads"
+     ],
+     "rounds": 2,
+     "first_visible": 16.442074107995722,
+     "first_delta": null,
+     "seconds": 18.77016898902366,
+     "notice": null,
+     "failure": "unavailable",
+     "retried": false,
+     "model_error": false,
+     "reasons": [
+      "ошибка: unavailable"
+     ],
+     "violations": [],
+     "raw_violations": [],
+     "expected": {
+      "found": [
+       false
+      ],
+      "missing": [
+       "Университет ИТМО · НТО · БВИ"
+      ],
+      "hits": [],
+      "hits_who": 0,
+      "hits_type": 0,
+      "no_data": false,
+      "asserts": false
+     },
+     "raw_expected": {
+      "found": [
+       false
+      ],
+      "missing": [
+       "Университет ИТМО · НТО · БВИ"
+      ],
+      "hits": [],
+      "hits_who": 0,
+      "hits_type": 0,
+      "no_data": false,
+      "asserts": false
+     },
+     "prompt_tokens": 2883,
+     "completion_tokens": 1500,
+     "cost": 0.00022005,
+     "tool_results_count": 0
+    }
+   ]
+  },
+  {
+   "id": "pair-nto-mifi",
+   "kind": "pair",
+   "passed": false,
+   "reasons": [
+    "нет факта: НИЯУ МИФИ · НТО · БВИ · кому: both · ЕГЭ ≥ 75"
+   ],
+   "violations": 0,
+   "seconds": 30.91,
+   "turns": [
+    {
+     "question": "Что даёт НТО при поступлении в МИФИ и кому?",
+     "answer": "В **НИЯУ МИФИ** НТО даёт **БВИ** победителям и",
+     "raw_answer": "В **НИЯУ МИФИ** НТО даёт **БВИ** победителям и",
+     "tools": [
+      "find_olympiads",
+      "universities_for_olympiad"
+     ],
+     "rounds": 3,
+     "first_visible": 11.244079141004477,
+     "first_delta": 30.908416529011447,
+     "seconds": 30.909282147011254,
+     "notice": "Проверь условия в правилах приёма вуза: они меняются каждый год.",
+     "failure": null,
+     "retried": false,
+     "model_error": false,
+     "reasons": [
+      "нет факта: НИЯУ МИФИ · НТО · БВИ · кому: both · ЕГЭ ≥ 75"
+     ],
+     "violations": [],
+     "raw_violations": [],
+     "expected": {
+      "found": [
+       false
+      ],
+      "missing": [
+       "НИЯУ МИФИ · НТО · БВИ · кому: both · ЕГЭ ≥ 75"
+      ],
+      "hits": [],
+      "hits_who": 0,
+      "hits_type": 0,
+      "no_data": false,
+      "asserts": true
+     },
+     "raw_expected": {
+      "found": [
+       false
+      ],
+      "missing": [
+       "НИЯУ МИФИ · НТО · БВИ · кому: both · ЕГЭ ≥ 75"
+      ],
+      "hits": [],
+      "hits_who": 0,
+      "hits_type": 0,
+      "no_data": false,
+      "asserts": true
+     },
+     "prompt_tokens": 10465,
+     "completion_tokens": 2475,
+     "cost": 0.000445236,
+     "tool_results_count": 0
+    }
+   ]
+  },
+  {
+   "id": "pair-pvg-mgu",
+   "kind": "pair",
+   "passed": false,
+   "reasons": [
+    "нет факта: МГУ им. М.В. Ломоносова · «Покори Воробьёвы горы!» · БВИ"
+   ],
+   "violations": 0,
+   "seconds": 15.28,
+   "turns": [
+    {
+     "question": "Что даёт олимпиада «Покори Воробьёвы горы» в МГУ?",
+     "answer": "В МГУ олимпиада «Покори Воробьёвы горы!» даёт разные льготы в зависимости от факультета.\n\n- **Механико-математический факультет**: БВИ для победителей и призёров 11 класса (нужно подтвердить ЕГЭ по математике).\n- **Исторический, Филологический, Факультет журналистики**: БВИ только для победителей 11 класса.\n- **Факультет журналистики**: также можно получить 100 баллов за профильные предметы (история, литература, иностранный язык).\n- **Философский факультет**: 100 баллов за историю, литературу, обществознание или географию (для победителей и призёров).\n- **Высшая школа телевидения**: 100 баллов за литературу или историю (для победителей и призёров).\n\nДальше: уточни свой интересующий факультет, чтобы я проверил точные условия.",
+     "raw_answer": "В МГУ олимпиада «Покори Воробьёвы горы!» даёт разные льготы в зависимости от факультета.\n\n- **Механико-математический факультет**: БВИ для победителей и призёров 11 класса (нужно подтвердить ЕГЭ по математике).\n- **Исторический, Филологический, Факультет журналистики**: БВИ только для победителей 11 класса.\n- **Факультет журналистики**: также можно получить 100 баллов за профильные предметы (история, литература, иностранный язык).\n- **Философский факультет**: 100 баллов за историю, литературу, обществознание или географию (для победителей и призёров).\n- **Высшая школа телевидения**: 100 баллов за литературу или историю (для победителей и призёров).\n\nДальше: уточни свой интересующий факультет, чтобы я проверил точные условия.",
+     "tools": [
+      "find_olympiads",
+      "universities_for_olympiad",
+      "benefit_conditions"
+     ],
+     "rounds": 4,
+     "first_visible": 5.134494425990852,
+     "first_delta": 15.275899578991812,
+     "seconds": 15.276726728974609,
+     "notice": "Проверь условия в правилах приёма вуза: они меняются каждый год.",
+     "failure": null,
+     "retried": false,
+     "model_error": false,
+     "reasons": [
+      "нет факта: МГУ им. М.В. Ломоносова · «Покори Воробьёвы горы!» · БВИ"
+     ],
+     "violations": [],
+     "raw_violations": [],
+     "expected": {
+      "found": [
+       false
+      ],
+      "missing": [
+       "МГУ им. М.В. Ломоносова · «Покори Воробьёвы горы!» · БВИ"
+      ],
+      "hits": [],
+      "hits_who": 0,
+      "hits_type": 0,
+      "no_data": false,
+      "asserts": true
+     },
+     "raw_expected": {
+      "found": [
+       false
+      ],
+      "missing": [
+       "МГУ им. М.В. Ломоносова · «Покори Воробьёвы горы!» · БВИ"
+      ],
+      "hits": [],
+      "hits_who": 0,
+      "hits_type": 0,
+      "no_data": false,
+      "asserts": true
+     },
+     "prompt_tokens": 15051,
+     "completion_tokens": 869,
+     "cost": 0.000374036,
+     "tool_results_count": 0
+    }
+   ]
+  }
+ ]
+}

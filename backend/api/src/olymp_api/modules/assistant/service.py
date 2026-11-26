@@ -23,7 +23,7 @@ from typing import Any
 import structlog
 from olymp_domain.pii import mask_personal_data
 
-from olymp_api.llm import LLMError, LLMProvider, TextDelta, ToolCalls
+from olymp_api.llm import LLMError, LLMProvider, TextDelta, ToolCalls, is_tool_markup
 
 from .claims import Ledger, check_claims
 from .context import DialogContext, advance, encode
@@ -68,6 +68,8 @@ NO_DATA_ANSWER = (
     "По этому вопросу в базе нет данных. Проверь на официальном сайте олимпиады или в правилах "
     "приёма вуза, а я могу поискать другие олимпиады или вузы."
 )
+# сырая разметка вызова инструмента: повтор не помог, выдаём честный отказ без «нет данных»
+BAD_ANSWER = "Не получилось ответить, попробуй переформулировать"
 CUT_NOTE = "Остального в базе нет: проверь на официальном сайте олимпиады или в правилах приёма."
 MAX_FIX_ITEMS = 8
 # нарушения фактов диалога и нарушения по базе (claims): повтор получает разные подсказки
@@ -127,6 +129,7 @@ class Trace:
     raw_problems: list[Violation] = field(default_factory=list)
     retry_answer: str | None = None
     retry_problems: list[Violation] = field(default_factory=list)
+    model_error: bool = False  # модель вернула разметку вызова инструмента вместо ответа
     ledger: Ledger | None = None  # чтобы оценка проверила итоговый ответ тем же набором строк
     facts: Facts | None = None
 
@@ -204,7 +207,7 @@ async def review(answer: str, checker: Review) -> str:
     не из данных, «обычно…» про олимпиаду. Нарушения — один повтор генерации; повтор тоже
     с нарушениями — предложения с ними вырезаются; вырезано всё — «в базе нет данных»."""
     problems = await problems_of(answer, checker)
-    if checker.trace:
+    if checker.trace and not checker.trace.model_error:
         checker.trace.raw_answer, checker.trace.raw_problems = answer, problems
     if not problems:
         return answer
@@ -362,6 +365,24 @@ async def conversation(
     if not answer:
         yield "error", {"code": "empty"}
         return
+    bad_answer = is_tool_markup(answer)
+    if bad_answer:
+        if trace is not None:
+            trace.raw_answer, trace.model_error = answer, True
+        log.warning("assistant_raw_tool_call", rounds=rounds)
+        retried = ""
+        if await spend():
+            rounds += 1
+            try:
+                async for event in provider.stream(history, []):
+                    if isinstance(event, TextDelta):
+                        retried += event.text
+            except LLMError as exc:
+                log.warning("assistant_llm_failed", reason=str(exc), stage="raw_tool_call")
+            retried = retried.strip()
+            if trace is not None:
+                trace.retry_answer = retried or None
+        answer = retried if retried and not is_tool_markup(retried) else BAD_ANSWER
     yield "status", {"text": STATUS_CHECKING}
     facts = collect_facts(results, messages, dialog)
     ledger = ledger or Ledger(ctx.session)
@@ -370,7 +391,8 @@ async def conversation(
     )
     if trace is not None:
         trace.ledger, trace.facts = ledger, facts
-    answer = (await review(answer, checker)).strip()
+    if not bad_answer or answer != BAD_ANSWER:
+        answer = (await review(answer, checker)).strip()
     for part in chunks(answer):
         yield "delta", {"text": part}
     if calls_used:

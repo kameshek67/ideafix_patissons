@@ -21,12 +21,14 @@ def vocab() -> Vocabulary:
     v.add_university(HSE_SPB, "НИУ ВШЭ — Санкт-Петербург", "НИУ ВШЭ — Санкт-Петербург")
     v.add_university(ITMO, "Университет ИТМО", "Университет ИТМО")
     v.add_university(MIPT, "МФТИ", "МФТИ")
+    v.add_university(30, "НИЯУ МИФИ", "НИЯУ МИФИ")
     v.add_university(20, "СПбГУ", "СПбГУ")
     for id_, label, *aliases in [
         (VP, "«Высшая проба»", "высшая проба"),
         (NTO, "НТО"),
         (FIZTEH, "«Физтех»", "физтех"),
         (VSOSH, "ВсОШ", "всош"),
+        (22, "«Росатом»", "росатом"),
         (SPBGU_OLY, "Олимпиада СПбГУ"),
         (21, "СПбГУ"),
     ]:
@@ -280,6 +282,61 @@ def test_assess_facts_and_forbidden(vocab: Vocabulary) -> None:
     assert elsewhere.hits and elsewhere.found == [False]
 
 
+@pytest.mark.parametrize(
+    "answer",
+    [
+        "«Росатом» в НИЯУ МИФИ: БВИ. Кому: победители. Подтверждение: ЕГЭ по математике ≥ 75. "
+        "Прямо олимпиаду не называет.",
+        "- «Росатом» и НИЯУ МИФИ\n  - Льгота: БВИ\n  - Кому: победители\n"
+        "  - Подтверждение: ЕГЭ по математике ≥ 75",
+        "1. НИЯУ МИФИ, «Росатом»:\n   БВИ, кому победители, ЕГЭ по математике ≥ 75.",
+        "«Росатом», НИЯУ МИФИ\nльгота — БВИ\nкому: победители\n"
+        "подтверждение — ЕГЭ по математике ≥ 75",
+    ],
+)
+def test_fact_counts_when_parts_are_in_one_block(answer: str, vocab: Vocabulary) -> None:
+    spec = Spec.parse(
+        {
+            "data": "present",
+            "facts": [
+                {
+                    "universities": ["НИЯУ МИФИ"],
+                    "olympiads": ["«Росатом»"],
+                    "benefit": "БВИ",
+                    "who": "winners",
+                    "min_ege": 75,
+                    "subject": "математика",
+                }
+            ],
+        }
+    )
+    assert assess(spec, answer, vocab).found == [True]
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        "«Росатом», НИЯУ МИФИ: БВИ.\n\nКому: победители, ЕГЭ по математике ≥ 75.",
+        "- НИЯУ МИФИ, «Росатом»: БВИ.\n- Кому: победители, ЕГЭ по математике ≥ 75.",
+    ],
+)
+def test_fact_is_not_merged_across_blocks(answer: str, vocab: Vocabulary) -> None:
+    spec = Spec.parse(
+        {
+            "data": "present",
+            "facts": [
+                {
+                    "universities": ["НИЯУ МИФИ"],
+                    "olympiads": ["«Росатом»"],
+                    "benefit": "БВИ",
+                    "who": "winners",
+                }
+            ],
+        }
+    )
+    assert assess(spec, answer, vocab).found == [False]
+
+
 def test_assess_min_count_and_absent(vocab: Vocabulary) -> None:
     spec = Spec.parse(
         {
@@ -312,6 +369,30 @@ def test_forbidden_university_family_needs_all_campuses(vocab: Vocabulary) -> No
 
 
 # ---------------------------------------------------------------- до и после фактчекера
+
+
+async def test_raw_tool_call_is_a_model_error_not_no_data(vocab: Vocabulary) -> None:
+    markup = '<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name="benefit_conditions">'
+    fake = FakeProvider([[TextDelta(markup)], [TextDelta("<tool_call>ещё раз</tool_call>")]])
+    case = evaluate.parse_case(
+        {
+            "id": "x",
+            "question": "Что даёт НТО в ИТМО?",
+            "expect": {
+                "data": "present",
+                "facts": [{"universities": ["Университет ИТМО"], "olympiads": ["НТО"]}],
+            },
+        }
+    )
+    outcome = await evaluate.run_case(case, fake, None, vocab)
+    turn = outcome.turns[0]
+    assert turn.model_error and turn.raw_answer == markup
+    assert turn.answer == "Не получилось ответить, попробуй переформулировать"
+    assert turn.expected is not None and not turn.expected.no_data
+    assert "ошибка модели" in outcome.reasons[0]
+    stats = evaluate.report([outcome], "fake")["summary"]
+    assert stats["model_errors"] == 1
+    assert stats["no_data_where_data_final"] == 0.0
 
 
 async def test_raw_and_final_errors_are_counted_apart(vocab: Vocabulary, ledger: Ledger) -> None:

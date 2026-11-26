@@ -374,30 +374,29 @@ def extract(answer: str, mentions: Sequence[Mention]) -> list[Claim]:
     return claims
 
 
-def by_sentence(claims: Sequence[Claim]) -> list[Claim]:
-    """Утверждения предложения одним: так проверяется «вуз + олимпиада + вид + кому + порог» из
-    разных частей одного предложения. Предложение с отрицанием остаётся отрицательным."""
-    merged: dict[str, Claim] = {}
-    for claim in claims:
-        into = merged.get(claim.sentence)
-        if into is None:
-            merged[claim.sentence] = Claim(
-                claim.sentence,
-                claim.sentence,
-                claim.universities,
-                claim.olympiads,
-                claim.types,
-                claim.winners,
-                claim.prizers,
-                claim.only_winners,
-                claim.subjects,
-                list(claim.thresholds),
-                claim.role_text,
-                claim.positive,
-                claim.asserts,
-                claim.ambiguous,
-            )
-            continue
+def merge_claims(claims: Sequence[Claim]) -> Claim | None:
+    """Свести утверждения одного блока в одно: «вуз + олимпиада + вид + кому + порог» могут
+    быть в разных его частях. Отрицание сохраняется, если есть в любой части."""
+    if not claims:
+        return None
+    first = claims[0]
+    into = Claim(
+        first.sentence,
+        first.sentence,
+        first.universities,
+        first.olympiads,
+        first.types,
+        first.winners,
+        first.prizers,
+        first.only_winners,
+        first.subjects,
+        list(first.thresholds),
+        first.role_text,
+        first.positive,
+        first.asserts,
+        first.ambiguous,
+    )
+    for claim in claims[1:]:
         into.universities |= claim.universities
         into.olympiads |= claim.olympiads
         into.types |= claim.types
@@ -410,7 +409,16 @@ def by_sentence(claims: Sequence[Claim]) -> list[Claim]:
         into.positive = into.positive and claim.positive
         into.asserts = into.asserts or claim.asserts
         into.ambiguous = into.ambiguous or claim.ambiguous
-    return list(merged.values())
+    return into
+
+
+def by_sentence(claims: Sequence[Claim]) -> list[Claim]:
+    """Утверждения предложения одним: так проверяется «вуз + олимпиада + вид + кому + порог» из
+    разных частей одного предложения. Предложение с отрицанием остаётся отрицательным."""
+    grouped: dict[str, list[Claim]] = {}
+    for claim in claims:
+        grouped.setdefault(claim.sentence, []).append(claim)
+    return [merged for group in grouped.values() if (merged := merge_claims(group)) is not None]
 
 
 # ---------------------------------------------------------------- проверки по базе

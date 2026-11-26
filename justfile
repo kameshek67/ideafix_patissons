@@ -89,6 +89,11 @@ assistant-eval *ARGS:
 assistant-cases:
     {{uv}} python -m olymp_api.modules.assistant.build_cases
 
+# пересчитать проверки и метрики сохранённого прогона без вызова модели:
+# just assistant-rescore отчёт.json --out новый.json [--summary data/eval/assistant/summary.json]
+assistant-rescore *ARGS:
+    {{uv}} python -m olymp_api.modules.assistant.rescore {{ARGS}}
+
 # ИИ-черновики карточек олимпиад: just ai-cards sites | just ai-cards draft --top 50 (нужны база и OLYMP_LLM_*)
 ai-cards *ARGS:
     {{uv}} olymp-ai-cards {{ARGS}}

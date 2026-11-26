@@ -113,6 +113,7 @@ class TurnResult:
     notice: str | None = None  # оговорка под ответом (не часть ответа)
     failure: str | None = None
     retried: bool = False
+    model_error: bool = False  # модель вернула разметку вызова инструмента вместо ответа
     reasons: list[str] = field(default_factory=list)
     violations: list[Violation] = field(default_factory=list)  # итоговый ответ
     raw_violations: list[Violation] = field(default_factory=list)  # сырой ответ
@@ -253,6 +254,8 @@ def judge(case: Case, turn: TurnResult, final: Assessment | None) -> list[str]:
     """Причины провала последней реплики: инструменты и ожидания; пустой список — засчитана."""
     if turn.failure:
         return [f"ошибка: {turn.failure}"]
+    if turn.model_error:
+        return ["ошибка модели: сырой вызов инструмента"]
     spec = case.spec
     reasons = []
     if case.tools and not set(case.tools) & set(turn.tools):
@@ -342,6 +345,7 @@ async def run_case(
             recorder.cost,
         )
         turn.raw_answer, turn.retried = trace.raw_answer, trace.retry_answer is not None
+        turn.model_error = trace.model_error
         turns.append(turn)
         if turn.failure:
             turn.reasons = [f"ошибка: {turn.failure}"]
@@ -431,6 +435,7 @@ def summary(
         "passed": sum(o.passed for o in outcomes),
         "passed_share": share(sum(o.passed for o in outcomes), len(outcomes)),
         "answered_turns": len(answered),
+        "model_errors": sum(t.model_error for t in answered),
         "retried_share": share(sum(t.retried for t in answered), len(answered)),
         "dialogs_passed_share": share(sum(o.passed for o in dialogs), len(dialogs)),
         "facts_found_share": share(facts_found, facts_total),
@@ -540,6 +545,7 @@ def report(
 
 LABELS = {
     "passed_share": "пройдено",
+    "model_errors": "ошибки модели (сырой вызов)",
     "error_share_raw": "ответов с ошибкой факта до фактчекера",
     "error_share_final": "ответов с ошибкой факта после фактчекера",
     "who_type_errors_raw": "ошибок «кому»/«тип льготы» до",

@@ -277,6 +277,25 @@ async def test_empty_answer_is_error_event() -> None:
     assert parse((await Harness([[]]).post()).text)[-1] == ("error", {"code": "empty"})
 
 
+async def test_raw_tool_call_is_retried_once() -> None:
+    markup = '<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name="find_olympiads">'
+    harness = Harness([[TextDelta(markup)], [TextDelta("В базе есть олимпиада.")]])
+    events = parse((await harness.post()).text)
+    assert text_of(events) == "В базе есть олимпиада."
+    assert not any(name == "error" for name, _ in events)
+    assert len(harness.fake.requests) == 2
+
+
+async def test_raw_tool_call_twice_is_not_shown_as_answer() -> None:
+    harness = Harness(
+        [[TextDelta("<|tool_call|>")], [TextDelta("<tool_call>find_olympiads</tool_call>")]]
+    )
+    events = parse((await harness.post()).text)
+    assert text_of(events) == "Не получилось ответить, попробуй переформулировать"
+    assert "нет данных" not in text_of(events).lower()
+    assert len(harness.fake.requests) == 2
+
+
 async def test_global_budget_counts_each_model_call() -> None:
     rounds = [[tool("find_olympiads", {"query": ""})], [TextDelta("ответ")]]
     harness = Harness(rounds, llm_daily_requests=1)

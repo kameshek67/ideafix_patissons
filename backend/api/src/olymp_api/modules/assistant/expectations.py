@@ -21,7 +21,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
-from .claims import Claim, by_sentence, extract
+from .claims import Claim, by_sentence, extract, merge_claims
 from .factcheck import Vocabulary
 
 # «в базе нет данных» своими словами: так модель говорит, когда ничего не нашла
@@ -33,6 +33,34 @@ NO_DATA_MARKERS = re.compile(
 )
 FACT_FIELDS = {"universities", "olympiads", "benefit", "who", "min_ege", "subject", "min", "db"}
 DATA_MODES = ("present", "absent", "none")
+LIST_ITEM = re.compile(r"^\s*(?:[-•*–—]|\d+[.)])\s+")
+
+
+def blocks(text: str) -> list[str]:
+    """Абзацы и пункты списка вместе с вложенными строками: граница — пустая строка или
+    следующий пункт того же уровня."""
+    result: list[list[str]] = []
+    current: list[str] = []
+    base = item = 0
+    for line in text.splitlines():
+        if not line.strip():
+            if current:
+                result.append(current)
+                current = []
+            continue
+        indent = len(line) - len(line.lstrip())
+        marker = bool(LIST_ITEM.match(line))
+        if marker and (indent <= (item if current else base)):
+            if current:
+                result.append(current)
+            current, base, item = [line], indent, indent
+        elif current:
+            current.append(line)
+        else:
+            current, base, item = [line], indent, indent if marker else -1
+    if current:
+        result.append(current)
+    return ["\n".join(lines) for lines in result]
 
 
 @dataclass(frozen=True)
@@ -205,10 +233,17 @@ def assess(spec: Spec, answer: str, vocab: Vocabulary) -> Assessment:
     """Сверка ответа с ожиданиями вопроса."""
     mentions = vocab.find(answer)
     claims = by_sentence(extract(answer, mentions))
+    # факт считается названным, когда все его части есть в одном абзаце или пункте списка
+    block_claims: list[Claim] = []
+    for block in blocks(answer):
+        extracted = extract(block, vocab.find(block))
+        for positive in (True, False):
+            if merged := merge_claims([c for c in extracted if c.positive == positive]):
+                block_claims.append(merged)
     result = Assessment(no_data=bool(NO_DATA_MARKERS.search(answer)))
     result.asserts = any(c.positive and c.asserts and c.types for c in claims)
     for fact in spec.facts:
-        ok = stated(fact, claims, vocab)
+        ok = stated(fact, block_claims, vocab)
         result.found.append(ok)
         if not ok:
             result.missing.append(fact.describe())

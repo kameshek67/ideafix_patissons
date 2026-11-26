@@ -1,0 +1,85 @@
+{
+ "date": "2026-11-26T15:05:56+00:00",
+ "models": [
+  {
+   "model": "deepseek-v4-pro",
+   "cases": 69,
+   "passed_share": 0.58,
+   "error_share_raw": 0.152,
+   "error_share_final": 0.0,
+   "answer_p95": 43.0860539850255,
+   "cost_per_answer": 0.0209,
+   "gate_passed": false
+  },
+  {
+   "model": "deepseek-flash",
+   "cases": 69,
+   "passed_share": 0.681,
+   "error_share_raw": 0.151,
+   "error_share_final": 0.0,
+   "answer_p95": 14.09506869901088,
+   "cost_per_answer": 0.0044,
+   "gate_passed": true
+  },
+  {
+   "model": "deepseek/deepseek-v4-pro-0813",
+   "cases": 5,
+   "passed_share": 0.6,
+   "error_share_raw": 0.0,
+   "error_share_final": 0.0,
+   "answer_p95": 13.5728127110051,
+   "cost_per_answer": 0.007,
+   "gate_passed": true
+  },
+  {
+   "model": "google/gemini-3.1-flash-lite",
+   "cases": 5,
+   "passed_share": 0.4,
+   "error_share_raw": 0.0,
+   "error_share_final": 0.0,
+   "answer_p95": 22.07167551497696,
+   "cost_per_answer": 0.0039,
+   "gate_passed": false
+  },
+  {
+   "model": "z-ai/glm-5.3",
+   "cases": 5,
+   "passed_share": 0.4,
+   "error_share_raw": 0.5,
+   "error_share_final": 0.0,
+   "answer_p95": 34.201130614004796,
+   "cost_per_answer": 0.0234,
+   "gate_passed": false
+  },
+  {
+   "model": "openai/gpt-6-luna",
+   "cases": 5,
+   "passed_share": 0.4,
+   "error_share_raw": 0.0,
+   "error_share_final": 0.0,
+   "answer_p95": 15.952480866020778,
+   "cost_per_answer": 0.0007,
+   "gate_passed": true
+  },
+  {
+   "model": "qwen/qwen3.7-flash",
+   "cases": 5,
+   "passed_share": 0.2,
+   "error_share_raw": 0.0,
+   "error_share_final": 0.0,
+   "answer_p95": 30.909282147011254,
+   "cost_per_answer": 0.0005,
+   "gate_passed": false
+  }
+ ],
+ "selected": "deepseek-flash",
+ "summary": {
+  "cases": 69,
+  "passed_share": 0.681,
+  "error_share_raw": 0.151,
+  "error_share_final": 0.0,
+  "answer_p95": 14.09506869901088,
+  "cost_per_answer": 0.0044
+ },
+ "note": "прошла порог включения на полном наборе (69 вопросов) и дешевле остальных"
+}
