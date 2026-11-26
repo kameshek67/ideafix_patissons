@@ -50,15 +50,36 @@ function Total({
     return r ? ruleTitle(r) : fallback;
   };
   const s = q.data;
+  const share = s && s.max_total ? Math.min(100, Math.round((s.total / s.max_total) * 100)) : 0;
   return (
-    <div className="card p-4 points-total" aria-live="polite">
+    <div className="card points-total" aria-live="polite">
       {q.error ? <LoadError message={friendlyError(q.error)} onRetry={() => void q.refetch()} /> : null}
       {s ? (
         <>
-          <p className="card-title">
-            {s.total} {plural(s.total, "балл", "балла", "баллов")}
-            {s.max_total !== null ? <span className="card-kicker"> из {s.max_total} возможных</span> : null}
-          </p>
+          <div className="points-head">
+            <div className="min-w-0">
+              <p className="card-kicker">Твои баллы за достижения</p>
+              <p className="points-big">{`${s.total} ${plural(s.total, "балл", "балла", "баллов")}`}</p>
+            </div>
+            {s.max_total !== null ? (
+              <p className="points-cap">
+                <span>Можно добавить</span>
+                <b>{`до ${s.max_total} ${plural(s.max_total, "балла", "баллов", "баллов")}`}</b>
+              </p>
+            ) : null}
+          </div>
+          {s.max_total ? (
+            <div
+              className="points-bar"
+              role="progressbar"
+              aria-label="Сколько из возможных баллов набрано"
+              aria-valuemin={0}
+              aria-valuemax={s.max_total}
+              aria-valuenow={Math.min(s.total, s.max_total)}
+            >
+              <i style={{ width: `${share}%` }} />
+            </div>
+          ) : null}
           {s.capped ? (
             <p className="field-note">
               Набрано {s.raw_total}, но вуз засчитывает не больше {s.max_total}.
@@ -68,7 +89,7 @@ function Total({
             <p className="field-note">Потолок суммы в документе вуза не найден: уточни в приёмной комиссии.</p>
           ) : null}
           {s.awards.length + s.skipped.length ? (
-            <details className="mt-1">
+            <details className="mt-2">
               <summary className="card-kicker cursor-pointer">Из чего сложилось</summary>
               <ul className="notes-list">
                 {s.awards.map((a) => (
@@ -112,24 +133,33 @@ function RuleCard({
   const hint = yearHint(rule, admissionYear);
   const variant = picked?.variant ?? rule.variants[0];
   return (
-    <div className={`card p-3 ${on ? "rule-on" : ""}`}>
-      <label className="flex cursor-pointer items-start gap-3">
+    <div className={`card rule-card ${on ? "rule-on" : ""}`}>
+      <label className="rule-label">
         <input
           type="checkbox"
-          className="mt-1 h-5 w-5 shrink-0"
+          className="rule-check"
           checked={on}
           onChange={(e) => onChange({ ...picked, on: e.target.checked })}
         />
         <span className="min-w-0 flex-1">
-          <span className="flex flex-wrap items-center gap-1">
-            <span className="badge badge-sto">{`+${rule.points} ${plural(rule.points, "балл", "балла", "баллов")}`}</span>
-            <span className="badge badge-soft">{KIND_LABEL[rule.kind] ?? rule.kind}</span>
+          <span className="rule-top">
+            <span className="rule-kind">{KIND_LABEL[rule.kind] ?? rule.kind}</span>
+            <span className="rule-points">
+              <b>{`+${rule.points}`}</b>
+              <span>{plural(rule.points, "балл", "балла", "баллов")}</span>
+            </span>
           </span>
-          <span className="mt-1 block text-sm font-medium">{ruleTitle(rule)}</span>
-          {hint ? <span className="card-kicker block">{hint}</span> : null}
-          {rule.exclusive_group ? <span className="card-kicker block">из этой группы засчитывается одно — лучшее</span> : null}
+          <span className="rule-title">{ruleTitle(rule)}</span>
+          {hint || rule.exclusive_group ? (
+            <span className="rule-conditions">
+              {hint ? <span className="badge badge-soft">{hint}</span> : null}
+              {rule.exclusive_group ? (
+                <span className="badge badge-soft">из этой группы засчитывается одно — лучшее</span>
+              ) : null}
+            </span>
+          ) : null}
           <a
-            className="card-kicker underline"
+            className="rule-source"
             href={rule.source.url}
             target="_blank"
             rel="noreferrer"
@@ -140,7 +170,7 @@ function RuleCard({
         </span>
       </label>
       {rule.variants.length > 1 ? (
-        <div className="chip-group mt-2 pl-8" role="group" aria-label={`Что именно: ${ruleTitle(rule)}`}>
+        <div className="chip-group rule-variants" role="group" aria-label={`Что именно: ${ruleTitle(rule)}`}>
           {rule.variants.map((v) => (
             <button
               key={v}

@@ -518,10 +518,38 @@ html[data-max="android"] .table-toolbar .chip-ghost { display: none; }
 .assistant-input .btn-primary { flex: none; width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 18px; }
 
 
-/* «Баллы»: отмеченное достижение; сумма прилипает сверху, пока листаешь список */
-.rule-on { border-color: var(--brand); }
-.points-total { position: sticky; top: 128px; /* под шапкой (56) и вкладками */ z-index: 2; box-shadow: 0 8px 24px rgba(60, 0, 90, .12); }
+/* «Баллы»: сумма прилипает сверху, пока листаешь список; карточка достижения — вид, баллы крупно, условия мельче */
+.points-total { position: sticky; top: 128px; /* под шапкой (56) и вкладками */ z-index: 2; padding: 14px 16px; box-shadow: 0 8px 24px rgba(60, 0, 90, .12); }
 .points-total details[open] ul { max-height: 40vh; overflow-y: auto; }
+.points-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.points-big { margin-top: 2px; font-size: 30px; line-height: 34px; font-weight: 600; letter-spacing: -.01em; color: var(--brand-ink); font-variant-numeric: tabular-nums; }
+.points-cap {
+  display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; padding: 6px 12px; border-radius: 12px;
+  background: var(--soft); border: 1px solid #EBCBF7; text-align: right; line-height: 1.2;
+}
+.points-cap span { font-size: 11.5px; color: var(--muted); }
+.points-cap b { font-size: 15px; font-weight: 600; color: var(--brand-ink); }
+.points-bar { height: 6px; margin-top: 10px; border-radius: 6px; background: #F1E3F7; overflow: hidden; }
+.points-bar i { display: block; height: 100%; border-radius: 6px; background: var(--brand); transition: width .25s ease; }
+@media (prefers-reduced-motion: reduce) { .points-bar i { transition: none; } }
+
+.rule-card { padding: 14px 16px; transition: border-color .15s, background .15s, box-shadow .15s; }
+.rule-card:hover { border-color: #EBCBF7; }
+.rule-on, .rule-on:hover { border-color: var(--brand); background: var(--soft); box-shadow: 0 2px 10px rgba(188,0,245,.10); }
+.rule-label { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+.rule-check { flex-shrink: 0; width: 22px; height: 22px; margin-top: 1px; accent-color: var(--brand); }
+.rule-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.rule-kind { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--muted); }
+.rule-points { display: inline-flex; align-items: baseline; gap: 4px; flex-shrink: 0; color: var(--sto-ink); }
+.rule-points b { font-size: 22px; line-height: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.rule-points span { font-size: 12px; font-weight: 500; }
+.rule-on .rule-points { color: var(--brand-ink); }
+.rule-title { display: block; margin-top: 4px; font-size: 15px; line-height: 20px; font-weight: 500; }
+.rule-conditions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.rule-conditions .badge { white-space: normal; line-height: 17px; padding: 2px 9px; }
+.rule-source { display: inline-block; margin-top: 8px; font-size: 12px; line-height: 16px; color: var(--muted); text-decoration: underline; text-decoration-color: rgba(107,85,112,.3); text-underline-offset: 2px; }
+.rule-source:hover { color: var(--brand-ink); }
+.rule-variants { margin-top: 10px; padding-left: 34px; }
 
 /* «Нашли ошибку в данных?» под источниками */
 .report-link { margin-top: 6px; font-size: 12.5px; color: var(--brand-ink); text-decoration: underline; text-underline-offset: 2px; }

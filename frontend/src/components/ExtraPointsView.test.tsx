@@ -104,8 +104,9 @@ describe("вкладка «Баллы»", () => {
     renderView();
     await pickUniversity("НИЯУ МИФИ");
     await screen.findByText("Аттестат с отличием");
-    await waitFor(() => expect(screen.getByText(/из 10 возможных/)).toBeTruthy());
-    expect(screen.getByText("0 баллов", { exact: false })).toBeTruthy();
+    await waitFor(() => expect(screen.getByText("до 10 баллов")).toBeTruthy());
+    expect(screen.getByText("Можно добавить")).toBeTruthy();
+    expect(screen.getByText("0 баллов")).toBeTruthy();
   });
 
   it("срок виден сразу, без поля года; отметка ГТО добавляет баллы и ссылку на документ", async () => {
