@@ -23,6 +23,14 @@ seed: migrate
 validate *ARGS:
     uv run olymp-validate {{ARGS}}
 
+# обновить снимок выдачи data/snapshot/benefits.tsv из текущей базы (после осознанной правки разбора)
+snapshot:
+    uv run olymp-snapshot
+
+# что поменялось в выдаче относительно снимка (код выхода 1, если расходится)
+data-diff:
+    uv run olymp-snapshot --check
+
 # обойти страницы приёмных комиссий и обновить ссылки на документы
 refresh-sources *ARGS:
     uv run olymp-refresh-sources {{ARGS}}

@@ -69,6 +69,7 @@ from olymp_domain.textutils import (
 
 from .extra_points import load_extra_points
 from .olympiad_cards import CARDS_FILE, load_olympiad_cards
+from .row_keys import RowFields, assign_row_keys
 from .tables import clear_tables
 from .tls import is_web_url
 from .university_pages import PAGES
@@ -1249,6 +1250,7 @@ class Ingestor:
         self.extract_keywords()
         parsed, total = self.parse_ege_requirements()
         log(f"      пороги ЕГЭ разобраны: {parsed} из {total} непустых строк")
+        self.assign_row_keys()
 
         log("[6/7] Полнотекстовый индекс")
         self.build_fts()
@@ -1284,6 +1286,68 @@ class Ingestor:
                     (list(requirement.subjects), requirement.min_score, subject, minimum),
                 )
         return parsed, total
+
+    def assign_row_keys(self) -> None:
+        """Стабильный ключ строки (row_keys.py): считается, когда все поля строк уже окончательные."""
+        rows = [
+            RowFields(
+                id=bid,
+                university=uni,
+                program_code=code,
+                program_name=f"{direction}|{profile_name}",
+                benefit_type=btype,
+                layer=layer,
+                olympiads=keys or (),
+                profile=profile,
+                level=level,
+                role=role,
+                grade=grade,
+                ege_subject=subject,
+                ege_min=minimum,
+                source=source,
+                tiebreak=(conditions, subject_award, years, note, olympiad_subject),
+            )
+            for (
+                bid,
+                uni,
+                code,
+                direction,
+                profile_name,
+                btype,
+                layer,
+                keys,
+                profile,
+                level,
+                role,
+                grade,
+                subject,
+                minimum,
+                source,
+                conditions,
+                subject_award,
+                years,
+                note,
+                olympiad_subject,
+            ) in self.conn.execute(
+                """SELECT b.id, u.name, p.code, p.faculty_or_direction, p.profile_name,
+                          b.benefit_type, b.layer,
+                          (SELECT array_agg(o.squash_key) FROM benefit_olympiads bo
+                             JOIN olympiads o ON o.id = bo.olympiad_id WHERE bo.benefit_id = b.id),
+                          b.olympiad_profile, b.level, b.winner_role, b.grade,
+                          b.confirm_subject, b.min_ege, b.source_url,
+                          b.raw_conditions_text, b.award_subject, b.years, b.note,
+                          b.olympiad_subject
+                   FROM benefits b
+                   JOIN programs p ON p.id = b.program_id
+                   JOIN universities u ON u.id = p.university_id"""
+            ).fetchall()
+        ]
+        keys_by_id = assign_row_keys(rows)
+        with self.conn.cursor() as cur:
+            cur.executemany(
+                "UPDATE benefits SET row_key = %s WHERE id = %s",
+                [(key, bid) for bid, key in keys_by_id.items()],
+            )
 
     # -- справочник -------------------------------------------------------
     def save_catalog(self) -> None:
@@ -2325,13 +2389,14 @@ def build_fingerprint(xlsx_path: str) -> str:
     import olymp_domain.olympiad_seeds as seeds
     import olymp_domain.textutils as textutils
 
-    from . import olympiad_cards, university_pages
+    from . import olympiad_cards, row_keys, university_pages
 
     parts = [
         Path(xlsx_path),
         Path(SOURCES_CACHE),
         Path(__file__),
         Path(university_pages.__file__),
+        Path(row_keys.__file__),
         Path(textutils.__file__),
         Path(seeds.__file__),
         DATA_DIR / CARDS_FILE,

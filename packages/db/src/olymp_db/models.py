@@ -120,6 +120,7 @@ class Benefit(Base):
         Index(None, "program_id"),
         Index(None, "benefit_type"),
         Index(None, "layer"),
+        Index(None, "row_key"),
     )
 
     id: Mapped[int] = _pk()
@@ -144,6 +145,8 @@ class Benefit(Base):
     source_title: Mapped[str] = _text()
     source_url: Mapped[str] = _text()
     source_sheet: Mapped[str] = _text()
+    # стабильный ключ строки (хэш смысловых полей), в отличие от id не зависит от порядка сборки
+    row_key: Mapped[str] = _text()
 
 
 class Olympiad(Base):
