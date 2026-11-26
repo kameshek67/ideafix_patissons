@@ -1,9 +1,9 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Depends, Path, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from olymp_api.db import data_version, get_session
+from olymp_api.db import INT4_MAX, INT4_MIN, data_version, get_session
 from olymp_api.redis_support import cache_get, cache_set
 
 from . import service
@@ -31,7 +31,7 @@ async def universities(
 @router.get("/extra-points/universities/{university_id}", response_model=ExtraRules)
 async def rules(
     request: Request,
-    university_id: int,
+    university_id: int = Path(ge=INT4_MIN, le=INT4_MAX),
     admission_year: int = YEAR,
     session: AsyncSession = Depends(get_session),
 ) -> Any:

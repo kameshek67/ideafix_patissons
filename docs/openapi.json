@@ -4710,6 +4710,8 @@
             "schema": {
               "anyOf": [
                 {
+                  "maximum": 2147483647,
+                  "minimum": 1,
                   "type": "integer"
                 },
                 {
@@ -4784,6 +4786,8 @@
             "name": "olympiad_id",
             "required": true,
             "schema": {
+              "maximum": 2147483647,
+              "minimum": -2147483648,
               "title": "Olympiad Id",
               "type": "integer"
             }
@@ -5015,6 +5019,8 @@
             "name": "university_id",
             "required": true,
             "schema": {
+              "maximum": 2147483647,
+              "minimum": -2147483648,
               "title": "University Id",
               "type": "integer"
             }
@@ -5290,6 +5296,8 @@
             "name": "olympiad_id",
             "required": true,
             "schema": {
+              "maximum": 2147483647,
+              "minimum": -2147483648,
               "title": "Olympiad Id",
               "type": "integer"
             }
@@ -5594,6 +5602,8 @@
             "schema": {
               "anyOf": [
                 {
+                  "maximum": 2147483647,
+                  "minimum": 1,
                   "type": "integer"
                 },
                 {
@@ -5791,6 +5801,8 @@
             "schema": {
               "anyOf": [
                 {
+                  "maximum": 2147483647,
+                  "minimum": 1,
                   "type": "integer"
                 },
                 {
@@ -5807,6 +5819,8 @@
             "schema": {
               "anyOf": [
                 {
+                  "maximum": 2147483647,
+                  "minimum": 1,
                   "type": "integer"
                 },
                 {
@@ -5823,6 +5837,8 @@
             "schema": {
               "anyOf": [
                 {
+                  "maximum": 2147483647,
+                  "minimum": 1,
                   "type": "integer"
                 },
                 {
@@ -5931,6 +5947,8 @@
             "name": "program_id",
             "required": true,
             "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
               "title": "Program Id",
               "type": "integer"
             }

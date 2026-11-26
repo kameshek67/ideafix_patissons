@@ -3,7 +3,7 @@ from typing import Any, Literal
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from olymp_api.db import data_version, get_session
+from olymp_api.db import INT4_MAX, data_version, get_session
 from olymp_api.redis_support import cache_get, cache_set
 
 from . import service
@@ -14,7 +14,9 @@ router = APIRouter(prefix="/search", tags=["search"])
 
 @router.get("/by-program", response_model=ProgramSearch)
 async def by_program(
-    request: Request, program_id: int, session: AsyncSession = Depends(get_session)
+    request: Request,
+    program_id: int = Query(ge=1, le=INT4_MAX),
+    session: AsyncSession = Depends(get_session),
 ) -> Any:
     """«Ищу олимпиады под вуз»: строки таблиц по типам льгот, примечания, список олимпиад."""
     key = f"v1:by-program:{await data_version(session)}:{program_id}"
@@ -32,9 +34,9 @@ async def by_olympiad(
     q: str = Query(
         ..., min_length=2, max_length=200, description="Название олимпиады или его часть"
     ),
-    olympiad_id: int | None = None,
-    profile_id: int | None = None,
-    university_id: int | None = None,
+    olympiad_id: int | None = Query(None, ge=1, le=INT4_MAX),
+    profile_id: int | None = Query(None, ge=1, le=INT4_MAX),
+    university_id: int | None = Query(None, ge=1, le=INT4_MAX),
     region: str | None = None,
     benefit_type: str | None = None,
     limit: int = Query(400, ge=1, le=2000),

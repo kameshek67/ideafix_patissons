@@ -1,11 +1,11 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request
 from olymp_domain.diplomas import CAMPAIGN_YEAR, Rules, diploma_years
 from olymp_domain.ege import SUBJECTS
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from olymp_api.db import data_version, get_session
+from olymp_api.db import INT4_MAX, INT4_MIN, data_version, get_session
 from olymp_api.max_auth import MaxUser, max_user
 from olymp_api.redis_support import cache_get, cache_set
 
@@ -47,7 +47,9 @@ def parse_scores(values: list[str]) -> dict[str, int]:
 
 
 @router.get("/achievements/olympiads/{olympiad_id}", response_model=DiplomaForm)
-async def diploma_form(olympiad_id: int, session: AsyncSession = Depends(get_session)) -> Any:
+async def diploma_form(
+    olympiad_id: int = Path(ge=INT4_MIN, le=INT4_MAX), session: AsyncSession = Depends(get_session)
+) -> Any:
     """Олимпиада для формы диплома: ключ и профили без мусора разбора таблиц."""
     return await service.diploma_form(session, olympiad_id)
 
@@ -57,7 +59,7 @@ async def match(
     request: Request,
     diploma: list[str] = Query(..., description=DIPLOMA_HELP),
     benefit_type: str | None = None,
-    university_id: int | None = None,
+    university_id: int | None = Query(None, ge=1, le=INT4_MAX),
     ege: list[str] = Query(
         [],
         description=EGE_HELP,

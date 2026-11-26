@@ -16,6 +16,9 @@ from .settings import Settings
 
 Row = dict[str, Any]
 
+INT4_MIN = -2147483648
+INT4_MAX = 2147483647
+
 
 def make_engine(settings: Settings) -> AsyncEngine | None:
     if not settings.database_url:

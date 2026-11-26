@@ -91,12 +91,8 @@ async def test_programs_unknown_university(client: httpx.AsyncClient) -> None:
     assert response.json() == {"count": 0, "items": []}
 
 
-@pytest.mark.xfail(
-    reason="university_id=0 игнорируется фильтром и отдаются все направления", strict=True
-)
 async def test_programs_zero_university_id(client: httpx.AsyncClient) -> None:
-    response = await client.get("/v1/programs", params={"university_id": 0})
-    assert response.json() == {"count": 0, "items": []}
+    await assert_validation(client, "GET", "/v1/programs", params={"university_id": 0})
 
 
 @pytest.mark.parametrize(("limit", "status"), [(1, 200), (2000, 200), (0, 422), (2001, 422)])
@@ -301,29 +297,34 @@ async def test_max_config_ignores_query_and_rejects_post(client: httpx.AsyncClie
     assert_problem(wrong_method, 405, "Method Not Allowed")
 
 
-@pytest.mark.xfail(reason="id вне диапазона int32 вызывает 500 вместо 404/422", strict=True)
 @pytest.mark.parametrize(
-    ("path", "params", "expected"),
+    ("path", "params", "expected", "title"),
     [
-        ("/v1/programs", {"university_id": HUGE_ID}, 422),
-        ("/v1/programs", {"university_id": -HUGE_ID}, 422),
-        (f"/v1/olympiads/{HUGE_ID}/profiles", None, 404),
-        (f"/v1/extra-points/universities/{HUGE_ID}", {"admission_year": YEAR}, 404),
+        ("/v1/programs", {"university_id": HUGE_ID}, 422, "Validation error"),
+        ("/v1/programs", {"university_id": -HUGE_ID}, 422, "Validation error"),
+        (f"/v1/olympiads/{HUGE_ID}/profiles", None, 404, "Олимпиада не найдена"),
+        (
+            f"/v1/extra-points/universities/{HUGE_ID}",
+            {"admission_year": YEAR},
+            404,
+            "Вуз не найден",
+        ),
     ],
 )
 async def test_huge_id_in_query_or_path(
-    client: httpx.AsyncClient, path: str, params: dict[str, object] | None, expected: int
+    client: httpx.AsyncClient,
+    path: str,
+    params: dict[str, object] | None,
+    expected: int,
+    title: str,
 ) -> None:
     response = await client.get(path, params=params)
-    assert response.status_code == expected
+    assert_problem(response, expected, title)
 
 
-@pytest.mark.xfail(
-    reason="id вне диапазона int32 в теле запроса вызывает 500 вместо 404", strict=True
-)
 async def test_huge_university_id_in_score(client: httpx.AsyncClient) -> None:
     response = await client.post(
         "/v1/extra-points/score",
         json={"university_id": HUGE_ID, "admission_year": YEAR, "claims": []},
     )
-    assert response.status_code == 404
+    assert_problem(response, 404, "Вуз не найден")

@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from olymp_domain.extra_points import Claim, ExtraRule, score
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from olymp_api.db import Row, fetch_all, fetch_one, scalar
+from olymp_api.db import INT4_MAX, Row, fetch_all, fetch_one, scalar
 
 from . import schemas
 
@@ -48,6 +48,8 @@ def _domain_rule(r: Row) -> ExtraRule:
 async def _load(
     session: AsyncSession, university_id: int, year: int
 ) -> tuple[list[Row], Row | None]:
+    if not 1 <= university_id <= INT4_MAX:
+        raise HTTPException(404, "Вуз не найден")
     if (
         await fetch_one(
             session, "SELECT 1 AS x FROM universities WHERE id = :u", {"u": university_id}

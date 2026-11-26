@@ -1,9 +1,9 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Depends, Path, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from olymp_api.db import data_version, get_session
+from olymp_api.db import INT4_MAX, INT4_MIN, data_version, get_session
 from olymp_api.redis_support import cache_get, cache_set
 
 from . import service
@@ -41,7 +41,7 @@ async def universities(
 
 @router.get("/programs", response_model=Programs)
 async def programs(
-    university_id: int | None = None,
+    university_id: int | None = Query(None, ge=1, le=INT4_MAX),
     q: str | None = Query(None, max_length=200),
     limit: int = Query(500, ge=1, le=2000),
     session: AsyncSession = Depends(get_session),
@@ -66,6 +66,8 @@ async def olympiads(
 
 
 @router.get("/olympiads/{olympiad_id}/profiles", response_model=OlympiadProfiles)
-async def olympiad_profiles(olympiad_id: int, session: AsyncSession = Depends(get_session)) -> Any:
+async def olympiad_profiles(
+    olympiad_id: int = Path(ge=INT4_MIN, le=INT4_MAX), session: AsyncSession = Depends(get_session)
+) -> Any:
     """Профили олимпиады: у НТО их десятки, и льгота даётся за пару «олимпиада + профиль»."""
     return await service.olympiad_profiles(session, olympiad_id)

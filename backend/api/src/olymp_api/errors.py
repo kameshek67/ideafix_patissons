@@ -23,6 +23,14 @@ def problem(
     return JSONResponse(body, status_code=status, media_type=PROBLEM)
 
 
+def _missing_title(path: str) -> str:
+    if "/olympiads/" in path:
+        return "Олимпиада не найдена"
+    if "/extra-points/universities/" in path:
+        return "Вуз не найден"
+    return "Не найдено"
+
+
 def install(app: FastAPI) -> None:
     @app.exception_handler(StarletteHTTPException)
     async def _http(request: Request, exc: StarletteHTTPException) -> JSONResponse:
@@ -35,6 +43,14 @@ def install(app: FastAPI) -> None:
     async def _validation(request: Request, exc: RequestValidationError) -> JSONResponse:
         # входные значения не возвращаем: в запросе могут оказаться персональные данные
         errors = [{"loc": e["loc"], "msg": e["msg"], "type": e["type"]} for e in exc.errors()]
+        if any(
+            len(e["loc"]) > 1
+            and e["loc"][0] == "path"
+            and e["loc"][1] in {"olympiad_id", "university_id"}
+            and e["type"] in {"greater_than_equal", "less_than_equal"}
+            for e in errors
+        ):
+            return problem(request, 404, _missing_title(request.url.path))
         return problem(request, 422, "Validation error", errors=errors)
 
     @app.exception_handler(Exception)
