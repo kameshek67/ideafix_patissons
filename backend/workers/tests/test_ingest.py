@@ -26,22 +26,24 @@ from olymp_workers.olympiad_cards import CARDS_FILE, load_olympiad_cards
 #    победители» -> «победители»: ключевых слов 137963 -> 142261 (классов 8510 -> 11376).
 #  - C3: записи документов «все олимпиады перечня» раскрываются по профилю в пары «олимпиада + профиль»
 #    РСОШ (слой derived): +976 строк (ИТМО 27, МГУ 949), documents_added 5657 -> 6633.
+#  - C5: ключ повторов слоя document учитывает роль, классы, уровни и ЕГЭ: диплом 10 и 11 класса
+#    больше не склеиваются: +64 строки документа (МАИ 1387 вместо 1378), documents_added 6697.
 EXPECTED = {
     "universities": "39",
     "programs": "833",
-    "benefits": "60196",
-    "benefits_bvi": "36374",
-    "benefits_sto": "23018",
+    "benefits": "60260",
+    "benefits_bvi": "36430",
+    "benefits_sto": "23026",
     "benefits_raw": "859",
-    "benefits_rows": "59719",
+    "benefits_rows": "59783",
     "benefits_derived": "27654",
     "benefits_notes": "477",
     "olympiads": "176",
     "profiles": "658",
-    "links": "69854",
-    "keywords": "142261",
+    "links": "69918",
+    "keywords": "142428",
     "fts": "on",
-    "documents_added": "6633",
+    "documents_added": "6697",
     "documents_replaced": "164",
 }
 
@@ -406,7 +408,7 @@ def test_document_layer_rows_have_document_source(built_database_url: str) -> No
             "SELECT COUNT(*) FROM benefits WHERE layer NOT IN ('document', 'derived')"
             " AND source_page IS NOT NULL"
         ).fetchone()[0]
-    assert total == 5657
+    assert total == 5721
     assert (bad, others) == (0, 0)
 
 
@@ -436,7 +438,7 @@ def test_universities_without_tables_get_document_tables(built_database_url: str
                WHERE b.layer = 'document' AND u.short_name = 'МАИ'
                  AND s.document @@ to_tsquery('simple', 'проба:*')"""
         ).fetchone()[0]
-    assert rows["МАИ"] == 1378 and rows["НИУ «МЭИ»"] == 400
+    assert rows["МАИ"] == 1387 and rows["НИУ «МЭИ»"] == 400
     assert proba > 0 and indexed > 0
 
 

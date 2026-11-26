@@ -156,6 +156,12 @@ def apply_documents(
     return result
 
 
+def _variant(r: Record) -> str:
+    """Условия записи, по которым две строки с одной олимпиадой не повтор."""
+    ege = r.ege.model_dump_json() if r.ege else ""
+    return f"{r.winner_role}|{sorted(r.grades)}|{sorted(r.levels)}|{ege}"
+
+
 def _apply_university(
     ing: Ingestor,
     uid: int,
@@ -215,16 +221,23 @@ def _apply_university(
         if codes:
             coded.append(pid)
 
-    # строки документа по ключу (направление, олимпиада, профиль, тип); конкретный код
-    # сильнее «*»
-    chosen: dict[tuple[int, int, str, str], DocRecord] = {}
+    # строки документа по ключу (направление, олимпиада, профиль, тип, условия); конкретный код
+    # сильнее «*». Условия — роль, классы, уровни и ЕГЭ: записи, что различаются только ими
+    # (диплом 10 и 11 класса), остаются обе
+    chosen: dict[tuple[int, int, str, str, str], DocRecord] = {}
     for star in (False, True):
         for rec, olympiad_id in matched:
             r = rec.record
             if (r.program_code == ANY_CODE) != star:
                 continue
             for pid in coded if star else by_code.get(r.program_code, []):
-                key = (pid, olympiad_id, profile_key(r.profile), BENEFIT_TYPES[r.benefit_type])
+                key = (
+                    pid,
+                    olympiad_id,
+                    profile_key(r.profile),
+                    BENEFIT_TYPES[r.benefit_type],
+                    _variant(r),
+                )
                 if key in chosen:
                     stats["duplicates"] += 1
                 else:
@@ -236,10 +249,12 @@ def _apply_university(
             f"      ! олимпиада документа не сопоставлена со справочником: {name} (записей {count})"
         )
 
-    stats["replaced"] += _drop_xlsx_twins(ing, uid, set(chosen))
+    # строка XLSX заменяется, если документ говорит о той же паре «направление, олимпиада,
+    # профиль, тип»: все её варианты условий документ теперь отдаёт сам
+    stats["replaced"] += _drop_xlsx_twins(ing, uid, {k[:4] for k in chosen})
 
     with conn.pipeline():
-        for (pid, olympiad_id, _, _), rec in chosen.items():
+        for (pid, olympiad_id, *_), rec in chosen.items():
             ing.insert_benefit(
                 _detail(ing, rec, olympiad_id),
                 program_id=pid,

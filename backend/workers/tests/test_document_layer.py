@@ -12,6 +12,7 @@ from olymp_workers.document_layer import (
     RE_UMBRELLA,
     DocRecord,
     _apply_umbrella,
+    _apply_university,
     load_documents,
 )
 from olymp_workers.document_records import accept_document
@@ -205,3 +206,42 @@ def test_umbrella_without_known_profile_adds_nothing(built_database_url: str) ->
     with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
         ing = expand(conn, [umbrella_record("Несуществующий профиль", [1, 2, 3])], NEW_PROGRAM)
         assert ing.inserted == []
+
+
+def grade_record(grades: list[int], role: str = "both") -> DocRecord:
+    record = Record.model_validate(
+        {
+            "university": "МАИ",
+            "campaign": 2026,
+            "program_code": "01.03.01",
+            "benefit_type": "bvi",
+            "olympiad": "Высшая проба",
+            "profile": "математика",
+            "levels": [1],
+            "grades": grades,
+            "winner_role": role,
+            "source": {"url": URL, "sha256": SHA, "page": 1, "quote": f"классы {grades}"},
+        }
+    )
+    return DocRecord(record, "Приложение")
+
+
+def test_records_differing_by_grades_are_both_kept(built_database_url: str) -> None:
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        uid = conn.execute("SELECT id FROM universities ORDER BY id LIMIT 1").fetchone()[0]
+        conn.execute(
+            "INSERT INTO programs (university_id, code, faculty_or_direction)"
+            " VALUES (%s, '01.03.01', 'Математика')",
+            (uid,),
+        )
+        ing = FakeIngestor(conn)
+        oid = conn.execute(
+            "SELECT id FROM olympiads WHERE canonical_name ILIKE %s", ("%Высшая проба%",)
+        ).fetchone()[0]
+        ing.olympiad_id_for = lambda name: oid  # type: ignore[attr-defined]
+        recs = [grade_record([11]), grade_record([10]), grade_record([10])]
+        stats: Counter[str] = Counter()
+        _apply_university(ing, uid, recs, {}, stats, lambda _: None)  # type: ignore[arg-type]
+        assert stats["added"] == 2 and stats["duplicates"] == 1
+        assert sorted(d.grade for d, *_ in ing.inserted) == ["10 класс", "11 класс"]
+        conn.rollback()
