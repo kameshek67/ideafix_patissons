@@ -63,7 +63,7 @@ librt==0.16.0 ; platform_python_implementation != 'PyPy'
     # via mypy
 mako==1.4.3
     # via alembic
-markdown-it-py==4.2.0
+markdown-it-py==4.3.0
     # via rich
 markupsafe==3.0.4
     # via mako
