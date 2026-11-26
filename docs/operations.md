@@ -35,31 +35,22 @@
 
 ## Переменные окружения
 
-Локально — `.env` (образец — `.env.example`). Docker Compose передаёт в контейнеры только те
-переменные, что перечислены в `docker-compose.yml`.
+Локально — `.env` (образец — `.env.example`): там значения для разработки и пояснения к каждой
+строке. Docker Compose передаёт в контейнеры только перечисленные в `docker-compose.yml`, остальные
+читают API, воркеры и тесты напрямую. Полный список настроек API — в
+`backend/api/src/olymp_api/settings.py`.
 
-| Переменная | По умолчанию | Что это |
+| Группа | Переменные | Что задают |
 |---|---|---|
-| `OLYMP_ENV` | `local` | имя окружения |
-| `OLYMP_DATABASE_URL` | `postgresql+psycopg://olymp:olymp@localhost:5432/olymp` | база; для API в compose используется драйвер `asyncpg` |
-| `OLYMP_REDIS_URL` | нет | кэш и лимиты запросов; без него всё в памяти процесса |
-| `OLYMP_RABBITMQ_URL` | нет | очередь фоновых задач |
-| `OLYMP_API_URL` | `http://127.0.0.1:8000` | куда сайт проксирует `/api/v1/*` |
-| `OLYMP_ADMISSION_YEAR` | 2027 | год поступления ученика: диплом действует четыре года до него включительно |
-| `OLYMP_MAX_BOT_TOKEN` | нет | токен бота MAX. Секрет. Без него дипломы хранятся только на устройстве |
-| `OLYMP_MAX_BOT_NAME` | нет | имя бота без `@`, для ссылок `https://max.ru/<имя>?startapp=…` |
-| `OLYMP_MAX_OPERATOR_IDS` | нет | id дежурных в MAX через запятую; пусто — режим оператора выключен |
-| `OLYMP_SITE_URL` | `https://ideafix.patissons.tech` | куда ведёт кнопка «Сайт» в сообщениях бота |
-| `OLYMP_MAX_CA_DIR` | нет | каталог с корневым сертификатом Минцифры (в compose — `/certs`) |
-| `OLYMP_LLM_BASE_URL`, `OLYMP_LLM_API_KEY`, `OLYMP_LLM_MODEL` | нет | помощник; без всех трёх он выключен. Ключ — секрет |
-| `OLYMP_LLM_FALLBACK_MODEL` | нет | запасная модель |
-| `OLYMP_LLM_ENABLED` | `true` | быстро выключить помощника |
-| `OLYMP_LLM_DAILY_REQUESTS` | 45 | обращений к модели в сутки на весь сервис; 0 — без ограничения |
-| `OLYMP_LLM_PROFILES` | нет | JSON с профилями провайдеров для `just assistant-eval` |
-| `OLYMP_DOMAIN` | `localhost` | домен для профиля `https` |
-| `OLYMP_WEB_PORT`, `OLYMP_API_PORT` | 8080, 8000 | порты стека на `127.0.0.1` |
+| Общие | `OLYMP_ENV`, `OLYMP_LOG_LEVEL`, `OLYMP_ADMISSION_YEAR`, `OLYMP_DATA_DIR`, `XLSX_PATH`, `SOURCES_CACHE` | окружение (`local`), уровень логов, год поступления, каталог и файлы данных |
+| База и кэш | `OLYMP_DATABASE_URL`, `OLYMP_DB_STATEMENT_TIMEOUT_MS`, `OLYMP_DB_LOCK_TIMEOUT_MS`, `OLYMP_REDIS_URL`, `OLYMP_RABBITMQ_URL`, `OLYMP_CACHE_TTL` | адреса, таймауты БД (15000/3000 мс), время жизни кэша (600 с); без Redis всё в памяти процесса |
+| Лимиты | `OLYMP_RATE_LIMIT_WINDOW`, `OLYMP_RATE_LIMIT_REQUESTS`, `OLYMP_ASSISTANT_RATE_PER_MINUTE`, `OLYMP_ASSISTANT_RATE_PER_DAY`, `OLYMP_SHARE_RATE_LIMIT`, `OLYMP_SHARE_DAILY_LIMIT`, `OLYMP_REPORT_RATE_LIMIT`, `OLYMP_REPORT_DAILY_LIMIT`, `OLYMP_SHARE_TTL_DAYS` | частоты запросов, сообщений, ссылок и жалоб; 0 снимает ограничение, срок ссылки — дни |
+| Помощник | `OLYMP_LLM_ENABLED`, `OLYMP_LLM_BASE_URL`, `OLYMP_LLM_API_KEY`, `OLYMP_LLM_MODEL`, `OLYMP_LLM_FALLBACK_MODEL`, `OLYMP_PARSER_MODEL`, `OLYMP_LLM_TIMEOUT`, `OLYMP_LLM_MAX_TOKENS`, `OLYMP_LLM_TEMPERATURE`, `OLYMP_LLM_TOP_P`, `OLYMP_LLM_DENY_DATA_COLLECTION`, `OLYMP_LLM_DAILY_REQUESTS`, `OLYMP_LLM_PROFILES`, `OLYMP_ASSISTANT_CONTEXT_SECRET` | адрес, ключ и варианты провайдера, таймаут, лимиты, бюджет на сутки; без адреса, ключа и названия помощник выключен |
+| MAX | `OLYMP_MAX_BOT_TOKEN`, `OLYMP_MAX_BOT_NAME`, `OLYMP_SITE_URL`, `OLYMP_MAX_OPERATOR_IDS`, `OLYMP_MAX_INIT_DATA_TTL`, `OLYMP_MAX_CA_DIR`, `OLYMP_DOMAIN` | токен и имя бота, кнопка «Сайт», дежурные, срок данных запуска, сертификаты, домен для https |
+| Стек и тесты | `OLYMP_API_URL`, `OLYMP_WEB_PORT`, `OLYMP_API_PORT`, `OLYMP_TEST_DATABASE_URL`, `OLYMP_REQUIRE_DB` | адрес API для сайта и бота, порты (8000/8080), база и строгость тестов |
 
-Полный список настроек API с комментариями — `backend/api/src/olymp_api/settings.py`.
+Секреты (`OLYMP_MAX_BOT_TOKEN`, `OLYMP_LLM_API_KEY`, `OLYMP_ASSISTANT_CONTEXT_SECRET` и ключи внутри
+`OLYMP_LLM_PROFILES`) в `.env.example` не заданы; настоящие значения — только в `.env` на стенде.
 
 ## Бэкап
 
