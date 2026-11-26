@@ -9,16 +9,19 @@ from typing import Any
 
 from fastapi import HTTPException
 from olymp_domain.diplomas import (
+    ADMISSION_YEAR,
     CAMPAIGN_YEAR,
-    DIPLOMA_YEARS,
     MAX_DIPLOMAS,
     Diploma,
     DiplomaSpec,
     Fit,
     Link,
     Reject,
+    Stage,
     better,
+    diploma_years,
     is_real_profile,
+    is_sure,
     match,
     profile_keys,
 )
@@ -125,6 +128,7 @@ class Resolved:
             role=self.spec.role,
             grade=self.spec.grade,
             year=self.spec.year,
+            stage=self.spec.stage,
         )
 
 
@@ -180,7 +184,7 @@ class Matched:
 class ProgramBest:
     university_id: int
     rank: int
-    # хотя бы одна строка подошла уверенно (профиль или предмет совпали)
+    # хотя бы одна строка подошла уверенно (профиль или предмет совпали, роль не под вопросом)
     sure: bool
 
 
@@ -195,10 +199,10 @@ def program_best(
         rank = TYPE_RANK.get(m.benefit_type, len(TYPE_RANK))
         current = best.get(m.program_id)
         if current is None:
-            best[m.program_id] = ProgramBest(m.university_id, rank, m.fit is not Fit.CHECK)
+            best[m.program_id] = ProgramBest(m.university_id, rank, is_sure(m.fit))
         else:
             current.rank = min(current.rank, rank)
-            current.sure = current.sure or m.fit is not Fit.CHECK
+            current.sure = current.sure or is_sure(m.fit)
     return best
 
 
@@ -260,16 +264,31 @@ def ege_summary(
     return summary, per_university
 
 
+async def no_table_universities(session: AsyncSession) -> list[dict[str, Any]]:
+    """Вузы, у которых в базе нет ни одной строки таблицы льгот (как table_rows = 0 в каталоге):
+    по ним подбор молчит не потому, что льготы нет, а потому что данных нет."""
+    return await fetch_all(
+        session,
+        """SELECT u.id, u.name, u.short_name FROM universities u
+           WHERE NOT EXISTS (
+               SELECT 1 FROM programs p JOIN benefits b ON b.program_id = p.id
+               WHERE p.university_id = u.id AND b.layer IN ('detailed', 'derived'))
+           ORDER BY u.name, u.id""",
+    )
+
+
 async def match_diplomas(
     session: AsyncSession,
     specs: list[DiplomaSpec],
     benefit_type: str | None,
     university_id: int | None,
     ege: dict[str, int] | None = None,
+    admission_year: int = ADMISSION_YEAR,
 ) -> dict[str, Any]:
     resolved = await resolve(session, specs)
     diplomas = [r.diploma() for r in resolved]
-    olympiad_ids = sorted({d.olympiad_id for d in diplomas if d})
+    # региональный этап ВсОШ льгот не даёт — строки таких дипломов не нужны
+    olympiad_ids = sorted({d.olympiad_id for d in diplomas if d and d.stage is Stage.FINAL})
 
     params: dict[str, Any] = {"ids": olympiad_ids}
     where = ["bo.olympiad_id = ANY(:ids)", "b.layer <> 'raw'"]
@@ -311,7 +330,7 @@ async def match_diplomas(
         for index, diploma in enumerate(diplomas):
             if diploma is None or diploma.olympiad_id != link.olympiad_id:
                 continue
-            result = match(diploma, link)
+            result = match(diploma, link, admission_year)
             if isinstance(result, Reject):
                 rejected[result].add(benefit_id)
                 continue
@@ -377,7 +396,8 @@ async def match_diplomas(
                 "role": r.spec.role.value,
                 "grade": r.spec.grade,
                 "year": r.spec.year,
-                "expired": r.spec.expired,
+                "stage": r.spec.stage.value,
+                "expired": r.spec.expired(admission_year),
                 "counts": counts(program_best(matched, per_diploma[i])),
             }
             for i, r in enumerate(resolved)
@@ -387,12 +407,14 @@ async def match_diplomas(
         "rejected": {
             reason.value: len(ids - matched.keys())
             for reason, ids in rejected.items()
-            if reason is not Reject.PROFILE
+            if reason not in (Reject.PROFILE, Reject.STAGE)
         },
         "results": results,
         "ege": summary,
+        "no_table": await no_table_universities(session),
         "campaign_year": CAMPAIGN_YEAR,
-        "valid_years": list(DIPLOMA_YEARS),
+        "admission_year": admission_year,
+        "valid_years": list(diploma_years(admission_year)),
     }
     if university_id is not None:
         out.update(
@@ -507,7 +529,8 @@ def profile_out(user: MaxUser) -> dict[str, Any]:
 async def saved_diplomas(session: AsyncSession, user_id: int) -> list[dict[str, Any]]:
     rows = await fetch_all(
         session,
-        """SELECT olympiad_key, profile_key, role, grade, year, olympiad_name, profile_name
+        """SELECT olympiad_key, profile_key, role, grade, year, stage, olympiad_name,
+                  profile_name
            FROM user_diplomas WHERE user_id = :uid ORDER BY position""",
         {"uid": user_id},
     )
@@ -520,6 +543,7 @@ async def saved_diplomas(session: AsyncSession, user_id: int) -> list[dict[str, 
                     r["role"],
                     str(r["grade"] or 0),
                     str(r["year"] or 0),
+                    *([r["stage"]] if r["stage"] != Stage.FINAL else []),
                 ]
             ),
             "olympiad_name": r["olympiad_name"],
@@ -597,9 +621,9 @@ async def save_my_diplomas(
         await session.execute(
             text(
                 """INSERT INTO user_diplomas (user_id, position, olympiad_key, profile_key, role,
-                                              grade, year, olympiad_name, profile_name)
+                                              grade, year, stage, olympiad_name, profile_name)
                    VALUES (:uid, :position, :olympiad_key, :profile_key, :role, :grade, :year,
-                           :olympiad_name, :profile_name)"""
+                           :stage, :olympiad_name, :profile_name)"""
             ),
             [
                 {
@@ -610,6 +634,7 @@ async def save_my_diplomas(
                     "role": r.spec.role.value,
                     "grade": r.spec.grade,
                     "year": r.spec.year,
+                    "stage": r.spec.stage.value,
                     "olympiad_name": names(r)[0],
                     "profile_name": names(r)[1],
                 }

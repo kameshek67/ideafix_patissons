@@ -108,7 +108,7 @@ async def chat(body: ChatRequest, request: Request) -> Response:
         # сессия живёт внутри генератора: зависимости FastAPI могут закрыться раньше потока
         async with factory() as session:
             vocab = await vocabulary(request, session)
-            ctx = ToolContext(session, body.diplomas)
+            ctx = ToolContext(session, body.diplomas, admission_year=settings.admission_year)
             events = conversation(
                 provider, body.messages, ctx, spend, key=key, dialog=dialog, vocab=vocab
             )

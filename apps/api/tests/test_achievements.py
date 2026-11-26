@@ -140,6 +140,108 @@ async def test_conditions_narrow_the_result(client: httpx.AsyncClient) -> None:
     assert bvi_first == sorted(bvi_first, reverse=True)
 
 
+@pytest.fixture
+async def client_2026(built_database_url: str) -> AsyncIterator[httpx.AsyncClient]:
+    app = create_app(
+        Settings(
+            _env_file=None,
+            database_url=built_database_url,
+            rate_limit_requests=0,
+            admission_year=2026,
+        )
+    )
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+        yield c
+    await app.state.engine.dispose()
+
+
+async def test_admission_year_sets_valid_diplomas(
+    client: httpx.AsyncClient, client_2026: httpx.AsyncClient
+) -> None:
+    hse = await form(client, "вышка")
+    # поступление в 2027 (по умолчанию): диплом сезона 2026/27 действует, 2023 уже нет
+    last = await match(client, spec(hse, "математика", "w.11.2027"))
+    assert last["admission_year"] == 2027 and last["campaign_year"] == 2026
+    assert last["valid_years"] == [2024, 2025, 2026, 2027]
+    assert not last["diplomas"][0]["expired"] and last["totals"]["programs"] > 100
+    first = await match(client, spec(hse, "математика", "w.11.2024"))
+    assert not first["diplomas"][0]["expired"] and first["totals"]["programs"] > 100
+    stale = await match(client, spec(hse, "математика", "w.11.2023"))
+    # у вузов, которые сами назвали 2023 год, диплом всё же засчитывается — но их меньше
+    assert (
+        stale["diplomas"][0]["expired"]
+        and stale["totals"]["programs"] < first["totals"]["programs"]
+    )
+
+    # год поступления настраивается: для 2026 — олимпиады 2023–2026
+    config = (await client_2026.get("/v1/max/config")).json()
+    assert config["admission_year"] == 2026 and config["valid_years"] == [2023, 2024, 2025, 2026]
+    future = await match(client_2026, spec(hse, "математика", "w.11.2027"))
+    assert future["diplomas"][0]["expired"] and future["totals"]["programs"] == 0
+    assert (await match(client_2026, spec(hse, "математика", "w.11.2023")))["totals"][
+        "programs"
+    ] > 0
+
+
+async def test_regional_vsosh_gives_nothing(client: httpx.AsyncClient) -> None:
+    vsosh = await form(client, "всош")
+    final = spec(vsosh, "математика", "w.11.2026")
+    regional = await match(client, f"{final}.r")
+    assert regional["diplomas"][0]["stage"] == "r" and regional["diplomas"][0]["found"]
+    assert not regional["diplomas"][0]["expired"]
+    assert regional["totals"]["programs"] == 0 and regional["results"] == []
+    assert regional["diplomas"][0]["counts"]["programs"] == 0
+    assert all(v == 0 for v in regional["rejected"].values())
+
+    # без этапа и с «.f» — заключительный; строка диплома не меняется
+    both = await match(client, final, f"{final}.f", f"{final}.r")
+    assert [d["stage"] for d in both["diplomas"]] == ["f", "r"]
+    assert both["diplomas"][0]["spec"] == final
+    assert both["diplomas"][0]["counts"]["programs"] > 50
+    assert both["totals"]["programs"] == both["diplomas"][0]["counts"]["programs"]
+
+    # этап есть только у ВсОШ
+    hse = await form(client, "вышка")
+    response = await client.get(
+        "/v1/achievements/match", params={"diploma": spec(hse, "математика", "w.11.2026.r")}
+    )
+    assert response.status_code == 422
+
+
+async def test_prize_with_unspecified_role_needs_check(client: httpx.AsyncClient) -> None:
+    vsosh = await form(client, "всош")
+    winner = await match(client, spec(vsosh, "математика", "w.11.2026"))
+    prize = await match(client, spec(vsosh, "математика", "p.11.2026"))
+    # строки без «кому» победителю подходят как прежде, призёру — только «проверить»
+    assert winner["totals"]["programs"] >= prize["totals"]["programs"]
+    assert sum(u["check"] for u in prize["results"]) > sum(u["check"] for u in winner["results"])
+    rows = [
+        r
+        for u in prize["results"]
+        for r in (
+            await match(
+                client, spec(vsosh, "математика", "p.11.2026"), university_id=u["university"]["id"]
+            )
+        )["rows"]
+    ][:400]
+    role_rows = [r for r in rows if r["fit"] == "role"]
+    assert role_rows and all(not r["benefit"]["winner_role"].strip() for r in role_rows)
+
+
+async def test_no_table_universities(client: httpx.AsyncClient) -> None:
+    hse = await form(client, "вышка")
+    data = await match(client, spec(hse, "математика", "w.11.2025"))
+    universities = (await client.get("/v1/universities")).json()["items"]
+    expected = sorted(u["id"] for u in universities if u["table_rows"] == 0)
+    assert sorted(u["id"] for u in data["no_table"]) == expected
+    assert all(u["name"] for u in data["no_table"])
+    # вуз без таблицы не попадает в результаты подбора
+    assert not {u["id"] for u in data["no_table"]} & {
+        u["university"]["id"] for u in data["results"]
+    }
+
+
 async def test_vsosh_matches_by_subject(client: httpx.AsyncClient) -> None:
     vsosh = await form(client, "всош")
     math = await match(client, spec(vsosh, "математика", "p.11.2026"))
@@ -150,7 +252,7 @@ async def test_vsosh_matches_by_subject(client: httpx.AsyncClient) -> None:
 
     top = math["results"][0]["university"]["id"]
     rows = (await match(client, spec(vsosh, "математика", "p.11.2026"), university_id=top))["rows"]
-    assert rows and {r["fit"] for r in rows} <= {"exact", "subject", "check"}
+    assert rows and {r["fit"] for r in rows} <= {"exact", "subject", "check", "role"}
 
 
 async def test_university_rows(client: httpx.AsyncClient) -> None:
@@ -217,7 +319,8 @@ def test_init_data_signature() -> None:
 
 async def test_me_requires_configured_bot(client: httpx.AsyncClient) -> None:
     config = (await client.get("/v1/max/config")).json()
-    assert config["enabled"] is False and config["valid_years"] == [2023, 2024, 2025, 2026]
+    assert config["enabled"] is False and config["valid_years"] == [2024, 2025, 2026, 2027]
+    assert config["campaign_year"] == 2026 and config["admission_year"] == 2027
     response = await client.get("/v1/me/diplomas", headers={"X-Max-Init-Data": init_data(1)})
     assert response.status_code == 503
 
@@ -255,6 +358,20 @@ async def test_me_diplomas_round_trip(max_client: httpx.AsyncClient) -> None:
     assert [d["spec"] for d in replaced.json()["diplomas"]] == diplomas[1:]
     broken = await max_client.put("/v1/me/diplomas", headers=headers, json={"diplomas": ["x"]})
     assert broken.status_code == 422
+    await max_client.put("/v1/me/diplomas", headers=headers, json={"diplomas": []})
+
+
+async def test_saved_stage_round_trip(max_client: httpx.AsyncClient) -> None:
+    headers = {"X-Max-Init-Data": init_data(9_000_003)}
+    vsosh = await form(max_client, "всош")
+    final = spec(vsosh, "математика", "w.11.2026")
+    diplomas = [final, f"{final}.r", spec(vsosh, "физика", "p.10.2025")]
+    saved = await max_client.put("/v1/me/diplomas", headers=headers, json={"diplomas": diplomas})
+    assert [d["spec"] for d in saved.json()["diplomas"]] == diplomas
+    again = (await max_client.get("/v1/me/diplomas", headers=headers)).json()
+    # заключительный этап без суффикса: ключи прежних дипломов не меняются
+    assert [d["spec"] for d in again["diplomas"]] == diplomas
+    assert [d["spec"] for d in again["diplomas"]][0].count(".") == 4
     await max_client.put("/v1/me/diplomas", headers=headers, json={"diplomas": []})
 
 

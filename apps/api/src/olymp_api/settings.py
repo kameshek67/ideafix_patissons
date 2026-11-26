@@ -1,3 +1,4 @@
+from olymp_domain.diplomas import ADMISSION_YEAR
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -5,6 +6,9 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="OLYMP_", env_file=".env", extra="ignore")
 
     env: str = "local"
+    # год поступления ученика: от него считается, какие дипломы ещё действуют (четыре года
+    # до него включительно). Не путать с годом данных — приёмной кампанией правил вузов
+    admission_year: int = ADMISSION_YEAR
     database_url: str | None = None
     # потолок одного запроса к БД и ожидания блокировки, мс: зависание (блокировка таблиц,
     # тяжёлый запрос) становится быстрой ошибкой 503, а не висящим соединением

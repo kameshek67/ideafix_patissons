@@ -2,16 +2,19 @@
 
 import pytest
 from olymp_domain.diplomas import (
-    DIPLOMA_YEARS,
+    VSOSH_KEY,
     Diploma,
     DiplomaSpec,
     Fit,
     Link,
     Reject,
     Role,
+    Stage,
     better,
+    diploma_years,
     grades_allowed,
     is_real_profile,
+    is_sure,
     match,
     profile_keys,
     roles_allowed,
@@ -40,11 +43,43 @@ def test_spec_rejects_garbage(value: str) -> None:
         DiplomaSpec.parse(value)
 
 
+def test_diploma_years_four_years_up_to_admission() -> None:
+    assert diploma_years(2026) == (2023, 2024, 2025, 2026)
+    # по умолчанию — поступление в 2027: диплом сезона 2026/27 (год 2027) действует
+    assert diploma_years() == (2024, 2025, 2026, 2027)
+
+
 def test_spec_expired() -> None:
-    assert DIPLOMA_YEARS == (2023, 2024, 2025, 2026)
-    assert DiplomaSpec.parse("всош.химия.w.11.2021").expired
-    assert not DiplomaSpec.parse("всош.химия.w.11.2023").expired
-    assert not DiplomaSpec.parse("всош.химия.w.11.0").expired
+    spec = DiplomaSpec.parse
+    assert spec("всош.химия.w.11.2021").expired()
+    assert spec("всош.химия.w.11.2023").expired()  # 2027: 2023 уже старше четырёх лет
+    assert not spec("всош.химия.w.11.2024").expired()
+    assert not spec("всош.химия.w.11.2027").expired()
+    assert spec("всош.химия.w.11.2028").expired()
+    assert not spec("всош.химия.w.11.0").expired()
+    # для кампании 2026 прежние границы
+    assert not spec("всош.химия.w.11.2023").expired(2026)
+    assert spec("всош.химия.w.11.2027").expired(2026)
+
+
+def test_spec_stage() -> None:
+    final = DiplomaSpec.parse(f"{VSOSH_KEY}.химия.w.11.2026")
+    assert final.stage is Stage.FINAL
+    # прежние строки без этапа — заключительный этап, ключ не меняется
+    assert str(final) == f"{VSOSH_KEY}.химия.w.11.2026"
+    assert DiplomaSpec.parse(f"{VSOSH_KEY}.химия.w.11.2026.f") == final
+    regional = DiplomaSpec.parse(f"{VSOSH_KEY}.химия.w.11.2026.r")
+    assert regional.stage is Stage.REGIONAL and regional != final
+    assert str(regional) == f"{VSOSH_KEY}.химия.w.11.2026.r"
+    assert DiplomaSpec.parse(f"{VSOSH_KEY}.-.p.0.0.R").stage is Stage.REGIONAL
+
+
+@pytest.mark.parametrize(
+    "value", ["нто.-.w.0.0.r", "всош.химия.w.11.2026.x", "всош.химия.w.11.2026.r.r"]
+)
+def test_spec_stage_rejects(value: str) -> None:
+    with pytest.raises(ValueError):
+        DiplomaSpec.parse(value)
 
 
 @pytest.mark.parametrize(
@@ -201,6 +236,34 @@ def test_match_unknown_grade_and_year_do_not_filter() -> None:
     assert match(unknown, link(grade="11 класс", years="2023")) is Fit.EXACT
 
 
+def test_match_campaign_year_2027() -> None:
+    recent = Diploma(1, 10, profile_keys("математика"), Role.WINNER, 11, 2027)
+    assert match(recent, link()) is Fit.EXACT
+    assert match(recent, link(), 2026) is Reject.YEAR
+    old = Diploma(1, 10, profile_keys("математика"), Role.WINNER, 11, 2023)
+    assert match(old, link()) is Reject.YEAR
+    assert match(old, link(), 2026) is Fit.EXACT
+
+
+def test_match_regional_stage_gives_nothing() -> None:
+    regional = Diploma(1, 10, profile_keys("математика"), Role.WINNER, 11, 2026, Stage.REGIONAL)
+    assert match(regional, link()) is Reject.STAGE
+    assert match(regional, link(profile_id=None)) is Reject.STAGE
+
+
+def test_match_empty_role_prize_needs_check() -> None:
+    winner = Diploma(1, 10, profile_keys("математика"), Role.WINNER, 11, 2026)
+    # вуз не написал «кому»: победителю подходит, призёру — проверить
+    assert match(winner, link(role="")) is Fit.EXACT
+    assert match(MATH, link(role="")) is Fit.ROLE
+    assert match(MATH, link(role="  ")) is Fit.ROLE
+    assert match(MATH, link(role="победители и призёры")) is Fit.EXACT
+    # другие условия отсекают строку раньше
+    assert match(MATH, link(role="", grade="10 класс")) is Reject.GRADE
+    assert match(MATH, link(role="", profile_id=11)) is Reject.PROFILE
+    assert not is_sure(Fit.ROLE) and is_sure(Fit.SUBJECT)
+
+
 def test_old_diploma_expires_by_default() -> None:
     old = Diploma(1, 10, profile_keys("математика"), Role.WINNER, 11, 2021)
     assert match(old, link()) is Reject.YEAR
@@ -211,3 +274,4 @@ def test_old_diploma_expires_by_default() -> None:
 def test_better() -> None:
     assert better(Fit.CHECK, Fit.EXACT) is Fit.EXACT
     assert better(Fit.SUBJECT, Fit.CHECK) is Fit.SUBJECT
+    assert better(Fit.ROLE, Fit.CHECK) is Fit.CHECK

@@ -403,6 +403,7 @@ class UserDiploma(Base):
     __table_args__ = (
         UniqueConstraint("user_id", "position"),
         CheckConstraint("role IN ('w', 'p')", name="role"),
+        CheckConstraint("stage IN ('f', 'r')", name="stage"),
         CheckConstraint("grade IS NULL OR grade BETWEEN 9 AND 11", name="grade"),
         CheckConstraint("year IS NULL OR year BETWEEN 2000 AND 2100", name="year"),
     )
@@ -416,6 +417,8 @@ class UserDiploma(Base):
     role: Mapped[str] = mapped_column(CText)
     grade: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
     year: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    # этап ВсОШ: f — заключительный, r — региональный (у остальных олимпиад всегда f)
+    stage: Mapped[str] = mapped_column(CText, default="f", server_default=sa_text("'f'"))
     # названия на момент сохранения — показать диплом, даже если олимпиада ушла из базы
     olympiad_name: Mapped[str] = _text()
     profile_name: Mapped[str] = _text()

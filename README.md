@@ -102,6 +102,7 @@ just web                  # сайт на :3000
 | `OLYMP_REDIS_URL` | — | кэш и лимиты; без него — в памяти процесса |
 | `OLYMP_RABBITMQ_URL` | — | очередь фоновых задач (Dramatiq) |
 | `OLYMP_API_URL` | `http://127.0.0.1:8000` | куда сайт проксирует `/api/v1/*` |
+| `OLYMP_ADMISSION_YEAR` | 2027 | год поступления ученика: дипломы действуют четыре года до него включительно |
 | `OLYMP_MAX_BOT_TOKEN`, `OLYMP_MAX_BOT_NAME` | — | мини-приложение MAX (токен — секрет) |
 | `OLYMP_LLM_BASE_URL`, `OLYMP_LLM_API_KEY`, `OLYMP_LLM_MODEL` | — | ИИ-помощник, любой OpenAI-совместимый провайдер; без них помощник выключен |
 | `OLYMP_LLM_DAILY_REQUESTS` | 45 | обращений к модели в сутки на весь сервис; 0 — без ограничения |

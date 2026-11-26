@@ -1,7 +1,7 @@
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from olymp_domain.diplomas import CAMPAIGN_YEAR, DIPLOMA_YEARS
+from olymp_domain.diplomas import CAMPAIGN_YEAR, diploma_years
 from olymp_domain.ege import SUBJECTS
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -23,7 +23,8 @@ EGE_HELP = (
 DIPLOMA_HELP = (
     "Диплом: ключ олимпиады, ключ профиля (- — не указан), степень (w — победитель, "
     "p — призёр), класс (0 — не указан) и год олимпиады (0 — не указан), например "
-    "«высшаяпроба.математика.w.11.2025». Ключи отдаёт /v1/achievements/olympiads/{id}."
+    "«высшаяпроба.математика.w.11.2025». У ВсОШ можно добавить этап: «.r» — региональный "
+    "(льгот не даёт), без него — заключительный. Ключи отдаёт /v1/achievements/olympiads/{id}."
 )
 
 
@@ -60,18 +61,22 @@ async def match(
     класса и года олимпиады. Список вузов, а с university_id — строки выбранного вуза."""
     specs = service.parse_specs(diploma)
     scores = parse_scores(ege)
+    admission_year = request.app.state.settings.admission_year
     if scores:
         # баллы ЕГЭ — личные данные: ответ с ними не кладём в общий кэш
         data = AchievementsMatch.model_validate(
-            await service.match_diplomas(session, specs, benefit_type, university_id, scores)
+            await service.match_diplomas(
+                session, specs, benefit_type, university_id, scores, admission_year
+            )
         )
         return data.model_dump(mode="json")
     key = ":".join(
         str(part)
         for part in (
-            "v1:achievements",
+            "v2:achievements",
             await data_version(session),
             ",".join(map(str, specs)),
+            admission_year,
             benefit_type,
             university_id,
         )
@@ -79,7 +84,9 @@ async def match(
     if (hit := await cache_get(request, key)) is not None:
         return hit
     data = AchievementsMatch.model_validate(
-        await service.match_diplomas(session, specs, benefit_type, university_id)
+        await service.match_diplomas(
+            session, specs, benefit_type, university_id, admission_year=admission_year
+        )
     )
     payload = data.model_dump(mode="json")
     await cache_set(request, key, payload, request.app.state.settings.cache_ttl)
@@ -94,7 +101,8 @@ async def max_config(request: Request) -> Any:
         "enabled": bool(settings.max_bot_token),
         "bot_name": settings.max_bot_name or None,
         "campaign_year": CAMPAIGN_YEAR,
-        "valid_years": list(DIPLOMA_YEARS),
+        "admission_year": settings.admission_year,
+        "valid_years": list(diploma_years(settings.admission_year)),
     }
 
 

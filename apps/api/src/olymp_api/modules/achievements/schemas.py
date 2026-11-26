@@ -52,7 +52,9 @@ class DiplomaResult(ResponseModel):
     role: str
     grade: int | None
     year: int | None
-    # год олимпиады вне срока действия дипломов в эту приёмную кампанию
+    # этап ВсОШ: f — заключительный, r — региональный (льгот не даёт)
+    stage: Literal["f", "r"]
+    # год олимпиады вне срока действия дипломов при поступлении в admission_year
     expired: bool
     counts: Counts
 
@@ -71,6 +73,14 @@ EgeStatus = Literal["confirmed", "short", "missing_score", "no_threshold"]
 EgeSubject = Literal[
     "rus", "math", "inf", "phys", "chem", "bio", "soc", "hist", "lit", "foreign", "geo"
 ]
+
+
+class NoTableUniversity(ResponseModel):
+    """Вуз, для которого в базе нет таблицы льгот: льготы там могут быть, но мы их не видим."""
+
+    id: int
+    name: str
+    short_name: str
 
 
 class EgeSummary(ResponseModel):
@@ -127,7 +137,11 @@ class AchievementsMatch(ResponseModel):
     university: UniversityInfo | None = None
     rows: list[AchievementRow] = []
     ege: EgeSummary | None = None
+    # вузы без таблицы льгот: подбор по ним не делался
+    no_table: list[NoTableUniversity] = []
+    # год данных (приёмная кампания правил) и год поступления, по которому считаются сроки
     campaign_year: int
+    admission_year: int
     valid_years: list[int]
 
 
@@ -139,6 +153,7 @@ class MaxConfig(ResponseModel):
     # публичное имя бота для ссылок https://max.ru/<имя>?startapp=...
     bot_name: str | None
     campaign_year: int
+    admission_year: int
     valid_years: list[int]
 
 

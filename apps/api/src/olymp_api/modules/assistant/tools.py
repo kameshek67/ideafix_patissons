@@ -14,7 +14,7 @@ import structlog
 from fastapi import HTTPException
 from olymp_domain import squash
 from olymp_domain.admission_rules import find_rules
-from olymp_domain.diplomas import is_real_profile
+from olymp_domain.diplomas import ADMISSION_YEAR, is_real_profile
 from olymp_domain.interests import (
     display_name,
     expand_keywords,
@@ -78,6 +78,7 @@ class ToolContext:
     profiles: dict[int, int] = field(default_factory=dict)  # профиль → его олимпиада
     programs: set[int] = field(default_factory=set)  # направления из выдачи инструментов
     universities: set[int] = field(default_factory=set)  # вузы из выдачи инструментов
+    admission_year: int = ADMISSION_YEAR  # год поступления: от него зависит срок дипломов
 
 
 @dataclass
@@ -659,7 +660,9 @@ async def match_diplomas(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
             dumps({"note": "Дипломов нет или ученик выключил их учёт. Предложи вкладку «Дипломы»."})
         )
     specs = achievements.parse_specs(ctx.diplomas)
-    data = await achievements.match_diplomas(ctx.session, specs, None, None)
+    data = await achievements.match_diplomas(
+        ctx.session, specs, None, None, admission_year=ctx.admission_year
+    )
     results = data["results"][:ROWS]
     items = [
         {
@@ -681,6 +684,11 @@ async def match_diplomas(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
                 "found": d["found"],
                 "expired": d["expired"],
                 "role": d["role"],
+                **(
+                    {"note": "Региональный этап ВсОШ не даёт БВИ и 100 баллов."}
+                    if d["stage"] == "r"
+                    else {}
+                ),
             }
             for d in data["diplomas"]
         ],

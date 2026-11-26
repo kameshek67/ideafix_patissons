@@ -530,11 +530,18 @@ export interface components {
          * @description Где дипломы дают льготы: итоги, список вузов, а с university_id — строки вуза.
          */
         AchievementsMatch: {
+            /** Admission Year */
+            admission_year: number;
             /** Campaign Year */
             campaign_year: number;
             /** Diplomas */
             diplomas: components["schemas"]["DiplomaResult"][];
             ege: components["schemas"]["EgeSummary"] | null;
+            /**
+             * No Table
+             * @default []
+             */
+            no_table: components["schemas"]["NoTableUniversity"][];
             rejected: components["schemas"]["Rejected"];
             /** Results */
             results: components["schemas"]["AchievementUniversity"][];
@@ -792,6 +799,11 @@ export interface components {
             role: string;
             /** Spec */
             spec: string;
+            /**
+             * Stage
+             * @enum {string}
+             */
+            stage: "f" | "r";
             /** Year */
             year: number | null;
         };
@@ -937,6 +949,8 @@ export interface components {
          * @description Что сайту нужно знать о мини-приложении MAX.
          */
         MaxConfig: {
+            /** Admission Year */
+            admission_year: number;
             /** Bot Name */
             bot_name: string | null;
             /** Campaign Year */
@@ -993,6 +1007,18 @@ export interface components {
              * @default false
              */
             ege_is_mock: boolean;
+        };
+        /**
+         * NoTableUniversity
+         * @description Вуз, для которого в базе нет таблицы льгот: льготы там могут быть, но мы их не видим.
+         */
+        NoTableUniversity: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Short Name */
+            short_name: string;
         };
         /** Note */
         Note: {
@@ -1750,7 +1776,7 @@ export interface operations {
     match_v1_achievements_match_get: {
         parameters: {
             query: {
-                /** @description Диплом: ключ олимпиады, ключ профиля (- — не указан), степень (w — победитель, p — призёр), класс (0 — не указан) и год олимпиады (0 — не указан), например «высшаяпроба.математика.w.11.2025». Ключи отдаёт /v1/achievements/olympiads/{id}. */
+                /** @description Диплом: ключ олимпиады, ключ профиля (- — не указан), степень (w — победитель, p — призёр), класс (0 — не указан) и год олимпиады (0 — не указан), например «высшаяпроба.математика.w.11.2025». У ВсОШ можно добавить этап: «.r» — региональный (льгот не даёт), без него — заключительный. Ключи отдаёт /v1/achievements/olympiads/{id}. */
                 diploma: string[];
                 benefit_type?: string | null;
                 university_id?: number | null;

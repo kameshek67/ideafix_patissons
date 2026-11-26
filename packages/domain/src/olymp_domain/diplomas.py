@@ -6,7 +6,8 @@
 
 Диплом передаётся в API строкой вида ``высшаяпроба.математика.w.11.2025``:
 ключ олимпиады, ключ профиля (``-`` — профиль не указан), степень (``w`` — победитель,
-``p`` — призёр), класс (``0`` — не указан) и год олимпиады (``0`` — не указан). Ключи —
+``p`` — призёр), класс (``0`` — не указан) и год олимпиады (``0`` — не указан). У ВсОШ
+после года может идти этап: ``r`` — региональный, ``f`` или ничего — заключительный. Ключи —
 ``squash`` названий, они не меняются при пересборке базы (в отличие от id).
 """
 
@@ -16,10 +17,23 @@ from enum import StrEnum
 
 from .textutils import squash
 
+# Год данных: приёмная кампания, по которой собраны правила вузов.
 CAMPAIGN_YEAR = 2026
-# Дипломы дают льготы четыре года: в кампанию 2026 — олимпиады 2023–2026 годов
-# (для сезона «2024/25» считается год окончания — 2025).
-DIPLOMA_YEARS: tuple[int, ...] = tuple(range(CAMPAIGN_YEAR - 3, CAMPAIGN_YEAR + 1))
+# Год поступления ученика по умолчанию (настройка API OLYMP_ADMISSION_YEAR).
+ADMISSION_YEAR = 2027
+# Ключ ВсОШ в строке диплома (squash названия): только у неё выбирают этап.
+VSOSH_KEY = "всероссийскаяолимпиадашкольников"
+
+
+def diploma_years(admission_year: int = ADMISSION_YEAR) -> tuple[int, ...]:
+    """Годы олимпиад, дипломы которых действуют при поступлении в admission_year.
+
+    Диплом действует четыре года, включая текущий учебный год: для поступления в 2027 —
+    олимпиады 2024–2027 (для сезона «2026/27» считается год окончания — 2027).
+    """
+    return tuple(range(admission_year - 3, admission_year + 1))
+
+
 GRADES: tuple[int, ...] = (9, 10, 11)
 MAX_DIPLOMAS = 20
 
@@ -29,12 +43,20 @@ class Role(StrEnum):
     PRIZE = "p"
 
 
+class Stage(StrEnum):
+    """Этап ВсОШ: льготы даёт только заключительный."""
+
+    FINAL = "f"
+    REGIONAL = "r"
+
+
 class Fit(StrEnum):
     """Насколько уверенно строка подходит к диплому."""
 
     EXACT = "exact"  # профиль строки — профиль диплома (или у олимпиады нет профилей)
     SUBJECT = "subject"  # профиль в строке не указан, но совпал предмет (часто у ВсОШ)
     CHECK = "check"  # профиль в строке не указан — соответствие направлению проверить в правилах
+    ROLE = "role"  # в строке не указано, кому льгота: призёру — проверить, не только ли победителям
 
 
 class Reject(StrEnum):
@@ -45,14 +67,20 @@ class Reject(StrEnum):
     GRADE = "grade"  # диплом за другой класс
     YEAR = "year"  # диплом другого года (или уже не действует)
     TEAM = "team"  # только для членов сборных команд
+    STAGE = "stage"  # региональный этап ВсОШ льгот не даёт
 
 
-FIT_ORDER = {Fit.EXACT: 0, Fit.SUBJECT: 1, Fit.CHECK: 2}
+FIT_ORDER = {Fit.EXACT: 0, Fit.SUBJECT: 1, Fit.CHECK: 2, Fit.ROLE: 3}
+
+
+def is_sure(fit: Fit) -> bool:
+    """Строка подошла уверенно: профиль или предмет совпали и роль не под вопросом."""
+    return fit in (Fit.EXACT, Fit.SUBJECT)
 
 
 # ---------------------------------------------------------------- строка диплома
 
-RE_SPEC = re.compile(r"^([^\W\d_]+)\.([^\W\d_]+|-)\.([wp])\.(0|9|10|11)\.(0|20\d\d)$")
+RE_SPEC = re.compile(r"^([^\W\d_]+)\.([^\W\d_]+|-)\.([wp])\.(0|9|10|11)\.(0|20\d\d)(?:\.([fr]))?$")
 
 
 @dataclass(frozen=True)
@@ -62,36 +90,41 @@ class DiplomaSpec:
     role: Role
     grade: int | None
     year: int | None
+    stage: Stage = Stage.FINAL
 
     @classmethod
     def parse(cls, value: str) -> "DiplomaSpec":
         m = RE_SPEC.match(value.strip().lower().replace("ё", "е"))
         if not m:
             raise ValueError(f"Диплом в неверном формате: {value!r}")
-        olympiad, profile, role, grade, year = m.groups()
+        olympiad, profile, role, grade, year, stage = m.groups()
+        if stage == Stage.REGIONAL and olympiad != VSOSH_KEY:
+            raise ValueError(f"Этап указывается только для ВсОШ: {value!r}")
         return cls(
             olympiad_key=olympiad,
             profile_key=None if profile == "-" else profile,
             role=Role(role),
             grade=int(grade) or None,
             year=int(year) or None,
+            stage=Stage(stage or Stage.FINAL),
         )
 
     def __str__(self) -> str:
-        return ".".join(
-            [
-                self.olympiad_key,
-                self.profile_key or "-",
-                self.role.value,
-                str(self.grade or 0),
-                str(self.year or 0),
-            ]
-        )
+        parts = [
+            self.olympiad_key,
+            self.profile_key or "-",
+            self.role.value,
+            str(self.grade or 0),
+            str(self.year or 0),
+        ]
+        # заключительный этап в строке не пишется: ключи прежних дипломов не меняются
+        if self.stage is not Stage.FINAL:
+            parts.append(self.stage.value)
+        return ".".join(parts)
 
-    @property
-    def expired(self) -> bool:
-        """Диплом слишком старый (или из будущего) для текущей приёмной кампании."""
-        return self.year is not None and self.year not in DIPLOMA_YEARS
+    def expired(self, admission_year: int = ADMISSION_YEAR) -> bool:
+        """Диплом слишком старый (или из будущего) для года поступления."""
+        return self.year is not None and self.year not in diploma_years(admission_year)
 
 
 # ---------------------------------------------------------------- условия строки
@@ -203,6 +236,7 @@ class Diploma:
     role: Role
     grade: int | None
     year: int | None
+    stage: Stage = Stage.FINAL
 
 
 @dataclass(frozen=True)
@@ -217,10 +251,12 @@ class Link:
     years: str
 
 
-def match(diploma: Diploma, link: Link) -> Fit | Reject:
+def match(diploma: Diploma, link: Link, admission_year: int = ADMISSION_YEAR) -> Fit | Reject:
     """Подходит ли строка к диплому: сначала профиль, потом степень, класс и год."""
     if link.olympiad_id != diploma.olympiad_id:
         return Reject.PROFILE
+    if diploma.stage is Stage.REGIONAL:
+        return Reject.STAGE
 
     subjects = subject_keys(link.subject)
     fit: Fit
@@ -252,9 +288,12 @@ def match(diploma: Diploma, link: Link) -> Fit | Reject:
     if diploma.grade is not None and grades and diploma.grade not in grades:
         return Reject.GRADE
 
-    years = years_allowed(link.years) or frozenset(DIPLOMA_YEARS)
+    years = years_allowed(link.years) or frozenset(diploma_years(admission_year))
     if diploma.year is not None and diploma.year not in years:
         return Reject.YEAR
+    # вуз не написал «кому»: победителю подходит, призёру — проверить, не только ли победителям
+    if not link.role.strip() and diploma.role is Role.PRIZE:
+        return Fit.ROLE
     return fit
 
 
