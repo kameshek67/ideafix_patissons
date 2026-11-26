@@ -1,0 +1,210 @@
+{
+  "document": {
+    "university": "НИУ ВШЭ (Москва)",
+    "campaign": 2026,
+    "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+    "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+    "title": "Приложение 2. Особые права при приеме на обучение по программам бакалавриата НИУ ВШЭ (г. Москва) для поступающих в 2026 году",
+    "pages": [
+      3
+    ]
+  },
+  "records": [
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "division": "",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Гранит науки»",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 3,
+        "quote": "Олимпиада школьников «Гранит науки» | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "division": "",
+      "benefit_type": "100",
+      "olympiad": "Твой путь в настоящую науку",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 3,
+        "quote": "Твой путь в настоящую науку | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Турнир городов",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 3,
+        "quote": "Турнир городов | математика | математика | математика | 75 и более | Право на прием БВИ | математика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "division": "",
+      "benefit_type": "100",
+      "olympiad": "Университетская олимпиада школьников «Бельчонок»",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 3,
+        "quote": "Университетская олимпиада школьников «Бельчонок» | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "division": "",
+      "benefit_type": "100",
+      "olympiad": "Турнир имени М.В. Ломоносова",
+      "profile": "лингвистика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "rus"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 3,
+        "quote": "Турнир имени М.В. Ломоносова | лингвистика | русский язык, иностранный язык, математика | русский язык | 75 и более | Право на 100 баллов | русский язык | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "division": "",
+      "benefit_type": "100",
+      "olympiad": "Турнир имени М.В. Ломоносова",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 3,
+        "quote": "Турнир имени М.В. Ломоносова | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "division": "",
+      "benefit_type": "100",
+      "olympiad": "Турнир имени М.В. Ломоносова",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 3,
+        "quote": "Турнир имени М.В. Ломоносова | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    }
+  ]
+}

@@ -1,0 +1,562 @@
+{
+  "document": {
+    "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+    "campaign": 2026,
+    "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+    "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+    "title": "Приложение 3. Порядок учёта результатов победителей и призеров олимпиад, поступающих в КФУ на 2026-2027 учебный год",
+    "pages": [
+      6,
+      7
+    ]
+  },
+  "records": [
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "43.03.01",
+      "program_name": "Сервис",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экономика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "math",
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "43.03.01 Сервис"
+      },
+      "note": "Строка продолжает пункт 18 «Экономика» с предыдущей страницы"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "38.05.01",
+      "program_name": "Экономическая безопасность",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экономика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "math",
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "38.05.01 Экономическая безопасность"
+      },
+      "note": "Строка продолжает пункт 18 «Экономика» с предыдущей страницы"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "44.03.05",
+      "program_name": "Педагогическое образование (с двумя профилями подготовки)",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "foreign"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "19 | Английский язык | Английский язык, Иностранный язык | 44.03.05 Педагогическое образование (с двумя профилями подготовки) (профиль: Иностранный (английский) язык и второй иностранный язык)"
+      },
+      "note": "профиль: Иностранный (английский) язык и второй иностранный язык; профиль: Иностранный (английский) язык и второй иностранный (китайский) язык"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "45.03.01",
+      "program_name": "Филология",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "foreign"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "45.03.01 Филология (профиль: Прикладная филология: иностранный (английский) язык в международной коммуникации)"
+      },
+      "note": "профиль: Прикладная филология: иностранный (английский) язык в международной коммуникации; профиль: Зарубежная филология: иностранный (английский) язык и литература, переводоведение"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "45.03.02",
+      "program_name": "Лингвистика",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "foreign"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "45.03.02 Лингвистика (профили: Перевод и переводоведение (английский и второй иностранный языки); Перевод и переводоведение (немецкий и английский языки); Перевод и переводоведение (французский и английский языки); Перевод и переводоведение испанский и английский языки); Теория и методика преподавания иностранных языков и культур"
+      },
+      "note": "профили: Перевод и переводоведение (английский и второй иностранный языки); Перевод и переводоведение (немецкий и английский языки); Перевод и переводоведение (французский и английский языки); Перевод и переводоведение испанский и английский языки); Теория и методика преподавания иностранных языков и культур"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "45.03.02",
+      "program_name": "Лингвистика",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Китайский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "21 | Китайский язык | - | 45.03.02 Лингвистика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "44.03.05",
+      "program_name": "Педагогическое образование (с двумя профилями подготовки)",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Китайский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "44.03.05 Педагогическое образование (с двумя профилями подготовки) (профиль: Русский язык как иностранный и иностранный (китайский) язык)"
+      },
+      "note": "профиль: Русский язык как иностранный и иностранный (китайский) язык; профиль: Иностранный (английский) язык и второй иностранный (китайский) язык"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "45.03.02",
+      "program_name": "Лингвистика",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Испанский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "foreign"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "22 | Испанский язык | Иностранный язык | 45.03.02 Лингвистика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "45.03.01",
+      "program_name": "Филология",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Испанский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "foreign"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "45.03.01 Филология (профили: Зарубежная филология: иностранный (английский) язык и литература, переводоведение; Зарубежная филология: иностранный (испанский) язык и литература, переводоведение)"
+      },
+      "note": "профили: Зарубежная филология: иностранный (английский) язык и литература, переводоведение; Зарубежная филология: иностранный (испанский) язык и литература, переводоведение"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "45.03.02",
+      "program_name": "Лингвистика",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Немецкий язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "foreign"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "23 | Немецкий язык | Иностранный язык | 45.03.02 Лингвистика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "45.03.02",
+      "program_name": "Лингвистика",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Французский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "foreign"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 6,
+        "quote": "24 | Французский язык | Иностранный язык | 45.03.02 Лингвистика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "*",
+      "program_name": "",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "\"Финатлон для старшеклассников\" - Всероссийская олимпиада по финансовой грамотности, устойчивому развитию и защите прав потребителей финансовых услуг",
+      "profile": "финансовая грамотность",
+      "levels": [
+        3
+      ],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math",
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 7,
+        "quote": "финансовая грамотность обществознание III математика, обществознание На все направления, где вступительные испытания соответствуют графе 6"
+      },
+      "note": "На все направления, где вступительные испытания соответствуют графе 6, профилю олимпиады и являются первыми в Плане приема"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "*",
+      "program_name": "",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "\"Формула Единства\"/\"Третье тысячелетие\"",
+      "profile": "математика",
+      "levels": [
+        2
+      ],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 7,
+        "quote": "математика математика II математика На все направления, где вступительные испытания соответствуют графе 6"
+      },
+      "note": "На все направления, где вступительные испытания соответствуют графе 6, профилю олимпиады и являются первыми в Плане приема"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "07.03.01",
+      "program_name": "Архитектура",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "XVIII Южно-Российская межрегиональная олимпиада школьников \"Архитектура и искусство\" по комплексу предметов (рисунок, живопись, композиция, черчение)",
+      "profile": "рисунок, живопись, композиция, черчение",
+      "levels": [
+        1
+      ],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 7,
+        "quote": "рисунок, живопись, композиция, черчение искусствознание I рисунок 07.03.01 Архитектура"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "44.03.04",
+      "program_name": "Профессиональное обучение (по отраслям)",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "XVIII Южно-Российская межрегиональная олимпиада школьников \"Архитектура и искусство\" по комплексу предметов (рисунок, живопись, композиция, черчение)",
+      "profile": "рисунок, живопись, композиция, черчение",
+      "levels": [
+        1
+      ],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 7,
+        "quote": "44.03.04 Профессиональное обучение (по отраслям) (Дизайн интерьера, предметный и промышленный дизайн)"
+      },
+      "note": "44.03.04: профили Дизайн интерьера, предметный и промышленный дизайн; Дизайн среды и архитектурное пространство; Фэшн-дизайн; Декорирование интерьера и графический дизайн"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "54.03.01",
+      "program_name": "Дизайн",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "XVIII Южно-Российская межрегиональная олимпиада школьников \"Архитектура и искусство\" по комплексу предметов (рисунок, живопись, композиция, черчение)",
+      "profile": "рисунок, живопись, композиция, черчение",
+      "levels": [
+        1
+      ],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 7,
+        "quote": "54.03.01 Дизайн"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "*",
+      "program_name": "",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская академическая олимпиада школьников имени В.И. Вернадского",
+      "profile": "гуманитарные и социальные науки",
+      "levels": [
+        1
+      ],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "hist",
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 7,
+        "quote": "гуманитарные и социальные науки история, обществознание I история, обществознание На все направления"
+      },
+      "note": "На все направления, где вступительные испытания соответствуют графе 6, профилю олимпиады и являются первыми в Плане приема"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "*",
+      "program_name": "",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская академическая олимпиада школьников имени В.И. Вернадского",
+      "profile": "экономика",
+      "levels": [
+        1
+      ],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 7,
+        "quote": "экономика экономика I математика На все направления, где вступительные испытания соответствуют графе 6"
+      },
+      "note": "На все направления, где вступительные испытания соответствуют графе 6, профилю олимпиады и являются первыми в Плане приема"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "*",
+      "program_name": "",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8-11 классов \"Национальная технологическая олимпиада\"",
+      "profile": "автоматизация бизнес-процессов",
+      "levels": [
+        2
+      ],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math",
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 7,
+        "quote": "автоматизация бизнес- процессов математика и механика"
+      },
+      "note": "На все направления, где вступительные испытания соответствуют графе 6, профилю олимпиады и являются первыми в Плане приема"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "campaign": 2026,
+      "program_code": "*",
+      "program_name": "",
+      "division": "",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8-11 классов \"Национальная технологическая олимпиада\"",
+      "profile": "автономные транспортные системы",
+      "levels": [
+        2
+      ],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math",
+          "inf",
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 7,
+        "quote": "автономные транспортные системы математика и механика"
+      },
+      "note": "На все направления, где вступительные испытания соответствуют графе 6, профилю олимпиады и являются первыми в Плане приема"
+    }
+  ]
+}
