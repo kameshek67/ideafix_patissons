@@ -39,7 +39,7 @@
 4. `/opt/ideafix/shared/.env` по образцу `.env.example`: обязательно `OLYMP_ADMISSION_YEAR=2027`; `OLYMP_LLM_*` — если нужен
    помощник (без них он выключен); `OLYMP_OPS_TOKEN` — для разбора новых документов; токен бота MAX — если нужен бот.
 5. Включить выкатку: `gh workflow enable deploy -R kameshek67/ideafix_patissons`, перезапустить последний `ci` в `main`.
-6. Проверить: `https://<домен>/api/v1/stats`, главная, `/quality`; пройти сценарий из `presentation/demo.md`.
+6. Проверить: `https://<домен>/api/v1/stats`, главная, `/quality`.
 
 После выкатки перед защитой в `main` только исправления: каждый пуш снова выкатывается.
 

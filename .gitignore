@@ -32,12 +32,5 @@ data/*.db-shm
 data/release/*.gz
 data/release/meta.json
 
-# PDF презентации генерируется из .pptx командой build_deck.py + LibreOffice
-presentation/*.pdf
 
 
-# создаётся инструментами разработки
-frontend/AGENTS.md
-frontend/CLAUDE.md
-AGENTS.md
-CLAUDE.md

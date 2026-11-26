@@ -165,12 +165,12 @@ frontend/     Next.js 16: сайт и мини-приложение MAX (src/app
 data/         исходный XLSX, перечень РСОШ, снимок выдачи, эталоны, извлечённые документы
 infra/        Dockerfile, окружение разработки, скрипты выкатки (infra/deploy)
 docs/         документация, openapi.json, макеты (design)
-presentation/ презентация и скрипт её сборки
 ```
 
 ## Документы
 
 - [docs/architecture.md](docs/architecture.md) — как устроено: данные, модули, проверки.
+- [docs/pitch.md](docs/pitch.md) — заметки к защите: проблема, кому нужно, почему верить.
 - [docs/eval.md](docs/eval.md) — как проверяем качество: извлечение, база, помощник, выбор модели.
 - [docs/rag.md](docs/rag.md) — какие документы нужны справочному поиску помощника.
 - [docs/operations.md](docs/operations.md) — выкатка, переменные окружения, бэкап, жалобы, бот.
