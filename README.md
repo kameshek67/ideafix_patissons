@@ -69,6 +69,7 @@ presentation/ презентация и скрипт её сборки
 
 - [docs/architecture.md](docs/architecture.md) — как устроено: данные, модули, проверки.
 - [docs/eval.md](docs/eval.md) — как проверяем качество: извлечение, база, помощник, выбор модели.
+- [docs/rag.md](docs/rag.md) — какие документы нужны справочному поиску помощника.
 - [docs/operations.md](docs/operations.md) — выкатка, переменные окружения, бэкап, жалобы, бот.
 - [docs/plan.md](docs/plan.md) — план работ и что уже сделано.
 - [docs/openapi.json](docs/openapi.json) — контракт API, генерируется из кода.
