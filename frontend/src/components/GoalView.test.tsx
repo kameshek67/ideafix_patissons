@@ -101,7 +101,17 @@ describe("GoalView", () => {
                 table_rows: 2,
               })),
             }
-          : url.pathname.endsWith("/goals/olympiads")
+          : url.pathname.endsWith("/search/by-program")
+            ? {
+                program: { id: 1, code: "01.03.01", faculty_or_direction: "Направление 1", profile_name: "", note: "", source_sheet: "", source_title: "", source_url: "" },
+                university: { id: 5, name: "НИУ ВШЭ (Москва)", short_name: "ВШЭ", region: "Москва", region_group: "Москва", city: "Москва", note: "" },
+                total_benefits: 2,
+                groups: [],
+                notes: [],
+                olympiads: [],
+                sources: [],
+              }
+            : url.pathname.endsWith("/goals/olympiads")
             ? { programs: [programs[0]], items: [item({ bvi_programs: [1], hundred_programs: [] })] }
             : {};
         return new Response(JSON.stringify(body), { headers: { "content-type": "application/json" } });
@@ -128,6 +138,17 @@ describe("GoalView", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Убрать/ }));
     await waitFor(() => expect(screen.getByText(/до трёх направлений/)).toBeTruthy());
+  });
+
+  it("направление из ответа помощника подставлено сразу, список олимпиад построен", async () => {
+    render(
+      <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+        <GoalView universities={[university as never]} goToOlympiad={vi.fn()} presetProgramId={1} />
+      </QueryClientProvider>,
+    );
+    expect(await screen.findByRole("button", { name: "Убрать: ВШЭ, Направление 1" })).toBeTruthy();
+    expect(await screen.findByText("«Высшая проба» — математика")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Вуз цели" }).textContent).toContain("НИУ ВШЭ");
   });
 
   it("добавили второе направление: прежний рейтинг остаётся под полоской загрузки, а не скелетоном", async () => {

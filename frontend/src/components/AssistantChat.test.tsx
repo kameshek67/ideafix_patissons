@@ -21,7 +21,7 @@ function stream(chunks: string[], init: ResponseInit = { status: 200 }) {
   return new Response(body, init);
 }
 
-const props = { open: true, suggestions: ["Люблю программирование"], diplomas: [], onClose: vi.fn(), onEntity: vi.fn() };
+const props = { open: true, suggestions: ["Люблю программирование"], diplomas: [], onClose: vi.fn(), onEntity: vi.fn(), onAction: vi.fn() };
 
 function sentBody() {
   const [, init] = vi.mocked(fetch).mock.calls[0] as unknown as [string, RequestInit];
@@ -69,6 +69,32 @@ describe("AssistantChat", () => {
     ask("Люблю роботов");
     fireEvent.click(await screen.findByText("Робототехника"));
     expect(props.onEntity).toHaveBeenCalledWith(expect.objectContaining({ kind: "olympiad", id: 5 }));
+  });
+
+  it("кнопки под ответом рисует по данным сервера и передаёт действие", async () => {
+    const add = { kind: "add_diploma", label: "Добавить диплом: НТО", olympiad_id: 5, profile_id: 9, name: "НТО" };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        stream([
+          'event: delta\ndata: {"text": "Попробуй НТО"}\n\n',
+          `event: actions\ndata: ${JSON.stringify({ actions: [add, { kind: "suggest", label: "Предложить вуз или документ" }] })}\n\n`,
+          'event: done\ndata: {"message_id": "m"}\n\n',
+        ]),
+      ),
+    );
+    render(<AssistantChat {...props} />);
+    ask("Куда мне?");
+    fireEvent.click(await screen.findByRole("button", { name: "Добавить диплом: НТО" }));
+    expect(props.onAction).toHaveBeenCalledWith(add);
+    expect(screen.getByRole("button", { name: "Предложить вуз или документ" })).toBeTruthy();
+  });
+
+  it("без событий actions кнопок нет", async () => {
+    render(<AssistantChat {...props} />);
+    ask("Люблю роботов");
+    await screen.findByText(isAnswer("Попробуй НТО"));
+    expect(screen.queryByRole("button", { name: /Добавить диплом|Предложить/ })).toBeNull();
   });
 
   it("ссылка из текста модели не кликабельна", async () => {

@@ -1,9 +1,10 @@
 "use client";
 
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   friendlyError,
+  getByProgram,
   getGoalOlympiads,
   getPrograms,
   type GoalOlympiad,
@@ -36,6 +37,8 @@ interface Props {
     profileId: number | null,
     label: string,
   ) => void;
+  /** направление, с которого начать (из ответа помощника); подставляется один раз при открытии */
+  presetProgramId?: number | null;
 }
 
 export function GoalList({
@@ -111,12 +114,48 @@ export function GoalList({
 }
 
 /** «Подобрать олимпиады под цель»: до трёх направлений (можно из разных вузов) и рейтинг олимпиад. */
-export function GoalView({ universities, goToOlympiad }: Props) {
+export function GoalView({ universities, goToOlympiad, presetProgramId = null }: Props) {
   const queryClient = useQueryClient();
   const [university, setUniversity] = useState<UniversityItem | null>(null);
   const [programs, setPrograms] = useState<ProgramItem[]>([]);
   const ids = programs.map((p) => p.id);
   const full = programs.length >= MAX_GOAL_PROGRAMS;
+
+  useEffect(() => {
+    if (presetProgramId === null) return;
+    let alive = true;
+    void queryClient
+      .fetchQuery({ queryKey: ["by-program", presetProgramId], queryFn: () => getByProgram(presetProgramId), staleTime: 60_000 })
+      .then(({ program: p, university: u, total_benefits }) => {
+        if (!alive) return;
+        const item: ProgramItem = {
+          id: p.id,
+          code: p.code,
+          faculty_or_direction: p.faculty_or_direction,
+          profile_name: p.profile_name,
+          note: p.note,
+          source_sheet: p.source_sheet,
+          source_url: p.source_url,
+          university: u.name,
+          university_id: u.id,
+          university_short: u.short_name,
+          region: u.region,
+          region_group: u.region_group,
+          benefits: total_benefits,
+          bvi: 0,
+          sto: 0,
+          table_rows: 0,
+        };
+        setUniversity(universities.find((x) => x.id === u.id) ?? null);
+        setPrograms([item]);
+      })
+      .catch(() => undefined); // не нашлось — экран остаётся пустым, выбрать можно вручную
+    return () => {
+      alive = false;
+    };
+    // только при открытии: экран пересоздаётся для каждого направления
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const goal = useQuery({
     queryKey: ["goal-olympiads", ids],

@@ -58,6 +58,24 @@ class AssistantEntity(ResponseModel):
     id: int
     label: str
     hint: str | None = None
+    profile_id: int | None = Field(
+        default=None, description="Профиль олимпиады, если помощник назвал его"
+    )
+
+
+class AssistantAction(ResponseModel):
+    """Кнопка под ответом. Сервер собирает её из найденного инструментами, клиент только рисует:
+    kind подсказывает, какой экран открыть, остальные поля — чем."""
+
+    kind: Literal["university", "program", "olympiad", "add_diploma", "goal", "suggest"]
+    label: str
+    university_id: int | None = None
+    program_id: int | None = None
+    olympiad_id: int | None = None
+    profile_id: int | None = None
+    name: str | None = Field(
+        default=None, description="Короткое название олимпиады для поиска на экране"
+    )
 
 
 class AssistantSource(ResponseModel):
@@ -75,6 +93,7 @@ class AssistantStreamEvent(ResponseModel):
     )
     entities: list[AssistantEntity] | None = None
     sources: list[AssistantSource] | None = None
+    actions: list[AssistantAction] | None = None
     message_id: str | None = None
     context: str | None = Field(
         default=None,

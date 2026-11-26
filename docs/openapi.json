@@ -289,6 +289,94 @@
         "title": "AchievementsMatch",
         "type": "object"
       },
+      "AssistantAction": {
+        "description": "Кнопка под ответом. Сервер собирает её из найденного инструментами, клиент только рисует:\nkind подсказывает, какой экран открыть, остальные поля — чем.",
+        "properties": {
+          "kind": {
+            "enum": [
+              "university",
+              "program",
+              "olympiad",
+              "add_diploma",
+              "goal",
+              "suggest"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Короткое название олимпиады для поиска на экране",
+            "title": "Name"
+          },
+          "olympiad_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Olympiad Id"
+          },
+          "profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Id"
+          },
+          "program_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Program Id"
+          },
+          "university_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "University Id"
+          }
+        },
+        "required": [
+          "kind",
+          "label",
+          "university_id",
+          "program_id",
+          "olympiad_id",
+          "profile_id",
+          "name"
+        ],
+        "title": "AssistantAction",
+        "type": "object"
+      },
       "AssistantConfig": {
         "properties": {
           "enabled": {
@@ -352,13 +440,26 @@
           "label": {
             "title": "Label",
             "type": "string"
+          },
+          "profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Профиль олимпиады, если помощник назвал его",
+            "title": "Profile Id"
           }
         },
         "required": [
           "kind",
           "id",
           "label",
-          "hint"
+          "hint",
+          "profile_id"
         ],
         "title": "AssistantEntity",
         "type": "object"
@@ -481,6 +582,20 @@
       "AssistantStreamEvent": {
         "description": "Данные одного события потока. Какие поля заполнены, зависит от типа события (event:).",
         "properties": {
+          "actions": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/AssistantAction"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actions"
+          },
           "code": {
             "anyOf": [
               {
@@ -560,6 +675,7 @@
           "text",
           "entities",
           "sources",
+          "actions",
           "message_id",
           "context",
           "code"
@@ -4554,7 +4670,7 @@
                 }
               }
             },
-            "description": "Поток text/event-stream. Порядок: status (что делает помощник, пока ответа нет; может быть несколько, последний — «Проверяю ответ…») → delta (ответ кусками, уже проверенный целиком) → notice (оговорка под ответом, не часть ответа и не для истории; только если был поиск) → entities → sources → done (message_id и context для следующего запроса). При сбое — error с code."
+            "description": "Поток text/event-stream. Порядок: status (что делает помощник, пока ответа нет; может быть несколько, последний — «Проверяю ответ…») → delta (ответ кусками, уже проверенный целиком) → notice (оговорка под ответом, не часть ответа и не для истории; только если был поиск) → entities → sources → actions (кнопки под ответом: открыть вуз или олимпиаду, добавить диплом, подобрать под цель, предложить вуз, если данных нет) → done (message_id и context для следующего запроса). При сбое — error с code."
           },
           "422": {
             "content": {

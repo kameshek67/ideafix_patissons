@@ -31,6 +31,8 @@ import { NotInListBadge } from "./ui";
 interface Props {
   /** редактируемый диплом и id его олимпиады в текущей базе; null — новый диплом */
   initial: { entry: DiplomaEntry; olympiadId: number | null } | null;
+  /** новый диплом с уже выбранной олимпиадой (и профилем): из ответа помощника */
+  preset?: { olympiadId: number; profileId: number | null } | null;
   popular: OlympiadHit[];
   validYears: number[];
   /** год поступления: от него считается срок действия дипломов */
@@ -46,7 +48,7 @@ type ProfileChoice = DiplomaProfile | null | undefined;
 const PROFILE_FILTER_FROM = 12;
 
 /** Форма диплома: олимпиада, профиль, степень, класс и год. */
-export function DiplomaSheet({ initial, popular, validYears, admissionYear, onSave, onDelete, onClose }: Props) {
+export function DiplomaSheet({ initial, preset = null, popular, validYears, admissionYear, onSave, onDelete, onClose }: Props) {
   const queryClient = useQueryClient();
   const app = useMax();
   const start = initial ? parseSpec(initial.entry.spec) : null;
@@ -92,15 +94,22 @@ export function DiplomaSheet({ initial, popular, validYears, admissionYear, onSa
 
   // правка диплома: загружаем олимпиаду и отмечаем сохранённый профиль
   useEffect(() => {
-    if (!initial?.olympiadId) {
+    const olympiadId = initial ? initial.olympiadId : (preset?.olympiadId ?? null);
+    if (!olympiadId) {
       input.current?.focus();
       return;
     }
     const current = ++seq.current;
-    loadForm(initial.olympiadId)
+    loadForm(olympiadId)
       .then((data) => {
         if (current !== seq.current) return;
         setForm(data);
+        if (!initial) {
+          // профиль из подсказки помощника; не назвал или не нашёлся — выбор остаётся за учеником
+          const named = data.profiles.find((p) => p.id === preset?.profileId);
+          setProfile(named ?? (data.profiles.length === 1 ? data.profiles[0] : data.profiles.length ? undefined : null));
+          return;
+        }
         const key = start?.profileKey;
         setProfile(key ? (data.profiles.find((p) => p.key === key) ?? undefined) : null);
       })

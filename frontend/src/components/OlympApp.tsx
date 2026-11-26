@@ -22,6 +22,7 @@ import {
   type UniversityInfo,
   type UniversityItem,
 } from "@/lib/api";
+import type { AssistantAction } from "@/lib/assistant";
 import { type DiplomaEntry, upsertDiploma } from "@/lib/diplomas";
 import { fmt, place, plural } from "@/lib/format";
 import { haptic, whenMax } from "@/lib/max";
@@ -56,6 +57,8 @@ interface SheetState {
   /** номер редактируемого диплома; null — новый */
   index: number | null;
   olympiadId: number | null;
+  /** профиль для нового диплома из ответа помощника */
+  profileId?: number | null;
 }
 
 type ProgramState =
@@ -169,6 +172,8 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   const [programState, setProgramState] = useState<ProgramState>({ kind: "start", text: UNI_START });
   // «Подобрать олимпиады под цель» вместо одного направления
   const [goalMode, setGoalMode] = useState(false);
+  // направление, с которого открыт экран цели (из ответа помощника)
+  const [goalPreset, setGoalPreset] = useState<number | null>(null);
   const programSeq = useRef(0);
   const programRenders = useRef(0);
 
@@ -501,6 +506,38 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     scrollTop();
   }
 
+  /** Кнопка под ответом помощника: сервер назвал, что открыть, экран выбираем здесь. */
+  function runAction(action: AssistantAction) {
+    setChatOpen(false);
+    setChatLeft(true);
+    const { olympiad_id: olympiadId, profile_id: profileId = null } = action;
+    switch (action.kind) {
+      case "university":
+        if (action.university_id != null) navigate({ kind: "university", id: action.university_id });
+        break;
+      case "program":
+        if (action.program_id != null) navigate({ kind: "program", id: action.program_id });
+        break;
+      case "olympiad":
+        if (olympiadId != null) goToOlympiad(olympiadId, action.name ?? action.label, profileId);
+        break;
+      case "add_diploma":
+        setTab("diplomas");
+        setSheet({ index: null, olympiadId: olympiadId ?? null, profileId });
+        break;
+      case "goal":
+        setTab("uni");
+        setGoalPreset(action.program_id ?? null);
+        setGoalMode(true);
+        scrollTop();
+        break;
+      case "suggest":
+        // пока предложить вуз или документ можно через «О приложении»
+        setAboutOpen(true);
+        break;
+    }
+  }
+
   function openChat() {
     setChatLeft(false);
     setChatOpen(true);
@@ -771,15 +808,22 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
         {/* ТАБ 1 */}
         <section id="tab-uni" className={tab === "uni" ? "mt-3 space-y-3" : "mt-3 space-y-3 hidden"}>
           <div className="chip-group" id="uni-mode" role="group" aria-label="Что подобрать">
-            <button className={`chip ${goalMode ? "" : "chip-on"}`} aria-pressed={!goalMode} onClick={() => setGoalMode(false)}>
+            <button className={`chip ${goalMode ? "" : "chip-on"}`} aria-pressed={!goalMode} onClick={() => { setGoalMode(false); setGoalPreset(null); }}>
               Одно направление
             </button>
-            <button className={`chip ${goalMode ? "chip-on" : ""}`} aria-pressed={goalMode} onClick={() => setGoalMode(true)}>
+            <button className={`chip ${goalMode ? "chip-on" : ""}`} aria-pressed={goalMode} onClick={() => { setGoalMode(true); setGoalPreset(null); }}>
               Подобрать олимпиады под цель
             </button>
           </div>
 
-          {goalMode ? <GoalView universities={universities} goToOlympiad={goToOlympiad} /> : null}
+          {goalMode ? (
+            <GoalView
+              key={goalPreset ?? "free"}
+              universities={universities}
+              goToOlympiad={goToOlympiad}
+              presetProgramId={goalPreset}
+            />
+          ) : null}
 
           <div className={goalMode ? "hidden" : "space-y-3"}>
           <div className="grid sm:grid-cols-2 gap-2">
@@ -965,6 +1009,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
             setChatLeft(true);
             navigate(entityIntent(entity));
           }}
+          onAction={runAction}
         />
       ) : null}
       {offVisible ? <AssistantOff checking={assistantQ.isPending} onClose={closeOff} /> : null}
@@ -979,6 +1024,11 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
           initial={
             sheet.index !== null && diplomas.entries[sheet.index]
               ? { entry: diplomas.entries[sheet.index]!, olympiadId: sheet.olympiadId }
+              : null
+          }
+          preset={
+            sheet.index === null && sheet.olympiadId !== null
+              ? { olympiadId: sheet.olympiadId, profileId: sheet.profileId ?? null }
               : null
           }
           popular={popularQ.data?.items ?? []}

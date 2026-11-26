@@ -18,6 +18,7 @@ from olymp_api.modules.assistant import (
     prompt,
     service,
 )
+from olymp_api.modules.assistant.actions import build_actions
 from olymp_api.modules.assistant.claims import Ledger
 from olymp_api.modules.assistant.context import DialogContext
 from olymp_api.modules.assistant.expectations import Spec
@@ -124,6 +125,7 @@ async def test_plain_answer_has_no_disclaimer() -> None:
         ("delta", {"text": "Привет"}),
         ("entities", {"entities": []}),
         ("sources", {"sources": []}),
+        ("actions", {"actions": []}),
         ("done", done),
     ]
 
@@ -166,6 +168,7 @@ async def test_event_order_with_search() -> None:
         "notice",
         "entities",
         "sources",
+        "actions",
         "done",
     ]
     # одинаковые поиски подряд — один статус; тексты по инструменту, без слов ученика
@@ -239,13 +242,25 @@ async def test_system_prompt_is_server_side() -> None:
     assert [m["role"] for m in messages[1:]] == ["user"]
 
 
-async def test_diplomas_are_only_counted_in_prompt() -> None:
+async def test_diplomas_go_to_prompt_without_raw_strings() -> None:
     harness = Harness([[TextDelta("ок")]])
-    spec = "высшаяпроба.математика.w.11.2025"
-    await harness.post(diplomas=[spec])
-    sent = json.dumps(harness.fake.requests[0]["messages"], ensure_ascii=False)
-    assert spec not in sent
-    assert "дипломы (1)" in sent
+    specs = ["высшаяпроба.математика.w.11.2025", "всош.физика.p.10.2026"]
+    await harness.post(diplomas=specs)
+    system = harness.fake.requests[0]["messages"][0]["content"]
+    assert prompt.PROMPT_VERSION == "8"
+    assert "Дипломы ученика (2)" in system
+    assert "- высшаяпроба / математика, победитель, 11 класс, 2025" in system
+    assert "- всош / физика, призёр, 10 класс, 2026" in system
+    assert specs[0] not in system
+    assert "match_diplomas" in system
+
+
+async def test_no_diplomas_block_without_diplomas() -> None:
+    harness = Harness([[TextDelta("ок")]])
+    await harness.post()
+    system = harness.fake.requests[0]["messages"][0]["content"]
+    assert "Дипломы ученика (" not in system
+    assert "предложи добавить" in system
 
 
 @pytest.mark.parametrize(
@@ -658,6 +673,84 @@ async def test_match_diplomas_uses_only_request_diplomas(
     result = tool_json(fake)[0]
     assert result["diplomas"][0]["found"] is True
     assert result["totals"]["universities"] > 0
+
+
+async def test_where_can_i_go_uses_both_diplomas(real: Any, client: httpx.AsyncClient) -> None:
+    items = (await client.get("/v1/olympiads", params={"q": "высшая проба"})).json()["items"]
+    specs = []
+    for olympiad in items[:1]:
+        form = (await client.get(f"/v1/achievements/olympiads/{olympiad['id']}")).json()
+        for profile in form["profiles"][:2]:
+            specs.append(f"{form['olympiad']['key']}.{profile['key']}.w.11.2025")
+    assert len(specs) == 2
+    rounds = [[tool("match_diplomas", {})], [TextDelta("Вот куда.")]]
+    question = [{"role": "user", "content": "куда мне без экзаменов?"}]
+    events, fake = await real(rounds, messages=question, diplomas=specs)
+    result = tool_json(fake)[0]
+    assert [d["found"] for d in result["diplomas"]] == [True, True]
+    assert result["universities"]
+    assert "Дипломы ученика (2)" in fake.requests[0]["messages"][0]["content"]
+    assert data_of(events, "entities")["entities"]
+
+
+async def test_profile_search_gives_olympiad_actions(real: Any) -> None:
+    events, _ = await real(
+        [
+            [tool("find_profiles", {"keywords": ["робот", "программир"]})],
+            [TextDelta("Посмотри профильные олимпиады.")],
+        ]
+    )
+    actions = data_of(events, "actions")["actions"]
+    kinds = [a["kind"] for a in actions]
+    assert "olympiad" in kinds
+    assert "add_diploma" in kinds
+    assert "suggest" not in kinds
+    add = next(a for a in actions if a["kind"] == "add_diploma")
+    assert add["olympiad_id"]
+    assert add["profile_id"]
+    assert add["label"].startswith("Добавить диплом")
+
+
+async def test_program_search_gives_program_and_goal_actions(real: Any) -> None:
+    events, _ = await real(
+        [
+            [tool("olympiads_for_program", {"university": "вшэ", "program_query": "прикладная"})],
+            [TextDelta("Вот олимпиады.")],
+        ]
+    )
+    actions = data_of(events, "actions")["actions"]
+    program = next(e for e in data_of(events, "entities")["entities"] if e["kind"] == "program")
+    assert [a["kind"] for a in actions][:1] == ["program"]
+    goal = next(a for a in actions if a["kind"] == "goal")
+    assert goal["program_id"] == program["id"]
+
+
+async def test_no_data_offers_to_suggest(real: Any) -> None:
+    events, _ = await real(
+        [
+            [tool("find_olympiads", {"query": "несуществующаяолимпиада"})],
+            [TextDelta("В базе этого нет.")],
+        ]
+    )
+    assert [a["kind"] for a in data_of(events, "actions")["actions"]] == ["suggest"]
+
+
+def test_build_actions() -> None:
+    olympiad = {"kind": "olympiad", "id": 5, "label": "НТО", "profile_id": 9}
+    university = {"kind": "university", "id": 3, "label": "ВШЭ"}
+    actions = build_actions([university, olympiad], False)
+    assert [a["kind"] for a in actions] == ["university", "olympiad", "add_diploma"]
+    assert actions[0]["university_id"] == 3
+    assert actions[2] == {
+        "kind": "add_diploma",
+        "label": "Добавить диплом: НТО",
+        "olympiad_id": 5,
+        "profile_id": 9,
+        "name": "НТО",
+    }
+    assert build_actions([], False) == []
+    assert [a["kind"] for a in build_actions([university], True)] == ["university", "suggest"]
+    assert build_actions([], True)[0]["label"] == "Предложить вуз или документ"
 
 
 async def test_tool_results_stay_small(real: Any) -> None:

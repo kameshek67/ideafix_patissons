@@ -117,6 +117,61 @@ describe("OlympApp", () => {
     expect(screen.getByRole("button", { name: /Спросить ИИ/ })).toBeTruthy();
   });
 
+  /** чат отвечает фиксированным потоком: текст и кнопки под ответом */
+  function answerWith(actions: unknown[]) {
+    const plain = vi.mocked(fetch).getMockImplementation()!;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: Request | string, init?: RequestInit) => {
+        const url = typeof input === "string" ? input : input.url;
+        if (!url.includes("/assistant/chat")) return plain(input, init);
+        const body = [
+          'event: delta\ndata: {"text": "Попробуй «Высшую пробу»"}\n\n',
+          `event: actions\ndata: ${JSON.stringify({ actions })}\n\n`,
+          'event: done\ndata: {"message_id": "m"}\n\n',
+        ].join("");
+        return new Response(body, { status: 200, headers: { "content-type": "text/event-stream" } });
+      }),
+    );
+  }
+
+  async function askAssistant() {
+    responses["/api/v1/assistant/config"] = { enabled: true, suggestions: [] };
+    renderApp();
+    fireEvent.click(await screen.findByRole("button", { name: /Спросить ИИ/ }));
+    await waitFor(() => expect(screen.getByLabelText("Сообщение помощнику")).toBeTruthy());
+    fireEvent.change(screen.getByLabelText("Сообщение помощнику"), { target: { value: "Куда мне?" } });
+    fireEvent.click(screen.getByLabelText("Отправить"));
+  }
+
+  it("кнопка «Добавить диплом» из ответа открывает форму с олимпиадой и профилем", async () => {
+    responses["/api/v1/achievements/olympiads/5"] = {
+      olympiad: { id: 5, key: "высшаяпроба", short_name: "«Высшая проба»", canonical_name: "Высшая проба", in_rsosh_2026_27: null },
+      profiles: [
+        { id: 8, key: "математика", name: "Математика", level: "1", level_2026_27: "1", mentions: 1 },
+        { id: 9, key: "физика", name: "Физика", level: "1", level_2026_27: "1", mentions: 1 },
+      ],
+    };
+    answerWith([
+      { kind: "add_diploma", label: "Добавить диплом: «Высшая проба»", olympiad_id: 5, profile_id: 9, name: "«Высшая проба»" },
+    ]);
+    await askAssistant();
+    fireEvent.click(await screen.findByText("Добавить диплом: «Высшая проба»"));
+    await waitFor(() => expect(document.getElementById("diploma-sheet")).not.toBeNull());
+    expect((await screen.findAllByText("«Высшая проба»")).length).toBeGreaterThan(0);
+    expect(document.getElementById("assistant-sheet")!.hasAttribute("hidden")).toBe(true);
+    // профиль уже выбран: форма просит только степень диплома
+    await waitFor(() => expect(screen.getByRole("button", { name: "Выбери степень диплома" })).toBeTruthy());
+    delete responses["/api/v1/achievements/olympiads/5"];
+  });
+
+  it("кнопка «Предложить вуз или документ» открывает «О приложении»", async () => {
+    answerWith([{ kind: "suggest", label: "Предложить вуз или документ" }]);
+    await askAssistant();
+    fireEvent.click(await screen.findByText("Предложить вуз или документ"));
+    expect(await screen.findByRole("dialog", { name: /О приложении|Олимп/ })).toBeTruthy();
+  });
+
   it("помощник включён: кнопка открывает чат", async () => {
     responses["/api/v1/assistant/config"] = { enabled: true, suggestions: ["Какие олимпиады дают БВИ?"] };
     renderApp();

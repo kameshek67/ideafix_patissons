@@ -58,6 +58,8 @@ WIDE_LIMIT = 300  # направлений в выдаче поиска: нуж�
 MAX_KEYWORDS = 6
 ROWS = 12
 NO_DATA = "В базе нет данных. Это не значит, что льготы нет: нужно проверить на сайте вуза."
+# фразы, по которым видно, что поиск по вузу или олимпиаде ничего не дал
+NO_DATA_MARKS = (NO_DATA, "Карточки этой олимпиады в базе нет")
 UNKNOWN_ID = (
     "Этого id нет ни в результатах поиска в этом ответе, ни в фактах прошлых ответов (пометки "
     "[olympiad_id=…] в системном сообщении). Не придумывай id: найди олимпиаду через "
@@ -92,10 +94,20 @@ class ToolResult:
     sources: list[dict[str, Any]] = field(default_factory=list)
     # справка: тексты документов и карточек, а не данные базы льгот; фактчекер им не верит
     reference: bool = False
+    # поиск по вузу или олимпиаде ничего не нашёл: под ответом предлагаем сообщить о пробеле
+    no_data: bool = False
 
 
-def entity(kind: str, id_: int, label: str, hint: str | None = None, *also: str) -> dict[str, Any]:
-    return {"kind": kind, "id": id_, "label": label, "hint": hint, "match": [label, *also]}
+def entity(
+    kind: str,
+    id_: int,
+    label: str,
+    hint: str | None = None,
+    *also: str,
+    profile_id: int | None = None,
+) -> dict[str, Any]:
+    found = {"kind": kind, "id": id_, "label": label, "hint": hint, "match": [label, *also]}
+    return {**found, "profile_id": profile_id} if profile_id is not None else found
 
 
 def source(url: str | None, title: str | None, *match: str) -> dict[str, Any] | None:
@@ -258,6 +270,7 @@ async def find_profiles(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
                 r["short_name"],
                 display_name(r["profile"]),
                 r["canonical_name"],
+                profile_id=r["profile_id"],
             )
             for r in rows
         ],
@@ -920,7 +933,9 @@ async def run_tool(name: str, raw_arguments: str, ctx: ToolContext) -> ToolResul
         args = json.loads(raw_arguments or "{}")
         if not isinstance(args, dict):
             raise ValueError("аргументы должны быть объектом")
-        return await handler(ctx, args)
+        result = await handler(ctx, args)
+        result.no_data = any(mark in result.content for mark in NO_DATA_MARKS)
+        return result
     except (ValueError, TypeError) as exc:
         return error(f"Ошибка в аргументах: {exc}")
     except HTTPException as exc:

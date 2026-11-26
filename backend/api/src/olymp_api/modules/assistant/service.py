@@ -6,7 +6,7 @@
 Порядок событий одного ответа:
   status (по инструменту, на каждый поиск) … status «Пишу ответ…» → status «Проверяю ответ…»
   → delta (кусками по абзацам) → notice (только если были поиски) → entities → sources
-  → done (с подписанным контекстом диалога); при сбое — error.
+  → actions (кнопки под ответом) → done (с подписанным контекстом диалога); при сбое — error.
 Текст раунда, который закончился вызовом инструментов («Сейчас найду…»), ученику не показывается
 и в историю модели не попадает. Финальный ответ собирается целиком и проходит через review() —
 проверку фактов (V2), поэтому ученик не видит ни слова непроверенного ответа.
@@ -21,19 +21,23 @@ from dataclasses import dataclass, field
 from typing import Any
 
 import structlog
+from olymp_domain.diplomas import DiplomaSpec
 from olymp_domain.pii import mask_personal_data
 
 from olymp_api.llm import LLMError, LLMProvider, TextDelta, ToolCalls, is_tool_markup
 
+from .actions import build_actions
 from .claims import Ledger, check_claims
 from .context import DialogContext, advance, encode
 from .factcheck import Facts, Violation, Vocabulary, check, cut
 from .prompt import (
     CONTEXT_NOTE,
+    DIPLOMA_ROLES,
     DIPLOMAS_NOTE,
     FIX_CLAIMS_NOTE,
     FIX_NOTE,
     PROMPT_VERSION,
+    STAGE_REGIONAL,
     SYSTEM_PROMPT,
 )
 from .schemas import ChatMessage
@@ -87,6 +91,27 @@ Event = tuple[str, dict[str, Any]]
 Spend = Callable[[], Awaitable[bool]]
 
 
+def diploma_lines(diplomas: list[str]) -> list[str]:
+    """Дипломы ученика словами для промпта: только ключи олимпиады и профиля, степень, класс и
+    год. Строки уже проверены разбором (буквы и цифры), имён и личных данных в них нет."""
+    lines = []
+    for value in diplomas:
+        try:
+            spec = DiplomaSpec.parse(value)
+        except ValueError:
+            continue
+        parts = [spec.olympiad_key + (f" / {spec.profile_key}" if spec.profile_key else "")]
+        parts.append(DIPLOMA_ROLES[spec.role.value])
+        if spec.grade:
+            parts.append(f"{spec.grade} класс")
+        if spec.year:
+            parts.append(str(spec.year))
+        if spec.stage.value == "r":
+            parts.append(STAGE_REGIONAL)
+        lines.append(f"- {', '.join(parts)}")
+    return lines
+
+
 def build_history(
     messages: list[ChatMessage], diplomas: list[str], notes: list[str] | None = None
 ) -> list[dict[str, Any]]:
@@ -94,7 +119,8 @@ def build_history(
     контекста и текст без персональных данных."""
     system = SYSTEM_PROMPT
     if diplomas:
-        system += "\n" + DIPLOMAS_NOTE.format(count=len(diplomas))
+        system += "\n\n" + DIPLOMAS_NOTE.format(count=len(diplomas))
+        system += "".join("\n" + line for line in diploma_lines(diplomas))
     if notes:
         system += "\n\n" + CONTEXT_NOTE + "".join(f"\n- {note}" for note in notes)
     return [
@@ -402,6 +428,10 @@ async def conversation(
     yield "entities", {"entities": mentioned(entities, answer, MAX_ENTITIES)}
     yield "sources", {"sources": mentioned(sources, answer, MAX_SOURCES)}
     found = mentioned(entities, answer, len(entities))
+    no_data = (
+        any(r.no_data for r in results) or answer.startswith(NO_DATA_ANSWER) or CUT_NOTE in answer
+    )
+    yield "actions", {"actions": build_actions(found[:MAX_ENTITIES], no_data)}
     context = encode(advance(dialog, ctx, found, answer), key)
     yield "done", {"message_id": uuid.uuid4().hex, "context": context}
     log.info(

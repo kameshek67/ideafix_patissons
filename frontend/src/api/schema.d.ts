@@ -617,6 +617,33 @@ export interface components {
             /** Valid Years */
             valid_years: number[];
         };
+        /**
+         * AssistantAction
+         * @description Кнопка под ответом. Сервер собирает её из найденного инструментами, клиент только рисует:
+         *     kind подсказывает, какой экран открыть, остальные поля — чем.
+         */
+        AssistantAction: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "university" | "program" | "olympiad" | "add_diploma" | "goal" | "suggest";
+            /** Label */
+            label: string;
+            /**
+             * Name
+             * @description Короткое название олимпиады для поиска на экране
+             */
+            name: string | null;
+            /** Olympiad Id */
+            olympiad_id: number | null;
+            /** Profile Id */
+            profile_id: number | null;
+            /** Program Id */
+            program_id: number | null;
+            /** University Id */
+            university_id: number | null;
+        };
         /** AssistantConfig */
         AssistantConfig: {
             /** Enabled */
@@ -642,6 +669,11 @@ export interface components {
             kind: "olympiad" | "program" | "university";
             /** Label */
             label: string;
+            /**
+             * Profile Id
+             * @description Профиль олимпиады, если помощник назвал его
+             */
+            profile_id: number | null;
         };
         /** AssistantQuality */
         AssistantQuality: {
@@ -674,6 +706,8 @@ export interface components {
          * @description Данные одного события потока. Какие поля заполнены, зависит от типа события (event:).
          */
         AssistantStreamEvent: {
+            /** Actions */
+            actions: components["schemas"]["AssistantAction"][] | null;
             /** Code */
             code: string | null;
             /**
@@ -2187,7 +2221,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Поток text/event-stream. Порядок: status (что делает помощник, пока ответа нет; может быть несколько, последний — «Проверяю ответ…») → delta (ответ кусками, уже проверенный целиком) → notice (оговорка под ответом, не часть ответа и не для истории; только если был поиск) → entities → sources → done (message_id и context для следующего запроса). При сбое — error с code. */
+            /** @description Поток text/event-stream. Порядок: status (что делает помощник, пока ответа нет; может быть несколько, последний — «Проверяю ответ…») → delta (ответ кусками, уже проверенный целиком) → notice (оговорка под ответом, не часть ответа и не для истории; только если был поиск) → entities → sources → actions (кнопки под ответом: открыть вуз или олимпиаду, добавить диплом, подобрать под цель, предложить вуз, если данных нет) → done (message_id и context для следующего запроса). При сбое — error с code. */
             200: {
                 headers: {
                     [name: string]: unknown;

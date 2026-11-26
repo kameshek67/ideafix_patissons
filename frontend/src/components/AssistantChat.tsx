@@ -2,6 +2,7 @@
 
 import { type FormEvent, type KeyboardEvent, useEffect, useRef, useState } from "react";
 import {
+  type AssistantAction,
   type AssistantEntity,
   AssistantError,
   type ChatItem,
@@ -33,6 +34,7 @@ interface Props {
   diplomas: string[];
   onClose: () => void;
   onEntity: (entity: AssistantEntity) => void;
+  onAction: (action: AssistantAction) => void;
 }
 
 /** Применяет событие потока к последнему сообщению (ответу помощника). */
@@ -47,6 +49,8 @@ function applyEvent(item: ChatItem, { event, data }: StreamEvent): ChatItem {
       return { ...item, entities: data.entities ?? [] };
     case "sources":
       return { ...item, sources: data.sources ?? [] };
+    case "actions":
+      return { ...item, actions: data.actions ?? [] };
     case "done":
       return { ...item, messageId: data.message_id ?? undefined, context: data.context ?? undefined };
     case "error":
@@ -58,7 +62,7 @@ function applyEvent(item: ChatItem, { event, data }: StreamEvent): ChatItem {
 
 /** Чат с помощником: шторка на весь экран. Остаётся смонтированной, когда скрыта, чтобы
  *  ответ не обрывался при переходе к карточке вуза или олимпиады. */
-export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity }: Props) {
+export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity, onAction }: Props) {
   const app = useMax();
   const [items, setItems] = useState<ChatItem[]>([]);
   const [text, setText] = useState("");
@@ -270,6 +274,20 @@ export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity }
                 </div>
               ) : null}
               {item.sources?.length ? <SourceBlock sources={item.sources} /> : null}
+              {item.actions?.length ? (
+                <div className="assistant-buttons">
+                  {item.actions.map((action) => (
+                    <button
+                      key={`${action.kind}-${action.label}`}
+                      className="chip assistant-chip"
+                      type="button"
+                      onClick={() => onAction(action)}
+                    >
+                      {action.label}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
               {item.messageId ? (
                 <div className="assistant-actions">
                   <button type="button" onClick={() => void copy(index)}>

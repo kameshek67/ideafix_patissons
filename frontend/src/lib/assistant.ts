@@ -4,6 +4,7 @@ import type { Schemas } from "@/api";
 
 export type AssistantEntity = Schemas["AssistantEntity"];
 export type AssistantSource = Schemas["AssistantSource"];
+export type AssistantAction = Schemas["AssistantAction"];
 
 export interface ChatItem {
   role: "user" | "assistant";
@@ -13,6 +14,8 @@ export interface ChatItem {
   notice?: string;
   entities?: AssistantEntity[];
   sources?: AssistantSource[];
+  /** кнопки под ответом: собирает сервер, клиент только рисует */
+  actions?: AssistantAction[];
   messageId?: string;
   /** оценка 👍/👎 */
   rating?: 1 | -1;
