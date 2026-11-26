@@ -301,6 +301,32 @@ class SearchIndex(Base):
     document: Mapped[str] = mapped_column(TSVECTOR)
 
 
+PASSAGE_SOURCES = ("university_document", "olympiad_card", "admission_rule", "olympiad_material")
+
+
+class Passage(Base):
+    """Справочный фрагмент для поиска помощника: кусок текста ~800 символов с источником.
+
+    Факты о льготах отсюда не берутся — только справка (что за олимпиада, этапы, закон).
+    document — tsvector по конфигурации russian: название источника и текст фрагмента.
+    """
+
+    __tablename__ = "passages"
+    __table_args__ = (
+        CheckConstraint(f"source_type IN ({_in(PASSAGE_SOURCES)})", name="source_type"),
+        Index(None, "document", postgresql_using="gin"),
+    )
+
+    id: Mapped[int] = _pk()
+    source_type: Mapped[str] = mapped_column(CText)
+    title: Mapped[str] = mapped_column(CText)
+    url: Mapped[str] = _text()
+    page: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    chunk: Mapped[int] = _int()  # номер фрагмента в источнике
+    body: Mapped[str] = mapped_column(CText)
+    document: Mapped[str] = mapped_column(TSVECTOR)
+
+
 class IngestLog(Base):
     __tablename__ = "ingest_log"
 
@@ -632,6 +658,7 @@ DATA_TABLES = [
     "olympiad_tracks",
     "olympiad_info",
     "search_index",
+    "passages",
     "benefit_keywords",
     "benefit_olympiads",
     "olympiad_profiles",

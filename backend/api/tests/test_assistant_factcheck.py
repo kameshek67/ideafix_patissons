@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 from olymp_api.llm import TextDelta, ToolCall, ToolCalls
 from olymp_api.llm.fake import FakeProvider
-from olymp_api.modules.assistant import evaluate
+from olymp_api.modules.assistant import evaluate, prompt
 from olymp_api.modules.assistant.factcheck import Entity, Facts, Vocabulary, check, sentences
 from olymp_api.modules.assistant.service import CUT_NOTE, DISCLAIMER
 from olymp_api.modules.assistant.tools import HANDLERS, ToolContext, ToolResult
@@ -384,7 +384,11 @@ async def test_report_summary_and_compare(vocab: Vocabulary, fake_tools: list[st
     assert summary["fabrication_raw"] == summary["fabrication_final"] == 0
     assert summary["dialogs_passed_share"] is None and summary["rounds_mean"] == 1
     assert summary["first_delta_p50"] is not None
-    assert (data["provider"], data["model"], data["prompt_version"]) == ("тест", "fake", "6")
+    assert (data["provider"], data["model"], data["prompt_version"]) == (
+        "тест",
+        "fake",
+        prompt.PROMPT_VERSION,
+    )
     assert data["date"] and data["gate"]["who_type_errors"]
     json.dumps(data, ensure_ascii=False)  # отчёт сохраняется в JSON
 

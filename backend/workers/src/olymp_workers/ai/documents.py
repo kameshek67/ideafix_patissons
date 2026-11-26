@@ -175,6 +175,10 @@ class DocumentStore:
         self.memory[url] = document
         return document
 
+    def cached(self, url: str) -> Document | None:
+        """Документ только из кэша на диске, без сети; None — в кэше его нет."""
+        return self._cached(safe_url(url))
+
     def _cached(self, url: str) -> Document | None:
         meta_path, pages_path = self._paths(url)
         if not (meta_path.is_file() and pages_path.is_file()):

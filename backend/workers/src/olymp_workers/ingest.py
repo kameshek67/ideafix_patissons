@@ -42,6 +42,7 @@ import openpyxl
 import psycopg
 from olymp_db.models import DATA_TABLES
 from olymp_db.session import database_url, psycopg_dsn
+from olymp_domain.admission_rules import RULES_FILE
 from olymp_domain.diplomas import is_real_profile
 from olymp_domain.ege import parse_ege_requirement
 from olymp_domain.olympiad_seeds import JUNK_KEYS, SEEDS
@@ -72,6 +73,7 @@ from olymp_domain.textutils import (
 from .document_layer import EXTRACTED_DIR, apply_documents
 from .extra_points import load_extra_points
 from .olympiad_cards import CARDS_FILE, load_olympiad_cards
+from .passages import MATERIALS_FILE, load_passages
 from .row_keys import RowFields, assign_row_keys
 from .rsosh import RSOSH_FILE
 from .rsosh import apply_list as apply_rsosh_list
@@ -1286,6 +1288,9 @@ class Ingestor:
 
         log("[6/7] Полнотекстовый индекс")
         self.build_fts()
+
+        passages = load_passages(self.conn, DATA_DIR)
+        log(f"      справочные фрагменты: {sum(passages.values())} {dict(passages)}")
 
         cards = load_olympiad_cards(self.conn, DATA_DIR)
         log(f"      карточки олимпиад: {cards['cards']}, треков {cards['tracks']}")
@@ -2656,7 +2661,7 @@ def build_fingerprint(xlsx_path: str) -> str:
     import olymp_domain.olympiad_seeds as seeds
     import olymp_domain.textutils as textutils
 
-    from . import document_layer, olympiad_cards, row_keys, rsosh, university_pages
+    from . import document_layer, olympiad_cards, passages, row_keys, rsosh, university_pages
 
     parts = [
         Path(xlsx_path),
@@ -2668,6 +2673,9 @@ def build_fingerprint(xlsx_path: str) -> str:
         Path(seeds.__file__),
         DATA_DIR / CARDS_FILE,
         DATA_DIR / RSOSH_FILE,
+        DATA_DIR / RULES_FILE,
+        DATA_DIR / MATERIALS_FILE,
+        Path(passages.__file__),
         *sorted((DATA_DIR / EXTRACTED_DIR).glob("*.json")),
         Path(document_layer.__file__),
         Path(extraction.__file__),

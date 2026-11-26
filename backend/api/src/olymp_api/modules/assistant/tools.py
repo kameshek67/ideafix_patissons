@@ -37,12 +37,15 @@ from .conditions import (
     squeeze,
     summarize,
 )
+from .references import MAX_LIMIT as MAX_REFERENCES
+from .references import search_passages
 
 log = structlog.get_logger()
 
 MAX_RESULT_BYTES = 4096
 # ответы с условиями льгот длиннее: пять вузов с условиями полезнее двенадцати без них
 MAX_CONDITIONS_BYTES = 8192
+MAX_REFERENCE_BYTES = 10240
 UNIVERSITIES_SHOWN = 8  # вузов с условиями; остальные — только названием
 PROGRAMS_PER_UNIVERSITY = 3
 LINES_PER_PROGRAM = 3
@@ -87,6 +90,8 @@ class ToolResult:
     # у карточек и источников служебное поле match: по нему ищем упоминание в ответе
     entities: list[dict[str, Any]] = field(default_factory=list)
     sources: list[dict[str, Any]] = field(default_factory=list)
+    # справка: тексты документов и карточек, а не данные базы льгот; фактчекер им не верит
+    reference: bool = False
 
 
 def entity(kind: str, id_: int, label: str, hint: str | None = None, *also: str) -> dict[str, Any]:
@@ -654,6 +659,48 @@ async def explain_rule(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
     return ToolResult(compact(payload, "rules"), sources=[s for s in found if s])
 
 
+async def search_references(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
+    """Справка: фрагменты документов вузов, карточек олимпиад и правил приёма с источником."""
+    query = squeeze(args.get("query"), 300)
+    if len(query) < 2:
+        raise ValueError("нужен query")
+    limit = optional_int(args, "limit") or MAX_REFERENCES
+    found = await search_passages(ctx.session, query, limit)
+    if not found:
+        return ToolResult(
+            dumps(
+                {
+                    "query": query,
+                    "fragments": [],
+                    "note": "В справочных материалах этого нет. Не отвечай из общих знаний: "
+                    "скажи, что в справочнике нет, и посоветуй официальный сайт.",
+                }
+            ),
+            reference=True,
+        )
+    payload: dict[str, Any] = {
+        "note": "Справка, а не данные о льготах: кому, какой балл и в каком вузе даёт льготу — "
+        "только из инструментов базы. В ответе назови источник и страницу.",
+        "fragments": [
+            {
+                "source": f.title,
+                "kind": f.label,
+                **({"page": f.page} if f.page else {}),
+                "text": f.text,
+            }
+            for f in found
+        ],
+    }
+    shown = [
+        source(f.url, f"{f.title}, стр. {f.page}" if f.page else f.title, f.title) for f in found
+    ]
+    return ToolResult(
+        compact(payload, "fragments", MAX_REFERENCE_BYTES),
+        sources=[s for s in shown if s],
+        reference=True,
+    )
+
+
 async def match_diplomas(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
     if not ctx.diplomas:
         return ToolResult(
@@ -746,6 +793,7 @@ HANDLERS: dict[str, Handler] = {
     "olympiads_for_program": olympiads_for_program,
     "benefit_conditions": benefit_conditions,
     "explain_rule": explain_rule,
+    "search_references": search_references,
     "match_diplomas": match_diplomas,
     "list_universities": list_universities,
 }
@@ -843,6 +891,16 @@ TOOLS: list[dict[str, Any]] = [
         "вопрос ученика своими словами. Если в справочнике нет, так и скажи.",
         {"topic": _STRING},
         "topic",
+    ),
+    _tool(
+        "search_references",
+        "Справочный поиск по документам вузов, карточкам олимпиад и правилам приёма: что за "
+        "олимпиада, как проходят этапы, как готовиться, что говорит закон, общие правила вуза. "
+        "Это справка, а не данные о льготах: кому, какой балл и в каком вузе дают БВИ или 100 "
+        "баллов — только инструменты базы. query — вопрос или ключевые слова; до 5 фрагментов. "
+        "В ответе укажи источник и страницу фрагмента.",
+        {"query": _STRING, "limit": {"type": "integer", "minimum": 1, "maximum": MAX_REFERENCES}},
+        "query",
     ),
     _tool("match_diplomas", "Где дипломы ученика дают льготы с учётом условий вуза.", {}),
     _tool(

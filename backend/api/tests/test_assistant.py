@@ -985,7 +985,11 @@ async def test_eval_runs_on_stub_and_writes_report(built_database_url: str) -> N
         cases, evaluate.StubProvider(), app.state.session_factory, provider_label="stub", echo=False
     )
     await app.state.engine.dispose()
-    assert (data["provider"], data["model"], data["prompt_version"]) == ("stub", "stub", "6")
+    assert (data["provider"], data["model"], data["prompt_version"]) == (
+        "stub",
+        "stub",
+        prompt.PROMPT_VERSION,
+    )
     assert data["date"] and data["data_version"]
     stats = data["summary"]
     assert stats["cases"] == 3 and stats["tokens_prompt"] and stats["answer_p50"] is not None

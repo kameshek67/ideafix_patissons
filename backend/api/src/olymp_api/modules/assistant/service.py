@@ -57,6 +57,7 @@ STATUS_TOOLS = {
     "olympiads_for_program": "Ищу олимпиады для направления…",
     "benefit_conditions": "Смотрю условия льготы…",
     "explain_rule": "Смотрю правила приёма…",
+    "search_references": "Ищу в справочных материалах…",
     "match_diplomas": "Проверяю твои дипломы…",
     "list_universities": "Смотрю список вузов…",
 }
@@ -144,8 +145,10 @@ def collect_facts(
 ) -> Facts:
     """Разрешённое в ответе: результаты инструментов этого ответа, реплики ученика, сводка
     проверенного контекста (без id) и прошлые ответы, которые сервер сам проверил и отдал."""
+    # справочные фрагменты фактами не считаются: названия и числа из них проверка не пропустит
     facts = Facts.collect(
-        (r.content for r in results), (m.content for m in messages if m.role == "user")
+        (r.content for r in results if not r.reference),
+        (m.content for m in messages if m.role == "user"),
     )
     if dialog:
         for line in dialog.fact_lines():
