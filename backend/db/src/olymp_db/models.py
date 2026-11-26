@@ -564,6 +564,69 @@ class DocumentRecord(Base):
     origin: Mapped[str] = _text("operator")
 
 
+SOURCE_KINDS = ("page", "document")
+JOB_STATUSES = (
+    "queued",
+    "fetching",
+    "extracting",
+    "review",
+    "accepted",
+    "rejected",
+    "failed",
+)
+
+
+class Source(Base):
+    """Страница или документ вуза, которую оператор дал на разбор."""
+
+    __tablename__ = "sources"
+    __table_args__ = (CheckConstraint(f"kind IN ({_in(SOURCE_KINDS)})", name="kind"),)
+
+    id: Mapped[int] = _pk()
+    university: Mapped[str] = mapped_column(CText)
+    url: Mapped[str] = mapped_column(CText, unique=True)
+    kind: Mapped[str] = _text("page")
+    added_by: Mapped[str] = _text()
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    last_checked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_sha256: Mapped[str] = _text()
+
+
+class SourceJob(Base):
+    """Разбор источника: queued → fetching → extracting → review → accepted | rejected | failed."""
+
+    __tablename__ = "source_jobs"
+    __table_args__ = (
+        CheckConstraint(f"status IN ({_in(JOB_STATUSES)})", name="status"),
+        Index(None, "status"),
+        Index(None, "source_id"),
+    )
+
+    id: Mapped[int] = _pk()
+    source_id: Mapped[int] = mapped_column(ForeignKey("sources.id", ondelete="CASCADE"))
+    status: Mapped[str] = _text("queued")
+    error: Mapped[str] = _text()
+    # найденные документы: адрес, название, sha256, число записей, цитаты, ошибка
+    documents: Mapped[list[Any]] = mapped_column(
+        JSONB, default=list, server_default=sa_text("'[]'")
+    )
+    records_count: Mapped[int] = _int()
+    quotes_checked: Mapped[int] = _int()
+    quotes_found: Mapped[int] = _int()
+    # разница с текущими строками вуза: added, removed, changed и до 5 примеров с цитатами
+    diff: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, default=dict, server_default=sa_text("'{}'")
+    )
+    # извлечённые файлы (extraction.ExtractionFile): их принимает accept
+    payload: Mapped[list[Any]] = mapped_column(JSONB, default=list, server_default=sa_text("'[]'"))
+    rebuild_needed: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=sa_text("false")
+    )
+    rebuilt_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
 # Таблицы с данными сборки: их очищает и заново наполняет olymp-ingest.
 DATA_TABLES = [
     "olympiad_tracks",

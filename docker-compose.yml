@@ -89,6 +89,8 @@ services:
       OLYMP_LLM_MODEL: ${OLYMP_LLM_MODEL:-}
       OLYMP_LLM_FALLBACK_MODEL: ${OLYMP_LLM_FALLBACK_MODEL:-}
       OLYMP_LLM_DAILY_REQUESTS: ${OLYMP_LLM_DAILY_REQUESTS:-45}
+      # токен оператора для /v1/ops/*; пусто — эндпоинты отвечают 404
+      OLYMP_OPS_TOKEN: ${OLYMP_OPS_TOKEN:-}
     # data/ только на чтение: из неё API берёт оценку извлечения, перечень РСОШ и даты проверок
     # для страницы «Качество данных»; без каталога страница показывает только то, что есть в базе
     volumes: [./data:/app/data:ro]
@@ -98,6 +100,22 @@ services:
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_started}
     mem_limit: 384m
+    restart: unless-stopped
+
+  # разбор новых документов: берёт ссылки оператора из таблицы source_jobs раз в 10 секунд, после
+  # приёма записей пересобирает базу (olymp-ingest). Без RabbitMQ; docs/operations.md, «Разбор новых документов»
+  sources:
+    <<: *python
+    command: ["olymp-sources", "worker"]
+    environment:
+      OLYMP_DATABASE_URL: postgresql+psycopg://olymp:olymp@postgres:5432/olymp
+      OLYMP_MAX_CA_DIR: /certs
+      OLYMP_OPS_WEBHOOK_URL: ${OLYMP_OPS_WEBHOOK_URL:-}
+    volumes: [./data:/app/data, ./infra/certs:/certs:ro]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck: {disable: true}
+    mem_limit: 256m
     restart: unless-stopped
 
   # фоновые задачи (Dramatiq): обход сайтов вузов и пересборка базы; по умолчанию выключены

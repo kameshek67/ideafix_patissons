@@ -79,3 +79,6 @@ class Settings(BaseSettings):
     report_rate_limit: int = 5
     report_daily_limit: int = 500
     share_ttl_days: int = 90
+    # Разбор новых документов (docs/operations.md): токен оператора для /v1/ops/*. Не задан —
+    # эндпоинты отвечают 404. Уведомление о готовности задачи (OLYMP_OPS_WEBHOOK_URL) шлёт воркер
+    ops_token: str | None = None

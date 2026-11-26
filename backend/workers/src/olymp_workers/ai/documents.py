@@ -14,13 +14,14 @@ import io
 import json
 import logging
 import re
-import urllib.parse as up
+import ssl
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from pathlib import Path
 
 import httpx
 import pdfplumber
+from olymp_domain.urls import normalize_url
 
 from .tables import TableReader, page_tables, page_text
 
@@ -52,21 +53,10 @@ class Document:
 
 def safe_url(url: str) -> str:
     """Проверяет схему и кодирует кириллицу и пробелы в адресе, не трогая уже закодированное."""
-    url = url.strip()
-    parts = up.urlsplit(url)
-    if parts.scheme not in ("http", "https") or not parts.netloc:
-        raise DocumentError("адрес не http(s)")
-    return up.urlunsplit(
-        (
-            parts.scheme,
-            parts.netloc.encode("idna").decode("ascii")
-            if not parts.netloc.isascii()
-            else parts.netloc,
-            up.quote(parts.path, safe="/%:@!$&'()*+,;=-._~"),
-            up.quote(parts.query, safe="=&%:@!$'()*+,;/?-._~"),
-            "",
-        )
-    )
+    try:
+        return normalize_url(url)
+    except ValueError as exc:
+        raise DocumentError(str(exc)) from None
 
 
 def detect_kind(data: bytes, content_type: str) -> str:
@@ -146,13 +136,14 @@ class DocumentStore:
         cache_dir: Path = DEFAULT_CACHE,
         *,
         insecure: bool = False,
+        context: ssl.SSLContext | None = None,
         transport: httpx.BaseTransport | None = None,
     ) -> None:
         self.cache_dir = cache_dir
         self.client = httpx.Client(
             timeout=TIMEOUT,
             follow_redirects=True,
-            verify=not insecure,
+            verify=context or not insecure,
             headers={"User-Agent": USER_AGENT, "Accept": "application/pdf,text/html,*/*"},
             transport=transport,
         )
