@@ -496,6 +496,8 @@ export interface components {
         /** AchievementRow */
         AchievementRow: {
             benefit: components["schemas"]["Benefit"];
+            /** Change */
+            change: ("hundred" | "check") | null;
             /** Diplomas */
             diplomas: number[];
             /** Ege Gap */
@@ -530,6 +532,11 @@ export interface components {
             programs: number;
             /** Sto */
             sto: number;
+            /**
+             * To Hundred
+             * @default 0
+             */
+            to_hundred: number;
             university: components["schemas"]["UniversityInfo"];
         };
         /**
@@ -541,6 +548,7 @@ export interface components {
             admission_year: number;
             /** Campaign Year */
             campaign_year: number;
+            changes: components["schemas"]["Changes2027"] | null;
             /** Diplomas */
             diplomas: components["schemas"]["DiplomaResult"][];
             ege: components["schemas"]["EgeSummary"] | null;
@@ -557,6 +565,12 @@ export interface components {
              * @default []
              */
             rows: components["schemas"]["AchievementRow"][];
+            /**
+             * Rules
+             * @default current
+             * @enum {string}
+             */
+            rules: "current" | "project2027";
             totals: components["schemas"]["Counts"];
             university: components["schemas"]["UniversityInfo"] | null;
             /** Valid Years */
@@ -736,6 +750,18 @@ export interface components {
             profile_id: number;
             /** Topics */
             topics: string[];
+        };
+        /**
+         * Changes2027
+         * @description Что меняется по проекту правил 2027 (rules=project2027).
+         */
+        Changes2027: {
+            /** Check */
+            check: number;
+            /** To Hundred */
+            to_hundred: number;
+            /** Universities */
+            universities: number;
         };
         /** ChatMessage */
         ChatMessage: {
@@ -1454,6 +1480,12 @@ export interface components {
             /** Id */
             id: number;
         };
+        /**
+         * Rules
+         * @description По каким правилам считать льготы призёров.
+         * @enum {string}
+         */
+        Rules: "current" | "project2027";
         /** SavedDiploma */
         SavedDiploma: {
             /** Olympiad Name */
@@ -1863,6 +1895,8 @@ export interface operations {
                 university_id?: number | null;
                 /** @description Баллы ЕГЭ «предмет:балл», повторяемый: ege=inf:82&ege=math:90. Предметы: rus, math, inf, phys, chem, bio, soc, hist, lit, foreign, geo. С баллами у строк есть статус подтверждения льготы, в итогах — сводка ege. */
                 ege?: string[];
+                /** @description По каким правилам считать: current — действующие, project2027 — проект на 2027 год: призёрам перечневых олимпиад 2026/27 и позже БВИ заменяют на 100 баллов (если у вуза по направлению есть профильный предмет ЕГЭ, иначе — «проверить»), победителей и ВсОШ это не затрагивает. Изменённые строки помечены полем change. */
+                rules?: components["schemas"]["Rules"];
             };
             header?: never;
             path?: never;

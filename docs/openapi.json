@@ -34,6 +34,21 @@
           "benefit": {
             "$ref": "#/components/schemas/Benefit"
           },
+          "change": {
+            "anyOf": [
+              {
+                "enum": [
+                  "hundred",
+                  "check"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change"
+          },
           "diplomas": {
             "items": {
               "type": "integer"
@@ -89,6 +104,7 @@
           "program",
           "benefit",
           "diplomas",
+          "change",
           "fit",
           "ege_status",
           "ege_gap",
@@ -138,6 +154,11 @@
             "title": "Sto",
             "type": "integer"
           },
+          "to_hundred": {
+            "default": 0,
+            "title": "To Hundred",
+            "type": "integer"
+          },
           "university": {
             "$ref": "#/components/schemas/UniversityInfo"
           }
@@ -149,6 +170,7 @@
           "sto",
           "other",
           "check",
+          "to_hundred",
           "ege_confirmed",
           "law"
         ],
@@ -165,6 +187,16 @@
           "campaign_year": {
             "title": "Campaign Year",
             "type": "integer"
+          },
+          "changes": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Changes2027"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "diplomas": {
             "items": {
@@ -209,6 +241,15 @@
             "title": "Rows",
             "type": "array"
           },
+          "rules": {
+            "default": "current",
+            "enum": [
+              "current",
+              "project2027"
+            ],
+            "title": "Rules",
+            "type": "string"
+          },
           "totals": {
             "$ref": "#/components/schemas/Counts"
           },
@@ -232,6 +273,8 @@
         },
         "required": [
           "diplomas",
+          "rules",
+          "changes",
           "totals",
           "rejected",
           "results",
@@ -720,6 +763,30 @@
           "topics"
         ],
         "title": "CardTrack",
+        "type": "object"
+      },
+      "Changes2027": {
+        "description": "Что меняется по проекту правил 2027 (rules=project2027).",
+        "properties": {
+          "check": {
+            "title": "Check",
+            "type": "integer"
+          },
+          "to_hundred": {
+            "title": "To Hundred",
+            "type": "integer"
+          },
+          "universities": {
+            "title": "Universities",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "to_hundred",
+          "universities",
+          "check"
+        ],
+        "title": "Changes2027",
         "type": "object"
       },
       "ChatMessage": {
@@ -2685,6 +2752,15 @@
         "title": "ReportCreated",
         "type": "object"
       },
+      "Rules": {
+        "description": "По каким правилам считать льготы призёров.",
+        "enum": [
+          "current",
+          "project2027"
+        ],
+        "title": "Rules",
+        "type": "string"
+      },
       "SavedDiploma": {
         "properties": {
           "olympiad_name": {
@@ -3799,6 +3875,17 @@
               },
               "title": "Ege",
               "type": "array"
+            }
+          },
+          {
+            "description": "По каким правилам считать: current — действующие, project2027 — проект на 2027 год: призёрам перечневых олимпиад 2026/27 и позже БВИ заменяют на 100 баллов (если у вуза по направлению есть профильный предмет ЕГЭ, иначе — «проверить»), победителей и ВсОШ это не затрагивает. Изменённые строки помечены полем change.",
+            "in": "query",
+            "name": "rules",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Rules",
+              "default": "current",
+              "description": "По каким правилам считать: current — действующие, project2027 — проект на 2027 год: призёрам перечневых олимпиад 2026/27 и позже БВИ заменяют на 100 баллов (если у вуза по направлению есть профильный предмет ЕГЭ, иначе — «проверить»), победителей и ВсОШ это не затрагивает. Изменённые строки помечены полем change."
             }
           }
         ],

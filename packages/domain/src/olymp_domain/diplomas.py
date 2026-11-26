@@ -239,6 +239,8 @@ class Diploma:
     stage: Stage = Stage.FINAL
     # международная олимпиада: диплом у участника сборной, поэтому льготы «членам сборных» ему подходят
     international: bool = False
+    # диплом ВсОШ: проект 2027 её не затрагивает
+    vsosh: bool = False
 
 
 @dataclass(frozen=True)
@@ -303,3 +305,50 @@ def match(diploma: Diploma, link: Link, admission_year: int = ADMISSION_YEAR) ->
 
 def better(a: Fit, b: Fit) -> Fit:
     return a if FIT_ORDER[a] <= FIT_ORDER[b] else b
+
+
+# ---------------------------------------------------------------- правила 2027 (проект)
+
+
+class Rules(StrEnum):
+    """По каким правилам считать льготы призёров."""
+
+    CURRENT = "current"
+    PROJECT_2027 = "project2027"
+
+
+class Change(StrEnum):
+    """Что правила 2027 делают со строкой БВИ."""
+
+    HUNDRED = "hundred"  # БВИ превращается в «100 баллов» по профильному предмету
+    CHECK = "check"  # может измениться — проверить в правилах вуза
+
+
+# Первый год олимпиады, к которому применяют новые нормы: сезон 2026/27, год окончания.
+RULES_2027_FROM_YEAR = 2027
+
+
+def prize_change(diploma: Diploma) -> Change | None:
+    """Что правила 2027 меняют для БВИ по этому диплому; None — ничего.
+
+    БВИ остаётся у победителей, у ВсОШ и у международных олимпиад. Призёрам перечневых
+    олимпиад БВИ заменяют на 100 баллов, но только за олимпиады 2026/27 и позже: дипломы
+    прежних лет вузы учитывают по прежним правилам. Год диплома не указан — проверить.
+    """
+    if diploma.role is not Role.PRIZE or diploma.vsosh or diploma.international:
+        return None
+    if diploma.year is None:
+        return Change.CHECK
+    return Change.HUNDRED if diploma.year >= RULES_2027_FROM_YEAR else None
+
+
+def bvi_change(diplomas: list[Diploma], has_subject: bool) -> Change | None:
+    """Судьба строки БВИ, которую дают эти дипломы вместе: хоть один диплом без изменений —
+    БВИ остаётся. «100 баллов» только если у вуза по направлению есть профильный предмет ЕГЭ,
+    иначе — проверить."""
+    changes = [prize_change(d) for d in diplomas]
+    if not changes or None in changes:
+        return None
+    if Change.CHECK in changes or not has_subject:
+        return Change.CHECK
+    return Change.HUNDRED

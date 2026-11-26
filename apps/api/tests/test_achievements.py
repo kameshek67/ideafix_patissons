@@ -509,3 +509,78 @@ def test_ege_subject_codes_match_domain() -> None:
     from olymp_domain.ege import SUBJECTS
 
     assert set(get_args(EgeSubject)) == set(SUBJECTS)
+
+
+# ---------------------------------------------------------------- правила 2027 (проект)
+
+
+async def test_project_2027_prize_bvi_becomes_hundred(client: httpx.AsyncClient) -> None:
+    hse = await form(client, "вышка")
+    diploma = spec(hse, "математика", "p.11.2027")
+    now = await match(client, diploma)
+    project = await match(client, diploma, rules="project2027")
+
+    assert now["rules"] == "current" and now["changes"] is None
+    assert project["rules"] == "project2027"
+    assert now["totals"]["bvi"] > 0
+    changes = project["changes"]
+    assert changes["to_hundred"] > 0 and changes["universities"] > 0
+    # направления те же, БВИ превратилось в «100 баллов»
+    assert project["totals"]["programs"] == now["totals"]["programs"]
+    assert project["totals"]["bvi"] < now["totals"]["bvi"]
+    assert project["totals"]["sto"] > now["totals"]["sto"]
+    assert sum(u["to_hundred"] for u in project["results"]) == changes["to_hundred"]
+    assert all(u["to_hundred"] == 0 for u in now["results"])
+
+    # в строках вуза изменённые помечены, benefit остаётся исходным
+    uid = next(u["university"]["id"] for u in project["results"] if u["to_hundred"] > 0)
+    rows = (await match(client, diploma, rules="project2027", university_id=uid))["rows"]
+    changed = [r for r in rows if r["change"] == "hundred"]
+    assert changed and all(r["benefit"]["benefit_type"] == "БВИ" for r in changed)
+    assert all(
+        r["change"] is None for r in (await match(client, diploma, university_id=uid))["rows"]
+    )
+
+
+async def test_project_2027_does_not_touch_winners_vsosh_and_old_diplomas(
+    client: httpx.AsyncClient,
+) -> None:
+    hse = await form(client, "вышка")
+    vsosh = await form(client, "всош")
+    for diploma in (
+        spec(hse, "математика", "w.11.2027"),  # победитель
+        spec(hse, "математика", "p.11.2026"),  # олимпиада до 2026/27 — прежние правила
+        spec(vsosh, "математика", "p.11.2027"),  # ВсОШ
+    ):
+        now = await match(client, diploma)
+        project = await match(client, diploma, rules="project2027")
+        assert project["totals"] == now["totals"], diploma
+        assert project["changes"] == {"to_hundred": 0, "universities": 0, "check": 0}
+
+
+async def test_project_2027_unknown_year_needs_check(client: httpx.AsyncClient) -> None:
+    hse = await form(client, "вышка")
+    diploma = spec(hse, "математика", "p.11.0")
+    now = await match(client, diploma)
+    project = await match(client, diploma, rules="project2027")
+    # год не указан — может оказаться и старым, и новым: БВИ остаётся, строки на проверку
+    assert project["totals"] == now["totals"]
+    assert project["changes"]["to_hundred"] == 0 and project["changes"]["check"] > 0
+
+
+async def test_project_2027_one_unchanged_diploma_keeps_bvi(client: httpx.AsyncClient) -> None:
+    hse = await form(client, "вышка")
+    prize = spec(hse, "математика", "p.11.2027")
+    winner = spec(hse, "математика", "w.11.2027")
+    both = await match(client, prize, winner, rules="project2027")
+    assert both["changes"]["to_hundred"] == 0
+    assert both["totals"] == (await match(client, prize, winner))["totals"]
+
+
+async def test_rules_param_validated(client: httpx.AsyncClient) -> None:
+    hse = await form(client, "вышка")
+    response = await client.get(
+        "/v1/achievements/match",
+        params={"diploma": spec(hse, "математика", "p.11.2027"), "rules": "old"},
+    )
+    assert response.status_code == 422

@@ -1,8 +1,11 @@
 """Сопоставление диплома со строками таблиц вузов. Формулировки взяты из базы как есть."""
 
+from dataclasses import replace
+
 import pytest
 from olymp_domain.diplomas import (
     VSOSH_KEY,
+    Change,
     Diploma,
     DiplomaSpec,
     Fit,
@@ -11,11 +14,13 @@ from olymp_domain.diplomas import (
     Role,
     Stage,
     better,
+    bvi_change,
     diploma_years,
     grades_allowed,
     is_real_profile,
     is_sure,
     match,
+    prize_change,
     profile_keys,
     roles_allowed,
     subject_keys,
@@ -281,3 +286,35 @@ def test_better() -> None:
     assert better(Fit.CHECK, Fit.EXACT) is Fit.EXACT
     assert better(Fit.SUBJECT, Fit.CHECK) is Fit.SUBJECT
     assert better(Fit.ROLE, Fit.CHECK) is Fit.CHECK
+
+
+# ---------------------------------------------------------------- правила 2027 (проект)
+
+PRIZE_2027 = replace(MATH, role=Role.PRIZE, year=2027)
+
+
+def test_prize_change_only_for_prizes_of_new_season() -> None:
+    assert prize_change(PRIZE_2027) is Change.HUNDRED
+    assert prize_change(replace(PRIZE_2027, year=2026)) is None  # прежние правила ещё четыре года
+    assert prize_change(replace(PRIZE_2027, role=Role.WINNER)) is None
+    assert prize_change(replace(PRIZE_2027, year=None)) is Change.CHECK
+
+
+def test_prize_change_spares_vsosh_and_international() -> None:
+    assert prize_change(replace(PRIZE_2027, vsosh=True)) is None
+    assert prize_change(replace(PRIZE_2027, international=True)) is None
+
+
+def test_bvi_change_needs_subject_for_hundred() -> None:
+    assert bvi_change([PRIZE_2027], has_subject=True) is Change.HUNDRED
+    assert bvi_change([PRIZE_2027], has_subject=False) is Change.CHECK
+    assert bvi_change([replace(PRIZE_2027, year=None)], has_subject=True) is Change.CHECK
+
+
+def test_bvi_change_stays_if_any_diploma_keeps_it() -> None:
+    winner = replace(PRIZE_2027, role=Role.WINNER)
+    assert bvi_change([PRIZE_2027, winner], has_subject=True) is None
+    assert (
+        bvi_change([PRIZE_2027, replace(PRIZE_2027, year=None)], has_subject=False) is Change.CHECK
+    )
+    assert bvi_change([], has_subject=True) is None

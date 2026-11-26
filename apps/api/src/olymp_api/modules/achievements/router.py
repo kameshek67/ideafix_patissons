@@ -1,7 +1,7 @@
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from olymp_domain.diplomas import CAMPAIGN_YEAR, diploma_years
+from olymp_domain.diplomas import CAMPAIGN_YEAR, Rules, diploma_years
 from olymp_domain.ege import SUBJECTS
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -25,6 +25,13 @@ DIPLOMA_HELP = (
     "p — призёр), класс (0 — не указан) и год олимпиады (0 — не указан), например "
     "«высшаяпроба.математика.w.11.2025». У ВсОШ можно добавить этап: «.r» — региональный "
     "(льгот не даёт), без него — заключительный. Ключи отдаёт /v1/achievements/olympiads/{id}."
+)
+
+RULES_HELP = (
+    "По каким правилам считать: current — действующие, project2027 — проект на 2027 год: "
+    "призёрам перечневых олимпиад 2026/27 и позже БВИ заменяют на 100 баллов (если у вуза "
+    "по направлению есть профильный предмет ЕГЭ, иначе — «проверить»), победителей и ВсОШ "
+    "это не затрагивает. Изменённые строки помечены полем change."
 )
 
 
@@ -55,6 +62,7 @@ async def match(
         [],
         description=EGE_HELP,
     ),
+    rules: Rules = Query(Rules.CURRENT, description=RULES_HELP),
     session: AsyncSession = Depends(get_session),
 ) -> Any:
     """«Мои дипломы»: где дипломы дают льготы с учётом условий вуза — степени диплома,
@@ -66,17 +74,18 @@ async def match(
         # баллы ЕГЭ — личные данные: ответ с ними не кладём в общий кэш
         data = AchievementsMatch.model_validate(
             await service.match_diplomas(
-                session, specs, benefit_type, university_id, scores, admission_year
+                session, specs, benefit_type, university_id, scores, admission_year, rules
             )
         )
         return data.model_dump(mode="json")
     key = ":".join(
         str(part)
         for part in (
-            "v2:achievements",
+            "v3:achievements",
             await data_version(session),
             ",".join(map(str, specs)),
             admission_year,
+            rules.value,
             benefit_type,
             university_id,
         )
@@ -85,7 +94,7 @@ async def match(
         return hit
     data = AchievementsMatch.model_validate(
         await service.match_diplomas(
-            session, specs, benefit_type, university_id, admission_year=admission_year
+            session, specs, benefit_type, university_id, admission_year=admission_year, rules=rules
         )
     )
     payload = data.model_dump(mode="json")

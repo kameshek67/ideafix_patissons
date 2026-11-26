@@ -35,12 +35,15 @@ const university = {
   region_group: "Регионы",
 };
 
-function matchResponse(spec: string) {
+function matchResponse(spec: string, rules = "current") {
+  const project = rules === "project2027";
   // региональный этап ВсОШ льгот не даёт
   const regional = spec.endsWith(".r");
   const counts = regional
     ? { universities: 0, programs: 0, bvi: 0, sto: 0, other: 0 }
-    : { universities: 16, programs: 260, bvi: 224, sto: 35, other: 1 };
+    : project
+      ? { universities: 16, programs: 260, bvi: 194, sto: 65, other: 1 }
+      : { universities: 16, programs: 260, bvi: 224, sto: 35, other: 1 };
   return {
     diplomas: [
       {
@@ -57,11 +60,13 @@ function matchResponse(spec: string) {
       },
     ],
     totals: counts,
+    rules,
+    changes: project ? { to_hundred: 30, universities: 4, check: 2 } : null,
     rejected: { role: 0, grade: regional ? 0 : 4, year: 0, team: 0 },
     results: regional
       ? []
       : [
-          { university, programs: 96, bvi: 88, sto: 8, other: 0, check: 0, law: [] },
+          { university, programs: 96, bvi: project ? 78 : 88, sto: project ? 18 : 8, other: 0, check: 0, to_hundred: project ? 10 : 0, law: [] },
           ...lawResults.map((name, i) => ({
             university: { ...university, id: 900 + i, name },
             programs: 0,
@@ -112,7 +117,7 @@ beforeEach(() => {
       };
       const body =
         url.pathname === "/api/v1/achievements/match"
-          ? matchResponse(url.searchParams.get("diploma") ?? "")
+          ? matchResponse(url.searchParams.get("diploma") ?? "", url.searchParams.get("rules") ?? "current")
           : routes[url.pathname];
       return new Response(JSON.stringify(body ?? {}), {
         status: body ? 200 : 404,
@@ -219,6 +224,41 @@ describe("вкладка «Дипломы»", () => {
     const match = requests.find((u) => u.pathname === "/api/v1/achievements/match")!;
     expect(match.searchParams.getAll("diploma")).toEqual([old]);
     expect(screen.queryByText(/региональный этап/)).toBeNull();
+  });
+
+  it("«Правила 2027 (проект)»: объясняет, считает изменения и помечает вузы", async () => {
+    localStorage.setItem(
+      "olymp.diplomas.v1",
+      JSON.stringify([{ spec: `${HSE_KEY}.математика.p.11.2027`, olympiad: "«Высшая проба»", profile: "математика" }]),
+    );
+    renderApp();
+    fireEvent.click(screen.getByRole("tab", { name: "Дипломы" }));
+    await waitFor(() => expect(screen.getByText("260 направлений в 16 вузах")).toBeTruthy());
+    // по умолчанию — действующие правила
+    expect(requests.every((u) => !u.searchParams.has("rules"))).toBe(true);
+    expect(document.querySelector("#rules-2027-note")).toBeNull();
+    const summary = () => within(document.querySelector<HTMLElement>("#diploma-summary")!);
+    expect(summary().getByText("БВИ: 224")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Правила 2027 (проект)" }));
+    await waitFor(() => expect(summary().getByText("БВИ: 194")).toBeTruthy());
+    expect(requests.filter((u) => u.pathname === "/api/v1/achievements/match").at(-1)!.searchParams.get("rules")).toBe(
+      "project2027",
+    );
+    const note = within(document.querySelector<HTMLElement>("#rules-2027-note")!);
+    expect(note.getByText(/Это проект, а не действующие правила/)).toBeTruthy();
+    expect(note.getByRole("link", { name: "Парламентская газета, 25.11.2026" }).getAttribute("href")).toContain("pnp.ru");
+    expect(document.querySelector("#rules-2027-count")!.textContent).toBe(
+      "У тебя изменится: 30 направлений БВИ → 100 баллов. Ещё 2 направления — проверь в правилах вуза: не указан профильный предмет ЕГЭ или год диплома",
+    );
+    expect(screen.getByText("БВИ → 100: 10")).toBeTruthy();
+    // проект не уходит в ссылку «Поделиться»
+    expect(document.querySelector("#diploma-share")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Правила 2027 (проект)" }));
+    await waitFor(() => expect(summary().getByText("БВИ: 224")).toBeTruthy());
+    expect(document.querySelector("#rules-2027-note")).toBeNull();
+    expect(document.querySelector("#diploma-share")).toBeTruthy();
   });
 
   it("честно говорит про вузы без таблицы льгот", async () => {

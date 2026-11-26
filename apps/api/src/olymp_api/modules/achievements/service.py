@@ -13,13 +13,16 @@ from olymp_domain.diplomas import (
     CAMPAIGN_YEAR,
     MAX_DIPLOMAS,
     VSOSH_KEY,
+    Change,
     Diploma,
     DiplomaSpec,
     Fit,
     Link,
     Reject,
+    Rules,
     Stage,
     better,
+    bvi_change,
     diploma_years,
     is_real_profile,
     is_sure,
@@ -36,6 +39,7 @@ from olymp_api.olympiads import BENEFIT_FIELDS, BENEFIT_ORDER, serialize_benefit
 from olymp_api.universities import UNIVERSITY_FIELDS, university_of
 
 TYPE_RANK = {t: i for i, t in enumerate(BENEFIT_ORDER)}
+HUNDRED = "100 баллов"
 # порядок строк в таблице вуза: БВИ, 100 баллов, остальное
 TYPE_SQL = """CASE b.benefit_type WHEN 'БВИ' THEN 0 WHEN '100 баллов' THEN 1
                                   WHEN 'Особое право (БВИ/100)' THEN 2 ELSE 3 END"""
@@ -131,6 +135,7 @@ class Resolved:
             year=self.spec.year,
             stage=self.spec.stage,
             international=self.olympiad.get("kind") == "international",
+            vsosh=self.spec.olympiad_key == VSOSH_KEY,
         )
 
 
@@ -180,6 +185,8 @@ class Matched:
     university_id: int
     fit: Fit
     diplomas: set[int] = field(default_factory=set)
+    # что правила 2027 делают с этой строкой БВИ (None — ничего или текущие правила)
+    change: Change | None = None
 
 
 @dataclass
@@ -188,6 +195,19 @@ class ProgramBest:
     rank: int
     # хотя бы одна строка подошла уверенно (профиль или предмет совпали, роль не под вопросом)
     sure: bool
+    # лучшая льгота до пересчёта по правилам 2027 и откуда у направления остаётся БВИ
+    base_rank: int = 0
+    plain_bvi: bool = False
+    check_bvi: bool = False
+
+    @property
+    def change(self) -> Change | None:
+        """Что правила 2027 делают с направлением: БВИ → 100 баллов или «проверить»."""
+        if self.base_rank == 0 and self.rank > 0:
+            return Change.HUNDRED
+        if self.rank == 0 and self.check_bvi and not self.plain_bvi:
+            return Change.CHECK
+        return None
 
 
 def program_best(
@@ -198,14 +218,33 @@ def program_best(
     for benefit_id, m in matched.items():
         if only is not None and benefit_id not in only:
             continue
-        rank = TYPE_RANK.get(m.benefit_type, len(TYPE_RANK))
+        base = TYPE_RANK.get(m.benefit_type, len(TYPE_RANK))
+        rank = TYPE_RANK[HUNDRED] if m.change is Change.HUNDRED else base
         current = best.get(m.program_id)
         if current is None:
-            best[m.program_id] = ProgramBest(m.university_id, rank, is_sure(m.fit))
+            current = best[m.program_id] = ProgramBest(
+                m.university_id, rank, is_sure(m.fit), base_rank=base
+            )
         else:
             current.rank = min(current.rank, rank)
+            current.base_rank = min(current.base_rank, base)
             current.sure = current.sure or is_sure(m.fit)
+        if base == 0 and rank == 0:
+            if m.change is Change.CHECK:
+                current.check_bvi = True
+            else:
+                current.plain_bvi = True
     return best
+
+
+def changes_2027(best: dict[int, ProgramBest]) -> dict[str, int]:
+    """Сколько направлений меняют правила 2027: БВИ → 100 баллов и «проверить»."""
+    hundred = [p for p in best.values() if p.change is Change.HUNDRED]
+    return {
+        "to_hundred": len(hundred),
+        "universities": len({p.university_id for p in hundred}),
+        "check": sum(1 for p in best.values() if p.change is Change.CHECK),
+    }
 
 
 def counts(best: dict[int, ProgramBest]) -> dict[str, int]:
@@ -220,6 +259,12 @@ def counts(best: dict[int, ProgramBest]) -> dict[str, int]:
 
 # отметка «не хватает до N баллов» в итогах
 CLOSE_GAP = 5
+
+
+def has_ege_subject(row: Row) -> bool:
+    """У правила вуза есть профильный предмет ЕГЭ: назван в колонке подтверждения или
+    следует из профиля олимпиады — тогда «100 баллов» засчитываются за этот предмет."""
+    return bool(row["confirm_subjects"]) or subject_of_profile(row["link_profile"]) is not None
 
 
 def ege_statuses(
@@ -328,6 +373,7 @@ async def match_diplomas(
     university_id: int | None,
     ege: dict[str, int] | None = None,
     admission_year: int = ADMISSION_YEAR,
+    rules: Rules = Rules.CURRENT,
 ) -> dict[str, Any]:
     resolved = await resolve(session, specs)
     diplomas = [r.diploma() for r in resolved]
@@ -390,12 +436,21 @@ async def match_diplomas(
             entry.diplomas.add(index)
             per_diploma[index].add(benefit_id)
 
+    if rules is Rules.PROJECT_2027:
+        for benefit_id, m in matched.items():
+            if m.benefit_type == "БВИ":
+                m.change = bvi_change(
+                    [d for i in sorted(m.diplomas) if (d := diplomas[i])],
+                    has_ege_subject(best_link[benefit_id]),
+                )
     best = program_best(matched)
     universities: dict[int, dict[str, int]] = {}
     for program in best.values():
         u = universities.setdefault(
-            program.university_id, {"programs": 0, "bvi": 0, "sto": 0, "other": 0, "check": 0}
+            program.university_id,
+            {"programs": 0, "bvi": 0, "sto": 0, "other": 0, "check": 0, "to_hundred": 0},
         )
+        u["to_hundred"] += program.change is Change.HUNDRED
         u["programs"] += 1
         u["bvi" if program.rank == 0 else "sto" if program.rank == 1 else "other"] += 1
         if not program.sure:
@@ -447,6 +502,7 @@ async def match_diplomas(
             "sto": 0,
             "other": 0,
             "check": 0,
+            "to_hundred": 0,
             "law": [names[oid] for oid in law[uid]],
             **({"ege_confirmed": 0} if ege else {}),
         }
@@ -470,6 +526,8 @@ async def match_diplomas(
             for i, r in enumerate(resolved)
         ],
         "totals": counts(best),
+        "rules": rules.value,
+        "changes": changes_2027(best) if rules is Rules.PROJECT_2027 else None,
         # строка не считается отклонённой, если её дал другой диплом
         "rejected": {
             reason.value: len(ids - matched.keys())
@@ -543,6 +601,7 @@ async def university_rows(
                 "benefit": benefit,
                 "diplomas": sorted(m.diplomas),
                 "fit": m.fit.value,
+                "change": m.change.value if m.change else None,
                 **(
                     {
                         "ege_status": statuses[row["id"]][0],

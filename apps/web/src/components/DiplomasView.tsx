@@ -22,6 +22,7 @@ import { DataTable } from "./DataTable";
 import { IconChevronLeft, IconChevronRight, IconPlus, IconTrash } from "./icons";
 import { useMaxBackButton } from "./MaxProvider";
 import { EgeBlock } from "./EgeBlock";
+import { Rules2027 } from "./Rules2027";
 import { ShareButton } from "./ShareButton";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
 import type { DiplomaStorage, SyncState } from "./useMyDiplomas";
@@ -42,6 +43,8 @@ const LAW_BADGE = "по закону, проверь профиль";
 const LAW_HINT =
   "Своих строк по этой олимпиаде у вуза в базе нет. По закону (ст. 71 273-ФЗ) победители и призёры заключительного этапа ВсОШ и члены сборных на международных олимпиадах вправе поступать без экзаменов на направления, соответствующие профилю. Какие направления подходят, решает вуз";
 const NO_TABLE_SHOWN = 5;
+const CHANGED_HINT = "По проекту правил 2027 призёру вместо БВИ засчитывают 100 баллов по профильному предмету";
+const CHANGE_CHECK_HINT = "По проекту правил 2027 БВИ может замениться на 100 баллов: у вуза не указан профильный предмет ЕГЭ или год диплома — проверь в правилах";
 
 interface Props {
   /** вкладка открыта: только тогда кнопка «Назад» MAX возвращает к списку вузов */
@@ -81,20 +84,22 @@ export function DiplomasView(props: Props) {
   const specs = entries.map((e) => e.spec);
   const ege = props.ege ?? NO_EGE;
   const scores = egeQuery(ege);
+  const [rules2027, setRules2027] = useState(false);
   const typeQuery = {
     ...(benefitType !== "Все" ? { benefit_type: benefitType } : {}),
     ...(scores.length ? { ege: scores } : {}),
+    ...(rules2027 ? { rules: "project2027" as const } : {}),
   };
   const [university, setUniversity] = useState<UniversityInfo | null>(null);
 
   const matchQ = useQuery({
-    queryKey: ["achievements", specs, benefitType, scores],
+    queryKey: ["achievements", specs, benefitType, scores, rules2027],
     queryFn: () => getAchievements(specs, typeQuery),
     enabled: specs.length > 0,
     placeholderData: keepPreviousData,
   });
   const detailQ = useQuery({
-    queryKey: ["achievements", specs, benefitType, scores, university?.id],
+    queryKey: ["achievements", specs, benefitType, scores, rules2027, university?.id],
     queryFn: () => getAchievements(specs, { ...typeQuery, university_id: university!.id }),
     enabled: specs.length > 0 && university !== null,
   });
@@ -117,6 +122,7 @@ export function DiplomasView(props: Props) {
     <>
       <DiplomaList {...props} data={data} />
       {props.readOnly || !props.onEge ? null : <EgeBlock ege={ege} onChange={props.onEge} />}
+      <Rules2027 on={rules2027} onChange={setRules2027} data={data} />
       {matchQ.error ? (
         <LoadError message={matchQ.error.message} />
       ) : !data ? (
@@ -139,7 +145,8 @@ export function DiplomasView(props: Props) {
           readOnly={!!props.readOnly}
           onUniversity={openUniversity}
           share={
-            props.readOnly ? null : (
+            // ссылка открывается по действующим правилам — проект не отправляем
+            props.readOnly || rules2027 ? null : (
               <ShareButton
                 id="diploma-share"
                 wide
@@ -410,6 +417,9 @@ function Results({
                 {r.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(r.bvi)}`}</span> : null}
                 {r.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(r.sto)}`}</span> : null}
                 {r.other ? <span className="badge badge-alt">{`${fmt(r.other)} др.`}</span> : null}
+                {r.to_hundred ? (
+                  <span className="badge badge-soft" title={CHANGED_HINT}>{`БВИ → 100: ${fmt(r.to_hundred)}`}</span>
+                ) : null}
                 {r.check ? (
                   <span className="badge badge-soft" title={`${CHECK_HINT}. ${ROLE_HINT}`}>{`${fmt(r.check)} проверить`}</span>
                 ) : null}
@@ -444,12 +454,14 @@ interface DetailRow {
   derived: boolean;
   /** подсказка «проверить»: профиль в правилах не указан или не указано, кому льгота */
   check: string | null;
+  /** по проекту правил 2027: hundred — БВИ станет «100 баллов», check — может измениться */
+  change: AchievementRow["change"];
   row_key: string;
   fixed_at: string | null;
 }
 
 function detailRows(rows: AchievementRow[], entries: DiplomaEntry[]): DetailRow[] {
-  return rows.map(({ program, benefit: b, diplomas, fit, ege_status, ege_gap, ege_subjects }) => {
+  return rows.map(({ program, benefit: b, diplomas, fit, change, ege_status, ege_gap, ege_subjects }) => {
     // у части вузов название направления — это и есть перечень кодов, не дублируем
     const code =
       codesOf(program.code) && codesOf(program.code) !== codesOf(program.faculty_or_direction) ? program.code : "";
@@ -458,7 +470,7 @@ function detailRows(rows: AchievementRow[], entries: DiplomaEntry[]): DetailRow[
       program_profile: (program.profile_name || "").slice(0, 70),
       program_id: program.id,
       code: dash(code),
-      type: b.benefit_type,
+      type: change === "hundred" ? "100 баллов" : b.benefit_type,
       diploma: diplomas
         .map((i) => entries[i])
         .filter(Boolean)
@@ -476,6 +488,7 @@ function detailRows(rows: AchievementRow[], entries: DiplomaEntry[]): DetailRow[
       egeGap: ege_gap ?? null,
       egeSubjects: ege_subjects ?? [],
       derived: b.derived,
+      change: change ?? null,
       check: fit === "check" ? CHECK_HINT : fit === "role" ? ROLE_HINT : null,
       row_key: b.row_key,
       fixed_at: b.fixed_at,
@@ -515,6 +528,14 @@ function detailColumns(openProgram: (id: number) => void, several: boolean): Col
         <>
           <span className={`badge ${badgeClass(r.type)}`}>{r.type}</span>
           <DerivedMark derived={r.derived} />
+          {r.change ? (
+            <>
+              {" "}
+              <span className="badge badge-soft" title={r.change === "hundred" ? CHANGED_HINT : CHANGE_CHECK_HINT}>
+                {r.change === "hundred" ? "было БВИ" : "может измениться"}
+              </span>
+            </>
+          ) : null}
           {r.check ? (
             <>
               {" "}

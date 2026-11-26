@@ -97,6 +97,8 @@ export interface AchievementsQuery {
   university_id?: number;
   /** баллы ЕГЭ «предмет:балл» */
   ege?: string[];
+  /** по каким правилам считать: проект 2027 заменяет призёрам БВИ на 100 баллов */
+  rules?: "current" | "project2027";
 }
 
 export const getAchievements = (diplomas: string[], query: AchievementsQuery = {}) =>

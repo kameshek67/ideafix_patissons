@@ -42,6 +42,16 @@ class Counts(ResponseModel):
     other: int
 
 
+class Changes2027(ResponseModel):
+    """Что меняется по проекту правил 2027 (rules=project2027)."""
+
+    # направления, где БВИ призёра становится «100 баллами», и вузы с такими направлениями
+    to_hundred: int
+    universities: int
+    # направления, где БВИ может измениться, но по данным не определить — проверить в правилах
+    check: int
+
+
 class DiplomaResult(ResponseModel):
     # нормализованная строка диплома (см. olymp_domain.diplomas)
     spec: str
@@ -103,6 +113,8 @@ class AchievementUniversity(ResponseModel):
     other: int
     # направления, где профиль в правилах вуза не указан — соответствие нужно проверить
     check: int
+    # направления, где по проекту правил 2027 БВИ становится «100 баллами» (иначе 0)
+    to_hundred: int = 0
     # направления, подтверждённые баллами ЕГЭ (только если баллы переданы)
     ege_confirmed: int | None = None
     # строк вуза нет, но по закону диплом даёт БВИ на направления, соответствующие профилю:
@@ -122,6 +134,8 @@ class AchievementRow(ResponseModel):
     benefit: Benefit
     # номера дипломов (в порядке запроса), которые дают эту льготу
     diplomas: list[int]
+    # по проекту правил 2027: hundred — БВИ станет «100 баллов», check — проверить в правилах
+    change: Literal["hundred", "check"] | None = None
     # exact — профиль совпал, subject — совпал предмет, check — профиль в правилах не указан
     fit: str
     # с баллами ЕГЭ: подтверждена ли льгота, сколько не хватает, по каким предметам
@@ -134,6 +148,9 @@ class AchievementsMatch(ResponseModel):
     """Где дипломы дают льготы: итоги, список вузов, а с university_id — строки вуза."""
 
     diplomas: list[DiplomaResult]
+    # итоги и списки посчитаны по этим правилам: current — действующие, project2027 — проект
+    rules: Literal["current", "project2027"] = "current"
+    changes: Changes2027 | None = None
     totals: Counts
     rejected: Rejected
     results: list[AchievementUniversity]
