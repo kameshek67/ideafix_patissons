@@ -160,7 +160,11 @@ RE_LEVEL_WORD = re.compile(
     r"|\b(I{1,3}|[123])\s*(?:-?\s*(?:ой|го|й)?\s*)?(?:уров\w*|\bур\b\.?)",
     re.IGNORECASE,
 )
-RE_GRADE = re.compile(r"\b(9|10|11)\s*(?:[-–—,]\s*(?:9|10|11)\s*)*кл(?:асс\w*|\.)", re.IGNORECASE)
+# «11 класс», «10, 11 классов», «9–11 кл.»: список классов через запятую или диапазон через тире
+RE_GRADE = re.compile(
+    r"(?<!\d)(?P<list>(?:9|10|11)(?:\s*[-–—,]\s*(?:9|10|11))*)\s*кл(?:асс\w*|\.)", re.IGNORECASE
+)
+RE_GRADE_PART = re.compile(r"(\d+)(?:\s*[-–—]\s*(\d+))?")
 RE_EGE = re.compile(r"(?:≥|не\s+ниже|от)?\s*(\d{2,3})\s*(?:\+|и\s+более|балл\w*)", re.IGNORECASE)
 
 
@@ -190,9 +194,7 @@ def find_levels(text: str) -> list[str]:
 def find_roles(text: str) -> list[str]:
     s = clean_text(text).lower().replace("ё", "е")
     out = []
-    if "только победител" in s:
-        out.append("только победители")
-    elif "победител" in s:
+    if "победител" in s:
         out.append("победители")
     if "призер" in s:
         out.append("призёры")
@@ -217,12 +219,11 @@ def norm_role(value) -> str:
 
 
 def find_grades(text: str) -> list[str]:
-    out = []
+    found: set[int] = set()
     for m in RE_GRADE.finditer(clean_text(text)):
-        g = m.group(1)
-        if g not in out:
-            out.append(g)
-    return out
+        for start, end in RE_GRADE_PART.findall(m.group("list")):
+            found.update(range(int(start), int(end or start) + 1))
+    return [str(g) for g in sorted(found)]
 
 
 def find_ege_thresholds(text: str) -> list[str]:
@@ -234,36 +235,40 @@ def find_ege_thresholds(text: str) -> list[str]:
     return out
 
 
-SUBJECTS = [
-    "математика",
-    "информатика",
-    "физика",
-    "химия",
-    "биология",
-    "география",
-    "история",
-    "обществознание",
-    "литература",
-    "русский язык",
-    "английский язык",
-    "иностранный язык",
-    "астрономия",
-    "экономика",
-    "право",
-    "экология",
-    "лингвистика",
-    "журналистика",
-    "искусство",
-    "черчение",
-    "рисунок",
-    "технология",
-    "труд",
-]
+# предмет -> падежные формы (по математике, физики, по информатике и ИКТ)
+SUBJECT_FORMS: dict[str, str] = {
+    "математика": r"математик(?:а|и|е|у|ой)\b",
+    "информатика": r"информатик(?:а|и|е|у|ой)\b|\bикт\b",
+    "физика": r"физик(?:а|и|е|у|ой)\b",
+    "химия": r"хими(?:я|и|ю|ей)\b",
+    "биология": r"биологи(?:я|и|ю|ей)\b",
+    "география": r"географи(?:я|и|ю|ей)\b",
+    "история": r"истори(?:я|и|ю|ей)\b",
+    "обществознание": r"обществознани(?:е|я|ю|ем)\b",
+    "литература": r"литератур(?:а|ы|е|у|ой)\b",
+    "русский язык": r"русск\w*\s+язык\w*",
+    "английский язык": r"английск\w*\s+язык\w*",
+    "иностранный язык": r"иностранн\w*\s+язык\w*",
+    "астрономия": r"астроном(?:ия|ии|ию|ией)\b",
+    "экономика": r"экономик(?:а|и|е|у|ой)\b",
+    "право": r"\bправо\b|\bправовед\w*|\bправ[уе]\b|\bправом\b",
+    "экология": r"экологи(?:я|и|ю|ей)\b",
+    "лингвистика": r"лингвистик(?:а|и|е|у|ой)\b",
+    "журналистика": r"журналистик(?:а|и|е|у|ой)\b",
+    "искусство": r"искусств(?:о|а|у|ом|е)\b",
+    "черчение": r"черчени(?:е|я|ю|ем)\b",
+    "рисунок": r"рисунк(?:а|у|е|ом|и)\b|\bрисунок\b",
+    # «технологии» без «по» — это просто слово («информационные технологии»)
+    "технология": r"технологи(?:я|ю|ей)\b|\bпо\s+технологии\b",
+    "труд": r"\bтруд(?:а|у|ом|е)?\b",
+}
+SUBJECTS = list(SUBJECT_FORMS)
+RE_SUBJECT_FORMS = {subj: re.compile(forms) for subj, forms in SUBJECT_FORMS.items()}
 
 
 def find_subjects(text: str) -> list[str]:
     s = clean_text(text).lower().replace("ё", "е")
-    return [subj for subj in SUBJECTS if subj.replace("ё", "е") in s]
+    return [subj for subj, pattern in RE_SUBJECT_FORMS.items() if pattern.search(s)]
 
 
 # --------------------------------------------------------------------------

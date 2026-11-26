@@ -200,10 +200,9 @@ def test_find_levels_keeps_only_recognized_levels() -> None:
 
 
 def test_find_roles_distinguishes_only_winners() -> None:
-    assert find_roles("только победители и призёры олимпиады") == [
-        "только победители",
-        "призёры",
-    ]
+    assert find_roles("только победители и призёры олимпиады") == ["победители", "призёры"]
+    assert find_roles("только победители") == ["победители"]
+    assert find_roles("Победитель или призёр") == ["победители", "призёры"]
     assert find_roles("победители и призёры олимпиад перечня") == ["победители", "призёры"]
     assert find_roles("призёры ВсОШ") == ["призёры"]
 
@@ -215,10 +214,13 @@ def test_norm_role_abbreviations() -> None:
     assert norm_role("олимпиада перечня") == "олимпиада перечня"
 
 
-def test_find_grades_returns_first_grade_of_range() -> None:
-    assert find_grades("для 9–11 кл.") == ["9"]
-    assert find_grades("обучающимся 10, 11 классов") == ["10"]
+def test_find_grades_expands_ranges_and_lists() -> None:
+    assert find_grades("для 9–11 кл.") == ["9", "10", "11"]
+    assert find_grades("обучающимся 10, 11 классов") == ["10", "11"]
     assert find_grades("11 класс") == ["11"]
+    assert find_grades("классы 10-11 кл.") == ["10", "11"]
+    assert find_grades("9, 10–11 классы") == ["9", "10", "11"]
+    assert find_grades("диплом 2011 класс") == []
 
 
 def test_find_ege_thresholds_reads_minimum_scores() -> None:
@@ -238,7 +240,18 @@ def test_find_subjects_matches_exact_forms_in_subjects_list() -> None:
         "математика",
         "русский язык",
     ]
-    assert find_subjects("ЕГЭ по математике и физике") == []
+    assert find_subjects("ЕГЭ по математике и физике") == ["математика", "физика"]
+    assert find_subjects("баллы ЕГЭ по информатике и ИКТ") == ["информатика"]
+    assert find_subjects("по русскому языку, истории и обществознанию") == [
+        "история",
+        "обществознание",
+        "русский язык",
+    ]
+    assert find_subjects("результат ЕГЭ по химии и биологии") == ["химия", "биология"]
+    assert find_subjects("информационные технологии и правила приёма") == []
+    assert find_subjects("искусственный интеллект") == []
+    assert find_subjects("физико-математическая олимпиада") == []
+    assert find_subjects("история искусств") == ["история"]
 
 
 def test_split_top_level_ignores_separators_in_brackets_and_quotes() -> None:
