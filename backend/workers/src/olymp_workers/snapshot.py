@@ -34,6 +34,8 @@ COLUMNS = (
     "layer",
     "row_key",
 )
+# поля снимка плюс то, что нужно открытому датасету (направление и источник)
+VISIBLE_COLUMNS = COLUMNS + ("program_name", "source_title", "source_url")
 SHOWN = 40
 
 # профиль, уровень и роль у связанной олимпиады свои (они могут отличаться от строки льготы)
@@ -46,7 +48,8 @@ SELECT u.name, p.code, COALESCE(o.canonical_name, ''),
        b.grade,
        COALESCE(array_to_string(b.confirm_subjects, '+'), b.confirm_subject),
        COALESCE(b.min_ege_score::text, b.min_ege),
-       b.layer, b.row_key
+       b.layer, b.row_key,
+       p.faculty_or_direction, b.source_title, b.source_url
 FROM benefits b
 JOIN programs p ON p.id = b.program_id
 JOIN universities u ON u.id = p.university_id
@@ -60,11 +63,19 @@ def _cell(value: object) -> str:
     return " ".join(str(value if value is not None else "").split())
 
 
+def visible_rows(conn: psycopg.Connection) -> list[dict[str, str]]:
+    """Видимые строки выдачи со всеми полями, в стабильном порядке."""
+    rows = [
+        {name: _cell(value) for name, value in zip(VISIBLE_COLUMNS, values, strict=True)}
+        for values in conn.execute(_SQL).fetchall()
+    ]
+    rows.sort(key=lambda row: "\t".join(row[name] for name in COLUMNS))
+    return rows
+
+
 def build_snapshot(conn: psycopg.Connection) -> list[str]:
     """Строки снимка (без заголовка) в стабильном порядке."""
-    lines = ["\t".join(_cell(v) for v in row) for row in conn.execute(_SQL).fetchall()]
-    lines.sort()
-    return lines
+    return ["\t".join(row[name] for name in COLUMNS) for row in visible_rows(conn)]
 
 
 def render(lines: list[str]) -> str:

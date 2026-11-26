@@ -28,6 +28,10 @@ data/*.db
 data/*.db-wal
 data/*.db-shm
 
+# открытый датасет и метаданные собираются командой just dataset, в репозиторий не коммитятся
+data/release/*.gz
+data/release/meta.json
+
 # PDF презентации генерируется из .pptx командой build_deck.py + LibreOffice
 presentation/*.pdf
 

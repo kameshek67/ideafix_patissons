@@ -34,6 +34,10 @@ snapshot:
 data-diff:
     {{uv}} olymp-snapshot --check
 
+# открытый датасет льгот: data/release/olymp-benefits.jsonl.gz и meta.json рядом
+dataset *ARGS:
+    {{uv}} olymp-export-dataset {{ARGS}}
+
 # обойти страницы приёмных комиссий и обновить ссылки на документы
 refresh-sources *ARGS:
     {{uv}} olymp-refresh-sources {{ARGS}}
