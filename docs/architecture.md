@@ -111,7 +111,7 @@ Redis, без него работают в памяти процесса.
 
 ### Внешние ассистенты (MCP)
 
-`backend/mcp` — сервер `olymp-mcp`: пять инструментов читают только публичное HTTP API, доступа к базе и внутренним модулям нет. Адрес API задаёт `OLYMP_API_URL` (по умолчанию `https://ideafix.patissons.tech/api`), общение идёт через stdio — конфиг для Claude Desktop или любого MCP-клиента:
+`backend/mcp` — сервер `olymp-mcp`: пять инструментов читают только публичное HTTP API, доступа к базе и внутренним модулям нет. Адрес API задаёт `OLYMP_API_URL` (по умолчанию `https://ideafix.patissons.tech/api`), общение идёт через stdio — пример конфига MCP-клиента:
 
 ```json
 {
