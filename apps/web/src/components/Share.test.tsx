@@ -35,7 +35,7 @@ const shares: Record<string, unknown> = {
 const routes: Record<string, unknown> = {
   "/api/v1/universities": { count: 1, items: [{ ...university, programs: 67, bvi: 1, sto: 1, benefits: 2 }], regions: [] },
   "/api/v1/olympiads": { count: 0, items: [] },
-  "/api/v1/max/config": { enabled: false, bot_name: null, campaign_year: 2026, valid_years: [2023, 2024, 2025, 2026] },
+  "/api/v1/max/config": { enabled: false, bot_name: null, campaign_year: 2026, admission_year: 2027, valid_years: [2024, 2025, 2026, 2027] },
   "/api/v1/search/by-program": {
     program: {
       id: 101,
@@ -64,6 +64,7 @@ const routes: Record<string, unknown> = {
         role: "w",
         grade: 11,
         year: 2025,
+        stage: "f",
         expired: false,
         counts,
       },
@@ -73,8 +74,10 @@ const routes: Record<string, unknown> = {
     results: [{ university, programs: 96, bvi: 88, sto: 8, other: 0, check: 0 }],
     university: null,
     rows: [],
+    no_table: [],
     campaign_year: 2026,
-    valid_years: [2023, 2024, 2025, 2026],
+    admission_year: 2027,
+    valid_years: [2024, 2025, 2026, 2027],
   },
 };
 

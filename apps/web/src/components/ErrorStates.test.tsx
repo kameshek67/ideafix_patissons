@@ -8,7 +8,7 @@ let down = false;
 const okBody: Record<string, unknown> = {
   "/api/v1/universities": { count: 0, items: [], regions: [] },
   "/api/v1/olympiads": { count: 0, items: [] },
-  "/api/v1/max/config": { enabled: false, bot_name: null, campaign_year: 2026, valid_years: [2023, 2024, 2025, 2026] },
+  "/api/v1/max/config": { enabled: false, bot_name: null, campaign_year: 2026, admission_year: 2027, valid_years: [2024, 2025, 2026, 2027] },
 };
 const calls: string[] = [];
 

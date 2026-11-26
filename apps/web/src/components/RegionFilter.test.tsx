@@ -58,7 +58,7 @@ beforeEach(() => {
       if (url.pathname.endsWith("/universities")) {
         body = { count: 3, items: [], regions: ["Москва", "Регионы", "Санкт-Петербург"] };
       } else if (url.pathname.endsWith("/max/config")) {
-        body = { enabled: false, bot_name: null, campaign_year: 2026, valid_years: [2023, 2024, 2025, 2026] };
+        body = { enabled: false, bot_name: null, campaign_year: 2026, admission_year: 2027, valid_years: [2024, 2025, 2026, 2027] };
       } else if (url.pathname.endsWith("/olympiads")) {
         body = { count: 1, items: [olympiad] };
       } else if (url.pathname.endsWith("/search/by-olympiad")) {

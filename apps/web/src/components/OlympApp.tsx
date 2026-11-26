@@ -48,7 +48,7 @@ import { useMyDiplomas } from "./useMyDiplomas";
 type Tab = "uni" | "olymp" | "diplomas" | "extra";
 
 // годы, которые форма диплома предлагает, пока не ответил /v1/max/config
-const FALLBACK_CAMPAIGN = { campaign_year: 2026, valid_years: [2023, 2024, 2025, 2026] };
+const FALLBACK_CAMPAIGN = { campaign_year: 2026, admission_year: 2027, valid_years: [2024, 2025, 2026, 2027] };
 
 interface SheetState {
   /** номер редактируемого диплома; null — новый */
@@ -913,7 +913,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
           }
           popular={popularQ.data?.items ?? []}
           validYears={campaign.valid_years}
-          campaignYear={campaign.campaign_year}
+          admissionYear={campaign.admission_year}
           onSave={saveDiploma}
           onDelete={sheet.index !== null ? () => removeDiploma(sheet.index!) : null}
           onClose={() => setSheet(null)}

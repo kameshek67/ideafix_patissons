@@ -9,7 +9,18 @@ import {
   getOlympiads,
   type OlympiadHit,
 } from "@/lib/api";
-import { buildSpec, type DiplomaEntry, GRADES, parseSpec, ROLE_LABEL, type Role } from "@/lib/diplomas";
+import {
+  buildSpec,
+  type DiplomaEntry,
+  GRADES,
+  parseSpec,
+  REGIONAL_NOTE,
+  ROLE_LABEL,
+  type Role,
+  STAGE_LABEL,
+  type Stage,
+  VSOSH_KEY,
+} from "@/lib/diplomas";
 import { fmt, plural } from "@/lib/format";
 import { haptic } from "@/lib/max";
 import { levelChange, notInList } from "@/lib/rsosh";
@@ -22,7 +33,8 @@ interface Props {
   initial: { entry: DiplomaEntry; olympiadId: number | null } | null;
   popular: OlympiadHit[];
   validYears: number[];
-  campaignYear: number;
+  /** год поступления: от него считается срок действия дипломов */
+  admissionYear: number;
   onSave: (entry: DiplomaEntry) => void;
   onDelete: (() => void) | null;
   onClose: () => void;
@@ -34,7 +46,7 @@ type ProfileChoice = DiplomaProfile | null | undefined;
 const PROFILE_FILTER_FROM = 12;
 
 /** Форма диплома: олимпиада, профиль, степень, класс и год. */
-export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSave, onDelete, onClose }: Props) {
+export function DiplomaSheet({ initial, popular, validYears, admissionYear, onSave, onDelete, onClose }: Props) {
   const queryClient = useQueryClient();
   const app = useMax();
   const start = initial ? parseSpec(initial.entry.spec) : null;
@@ -45,6 +57,7 @@ export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSav
   const [role, setRole] = useState<Role | null>(start?.role ?? null);
   const [grade, setGrade] = useState<number | null>(start?.grade ?? null);
   const [year, setYear] = useState<number | null>(start?.year ?? null);
+  const [stage, setStage] = useState<Stage>(start?.stage ?? "f");
   const [touched, setTouched] = useState(false);
 
   const [query, setQuery] = useState("");
@@ -129,6 +142,9 @@ export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSav
     return needle ? list.filter((p) => p.name.toLowerCase().includes(needle)) : list;
   }, [form, profileFilter]);
 
+  // этап выбирают только у ВсОШ; у остальных олимпиад диплом всегда «заключительный»
+  const hasStage = form?.olympiad.key === VSOSH_KEY;
+
   const missing = !form
     ? "Выбери олимпиаду"
     : profile === undefined
@@ -146,6 +162,7 @@ export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSav
         role,
         grade,
         year,
+        stage: hasStage ? stage : "f",
       }),
       olympiad: form.olympiad.short_name,
       profile: profile?.name ?? "",
@@ -285,6 +302,21 @@ export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSav
           </section>
         ) : null}
 
+        {/* ЭТАП (только ВсОШ) */}
+        {hasStage ? (
+          <section className="form-section">
+            <h3 className="field-label">Этап олимпиады</h3>
+            <div className="chip-group" id="diploma-stage">
+              {(["f", "r"] as const).map((s) => (
+                <button key={s} className={`chip chip-lg ${stage === s ? "chip-on" : ""}`} onClick={() => choose(setStage, s)}>
+                  {STAGE_LABEL[s]}
+                </button>
+              ))}
+            </div>
+            {stage === "r" ? <p className="field-note">{REGIONAL_NOTE}</p> : null}
+          </section>
+        ) : null}
+
         {/* СТЕПЕНЬ */}
         <section className="form-section">
           <h3 className="field-label">Степень диплома</h3>
@@ -332,9 +364,9 @@ export function DiplomaSheet({ initial, popular, validYears, campaignYear, onSav
             ))}
           </div>
           <p className="field-note">
-            {`Дипломы действуют четыре года: в ${campaignYear} году засчитывают олимпиады ${validYears[0]}–${
+            {`Дипломы действуют четыре года: при поступлении в ${admissionYear} году засчитывают олимпиады ${validYears[0]}–${
               validYears[validYears.length - 1]
-            } годов. Для сезона ${campaignYear - 2}/${String(campaignYear - 1).slice(2)} выберите ${campaignYear - 1}.`}
+            } годов. Для сезона ${admissionYear - 1}/${String(admissionYear).slice(2)} выбери ${admissionYear}.`}
           </p>
         </section>
 

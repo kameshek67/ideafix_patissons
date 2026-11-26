@@ -10,7 +10,7 @@ import {
   shareBenefitType,
   type UniversityInfo,
 } from "@/lib/api";
-import { type DiplomaEntry, diplomaMeta, parseSpec } from "@/lib/diplomas";
+import { type DiplomaEntry, diplomaMeta, parseSpec, REGIONAL_NOTE } from "@/lib/diplomas";
 import { EGE_DATIVE, type EgeScores, type EgeSubject, egeQuery, hasEge, NO_EGE } from "@/lib/ege";
 import { conditionsLine } from "@/lib/conditions";
 import { codesOf, dash, fmt, place, plural } from "@/lib/format";
@@ -33,7 +33,11 @@ const napravleniy = (n: number) => plural(n, "направление", "напр
 const uNapravleniy = (n: number) => plural(n, "направления", "направлений", "направлений");
 const lgot = (n: number) => plural(n, "льгота", "льготы", "льгот");
 
-const CHECK_HINT = "Вуз не указал профиль олимпиады — проверьте в правилах, что он подходит к направлению";
+const vuzam = (n: number) => plural(n, "вузу", "вузам", "вузам");
+
+const CHECK_HINT = "Вуз не указал профиль олимпиады — проверь в правилах, что он подходит к направлению";
+const ROLE_HINT = "Вуз не уточнил, только ли победителям — проверь в правилах";
+const NO_TABLE_SHOWN = 5;
 
 interface Props {
   /** вкладка открыта: только тогда кнопка «Назад» MAX возвращает к списку вузов */
@@ -213,6 +217,10 @@ function DiplomaList({
                     <span className="badge badge-soft" title="После обновления данных олимпиады или профиля нет в базе">
                       нет в базе
                     </span>
+                  ) : result.stage === "r" ? (
+                    <span className="badge badge-soft" title={REGIONAL_NOTE}>
+                      региональный этап — без БВИ и 100 баллов
+                    </span>
                   ) : result.expired ? (
                     <span className="badge badge-alt" title="Дипломы действуют четыре года">
                       срок действия истёк
@@ -266,6 +274,28 @@ function rejectedNote(data: AchievementsMatch): string | null {
   return parts.length ? `Не подошли по условиям вузов: ${parts.join(", ")}.` : null;
 }
 
+/** Вузы, по которым в базе нет таблицы льгот: подбор по ним не делался, но льгота там может быть. */
+function NoTableNote({ items }: { items: AchievementsMatch["no_table"] }) {
+  const [all, setAll] = useState(false);
+  if (!items.length) return null;
+  const shown = all ? items : items.slice(0, NO_TABLE_SHOWN);
+  const rest = items.length - shown.length;
+  return (
+    <p className="mt-2 text-[12.5px] leading-snug meta-text" id="diploma-no-table">
+      {`По ${fmt(items.length)} ${vuzam(items.length)} у нас нет таблицы льгот: ${shown.map((u) => u.short_name || u.name).join(", ")}`}
+      {rest > 0 ? (
+        <>
+          {" "}
+          <button type="button" className="link-cell" onClick={() => setAll(true)}>
+            {`и ещё ${fmt(rest)}`}
+          </button>
+        </>
+      ) : null}
+      {". Льготы там могут быть — смотри правила приёма на сайте вуза."}
+    </p>
+  );
+}
+
 function Results({
   data,
   benefitType,
@@ -282,6 +312,7 @@ function Results({
 }) {
   const t = data.totals;
   const note = rejectedNote(data);
+  const regional = data.diplomas.some((d) => d.stage === "r");
   const [onlyConfirmed, setOnlyConfirmed] = useState(false);
   const ege = data.ege;
   const shown = ege && onlyConfirmed ? data.results.filter((u) => u.ege_confirmed) : data.results;
@@ -297,7 +328,11 @@ function Results({
               : "Сними фильтр по типу льготы."
           }
         />
+        {regional ? <p className="text-[12.5px] leading-snug meta-text px-1">{REGIONAL_NOTE}</p> : null}
         {note ? <p className="text-[12.5px] leading-snug meta-text px-1">{note}</p> : null}
+        <div className="px-1">
+          <NoTableNote items={data.no_table ?? []} />
+        </div>
       </>
     );
   }
@@ -318,12 +353,14 @@ function Results({
             </span>
           ) : null}
         </div>
+        {regional ? <p className="mt-2 text-[12.5px] leading-snug meta-text">{REGIONAL_NOTE}</p> : null}
         {note ? <p className="mt-2 text-[12.5px] leading-snug meta-text">{note}</p> : null}
         {check ? (
           <p className="mt-1 text-[12.5px] leading-snug meta-text">
-            {`«Проверить» — у ${fmt(check)} ${uNapravleniy(check)} вуз не указал профиль олимпиады: сверьтесь с правилами приёма.`}
+            {`«Проверить» — у ${fmt(check)} ${uNapravleniy(check)} вуз не указал профиль олимпиады или не уточнил, только ли победителям: сверь с правилами приёма.`}
           </p>
         ) : null}
+        <NoTableNote items={data.no_table ?? []} />
         {ege ? <p className="mt-2 text-[13px] leading-snug" id="ege-summary">{egeSummaryText(ege, t.universities)}</p> : null}
       </div>
       {share}
@@ -354,7 +391,7 @@ function Results({
                 {r.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(r.sto)}`}</span> : null}
                 {r.other ? <span className="badge badge-alt">{`${fmt(r.other)} др.`}</span> : null}
                 {r.check ? (
-                  <span className="badge badge-soft" title={CHECK_HINT}>{`${fmt(r.check)} проверить`}</span>
+                  <span className="badge badge-soft" title={`${CHECK_HINT}. ${ROLE_HINT}`}>{`${fmt(r.check)} проверить`}</span>
                 ) : null}
                 {r.ege_confirmed ? (
                   <span className="badge badge-ege-ok">{`ЕГЭ подтверждает: ${fmt(r.ege_confirmed)}`}</span>
@@ -385,7 +422,8 @@ interface DetailRow {
   egeGap: number | null;
   egeSubjects: string[];
   derived: boolean;
-  check: boolean;
+  /** подсказка «проверить»: профиль в правилах не указан или не указано, кому льгота */
+  check: string | null;
 }
 
 function detailRows(rows: AchievementRow[], entries: DiplomaEntry[]): DetailRow[] {
@@ -416,7 +454,7 @@ function detailRows(rows: AchievementRow[], entries: DiplomaEntry[]): DetailRow[
       egeGap: ege_gap ?? null,
       egeSubjects: ege_subjects ?? [],
       derived: b.derived,
-      check: fit === "check",
+      check: fit === "check" ? CHECK_HINT : fit === "role" ? ROLE_HINT : null,
     };
   });
 }
@@ -455,7 +493,7 @@ function detailColumns(openProgram: (id: number) => void, several: boolean): Col
           {r.check ? (
             <>
               {" "}
-              <span className="badge badge-soft" title={CHECK_HINT}>
+              <span className="badge badge-soft" title={r.check}>
                 проверить
               </span>
             </>

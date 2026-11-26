@@ -2,9 +2,16 @@
    (как в API, см. olymp_domain.diplomas) плюс названия для мгновенной отрисовки списка. */
 
 export type Role = "w" | "p";
+/** этап ВсОШ: f — заключительный, r — региональный (льгот не даёт) */
+export type Stage = "f" | "r";
+/** ключ ВсОШ в строке диплома: только у неё выбирают этап (olymp_domain.diplomas.VSOSH_KEY) */
+export const VSOSH_KEY = "всероссийскаяолимпиадашкольников";
+export const STAGE_LABEL: Record<Stage, string> = { f: "Заключительный", r: "Региональный" };
+export const REGIONAL_NOTE =
+  "Региональный этап ВсОШ не даёт БВИ и 100 баллов. Вузы могут добавить за него баллы — смотри вкладку «Баллы».";
 
 export interface DiplomaEntry {
-  /** ключ олимпиады . ключ профиля (- — не указан) . степень . класс (0) . год (0) */
+  /** ключ олимпиады . ключ профиля (- — не указан) . степень . класс (0) . год (0) [. r — региональный этап] */
   spec: string;
   olympiad: string;
   profile: string;
@@ -16,6 +23,7 @@ export interface DiplomaParts {
   role: Role;
   grade: number | null;
   year: number | null;
+  stage: Stage;
 }
 
 export const ROLE_LABEL: Record<Role, string> = { w: "Победитель", p: "Призёр" };
@@ -23,11 +31,14 @@ export const GRADES = [9, 10, 11] as const;
 export const MAX_DIPLOMAS = 20;
 
 export function buildSpec(p: DiplomaParts): string {
-  return [p.olympiadKey, p.profileKey || "-", p.role, p.grade || 0, p.year || 0].join(".");
+  const parts = [p.olympiadKey, p.profileKey || "-", p.role, p.grade || 0, p.year || 0];
+  // заключительный этап в строке не пишется: ключи прежних дипломов и ссылок не меняются
+  if (p.stage === "r") parts.push("r");
+  return parts.join(".");
 }
 
 export function parseSpec(spec: string): DiplomaParts | null {
-  const m = /^([^.]+)\.([^.]+)\.([wp])\.(\d+)\.(\d+)$/.exec(spec);
+  const m = /^([^.]+)\.([^.]+)\.([wp])\.(\d+)\.(\d+)(?:\.([fr]))?$/.exec(spec);
   if (!m) return null;
   return {
     olympiadKey: m[1]!,
@@ -35,6 +46,7 @@ export function parseSpec(spec: string): DiplomaParts | null {
     role: m[3] as Role,
     grade: Number(m[4]) || null,
     year: Number(m[5]) || null,
+    stage: m[6] === "r" ? "r" : "f",
   };
 }
 
@@ -44,6 +56,7 @@ export function diplomaMeta(parts: DiplomaParts): string {
     ROLE_LABEL[parts.role],
     parts.grade ? `${parts.grade} класс` : null,
     parts.year ? `${parts.year}` : null,
+    parts.stage === "r" ? "региональный этап" : null,
   ]
     .filter(Boolean)
     .join(" · ");

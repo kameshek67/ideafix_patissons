@@ -71,8 +71,10 @@ function match(url: URL) {
     ege: ege.length
       ? { confirmed_programs: 1, confirmed_universities: 1, close_universities: 1, statuses: {} }
       : null,
+    no_table: [],
     campaign_year: 2026,
-    valid_years: [2023, 2024, 2025, 2026],
+    admission_year: 2027,
+    valid_years: [2024, 2025, 2026, 2027],
   };
 }
 
@@ -91,7 +93,7 @@ beforeEach(() => {
         url.pathname === "/api/v1/achievements/match"
           ? match(url)
           : url.pathname === "/api/v1/max/config"
-            ? { enabled: false, bot_name: null, campaign_year: 2026, valid_years: [2025] }
+            ? { enabled: false, bot_name: null, campaign_year: 2026, admission_year: 2027, valid_years: [2025] }
             : null;
       return new Response(JSON.stringify(body ?? {}), {
         status: body ? 200 : 404,

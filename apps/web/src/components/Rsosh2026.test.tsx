@@ -35,7 +35,7 @@ beforeEach(() => {
       let body: unknown = {};
       if (url.pathname.endsWith("/universities")) body = { count: 0, items: [], regions: [] };
       else if (url.pathname.endsWith("/max/config"))
-        body = { enabled: false, bot_name: null, campaign_year: 2026, valid_years: [2023, 2024, 2025, 2026] };
+        body = { enabled: false, bot_name: null, campaign_year: 2026, admission_year: 2027, valid_years: [2024, 2025, 2026, 2027] };
       else if (url.pathname.endsWith("/olympiads")) body = { count: 1, items: [olympiadHit(inList)] };
       else if (url.pathname.endsWith("/search/by-olympiad"))
         body = {
@@ -62,6 +62,7 @@ beforeEach(() => {
               role: "w",
               grade: 11,
               year: 2025,
+              stage: "f",
               expired: false,
               counts,
             },
@@ -71,8 +72,10 @@ beforeEach(() => {
           results: [],
           university: null,
           rows: [],
+          no_table: [],
           campaign_year: 2026,
-          valid_years: [2023, 2024, 2025, 2026],
+          admission_year: 2027,
+          valid_years: [2024, 2025, 2026, 2027],
         };
       }
       return new Response(JSON.stringify(body), { headers: { "content-type": "application/json" } });

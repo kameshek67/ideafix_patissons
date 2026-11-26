@@ -8,6 +8,7 @@ import {
   parseSpec,
   saveLocalDiplomas,
   upsertDiploma,
+  VSOSH_KEY,
 } from "./diplomas";
 import { startAppLink } from "./max";
 
@@ -17,12 +18,24 @@ afterEach(() => localStorage.clear());
 
 describe("строка диплома", () => {
   it("собирается и разбирается так же, как в API", () => {
-    const parts = { olympiadKey: "высшаяпроба", profileKey: "математика", role: "w" as const, grade: 11, year: 2025 };
+    const parts = { olympiadKey: "высшаяпроба", profileKey: "математика", role: "w" as const, grade: 11, year: 2025, stage: "f" as const };
     expect(buildSpec(parts)).toBe("высшаяпроба.математика.w.11.2025");
     expect(parseSpec("высшаяпроба.математика.w.11.2025")).toEqual(parts);
     expect(buildSpec({ ...parts, profileKey: null, grade: null, year: null })).toBe("высшаяпроба.-.w.0.0");
-    expect(parseSpec("нто.-.p.0.0")).toEqual({ olympiadKey: "нто", profileKey: null, role: "p", grade: null, year: null });
+    expect(parseSpec("нто.-.p.0.0")).toEqual({ olympiadKey: "нто", profileKey: null, role: "p", grade: null, year: null, stage: "f" });
     expect(parseSpec("мусор")).toBeNull();
+  });
+
+  it("этап ВсОШ: заключительный в строке не пишется, региональный — суффикс .r", () => {
+    const parts = { olympiadKey: VSOSH_KEY, profileKey: "химия", role: "p" as const, grade: 10, year: 2026 };
+    // прежние строки и ссылки без этапа — заключительный этап, ключ не меняется
+    expect(buildSpec({ ...parts, stage: "f" })).toBe(`${VSOSH_KEY}.химия.p.10.2026`);
+    expect(parseSpec(`${VSOSH_KEY}.химия.p.10.2026`)!.stage).toBe("f");
+    expect(parseSpec(`${VSOSH_KEY}.химия.p.10.2026.f`)!.stage).toBe("f");
+    expect(buildSpec({ ...parts, stage: "r" })).toBe(`${VSOSH_KEY}.химия.p.10.2026.r`);
+    expect(parseSpec(`${VSOSH_KEY}.химия.p.10.2026.r`)).toEqual({ ...parts, stage: "r" });
+    expect(parseSpec("всош.химия.p.10.2026.x")).toBeNull();
+    expect(diplomaMeta(parseSpec("всош.химия.p.10.2026.r")!)).toBe("Призёр · 10 класс · 2026 · региональный этап");
   });
 
   it("условия диплома одной строкой", () => {
