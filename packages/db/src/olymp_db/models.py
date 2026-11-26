@@ -164,6 +164,8 @@ class Olympiad(Base):
     bvi_count: Mapped[int] = _int()
     sto_count: Mapped[int] = _int()
     uni_count: Mapped[int] = _int()
+    # в перечне РСОШ на 2026/27; NULL — перечень не применим (ВсОШ, международные)
+    in_rsosh_2026_27: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
 
 
 class OlympiadAlias(Base):
@@ -190,6 +192,8 @@ class OlympiadProfile(Base):
     squash_key: Mapped[str] = mapped_column(CText)
     # преобладающий уровень пары «олимпиада + профиль»
     level: Mapped[str] = _text()
+    # уровень пары по перечню РСОШ на 2026/27; пусто, если пары в перечне нет
+    level_2026_27: Mapped[str] = _text()
     mentions: Mapped[int] = _int()
     bvi_count: Mapped[int] = _int()
     sto_count: Mapped[int] = _int()

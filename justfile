@@ -73,6 +73,10 @@ ai-cards *ARGS:
 reports *ARGS:
     uv run python scripts/export_reports.py {{ARGS}}
 
+# перечень олимпиад РСОШ на 2026/27 с rsr-olymp.ru -> data/rsosh_2026_27.json (раз в сезон): just rsosh --dry-run
+rsosh *ARGS:
+    uv run olymp-rsosh {{ARGS}}
+
 # пересоздать контракт API и клиент для сайта после изменения эндпоинтов
 openapi:
     uv run python -m olymp_api.openapi_cli > docs/openapi.json

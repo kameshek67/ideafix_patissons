@@ -70,6 +70,9 @@ from olymp_domain.textutils import (
 from .extra_points import load_extra_points
 from .olympiad_cards import CARDS_FILE, load_olympiad_cards
 from .row_keys import RowFields, assign_row_keys
+from .rsosh import RSOSH_FILE
+from .rsosh import apply_list as apply_rsosh_list
+from .rsosh import load as load_rsosh
 from .tables import clear_tables
 from .tls import is_web_url
 from .university_pages import PAGES
@@ -1258,11 +1261,28 @@ class Ingestor:
         cards = load_olympiad_cards(self.conn, DATA_DIR)
         log(f"      карточки олимпиад: {cards['cards']}, треков {cards['tracks']}")
 
+        self.apply_rsosh()
+
         extra = load_extra_points(self.conn, DATA_DIR)
         log(f"      баллы за ИД: правил {extra['rules']}, лимитов {extra['limits']}")
 
         log("[7/7] Статистика")
         self.finalize(started)
+
+    def apply_rsosh(self) -> None:
+        """Перечень РСОШ на 2026/27: признак у олимпиады и уровень у профиля (data/rsosh_2026_27.json)."""
+        rows = load_rsosh(DATA_DIR / RSOSH_FILE)
+        if not rows:
+            log("      перечень РСОШ 2026/27: файла нет, пропускаю")
+            return
+        stats = apply_rsosh_list(self.conn, rows, self.olympiad_id_for, log)
+        log(
+            f"      перечень РСОШ 2026/27: строк {stats['rows']}, олимпиад {stats['olympiads']}"
+            f" (сопоставлено {stats['matched_olympiads']}, нет в справочнике"
+            f" {stats['unmatched_olympiads']}), уровней профилей {stats['levels']}"
+            f" (без профиля в базе {stats['missing_profiles']}), олимпиад вне перечня"
+            f" {stats['not_listed']}"
+        )
 
     def parse_ege_requirements(self) -> tuple[int, int]:
         """confirm_subjects и min_ege_score из текста. Различных пар текста — пара сотен,
@@ -2389,7 +2409,7 @@ def build_fingerprint(xlsx_path: str) -> str:
     import olymp_domain.olympiad_seeds as seeds
     import olymp_domain.textutils as textutils
 
-    from . import olympiad_cards, row_keys, university_pages
+    from . import olympiad_cards, row_keys, rsosh, university_pages
 
     parts = [
         Path(xlsx_path),
@@ -2400,6 +2420,8 @@ def build_fingerprint(xlsx_path: str) -> str:
         Path(textutils.__file__),
         Path(seeds.__file__),
         DATA_DIR / CARDS_FILE,
+        DATA_DIR / RSOSH_FILE,
+        Path(rsosh.__file__),
         Path(olympiad_cards.__file__),
         Path(cards.__file__),
         Path(ege.__file__),
