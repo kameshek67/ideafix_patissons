@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { IconChevronDown } from "./icons";
 
 export interface ComboItem<T> {
@@ -61,8 +61,14 @@ export function Combo<T>({
     }
   }
 
+  const close = useCallback(() => {
+    clearTimeout(timer.current);
+    ++seq.current;
+    setOpen(false);
+  }, []);
+
   function toggle() {
-    if (open) return setOpen(false);
+    if (open) return close();
     setOpen(true);
     setSearch("");
     void refresh("");
@@ -75,11 +81,11 @@ export function Combo<T>({
   // клик мимо комбобокса закрывает панель
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (root.current && !root.current.contains(e.target as Node)) setOpen(false);
+      if (root.current && !root.current.contains(e.target as Node)) close();
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
-  }, []);
+  }, [close]);
 
   return (
     <div className="combo" id={id} ref={root}>
@@ -127,7 +133,7 @@ export function Combo<T>({
                 key={item.key}
                 className="combo-item"
                 onClick={() => {
-                  setOpen(false);
+                  close();
                   onPick(item);
                 }}
               >

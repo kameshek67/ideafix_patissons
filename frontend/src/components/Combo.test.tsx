@@ -125,7 +125,7 @@ describe("Combo", () => {
     expect(onSearch.mock.calls).toEqual([[""], [""]]);
   });
 
-  it.fails("отложенный поиск не применяется после закрытия и повторного открытия", async () => {
+  it("отложенный поиск не применяется после закрытия и повторного открытия", async () => {
     vi.useFakeTimers();
     const onSearch = vi.fn((q: string) => (q ? [] : items));
     renderCombo({ onSearch });
