@@ -29,10 +29,20 @@ async def add_source(
         session,
         """INSERT INTO sources (university, url, kind, added_by)
            VALUES (:university, :url, :kind, :by)
-           ON CONFLICT (url) DO UPDATE SET university = EXCLUDED.university RETURNING id""",
+           ON CONFLICT (url) DO NOTHING RETURNING id""",
         {"university": university, "url": url, "kind": kind, "by": added_by},
     )
-    assert source is not None
+    if source is None:
+        existing = await fetch_one(
+            session, "SELECT id, university FROM sources WHERE url = :url", {"url": url}
+        )
+        assert existing is not None
+        if existing["university"] != university:
+            raise HTTPException(
+                409,
+                f"Ссылка уже добавлена с вузом «{existing['university']}», а указан «{university}»",
+            )
+        source = existing
     active = await fetch_one(
         session,
         "SELECT id FROM source_jobs WHERE source_id = :s AND status = ANY(:active)"

@@ -135,9 +135,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         quality_router,
         extra_points_router,
         assistant_router,
-        ops_router,
     ):
         app.include_router(router, prefix="/v1")
+    app.include_router(ops_router, prefix="/v1", include_in_schema=False)
     return app
 
 

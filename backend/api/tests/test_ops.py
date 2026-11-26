@@ -70,11 +70,23 @@ async def test_without_token_in_settings_endpoints_are_hidden(empty_database_url
             assert (await c.get(path, headers=AUTH)).status_code == 404
 
 
+async def test_ops_are_hidden_from_openapi(empty_database_url: str) -> None:
+    async with client_for(empty_database_url, TOKEN) as c:
+        schema = (await c.get("/openapi.json")).json()
+    assert not any(path.startswith("/v1/ops") for path in schema["paths"])
+    assert "JobDetail" not in schema["components"]["schemas"]
+
+
 async def test_token_is_required(ops: httpx.AsyncClient) -> None:
     assert (await ops.get("/v1/ops/jobs")).status_code == 401
     bad = await ops.get("/v1/ops/jobs", headers={"Authorization": "Bearer other"})
     assert bad.status_code == 401
     assert (await ops.get("/v1/ops/jobs", headers=AUTH)).status_code == 200
+
+
+async def test_non_ascii_token_is_rejected(empty_database_url: str) -> None:
+    async with client_for(empty_database_url, "төкен") as c:
+        assert (await c.get("/v1/ops/jobs", headers=AUTH)).status_code == 401
 
 
 async def test_add_source_queues_one_job(ops: httpx.AsyncClient) -> None:
@@ -99,6 +111,25 @@ async def test_add_source_queues_one_job(ops: httpx.AsyncClient) -> None:
     jobs = (await ops.get("/v1/ops/jobs?status=queued", headers=AUTH)).json()
     assert [j["id"] for j in jobs] == [first.json()["job_id"]]
     assert (await ops.get("/v1/ops/jobs?status=wrong", headers=AUTH)).status_code == 422
+
+
+async def test_conflicting_university_is_rejected(
+    ops: httpx.AsyncClient, db: psycopg.Connection[Any]
+) -> None:
+    body = {"url": URL, "university": "Вуз Первый"}
+    first = await ops.post("/v1/ops/sources", json=body, headers=AUTH)
+    assert first.status_code == 201
+
+    conflict = await ops.post(
+        "/v1/ops/sources", json={**body, "university": "Вуз Второй"}, headers=AUTH
+    )
+    assert conflict.status_code == 409
+    assert "Вуз Первый" in conflict.json()["title"]
+    assert "Вуз Второй" in conflict.json()["title"]
+
+    listed = (await ops.get("/v1/ops/sources", headers=AUTH)).json()
+    assert len(listed) == 1 and listed[0]["university"] == "Вуз Первый"
+    assert db.execute("SELECT count(*) FROM source_jobs").fetchone() == (1,)
 
 
 async def make_review_job(ops: httpx.AsyncClient, db: psycopg.Connection[Any]) -> int:

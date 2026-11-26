@@ -199,36 +199,72 @@ export const scoreExtra = (universityId: number, claims: ExtraClaim[]) =>
     }),
   );
 
-export type OpsJobDetail = Schemas["JobDetail"];
-export type OpsSourceIn = Schemas["SourceIn"];
+// служебный раздел скрыт из OpenAPI, поэтому его типы и запросы живут здесь
+export interface OpsSourceIn {
+  url: string;
+  university: string;
+}
 
-const bearerHeaders = (token: string) => ({ Authorization: `Bearer ${token}` });
+export interface OpsJobDetail {
+  id: number;
+  source_id: number;
+  university: string;
+  url: string;
+  status: string;
+  error: string;
+  records_count: number;
+  quotes_checked: number;
+  quotes_found: number;
+  rebuild_needed: boolean;
+  created_at: string;
+  updated_at: string;
+  documents: Record<string, unknown>[];
+  diff: Record<string, unknown>;
+}
 
-export const getOpsJobs = (token: string) => unwrap(api.GET("/v1/ops/jobs", { headers: bearerHeaders(token) }));
+export type OpsJob = Omit<OpsJobDetail, "documents" | "diff">;
 
-export const getOpsJob = (token: string, id: number) =>
-  unwrap(
-    api.GET("/v1/ops/jobs/{job_id}", {
-      params: { path: { job_id: id } },
-      headers: bearerHeaders(token),
-    }),
-  );
+interface OpsCreated {
+  source_id: number;
+  job_id: number;
+  created: boolean;
+}
+
+interface OpsDecision {
+  id: number;
+  status: string;
+  records: number;
+}
+
+async function opsRequest<T>(
+  path: string,
+  token: string,
+  method: "GET" | "POST" = "GET",
+  body?: unknown,
+): Promise<T> {
+  const base = typeof window === "undefined" ? "/api" : `${window.location.origin}/api`;
+  const request = new Request(`${base}/v1/ops${path}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      ...(body === undefined ? {} : { "content-type": "application/json" }),
+    },
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  });
+  const response = await fetch(request);
+  if (!response.ok) throw new ApiError(response.status, response.statusText);
+  return (await response.json()) as T;
+}
+
+export const getOpsJobs = (token: string) => opsRequest<OpsJob[]>("/jobs", token);
+
+export const getOpsJob = (token: string, id: number) => opsRequest<OpsJobDetail>(`/jobs/${id}`, token);
 
 export const addOpsSource = (token: string, body: OpsSourceIn) =>
-  unwrap(api.POST("/v1/ops/sources", { body, headers: bearerHeaders(token) }));
+  opsRequest<OpsCreated>("/sources", token, "POST", body);
 
 export const acceptOpsJob = (token: string, id: number) =>
-  unwrap(
-    api.POST("/v1/ops/jobs/{job_id}/accept", {
-      params: { path: { job_id: id } },
-      headers: bearerHeaders(token),
-    }),
-  );
+  opsRequest<OpsDecision>(`/jobs/${id}/accept`, token, "POST");
 
 export const rejectOpsJob = (token: string, id: number) =>
-  unwrap(
-    api.POST("/v1/ops/jobs/{job_id}/reject", {
-      params: { path: { job_id: id } },
-      headers: bearerHeaders(token),
-    }),
-  );
+  opsRequest<OpsDecision>(`/jobs/${id}/reject`, token, "POST");

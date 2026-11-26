@@ -17,7 +17,9 @@ async def require_ops(request: Request) -> None:
     if not token:
         raise HTTPException(404, "Not Found")
     scheme, _, given = request.headers.get("authorization", "").partition(" ")
-    if scheme.lower() != "bearer" or not secrets.compare_digest(given.strip(), token):
+    if scheme.lower() != "bearer" or not secrets.compare_digest(
+        given.strip().encode(), token.encode()
+    ):
         raise HTTPException(401, "Нужен токен оператора", headers={"WWW-Authenticate": "Bearer"})
 
 
