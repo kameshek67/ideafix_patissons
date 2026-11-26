@@ -89,6 +89,9 @@ services:
       OLYMP_LLM_MODEL: ${OLYMP_LLM_MODEL:-}
       OLYMP_LLM_FALLBACK_MODEL: ${OLYMP_LLM_FALLBACK_MODEL:-}
       OLYMP_LLM_DAILY_REQUESTS: ${OLYMP_LLM_DAILY_REQUESTS:-45}
+    # data/ только на чтение: из неё API берёт оценку извлечения, перечень РСОШ и даты проверок
+    # для страницы «Качество данных»; без каталога страница показывает только то, что есть в базе
+    volumes: [./data:/app/data:ro]
     # только с этой машины: снаружи сайт открывается через Caddy (профиль https)
     ports: ["127.0.0.1:${OLYMP_API_PORT:-8000}:8000"]
     depends_on:

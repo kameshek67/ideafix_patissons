@@ -90,6 +90,11 @@ export function AboutModal({ open, onClose, campaign }: Props) {
             Числа у «БВИ» и «100 баллов» — строки таблиц льгот (олимпиада × профиль × направление), а не количество вузов
             или людей.
           </p>
+          <p className="mt-3 text-[13.5px] leading-[19px]">
+            <a id="about-quality" className="underline" href="/quality">
+              Насколько можно верить данным
+            </a>
+          </p>
         </div>
       </div>
     </div>

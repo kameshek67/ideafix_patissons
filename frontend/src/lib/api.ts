@@ -12,6 +12,7 @@ export type Benefit = Schemas["Benefit"];
 // в контракте имя Source занято двумя схемами (поиск и баллы за достижения), поэтому длинное имя
 export type Source = Schemas["olymp_api__modules__search__schemas__Source"];
 export type BenefitGroup = Schemas["BenefitGroup"];
+export type Quality = Schemas["Quality"];
 
 // Next.js проксирует /api/v1/* на FastAPI (next.config.ts). Адрес абсолютный: Request
 // вне браузера (тесты) не принимает относительные URL.
@@ -43,6 +44,8 @@ export function friendlyError(e: unknown): string {
   return "Нет связи с сервером. Проверь интернет и попробуй ещё раз.";
 }
 
+
+export const getQuality = () => unwrap(api.GET("/v1/quality"));
 
 export const getUniversities = () => unwrap(api.GET("/v1/universities"));
 

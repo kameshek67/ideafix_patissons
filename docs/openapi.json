@@ -363,6 +363,103 @@
         "title": "AssistantEntity",
         "type": "object"
       },
+      "AssistantQuality": {
+        "properties": {
+          "answer_p50": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer P50"
+          },
+          "cases": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cases"
+          },
+          "cost_per_answer": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Per Answer"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "error_share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Share"
+          },
+          "fabrication": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fabrication"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "passed_share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Passed Share"
+          }
+        },
+        "required": [
+          "model",
+          "date",
+          "cases",
+          "passed_share",
+          "error_share",
+          "fabrication",
+          "answer_p50",
+          "cost_per_answer"
+        ],
+        "title": "AssistantQuality",
+        "type": "object"
+      },
       "AssistantSource": {
         "properties": {
           "title": {
@@ -953,6 +1050,40 @@
         "title": "Counts",
         "type": "object"
       },
+      "Coverage": {
+        "properties": {
+          "layers": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Layers",
+            "type": "object"
+          },
+          "universities": {
+            "title": "Universities",
+            "type": "integer"
+          },
+          "with_table": {
+            "title": "With Table",
+            "type": "integer"
+          },
+          "without_table": {
+            "items": {
+              "$ref": "#/components/schemas/WithoutTable"
+            },
+            "title": "Without Table",
+            "type": "array"
+          }
+        },
+        "required": [
+          "universities",
+          "with_table",
+          "without_table",
+          "layers"
+        ],
+        "title": "Coverage",
+        "type": "object"
+      },
       "DiplomaForm": {
         "description": "Олимпиада для формы диплома: ключ и профили, которые можно выбрать.",
         "properties": {
@@ -1417,6 +1548,93 @@
         "title": "ExtraUniversity",
         "type": "object"
       },
+      "ExtractionQuality": {
+        "properties": {
+          "development": {
+            "$ref": "#/components/schemas/ExtractionSet"
+          },
+          "holdout": {
+            "$ref": "#/components/schemas/ExtractionSet"
+          }
+        },
+        "required": [
+          "development",
+          "holdout"
+        ],
+        "title": "ExtractionQuality",
+        "type": "object"
+      },
+      "ExtractionScore": {
+        "description": "Один способ получить таблицу льгот, сверенный с ручной разметкой документов.",
+        "properties": {
+          "documents": {
+            "title": "Documents",
+            "type": "integer"
+          },
+          "precision": {
+            "title": "Precision",
+            "type": "number"
+          },
+          "recall": {
+            "title": "Recall",
+            "type": "number"
+          },
+          "records": {
+            "title": "Records",
+            "type": "integer"
+          },
+          "who": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Who"
+          }
+        },
+        "required": [
+          "documents",
+          "records",
+          "precision",
+          "recall",
+          "who"
+        ],
+        "title": "ExtractionScore",
+        "type": "object"
+      },
+      "ExtractionSet": {
+        "properties": {
+          "extraction": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExtractionScore"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "old_table": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExtractionScore"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "old_table",
+          "extraction"
+        ],
+        "title": "ExtractionSet",
+        "type": "object"
+      },
       "FallbackHit": {
         "properties": {
           "benefit_type": {
@@ -1477,6 +1695,62 @@
           "rating"
         ],
         "title": "FeedbackRequest",
+        "type": "object"
+      },
+      "Freshness": {
+        "properties": {
+          "built_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Built At"
+          },
+          "documents_checked_from": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Documents Checked From"
+          },
+          "documents_checked_to": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Documents Checked To"
+          },
+          "rsosh_list": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rsosh List"
+          }
+        },
+        "required": [
+          "built_at",
+          "rsosh_list",
+          "documents_checked_from",
+          "documents_checked_to"
+        ],
+        "title": "Freshness",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -2668,6 +2942,41 @@
         "title": "Programs",
         "type": "object"
       },
+      "Quality": {
+        "properties": {
+          "assistant": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssistantQuality"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "coverage": {
+            "$ref": "#/components/schemas/Coverage"
+          },
+          "extraction": {
+            "$ref": "#/components/schemas/ExtractionQuality"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/Freshness"
+          },
+          "reports": {
+            "$ref": "#/components/schemas/ReportsQuality"
+          }
+        },
+        "required": [
+          "extraction",
+          "coverage",
+          "freshness",
+          "reports",
+          "assistant"
+        ],
+        "title": "Quality",
+        "type": "object"
+      },
       "RegionGroup": {
         "properties": {
           "name": {
@@ -2750,6 +3059,57 @@
           "id"
         ],
         "title": "ReportCreated",
+        "type": "object"
+      },
+      "ReportsPeriod": {
+        "properties": {
+          "correct": {
+            "title": "Correct",
+            "type": "integer"
+          },
+          "fixed": {
+            "title": "Fixed",
+            "type": "integer"
+          },
+          "median_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Hours"
+          },
+          "received": {
+            "title": "Received",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "received",
+          "fixed",
+          "correct",
+          "median_hours"
+        ],
+        "title": "ReportsPeriod",
+        "type": "object"
+      },
+      "ReportsQuality": {
+        "properties": {
+          "days_30": {
+            "$ref": "#/components/schemas/ReportsPeriod"
+          },
+          "total": {
+            "$ref": "#/components/schemas/ReportsPeriod"
+          }
+        },
+        "required": [
+          "total",
+          "days_30"
+        ],
+        "title": "ReportsQuality",
         "type": "object"
       },
       "Rules": {
@@ -3678,6 +4038,24 @@
         "title": "ValidationError",
         "type": "object"
       },
+      "WithoutTable": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "WithoutTable",
+        "type": "object"
+      },
       "olymp_api__modules__extra_points__schemas__Source": {
         "properties": {
           "page": {
@@ -4492,6 +4870,28 @@
         "summary": "Programs",
         "tags": [
           "catalog"
+        ]
+      }
+    },
+    "/v1/quality": {
+      "get": {
+        "description": "Насколько можно верить данным: точность извлечения, покрытие базы, жалобы, помощник.",
+        "operationId": "quality_v1_quality_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quality"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Quality",
+        "tags": [
+          "quality"
         ]
       }
     },

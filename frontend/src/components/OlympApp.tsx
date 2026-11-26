@@ -894,6 +894,12 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
         <section id="tab-extra" className={tab === "extra" ? "mt-3 space-y-3" : "mt-3 space-y-3 hidden"}>
           <ExtraPointsView active={tab === "extra"} />
         </section>
+
+        <p className="mt-8 text-center text-[12.5px] leading-[17px] meta-text">
+          <a id="quality-link" className="underline" href="/quality">
+            Качество данных
+          </a>
+        </p>
       </main>
 
       {/* ПОМОЩНИК */}

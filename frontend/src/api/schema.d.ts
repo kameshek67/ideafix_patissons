@@ -308,6 +308,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/quality": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Quality
+         * @description Насколько можно верить данным: точность извлечения, покрытие базы, жалобы, помощник.
+         */
+        get: operations["quality_v1_quality_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/regions": {
         parameters: {
             query?: never;
@@ -602,6 +622,25 @@ export interface components {
             /** Label */
             label: string;
         };
+        /** AssistantQuality */
+        AssistantQuality: {
+            /** Answer P50 */
+            answer_p50: number | null;
+            /** Cases */
+            cases: number | null;
+            /** Cost Per Answer */
+            cost_per_answer: number | null;
+            /** Date */
+            date: string | null;
+            /** Error Share */
+            error_share: number | null;
+            /** Fabrication */
+            fabrication: number | null;
+            /** Model */
+            model: string;
+            /** Passed Share */
+            passed_share: number | null;
+        };
         /** AssistantSource */
         AssistantSource: {
             /** Title */
@@ -827,6 +866,19 @@ export interface components {
             /** Universities */
             universities: number;
         };
+        /** Coverage */
+        Coverage: {
+            /** Layers */
+            layers: {
+                [key: string]: number;
+            };
+            /** Universities */
+            universities: number;
+            /** With Table */
+            with_table: number;
+            /** Without Table */
+            without_table: components["schemas"]["WithoutTable"][];
+        };
         /**
          * DiplomaForm
          * @description Олимпиада для формы диплома: ключ и профили, которые можно выбрать.
@@ -978,6 +1030,32 @@ export interface components {
             /** Short Name */
             short_name: string;
         };
+        /** ExtractionQuality */
+        ExtractionQuality: {
+            development: components["schemas"]["ExtractionSet"];
+            holdout: components["schemas"]["ExtractionSet"];
+        };
+        /**
+         * ExtractionScore
+         * @description Один способ получить таблицу льгот, сверенный с ручной разметкой документов.
+         */
+        ExtractionScore: {
+            /** Documents */
+            documents: number;
+            /** Precision */
+            precision: number;
+            /** Recall */
+            recall: number;
+            /** Records */
+            records: number;
+            /** Who */
+            who: number | null;
+        };
+        /** ExtractionSet */
+        ExtractionSet: {
+            extraction: components["schemas"]["ExtractionScore"] | null;
+            old_table: components["schemas"]["ExtractionScore"] | null;
+        };
         /** FallbackHit */
         FallbackHit: {
             /** Benefit Type */
@@ -1002,6 +1080,17 @@ export interface components {
              * @enum {integer}
              */
             rating: 1 | -1;
+        };
+        /** Freshness */
+        Freshness: {
+            /** Built At */
+            built_at: string | null;
+            /** Documents Checked From */
+            documents_checked_from: string | null;
+            /** Documents Checked To */
+            documents_checked_to: string | null;
+            /** Rsosh List */
+            rsosh_list: string | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -1447,6 +1536,14 @@ export interface components {
             /** Items */
             items: components["schemas"]["ProgramItem"][];
         };
+        /** Quality */
+        Quality: {
+            assistant: components["schemas"]["AssistantQuality"] | null;
+            coverage: components["schemas"]["Coverage"];
+            extraction: components["schemas"]["ExtractionQuality"];
+            freshness: components["schemas"]["Freshness"];
+            reports: components["schemas"]["ReportsQuality"];
+        };
         /** RegionGroup */
         RegionGroup: {
             /** Name */
@@ -1479,6 +1576,22 @@ export interface components {
         ReportCreated: {
             /** Id */
             id: number;
+        };
+        /** ReportsPeriod */
+        ReportsPeriod: {
+            /** Correct */
+            correct: number;
+            /** Fixed */
+            fixed: number;
+            /** Median Hours */
+            median_hours: number | null;
+            /** Received */
+            received: number;
+        };
+        /** ReportsQuality */
+        ReportsQuality: {
+            days_30: components["schemas"]["ReportsPeriod"];
+            total: components["schemas"]["ReportsPeriod"];
         };
         /**
          * Rules
@@ -1810,6 +1923,13 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** WithoutTable */
+        WithoutTable: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
         };
         /** Source */
         olymp_api__modules__extra_points__schemas__Source: {
@@ -2306,6 +2426,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    quality_v1_quality_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Quality"];
                 };
             };
         };

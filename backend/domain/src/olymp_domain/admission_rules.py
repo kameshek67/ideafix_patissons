@@ -107,11 +107,15 @@ def load_rules(path: Path) -> list[Rule]:
     return parse_rules(path.read_text(encoding="utf-8"))
 
 
+def data_dir() -> Path:
+    """Каталог data/: рядом с кодом репозитория или в OLYMP_DATA_DIR."""
+    path = os.environ.get("OLYMP_DATA_DIR")
+    return Path(path) if path else Path(__file__).resolve().parents[4] / "data"
+
+
 def default_path() -> Path:
-    """data/admission_rules.json: рядом с кодом репозитория или в OLYMP_DATA_DIR."""
-    data_dir = os.environ.get("OLYMP_DATA_DIR")
-    base = Path(data_dir) if data_dir else Path(__file__).resolve().parents[4] / "data"
-    return base / RULES_FILE
+    """data/admission_rules.json."""
+    return data_dir() / RULES_FILE
 
 
 @lru_cache(maxsize=1)
