@@ -36,6 +36,7 @@ import { TablesContext, useTablesStore } from "./DataTable";
 import { DiplomaSheet } from "./DiplomaSheet";
 import { DiplomasView } from "./DiplomasView";
 import { ExtraPointsView } from "./ExtraPointsView";
+import { GoalView } from "./GoalView";
 import { IconHeroArrow, IconMore, IconSearch } from "./icons";
 import { useMax, useMaxBackButton } from "./MaxProvider";
 import { OlympiadResults, UniversityBenefits } from "./OlympiadView";
@@ -165,6 +166,8 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   const [programLabel, setProgramLabel] = useState<string | null>(null);
   const [programDisabled, setProgramDisabled] = useState(true);
   const [programState, setProgramState] = useState<ProgramState>({ kind: "start", text: UNI_START });
+  // «Подобрать олимпиады под цель» вместо одного направления
+  const [goalMode, setGoalMode] = useState(false);
   const programSeq = useRef(0);
   const programRenders = useRef(0);
 
@@ -743,6 +746,18 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
 
         {/* ТАБ 1 */}
         <section id="tab-uni" className={tab === "uni" ? "mt-3 space-y-3" : "mt-3 space-y-3 hidden"}>
+          <div className="chip-group" id="uni-mode" role="group" aria-label="Что подобрать">
+            <button className={`chip ${goalMode ? "" : "chip-on"}`} aria-pressed={!goalMode} onClick={() => setGoalMode(false)}>
+              Одно направление
+            </button>
+            <button className={`chip ${goalMode ? "chip-on" : ""}`} aria-pressed={goalMode} onClick={() => setGoalMode(true)}>
+              Подобрать олимпиады под цель
+            </button>
+          </div>
+
+          {goalMode ? <GoalView universities={universities} goToOlympiad={goToOlympiad} /> : null}
+
+          <div className={goalMode ? "hidden" : "space-y-3"}>
           <div className="grid sm:grid-cols-2 gap-2">
             <Combo<UniversityItem>
               id="combo-university"
@@ -768,6 +783,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
 
           <div id="program-result" className="space-y-3">
             <TablesContext.Provider value={programTables}>{programResult}</TablesContext.Provider>
+          </div>
           </div>
         </section>
 

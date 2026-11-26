@@ -13,6 +13,8 @@ export type Benefit = Schemas["Benefit"];
 export type Source = Schemas["olymp_api__modules__search__schemas__Source"];
 export type BenefitGroup = Schemas["BenefitGroup"];
 export type Quality = Schemas["Quality"];
+export type GoalOlympiad = Schemas["GoalOlympiad"];
+export type GoalOlympiads = Schemas["GoalOlympiads"];
 
 // Next.js проксирует /api/v1/* на FastAPI (next.config.ts). Адрес абсолютный: Request
 // вне браузера (тесты) не принимает относительные URL.
@@ -61,6 +63,9 @@ export const getOlympiads = (query: { q?: string; limit?: number; with_profile?:
 
 export const getByProgram = (programId: number) =>
   unwrap(api.GET("/v1/search/by-program", { params: { query: { program_id: programId } } }));
+
+export const getGoalOlympiads = (programIds: number[]) =>
+  unwrap(api.GET("/v1/goals/olympiads", { params: { query: { program_id: programIds } } }));
 
 export interface OlympiadQuery {
   q: string;

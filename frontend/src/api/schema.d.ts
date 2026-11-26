@@ -202,6 +202,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/goals/olympiads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Olympiads
+         * @description «Хочу в вуз»: олимпиады с профилями, которые дают БВИ или 100 баллов по выбранным
+         *     направлениям; сначала те, что покрывают больше направлений.
+         */
+        get: operations["olympiads_v1_goals_olympiads_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/max/config": {
         parameters: {
             query?: never;
@@ -1098,6 +1119,75 @@ export interface components {
             documents_checked_to: string | null;
             /** Rsosh List */
             rsosh_list: string | null;
+        };
+        /**
+         * GoalOlympiad
+         * @description Олимпиада с профилем и то, что она даёт по выбранным направлениям.
+         */
+        GoalOlympiad: {
+            /** Bvi Programs */
+            bvi_programs: number[];
+            /** Canonical Name */
+            canonical_name: string;
+            /** Ege Min Score */
+            ege_min_score: number | null;
+            /**
+             * Ege Subject
+             * @default
+             */
+            ege_subject: string;
+            /** Hundred Programs */
+            hundred_programs: number[];
+            /** In List 2026 27 */
+            in_list_2026_27: boolean;
+            /** Kind */
+            kind: string;
+            /**
+             * Level
+             * @default
+             */
+            level: string;
+            /** Olympiad Id */
+            olympiad_id: number;
+            /**
+             * Prize Hundred 2027
+             * @default false
+             */
+            prize_hundred_2027: boolean;
+            /** Profile Id */
+            profile_id: number | null;
+            /**
+             * Profile Name
+             * @default
+             */
+            profile_name: string;
+            /** Short Name */
+            short_name: string;
+            /**
+             * Who
+             * @enum {string}
+             */
+            who: "winners" | "winners_prizes" | "team";
+        };
+        /** GoalOlympiads */
+        GoalOlympiads: {
+            /** Items */
+            items: components["schemas"]["GoalOlympiad"][];
+            /** Programs */
+            programs: components["schemas"]["GoalProgram"][];
+        };
+        /** GoalProgram */
+        GoalProgram: {
+            /** Code */
+            code: string;
+            /** Faculty Or Direction */
+            faculty_or_direction: string;
+            /** Id */
+            id: number;
+            /** University */
+            university: string;
+            /** University Short */
+            university_short: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -2252,6 +2342,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ExtraRules"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    olympiads_v1_goals_olympiads_get: {
+        parameters: {
+            query: {
+                /** @description Направления цели, до трёх */
+                program_id: number[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoalOlympiads"];
                 };
             };
             /** @description Validation Error */

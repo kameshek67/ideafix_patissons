@@ -1771,6 +1771,171 @@
         "title": "Freshness",
         "type": "object"
       },
+      "GoalOlympiad": {
+        "description": "Олимпиада с профилем и то, что она даёт по выбранным направлениям.",
+        "properties": {
+          "bvi_programs": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Bvi Programs",
+            "type": "array"
+          },
+          "canonical_name": {
+            "title": "Canonical Name",
+            "type": "string"
+          },
+          "ege_min_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ege Min Score"
+          },
+          "ege_subject": {
+            "default": "",
+            "title": "Ege Subject",
+            "type": "string"
+          },
+          "hundred_programs": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Hundred Programs",
+            "type": "array"
+          },
+          "in_list_2026_27": {
+            "title": "In List 2026 27",
+            "type": "boolean"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "level": {
+            "default": "",
+            "title": "Level",
+            "type": "string"
+          },
+          "olympiad_id": {
+            "title": "Olympiad Id",
+            "type": "integer"
+          },
+          "prize_hundred_2027": {
+            "default": false,
+            "title": "Prize Hundred 2027",
+            "type": "boolean"
+          },
+          "profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Id"
+          },
+          "profile_name": {
+            "default": "",
+            "title": "Profile Name",
+            "type": "string"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          },
+          "who": {
+            "enum": [
+              "winners",
+              "winners_prizes",
+              "team"
+            ],
+            "title": "Who",
+            "type": "string"
+          }
+        },
+        "required": [
+          "olympiad_id",
+          "short_name",
+          "canonical_name",
+          "kind",
+          "profile_id",
+          "profile_name",
+          "bvi_programs",
+          "hundred_programs",
+          "who",
+          "level",
+          "in_list_2026_27",
+          "ege_subject",
+          "ege_min_score",
+          "prize_hundred_2027"
+        ],
+        "title": "GoalOlympiad",
+        "type": "object"
+      },
+      "GoalOlympiads": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/GoalOlympiad"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "programs": {
+            "items": {
+              "$ref": "#/components/schemas/GoalProgram"
+            },
+            "title": "Programs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "programs",
+          "items"
+        ],
+        "title": "GoalOlympiads",
+        "type": "object"
+      },
+      "GoalProgram": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "faculty_or_direction": {
+            "title": "Faculty Or Direction",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "university": {
+            "title": "University",
+            "type": "string"
+          },
+          "university_short": {
+            "title": "University Short",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "faculty_or_direction",
+          "code",
+          "university",
+          "university_short"
+        ],
+        "title": "GoalProgram",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -4597,6 +4762,56 @@
         "summary": "Rules",
         "tags": [
           "extra-points"
+        ]
+      }
+    },
+    "/v1/goals/olympiads": {
+      "get": {
+        "description": "«Хочу в вуз»: олимпиады с профилями, которые дают БВИ или 100 баллов по выбранным\nнаправлениям; сначала те, что покрывают больше направлений.",
+        "operationId": "olympiads_v1_goals_olympiads_get",
+        "parameters": [
+          {
+            "description": "Направления цели, до трёх",
+            "in": "query",
+            "name": "program_id",
+            "required": true,
+            "schema": {
+              "description": "Направления цели, до трёх",
+              "items": {
+                "type": "integer"
+              },
+              "maxItems": 3,
+              "minItems": 1,
+              "title": "Program Id",
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoalOlympiads"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Olympiads",
+        "tags": [
+          "goals"
         ]
       }
     },
