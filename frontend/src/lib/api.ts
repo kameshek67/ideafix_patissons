@@ -198,3 +198,37 @@ export const scoreExtra = (universityId: number, claims: ExtraClaim[]) =>
       body: { university_id: universityId, admission_year: EXTRA_YEAR, claims },
     }),
   );
+
+export type OpsJobDetail = Schemas["JobDetail"];
+export type OpsSourceIn = Schemas["SourceIn"];
+
+const bearerHeaders = (token: string) => ({ Authorization: `Bearer ${token}` });
+
+export const getOpsJobs = (token: string) => unwrap(api.GET("/v1/ops/jobs", { headers: bearerHeaders(token) }));
+
+export const getOpsJob = (token: string, id: number) =>
+  unwrap(
+    api.GET("/v1/ops/jobs/{job_id}", {
+      params: { path: { job_id: id } },
+      headers: bearerHeaders(token),
+    }),
+  );
+
+export const addOpsSource = (token: string, body: OpsSourceIn) =>
+  unwrap(api.POST("/v1/ops/sources", { body, headers: bearerHeaders(token) }));
+
+export const acceptOpsJob = (token: string, id: number) =>
+  unwrap(
+    api.POST("/v1/ops/jobs/{job_id}/accept", {
+      params: { path: { job_id: id } },
+      headers: bearerHeaders(token),
+    }),
+  );
+
+export const rejectOpsJob = (token: string, id: number) =>
+  unwrap(
+    api.POST("/v1/ops/jobs/{job_id}/reject", {
+      params: { path: { job_id: id } },
+      headers: bearerHeaders(token),
+    }),
+  );
