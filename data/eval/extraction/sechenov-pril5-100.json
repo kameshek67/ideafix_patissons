@@ -1,0 +1,1200 @@
+{
+  "document": {
+    "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+    "campaign": 2026,
+    "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+    "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+    "title": "Приложение № 5 к Правилам приема на 2026/2027 учебный год: перечень олимпиад школьников, дающих право на 100 баллов",
+    "pages": [
+      1,
+      2,
+      3
+    ]
+  },
+  "records": [
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "\"Финатлон для старшеклассников\" - Всероссийская олимпиада по финансовой грамотности, устойчивому развитию и защите прав потребителей финансовых услуг",
+      "profile": "финансовая грамотность",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 1,
+        "quote": "финансовая грамотность обществознание обществознание право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "\"Формула Единства\"/\"Третье тысячелетие\"",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 1,
+        "quote": "математика математика математика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "автоматизация бизнес-процессов",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf",
+          "math"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "автоматизация бизнес-процессов информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "большие данные и машинное обучение",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf",
+          "math"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "большие данные и машинное обучение информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "виртуальные миры: разработка компьютерных игр, технологии виртуальной реальности, технологии дополненной реальности",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "виртуальные миры: разработка информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "геномное редактирование",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "геномное редактирование биология биология право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "инженерные биологические системы",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "инженерные биологические системы биология биология право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "интеллектуальные робототехнические системы",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "интеллектуальные робототехнические информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "инфохимия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf",
+          "chem"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "инфохимия информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "квантовый инжиниринг",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math",
+          "phys"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "квантовый инжиниринг математика математика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "нейротехнологии и когнитивные науки",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf",
+          "bio"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "нейротехнологии и когнитивные науки информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "разработка мобильных приложений",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf",
+          "math"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "разработка мобильных приложений информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "искусственный интеллект",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf",
+          "math"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "искусственный интеллект информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "наносистемы и химический инжиниринг",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "chem",
+          "phys"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "наносистемы и химический инжиниринг химия химия право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская междисциплинарная олимпиада школьников 8 - 11 класса \"Национальная технологическая олимпиада\" (Всероссийская междисциплинарная олимпиада школьников \"Национальная технологическая олимпиада\")",
+      "profile": "технологии беспроводной связи",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "технологии беспроводной связи информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада по агрогенетике для школьников старших классов \"Иннагрика\"",
+      "profile": "аграрная генетика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 2,
+        "quote": "аграрная генетика биология биология право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада по искусственному интеллекту",
+      "profile": "искусственный интеллект",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "искусственный интеллект информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "анализ данных",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "анализ данных информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "биология биология биология право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "инженерные науки",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "инженерные науки информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "иностранный язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "foreign"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "иностранный язык иностранный язык иностранный язык право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "информатика информатика информатика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "история",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "история история история право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "математика математика математика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "обществознание",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "обществознание обществознание обществознание право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "основы бизнеса",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "основы бизнеса обществознание обществознание право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "психология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "психология биология биология право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "русский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "rus"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "русский язык русский язык русский язык право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "социология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "социология обществознание обществознание право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "физика физика физика право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "финансовая грамотность",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "финансовая грамотность обществознание обществознание право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "химия химия химия право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Высшая проба\"",
+      "profile": "экономика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "экономика обществознание обществознание право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Миссия выполнима. Твое призвание - финансист!\"",
+      "profile": "иностранный язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "foreign"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "иностранный язык иностранный язык иностранный язык право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Миссия выполнима. Твое призвание - финансист!\"",
+      "profile": "история",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "история история история право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Миссия выполнима. Твое призвание - финансист!\"",
+      "profile": "обществознание",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "обществознание обществознание обществознание право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Миссия выполнима. Твое призвание - финансист!\"",
+      "profile": "финансовая грамотность",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "финансовая грамотность обществознание обществознание право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников \"Миссия выполнима. Твое призвание - финансист!\"",
+      "profile": "экономика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "экономика обществознание обществознание право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская Сеченовская олимпиада школьников",
+      "profile": "биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "биология биология биология право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская Сеченовская олимпиада школьников",
+      "profile": "химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "химия химия химия право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская Толстовская олимпиада школьников",
+      "profile": "история",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "история история история право на 100 баллов"
+      }
+    },
+    {
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "campaign": 2026,
+      "program_code": "все",
+      "program_name": "",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская Толстовская олимпиада школьников",
+      "profile": "обществознание",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10,
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "note": "направления подготовки в документе не указаны; право общее, поэтому код «все»",
+      "source": {
+        "url": "https://priem.sechenov.ru/undergraduate/pravila-priema/Pravila-priema_2026_2027_BS_pril5_Perechen-olimpiad.pdf",
+        "sha256": "f3b4997bc48218de9869530ed6dbc94b79538587431fadc348a1d4b1b702c28e",
+        "page": 3,
+        "quote": "обществознание обществознание обществознание право на 100 баллов"
+      }
+    }
+  ]
+}
