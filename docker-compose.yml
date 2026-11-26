@@ -166,6 +166,11 @@ services:
       OLYMP_MAX_CA_DIR: /certs
       # куда ведёт кнопка «Сайт» в сообщениях бота; без значения — стенд ideafix.patissons.tech
       OLYMP_SITE_URL: ${OLYMP_SITE_URL:-}
+      # режим оператора (жалобы, /reports, /stats, /health): id дежурных в MAX через запятую;
+      # без списка бот только здоровается и в базу не ходит
+      OLYMP_MAX_OPERATOR_IDS: ${OLYMP_MAX_OPERATOR_IDS:-}
+      OLYMP_DATABASE_URL: postgresql+psycopg://olymp:olymp@postgres:5432/olymp
+      OLYMP_API_URL: http://api:8000
     volumes: [./infra/certs:/certs:ro]
     healthcheck: {disable: true}
     mem_limit: 128m

@@ -339,10 +339,12 @@ export interface paths {
         put?: never;
         /**
          * Create Report
-         * @description Сообщение «Нашли ошибку в данных» к карточке направления или выдаче по олимпиаде.
+         * @description Сообщение «Нашли ошибку в данных» к карточке направления или выдаче по олимпиаде и
+         *     «Не совпадает с документом» у строки льготы (kind = benefit: ключ строки и причина).
          *
          *     Хранится текст и названия того, что было на экране; личные данные не нужны и не
-         *     запрашиваются. Выгрузка для команды — scripts/export_reports.py.
+         *     запрашиваются. Если жалоба из мини-приложения MAX, запоминаем id пользователя — бот
+         *     ответит ему, когда оператор проверит. Выгрузка для команды — scripts/export_reports.py.
          */
         post: operations["create_report_v1_reports_post"];
         delete?: never;
@@ -642,6 +644,8 @@ export interface components {
             confirm_subject: string;
             /** Derived */
             derived: boolean;
+            /** Fixed At */
+            fixed_at: string | null;
             /** Grade */
             grade: string;
             /** Id */
@@ -661,6 +665,11 @@ export interface components {
             olympiad_subject: string;
             /** Olympiads */
             olympiads: components["schemas"]["OlympiadRef"][];
+            /**
+             * Row Key
+             * @default
+             */
+            row_key: string;
             /** Source Sheet */
             source_sheet: string;
             /** Source Title */
@@ -682,6 +691,35 @@ export interface components {
             rows: components["schemas"]["Benefit"][];
             /** Type */
             type: string;
+        };
+        /**
+         * BenefitReportIn
+         * @description «Не совпадает с документом» у строки льготы. Вуз, направление, олимпиаду и условия
+         *     сервер берёт из базы по ключу строки, от клиента нужны только причина и пояснения.
+         */
+        BenefitReportIn: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            kind: "benefit";
+            /**
+             * Link
+             * @default
+             */
+            link: string;
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /**
+             * Reason
+             * @enum {string}
+             */
+            reason: "no_benefit" | "wrong_type" | "winners_only" | "wrong_grade_or_level" | "wrong_ege" | "broken_link" | "other";
+            /** Row Key */
+            row_key: string;
         };
         /** ChatMessage */
         ChatMessage: {
@@ -2222,7 +2260,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ProgramReportIn"] | components["schemas"]["OlympiadReportIn"];
+                "application/json": components["schemas"]["ProgramReportIn"] | components["schemas"]["OlympiadReportIn"] | components["schemas"]["BenefitReportIn"];
             };
         };
         responses: {

@@ -92,7 +92,11 @@ def test_run_answers_updates_and_keeps_marker() -> None:
     api = FakeApi([started(7), message("привет"), message("/start")])
     assert run(api, once=True) == 3
     polls = [c for c in api.calls if c[1] == "/updates"]
-    assert polls[0][2] == {"types": "bot_started,message_created", "timeout": 30, "limit": 100}
+    assert polls[0][2] == {
+        "types": "bot_started,message_created,message_callback",
+        "timeout": 30,
+        "limit": 100,
+    }
     sent = [c for c in api.calls if c[0] == "POST"]
     assert [c[2] for c in sent] == [{"user_id": 7}] * 3
 

@@ -43,6 +43,10 @@ ai-verify *ARGS:
 eval-extract *ARGS:
     uv run olymp-eval-extract {{ARGS}}
 
+# исправленные жалобы «не совпадает с документом» → data/regressions/reports.json (export) или проверка по базе (check)
+report-regressions *ARGS:
+    uv run olymp-report-regressions {{ARGS}}
+
 # воркер фоновых задач (Dramatiq + RabbitMQ)
 worker:
     uv run dramatiq olymp_workers.tasks --processes 1 --threads 2

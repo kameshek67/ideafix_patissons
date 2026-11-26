@@ -43,7 +43,7 @@ def test_export_escapes_cells_and_marks_only_exported(empty_database_url: str) -
     with psycopg.connect(psycopg_dsn(empty_database_url)) as conn:
         conn.execute("DELETE FROM data_reports")
         first = add_report(conn, "=cmd|' /C calc'!A0")
-        done = add_report(conn, "Уже разобрано", status="done")
+        done = add_report(conn, "Уже разобрано", status="fixed")
         out = io.StringIO()
 
         original = conn.execute
@@ -61,4 +61,4 @@ def test_export_escapes_cells_and_marks_only_exported(empty_database_url: str) -
 
         assert count == 2
         assert "'=cmd|" in out.getvalue() and "'=HYPERLINK(1)" in out.getvalue()
-        assert statuses(conn) == {first: "seen", done: "done", late[0]: "new"}
+        assert statuses(conn) == {first: "seen", done: "fixed", late[0]: "new"}

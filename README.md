@@ -104,6 +104,7 @@ just web                  # сайт на :3000
 | `OLYMP_API_URL` | `http://127.0.0.1:8000` | куда сайт проксирует `/api/v1/*` |
 | `OLYMP_ADMISSION_YEAR` | 2027 | год поступления ученика: дипломы действуют четыре года до него включительно |
 | `OLYMP_MAX_BOT_TOKEN`, `OLYMP_MAX_BOT_NAME` | — | мини-приложение MAX (токен — секрет) |
+| `OLYMP_MAX_OPERATOR_IDS` | — | id дежурных в MAX через запятую: бот присылает им жалобы и отвечает на `/reports`, `/stats`, `/health` |
 | `OLYMP_LLM_BASE_URL`, `OLYMP_LLM_API_KEY`, `OLYMP_LLM_MODEL` | — | ИИ-помощник, любой OpenAI-совместимый провайдер; без них помощник выключен |
 | `OLYMP_LLM_DAILY_REQUESTS` | 45 | обращений к модели в сутки на весь сервис; 0 — без ограничения |
 | `OLYMP_WEB_PORT`, `OLYMP_API_PORT` | 8080, 8000 | порты Docker-стека |

@@ -3,6 +3,8 @@
 Поля повторяют ответы прототипа: фронтенд переносился без изменения логики.
 """
 
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -84,6 +86,10 @@ class Benefit(ResponseModel):
     source_title: str
     source_url: str
     source_sheet: str
+    # стабильный ключ строки: по нему приходит жалоба «не совпадает с документом»
+    row_key: str = ""
+    # когда по жалобе пользователя строку исправили; None — не исправляли
+    fixed_at: datetime | None = None
     olympiads: list[OlympiadRef]
     matched: Matched | None = None
 

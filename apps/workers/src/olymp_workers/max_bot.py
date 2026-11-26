@@ -1,7 +1,8 @@
 """Бот мини-приложения «Олимп» в MAX.
 
     olymp-max-bot check   — проверить токен: имя бота и ссылки на мини-приложение
-    olymp-max-bot run     — отвечать в личке: приветствие с кнопками мини-приложения и сайта
+    olymp-max-bot run     — отвечать в личке: приветствие с кнопками мини-приложения и сайта;
+                            дежурным из OLYMP_MAX_OPERATOR_IDS — ещё жалобы и команды (max_operator)
 
 Мини-приложению бот не нужен: кнопка запуска появляется в чате с ботом, как только в его
 настройках на business.max.ru указан адрес сайта. Этот процесс только отвечает на первое
@@ -10,7 +11,8 @@
 
 Переменные: OLYMP_MAX_BOT_TOKEN — токен бота; OLYMP_MAX_CA_DIR — каталог с сертификатом
 Минцифры, которым подписан platform-api2.max.ru (см. README, раздел «Мини-приложение MAX»); OLYMP_SITE_URL —
-адрес сайта для кнопки «Сайт» (по умолчанию стенд https://ideafix.patissons.tech).
+адрес сайта для кнопки «Сайт» (по умолчанию стенд https://ideafix.patissons.tech);
+OLYMP_MAX_OPERATOR_IDS — id дежурных в MAX через запятую (без него режим оператора выключен).
 """
 
 import json
@@ -25,9 +27,14 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+import psycopg
+
+from .max_operator import Action, Operator
+from .max_operator import from_env as operator_from_env
+
 API_URL = "https://platform-api2.max.ru"
 SITE_URL = "https://ideafix.patissons.tech"
-UPDATE_TYPES = "bot_started,message_created"
+UPDATE_TYPES = "bot_started,message_created,message_callback"
 
 # (method, path, query, body) -> JSON-ответ
 Call = Callable[[str, str, dict[str, Any] | None, dict[str, Any] | None], Any]
@@ -186,12 +193,44 @@ def check(call: Call, site: str = SITE_URL) -> str:
     )
 
 
+def perform(call: Call, action: Action) -> None:
+    """Выполняет действие оператора: сообщение пользователю или ответ на нажатие кнопки."""
+    kind, target, body = action
+    if kind == "send":
+        call("POST", "/messages", {"user_id": target}, body)
+    else:
+        call("POST", "/answers", {"callback_id": target}, body)
+
+
+def is_permanent(exc: MaxApiError) -> bool:
+    """Отказ 4xx (бот заблокирован, чат закрыт) повторять бессмысленно."""
+    return str(exc).startswith("HTTP 4")
+
+
+def deliver(call: Call, operator: Operator) -> int:
+    """Рассылает уведомления из базы: новые жалобы операторам, ответы авторам жалоб."""
+    sent = 0
+    for actions, done in operator.outbox():
+        retry = False
+        for action in actions:
+            try:
+                perform(call, action)
+                sent += 1
+            except MaxApiError as exc:
+                print(f"Не отправлено {action[1]}: {exc}", file=sys.stderr, flush=True)
+                retry = retry or not is_permanent(exc)
+        if not retry:
+            done()
+    return sent
+
+
 def run(
     call: Call,
     *,
     site: str = SITE_URL,
     once: bool = False,
     sleep: Callable[[float], None] = time.sleep,
+    operator: Operator | None = None,
 ) -> int:
     """Отвечает на события, пока процесс не остановят; возвращает число отправленных ответов."""
     name = bot_name(call("GET", "/me", None, None))
@@ -199,22 +238,32 @@ def run(
     marker: int | None = None
     sent = 0
     delay = 1.0
+    # уведомления из базы уходят после очередного опроса: с оператором ждём события недолго
+    wait = 10 if operator else 30
     while True:
         try:
-            query: dict[str, Any] = {"types": UPDATE_TYPES, "timeout": 30, "limit": 100}
+            query: dict[str, Any] = {"types": UPDATE_TYPES, "timeout": wait, "limit": 100}
             if marker is not None:
                 query["marker"] = marker
             data = call("GET", "/updates", query, None) or {}
             marker = data.get("marker", marker)
             for update in data.get("updates") or []:
+                actions = operator.handle_update(update) if operator else None
+                if actions is not None:
+                    for action in actions:
+                        perform(call, action)
+                        sent += 1
+                    continue
                 reply = reply_for(update, name, site)
                 if reply:
                     user_id, body = reply
                     call("POST", "/messages", {"user_id": user_id}, body)
                     sent += 1
+            if operator:
+                sent += deliver(call, operator)
             delay = 1.0
-        except MaxApiError as exc:
-            print(f"Ошибка API MAX: {exc}; повтор через {delay:.0f} с", file=sys.stderr, flush=True)
+        except (MaxApiError, psycopg.Error) as exc:
+            print(f"Ошибка: {exc}; повтор через {delay:.0f} с", file=sys.stderr, flush=True)
             if once:
                 raise
             sleep(delay)
@@ -239,7 +288,7 @@ def main(argv: list[str] | None = None) -> int:
         if command == "check":
             print(check(call, site))
         else:
-            run(call, site=site)
+            run(call, site=site, operator=operator_from_env())
     except MaxApiError as exc:
         print(f"Ошибка API MAX: {exc}", file=sys.stderr)
         return 1

@@ -12,7 +12,10 @@ BENEFIT_ORDER = ["БВИ", "100 баллов", "Особое право (БВИ/
 BENEFIT_FIELDS = """
     b.id, b.benefit_type, b.raw_conditions_text, b.layer, b.olympiad_profile,
     b.olympiad_subject, b.level, b.winner_role, b.grade, b.confirm_subject,
-    b.min_ege, b.award_subject, b.years, b.note, b.source_title, b.source_url, b.source_sheet
+    b.min_ege, b.award_subject, b.years, b.note, b.source_title, b.source_url, b.source_sheet,
+    b.row_key,
+    (SELECT max(r.resolved_at) FROM data_reports r
+     WHERE r.kind = 'benefit' AND r.status = 'fixed' AND r.row_key = b.row_key) AS fixed_at
 """
 
 OLYMPIAD_FIELDS = """o.id, o.canonical_name, o.short_name, o.kind, o.mentions,
@@ -95,5 +98,7 @@ def serialize_benefit(row: Row, olympiads: list[dict[str, Any]] | None = None) -
         "source_title": row["source_title"],
         "source_url": row["source_url"],
         "source_sheet": row["source_sheet"],
+        "row_key": row["row_key"],
+        "fixed_at": row["fixed_at"],
         "olympiads": olympiads or [],
     }

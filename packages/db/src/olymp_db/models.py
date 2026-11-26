@@ -467,14 +467,39 @@ class ShareLink(Base):
     last_opened: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+REPORT_KINDS = ("program", "olympiad", "benefit")
+REPORT_REASONS = (
+    "no_benefit",
+    "wrong_type",
+    "winners_only",
+    "wrong_grade_or_level",
+    "wrong_ege",
+    "broken_link",
+    "other",
+)
+REPORT_SOURCES = ("user", "verifier", "monitor")
+# seen — старая отметка выгрузки export_reports.py --mark-seen
+REPORT_STATUSES = ("new", "seen", "checking", "fixed", "correct", "duplicate")
+
+
 class DataReport(Base):
-    """Сообщение «Нашли ошибку в данных». Не таблица сборки: переживает пересборку,
-    поэтому хранит названия на момент сообщения, а id — только для справки (без внешних ключей)."""
+    """Жалоба на данные: «Нашли ошибку» и «Не совпадает с документом» у строки льготы.
+
+    Не таблица сборки: переживает пересборку, поэтому хранит названия на момент сообщения,
+    а id — только для справки (без внешних ключей). Строка льготы — по стабильному row_key.
+    """
 
     __tablename__ = "data_reports"
     __table_args__ = (
-        CheckConstraint("kind IN ('program', 'olympiad')", name="kind"),
+        CheckConstraint(f"kind IN ({_in(REPORT_KINDS)})", name="kind"),
+        CheckConstraint(f"status IN ({_in(REPORT_STATUSES)})", name="status"),
+        CheckConstraint(f"source IN ({_in(REPORT_SOURCES)})", name="source"),
+        CheckConstraint(
+            "status <> 'correct' OR (quote IS NOT NULL AND quote <> '')", name="correct_quote"
+        ),
         Index(None, "created_at"),
+        Index(None, "row_key"),
+        Index(None, "status"),
     )
 
     id: Mapped[int] = _pk()
@@ -487,6 +512,21 @@ class DataReport(Base):
     context: Mapped[dict[str, Any]] = mapped_column(JSONB)
     message: Mapped[str] = mapped_column(CText)
     status: Mapped[str] = _text("new")
+    # строка льготы (kind = benefit): benefits.row_key на момент жалобы
+    row_key: Mapped[str] = _text()
+    reason: Mapped[str] = _text()
+    link: Mapped[str] = _text()
+    source: Mapped[str] = _text("user")
+    # пользователь MAX, если жалоба из мини-приложения: ему бот напишет о решении
+    max_user_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    # цитата из документа: обязательна при status = correct
+    quote: Mapped[str] = _text()
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # бот-оператор: когда разослано уведомление и на какой статус уже ответили пользователю
+    operator_notified_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    user_notified_status: Mapped[str] = _text()
 
 
 # Таблицы с данными сборки: их очищает и заново наполняет olymp-ingest.

@@ -27,6 +27,11 @@ COLUMNS = [
     "olympiad",
     "message",
     "status",
+    "source",
+    "reason",
+    "row_key",
+    "link",
+    "quote",
 ]
 
 
@@ -45,11 +50,12 @@ def export(conn: psycopg.Connection, out: TextIO, *, include_all: bool, mark_see
     """Пишет CSV в out, возвращает число выгруженных сообщений."""
     where = "" if include_all else "WHERE status = 'new'"
     rows = conn.execute(
-        f"SELECT id, created_at, kind, context, message, status FROM data_reports {where} ORDER BY id"  # noqa: S608
+        f"SELECT id, created_at, kind, context, message, status, source, reason, row_key, link, quote "
+        f"FROM data_reports {where} ORDER BY id"  # noqa: S608
     ).fetchall()
     writer = csv.writer(out)
     writer.writerow(COLUMNS)
-    for report_id, created_at, kind, context, message, status in rows:
+    for report_id, created_at, kind, context, message, status, *extra in rows:
         context = context if isinstance(context, dict) else json.loads(context)
         cells = [
             report_id,
@@ -61,6 +67,7 @@ def export(conn: psycopg.Connection, out: TextIO, *, include_all: bool, mark_see
             context.get("olympiad", ""),
             message,
             status,
+            *extra,
         ]
         writer.writerow([safe_cell(cell) for cell in cells])
     if mark_seen and rows:

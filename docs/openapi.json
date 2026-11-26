@@ -490,6 +490,18 @@
             "title": "Derived",
             "type": "boolean"
           },
+          "fixed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fixed At"
+          },
           "grade": {
             "title": "Grade",
             "type": "string"
@@ -539,6 +551,11 @@
             "title": "Olympiads",
             "type": "array"
           },
+          "row_key": {
+            "default": "",
+            "title": "Row Key",
+            "type": "string"
+          },
           "source_sheet": {
             "title": "Source Sheet",
             "type": "string"
@@ -583,6 +600,8 @@
           "source_title",
           "source_url",
           "source_sheet",
+          "row_key",
+          "fixed_at",
           "olympiads",
           "matched"
         ],
@@ -613,6 +632,54 @@
           "count"
         ],
         "title": "BenefitGroup",
+        "type": "object"
+      },
+      "BenefitReportIn": {
+        "description": "«Не совпадает с документом» у строки льготы. Вуз, направление, олимпиаду и условия\nсервер берёт из базы по ключу строки, от клиента нужны только причина и пояснения.",
+        "properties": {
+          "kind": {
+            "const": "benefit",
+            "title": "Kind",
+            "type": "string"
+          },
+          "link": {
+            "default": "",
+            "maxLength": 500,
+            "title": "Link",
+            "type": "string"
+          },
+          "message": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Message",
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "no_benefit",
+              "wrong_type",
+              "winners_only",
+              "wrong_grade_or_level",
+              "wrong_ege",
+              "broken_link",
+              "other"
+            ],
+            "title": "Reason",
+            "type": "string"
+          },
+          "row_key": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Row Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "row_key",
+          "reason"
+        ],
+        "title": "BenefitReportIn",
         "type": "object"
       },
       "ChatMessage": {
@@ -4220,7 +4287,7 @@
     },
     "/v1/reports": {
       "post": {
-        "description": "Сообщение «Нашли ошибку в данных» к карточке направления или выдаче по олимпиаде.\n\nХранится текст и названия того, что было на экране; личные данные не нужны и не\nзапрашиваются. Выгрузка для команды — scripts/export_reports.py.",
+        "description": "Сообщение «Нашли ошибку в данных» к карточке направления или выдаче по олимпиаде и\n«Не совпадает с документом» у строки льготы (kind = benefit: ключ строки и причина).\n\nХранится текст и названия того, что было на экране; личные данные не нужны и не\nзапрашиваются. Если жалоба из мини-приложения MAX, запоминаем id пользователя — бот\nответит ему, когда оператор проверит. Выгрузка для команды — scripts/export_reports.py.",
         "operationId": "create_report_v1_reports_post",
         "requestBody": {
           "content": {
@@ -4228,6 +4295,7 @@
               "schema": {
                 "discriminator": {
                   "mapping": {
+                    "benefit": "#/components/schemas/BenefitReportIn",
                     "olympiad": "#/components/schemas/OlympiadReportIn",
                     "program": "#/components/schemas/ProgramReportIn"
                   },
@@ -4239,6 +4307,9 @@
                   },
                   {
                     "$ref": "#/components/schemas/OlympiadReportIn"
+                  },
+                  {
+                    "$ref": "#/components/schemas/BenefitReportIn"
                   }
                 ],
                 "title": "Body"
