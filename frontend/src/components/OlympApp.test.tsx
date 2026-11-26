@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OlympApp } from "./OlympApp";
 
@@ -165,11 +165,13 @@ describe("OlympApp", () => {
     delete responses["/api/v1/achievements/olympiads/5"];
   });
 
-  it("кнопка «Предложить вуз или документ» открывает «О приложении»", async () => {
-    answerWith([{ kind: "suggest", label: "Предложить вуз или документ" }]);
+  it("кнопка «Предложить вуз или документ» открывает окно предложения с вузом из действия", async () => {
+    answerWith([{ kind: "suggest", label: "Предложить вуз или документ", name: "МГУ" }]);
     await askAssistant();
-    fireEvent.click(await screen.findByText("Предложить вуз или документ"));
-    expect(await screen.findByRole("dialog", { name: /О приложении|Олимп/ })).toBeTruthy();
+    // такая же кнопка есть и в «О приложении»: берём ту, что под ответом
+    fireEvent.click(await within(document.getElementById("assistant-sheet")!).findByText("Предложить вуз или документ"));
+    expect(await screen.findByRole("dialog", { name: "Предложить вуз или документ" })).toBeTruthy();
+    expect(document.querySelector("#suggest-university")?.textContent).toContain("МГУ");
   });
 
   it("помощник включён: кнопка открывает чат", async () => {

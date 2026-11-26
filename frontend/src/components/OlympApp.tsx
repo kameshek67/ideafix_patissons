@@ -31,6 +31,7 @@ import { type OnboardingMode, onboardingMode } from "@/lib/onboarding";
 import { parseStartParam, type StartIntent } from "@/lib/startParam";
 import { showToast } from "@/lib/toast";
 import { AboutModal } from "./AboutModal";
+import { SuggestDialog } from "./SuggestDialog";
 import { AssistantOff } from "./AssistantOff";
 import { AssistantChat } from "./AssistantChat";
 import { Combo, type ComboItem } from "./Combo";
@@ -145,6 +146,8 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     benefitTypeRef.current = benefitType;
   }, [benefitType]);
   const [aboutOpen, setAboutOpen] = useState(false);
+  // окно «Предложить вуз или документ», открытое из помощника; university — подставить вуз
+  const [suggestFor, setSuggestFor] = useState<{ university?: string } | null>(null);
 
   // ---------------------------------------------------------------- справочники
   const universitiesQ = useQuery({ queryKey: ["universities"], queryFn: getUniversities, staleTime: Infinity });
@@ -532,8 +535,9 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
         scrollTop();
         break;
       case "suggest":
-        // пока предложить вуз или документ можно через «О приложении»
-        setAboutOpen(true);
+        setSuggestFor({
+          university: action.name ?? universities.find((u) => u.id === action.university_id)?.name ?? undefined,
+        });
         break;
     }
   }
@@ -549,6 +553,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   // срабатывает последний открытый шаг: окно, чат, вуз в выдаче, затем прошлая вкладка
   useMaxBackButton(trailSize ? backTab : null);
   useMaxBackButton(aboutOpen ? () => setAboutOpen(false) : null);
+  useMaxBackButton(suggestFor ? () => setSuggestFor(null) : null);
   useMaxBackButton(tab === "olymp" && olympState.kind === "university" ? backToList : null);
   useMaxBackButton(chatOpen ? () => setChatOpen(false) : chatLeft ? openChat : null);
   useMaxBackButton(offVisible ? closeOff : null);
@@ -1041,6 +1046,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
       ) : null}
 
       {/* МОДАЛКА «О приложении» */}
+      {suggestFor ? <SuggestDialog university={suggestFor.university} onClose={() => setSuggestFor(null)} /> : null}
       <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} campaign={campaign} />
 
       <Toaster />

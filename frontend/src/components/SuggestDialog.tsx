@@ -35,7 +35,8 @@ export function SuggestButton({
   );
 }
 
-function SuggestDialog({ university: initial, onClose }: { university?: string; onClose: () => void }) {
+/** Окно с формой; открывают кнопка SuggestButton и действие помощника. */
+export function SuggestDialog({ university: initial, onClose }: { university?: string; onClose: () => void }) {
   const app = useMax();
   const queryClient = useQueryClient();
   const [url, setUrl] = useState("");
