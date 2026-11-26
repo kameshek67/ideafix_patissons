@@ -11,7 +11,7 @@
 # Мини-приложение MAX: токен бота — в .env (OLYMP_MAX_BOT_TOKEN), сайту нужен HTTPS:
 #   docker compose --profile tunnel up --build -d   # временный адрес https://….trycloudflare.com
 #   docker compose --profile https up --build -d    # свой сервер и домен (OLYMP_DOMAIN в .env)
-# Подробно — README, раздел «Мини-приложение в MAX».
+# Подробно — docs/operations.md, раздел «Бот MAX».
 #
 # Фоновые задачи (rabbitmq и worker) по умолчанию не запускаются: задачи ставят вручную,
 # а на сервере на 2 ГБ они только занимают память. Включить: --profile worker.
@@ -162,7 +162,7 @@ services:
     environment:
       OLYMP_MAX_BOT_TOKEN: ${OLYMP_MAX_BOT_TOKEN:-}
       # API бота (platform-api2.max.ru) подписан сертификатом Минцифры — его корневой
-      # сертификат кладётся в infra/certs (см. README, раздел «Мини-приложение MAX»)
+      # сертификат кладётся в infra/certs (см. docs/operations.md, раздел «Бот MAX»)
       OLYMP_MAX_CA_DIR: /certs
       # куда ведёт кнопка «Сайт» в сообщениях бота; без значения — стенд ideafix.patissons.tech
       OLYMP_SITE_URL: ${OLYMP_SITE_URL:-}

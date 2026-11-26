@@ -1,145 +1,72 @@
-# Олимп — куда поступить по олимпиаде
+# Олимп
 
-Сервис и мини-приложение мессенджера **MAX**, которое отвечает школьнику, где его олимпиадный
-диплом даёт **БВИ** (поступление без экзаменов) или **100 баллов** за ЕГЭ. Учитываются условия
-вуза: степень диплома, класс, год, профиль. У каждой льготы есть ссылка на документ приёмной комиссии.
+Сервис и мини-приложение MAX: школьник вводит олимпиадные дипломы и видит, где они дают БВИ
+(поступление без экзаменов) или 100 баллов за ЕГЭ. У каждой льготы есть ссылка на документ приёмной
+комиссии. Данные справочные: перед подачей документов сверяйся с правилами приёма вуза.
 
-- **Вуз → олимпиады.** Выбрал вуз и направление — видишь, какие олимпиады дают льготы и что нужно подтвердить ЕГЭ.
-- **Олимпиада → вузы.** Ввёл «вышка», «всош» или «пвг» — видишь все вузы, где она даёт льготы.
-- **Мои дипломы.** Добавил свои дипломы — видишь все вузы и направления с льготами; в MAX дипломы хранятся в профиле.
-- **Баллы.** Выбрал вуз и отметил ГТО, аттестат, волонтёрство — видишь, сколько баллов вуз добавит к ЕГЭ.
-- **ИИ-помощник.** Рассказал, чем увлекаешься, — он подбирает олимпиады и вузы по базе льгот.
+Стенд: https://ideafix.patissons.tech.
 
-Данные — приёмная кампания 2026: 31 вуз (39 с филиалами), 659 направлений, 48 973 строки льгот,
-173 олимпиады, 637 профилей. Источник — `data/Olimpiady_BVI_100ballov.xlsx` и документы приёмных
-комиссий; данные справочные, перед подачей документов сверяйтесь с правилами приёма вуза.
+## Что умеет
 
-```
-Python 3.13 · FastAPI · SQLAlchemy/Alembic · PostgreSQL 17 · Redis · Dramatiq/RabbitMQ
-Next.js 16 · React 19 · TanStack Query · OpenAPI-клиент · Tailwind 3 · Docker Compose · MAX Bridge
-```
+- Вуз и направление → олимпиады, которые дают льготы, и что нужно подтвердить на ЕГЭ.
+- Олимпиада → вузы, где она даёт льготы. Поиск понимает сокращения и профили («вышка», «нто ии»).
+- «Мои дипломы»: вузы и направления по дипломам. Учитываются степень, класс, год, этап ВсОШ.
+  Есть переключатель «Правила 2027 (проект)». В MAX дипломы хранятся в профиле, в браузере — на устройстве.
+- Баллы за индивидуальные достижения (ГТО, аттестат, волонтёрство) по выбранному вузу.
+- Жалоба «не совпадает с документом» у каждой строки льготы; дежурный получает её в боте MAX.
+- ИИ-помощник подбирает олимпиады и вузы по базе. Без ключа модели он выключен.
+- Ссылка «Поделиться» с результатом для чата класса.
 
 ## Запуск
 
-Нужен Docker. Одной командой:
+Нужен Docker.
 
 ```bash
 docker compose up --build -d
 ```
 
-Сайт — http://localhost:8080, API и Swagger — http://localhost:8000/docs. Первая сборка базы
-занимает около минуты (`docker compose logs -f migrate`).
-
-### Docker-образы
-
-Проект собирается в два образа: `infra/Dockerfile.api` (API, сборка базы, воркеры, бот) и
-`infra/Dockerfile.web` (сайт). Описание всех сервисов — `docker-compose.yml`.
-
-```bash
-# собрать образы
-docker build -f infra/Dockerfile.api -t olymp-api .
-docker build -f infra/Dockerfile.web -t olymp-web .
-# или все образы проекта сразу
-docker compose build
-
-# запустить по шагам: база → миграции и сборка данных из XLSX → API и сайт
-docker compose up -d postgres redis
-docker compose run --rm migrate
-docker compose up -d api web
-
-# остановить и удалить контейнеры (данные базы остаются в томе pgdata)
-docker compose down
-```
-
-### Пример запуска из командной строки
-
-```bash
-# пересобрать базу из data/Olimpiady_BVI_100ballov.xlsx и проверить качество данных
-docker compose run --rm migrate olymp-ingest
-docker compose run --rm migrate olymp-validate
-
-# найти вузы, где «Высшая проба» даёт льготы
-curl "http://localhost:8000/v1/search/by-olympiad?q=высшая%20проба"
-
-# олимпиады, которые дают льготы на направление (id — из /v1/programs)
-curl "http://localhost:8000/v1/search/by-program?program_id=130"
-```
-
-### Зависимости
-
-Полный список Python-библиотек с версиями — [backend/requirements.txt](backend/requirements.txt). В разработке
-зависимости ведёт `uv` (`backend/pyproject.toml` + `backend/uv.lock`); после их изменения
-`requirements.txt` обновляется командой
-`cd backend && uv export --all-packages --no-hashes --no-emit-workspace -o requirements.txt`.
-Зависимости сайта — `frontend/package.json` и `frontend/package-lock.json`.
+Сайт — http://localhost:8080, API и Swagger — http://localhost:8000/docs. При первом старте сервис
+`migrate` применяет миграции и собирает базу из `data/` (около минуты, `docker compose logs -f migrate`).
+База лежит в томе `pgdata`. Если порты заняты, задай `OLYMP_WEB_PORT` и `OLYMP_API_PORT` в `.env`.
 
 ## Разработка
 
-Нужны `uv`, Node.js 22+, Docker и `just` (без `just` команды из `justfile` можно запускать напрямую).
+Нужны `uv`, Node.js (версия в `.nvmrc`), Docker и `just`.
 
 ```bash
 cp .env.example .env
 (cd backend && uv sync --all-packages) && (cd frontend && npm ci)
-just up && just seed      # PostgreSQL, Redis, RabbitMQ; миграции и сборка базы из XLSX
-just api                  # API на :8000, Swagger — /docs
-just web                  # сайт на :3000
+just up && just seed    # PostgreSQL, Redis, RabbitMQ; миграции и сборка базы
+just api                # API на :8000
+just web                # сайт на :3000
 ```
 
-| Что | Команда |
-|---|---|
-| Все проверки, как в CI | `just check` (= `just lint` + `just test`) |
-| Проверка качества данных | `just validate` (`--check-links` — плюс ссылки по сети) |
-| Обновить ссылки на документы вузов | `just refresh-sources` |
-| После изменения эндпоинтов | `just openapi`: пересоздаёт `docs/openapi.json` и типы `frontend/src/api` |
-| Новая миграция БД | `just migration "описание"` |
-| Весь стек в Docker (сайт :8080) | `just app` |
-
-Тесты с базой пропускаются, если PostgreSQL не запущен: перед проверкой поднимите `just up`.
-
-### Переменные окружения
-
-| Переменная | По умолчанию | Что это |
-|---|---|---|
-| `OLYMP_DATABASE_URL` | `postgresql+psycopg://olymp:olymp@localhost:5432/olymp` | база данных |
-| `OLYMP_REDIS_URL` | — | кэш и лимиты; без него — в памяти процесса |
-| `OLYMP_RABBITMQ_URL` | — | очередь фоновых задач (Dramatiq) |
-| `OLYMP_API_URL` | `http://127.0.0.1:8000` | куда сайт проксирует `/api/v1/*` |
-| `OLYMP_ADMISSION_YEAR` | 2027 | год поступления ученика: дипломы действуют четыре года до него включительно |
-| `OLYMP_MAX_BOT_TOKEN`, `OLYMP_MAX_BOT_NAME` | — | мини-приложение MAX (токен — секрет) |
-| `OLYMP_MAX_OPERATOR_IDS` | — | id дежурных в MAX через запятую: бот присылает им жалобы и отвечает на `/reports`, `/stats`, `/health` |
-| `OLYMP_LLM_BASE_URL`, `OLYMP_LLM_API_KEY`, `OLYMP_LLM_MODEL` | — | ИИ-помощник, любой OpenAI-совместимый провайдер; без них помощник выключен |
-| `OLYMP_LLM_DAILY_REQUESTS` | 45 | обращений к модели в сутки на весь сервис; 0 — без ограничения |
-| `OLYMP_WEB_PORT`, `OLYMP_API_PORT` | 8080, 8000 | порты Docker-стека |
-
-Полный список — `.env.example`.
-
-### Мини-приложение MAX
-
-Сайт открывается в MAX как мини-приложение: API проверяет подпись данных запуска токеном бота и
-хранит дипломы пользователя на сервере, вне MAX они хранятся в браузере. Бот (`olymp-max-bot`,
-профиль `bot` в `docker-compose.yml`) ходит в `platform-api2.max.ru`, подписанный сертификатом
-Минцифры: скачайте «Russian Trusted Root CA» с https://www.gosuslugi.ru/crt, положите файл
-`*.pem`/`*.crt` в `infra/certs/` и запустите `docker compose --profile bot up -d`.
+- `just check` — всё, что проверяет CI (`just lint` и `just test`). Тестам с базой нужен `just up`.
+- `just openapi` — после изменения эндпоинтов: обновляет `docs/openapi.json` и `frontend/src/api/schema.d.ts`.
+- `just migration "описание"` — новая миграция Alembic; файл проверь руками.
+- `just data-diff` — как изменилась выдача относительно снимка; `just snapshot` — принять изменения.
+- `just validate` — проверка качества собранной базы.
+- `just --list` — остальные команды.
 
 ## Структура
 
-| Папка | Что |
-|---|---|
-| `backend/api` | FastAPI, модульный монолит: каталог, поиск, «Мои дипломы», «Поделиться», баллы, ИИ-помощник |
-| `backend/workers` | сборка базы из XLSX, обход сайтов вузов, проверки данных, бот MAX, фоновые задачи |
-| `backend/domain` | чистая логика: нормализация названий, справочник олимпиад, условия дипломов |
-| `backend/db` | модели SQLAlchemy и миграции Alembic — единственное место схемы БД |
-| `backend/llm` | шлюз к языковым моделям для API и воркеров |
-| `frontend` | Next.js: сайт и мини-приложение MAX; типы API — `src/api`, генерируются из `docs/openapi.json` |
-| `infra` | Dockerfile'ы, окружение разработки, скрипты стенда |
-| `data` | исходный XLSX, баллы за достижения, карточки олимпиад, ссылки на документы вузов |
-| `docs`, `presentation` | план, контракт API, макеты, презентация |
+```
+backend/      Python 3.13, uv workspace
+  api/          FastAPI: каталог, поиск, дипломы, жалобы, помощник
+  workers/      сборка базы, обход сайтов вузов, извлечение, бот MAX
+  domain/       чистая логика без базы и сети
+  db/           модели SQLAlchemy и миграции Alembic
+  llm/          шлюз к языковым моделям
+frontend/     Next.js 16: сайт и мини-приложение MAX (src/app, src/components, src/api)
+data/         исходный XLSX, перечень РСОШ, снимок выдачи, эталоны, извлечённые документы
+infra/        Dockerfile, окружение разработки, скрипты выкатки (infra/deploy)
+docs/         документация, openapi.json, макеты (design)
+presentation/ презентация и скрипт её сборки
+```
 
-Правила кода: Python 3.13 (ruff, mypy `--strict`), TypeScript strict; схема БД меняется только
-миграциями; контракт API — `docs/openapi.json`, он генерируется из FastAPI и руками не правится;
-исходный XLSX не редактируется — исправления данных вносятся в код сборки с тестом.
+## Документы
 
-## Стенд
-
-`main` выкатывается на https://ideafix.patissons.tech после зелёного CI (workflow `deploy`, нужен
-секрет `DEPLOY_SSH_KEY`). Ветки: `main` — стабильная версия, `dev` — разработка.
+- [docs/architecture.md](docs/architecture.md) — как устроено: данные, модули, проверки.
+- [docs/operations.md](docs/operations.md) — выкатка, переменные окружения, бэкап, жалобы, бот.
+- [docs/plan.md](docs/plan.md) — план работ и что уже сделано.
+- [docs/openapi.json](docs/openapi.json) — контракт API, генерируется из кода.
