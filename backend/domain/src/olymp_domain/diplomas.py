@@ -21,6 +21,8 @@ from .textutils import squash
 CAMPAIGN_YEAR = 2026
 # Год поступления ученика по умолчанию (настройка API OLYMP_ADMISSION_YEAR).
 ADMISSION_YEAR = 2027
+# Первый год олимпиады, к которому применяют новые нормы: сезон 2026/27, год окончания.
+RULES_2027_FROM_YEAR = 2027
 # Ключ ВсОШ в строке диплома (squash названия): только у неё выбирают этап.
 VSOSH_KEY = "всероссийскаяолимпиадашкольников"
 
@@ -68,6 +70,14 @@ class Reject(StrEnum):
     YEAR = "year"  # диплом другого года (или уже не действует)
     TEAM = "team"  # только для членов сборных команд
     STAGE = "stage"  # региональный этап ВсОШ льгот не даёт
+    NEW_GRADE = "new_grade"  # по проекту 2027 учитываются дипломы 10–11 класса
+
+
+class Rules(StrEnum):
+    """По каким правилам считать льготы призёров."""
+
+    CURRENT = "current"
+    PROJECT_2027 = "project2027"
 
 
 FIT_ORDER = {Fit.EXACT: 0, Fit.SUBJECT: 1, Fit.CHECK: 2, Fit.ROLE: 3}
@@ -255,12 +265,27 @@ class Link:
     years: str
 
 
-def match(diploma: Diploma, link: Link, admission_year: int = ADMISSION_YEAR) -> Fit | Reject:
-    """Подходит ли строка к диплому: сначала профиль, потом степень, класс и год."""
+def match(
+    diploma: Diploma,
+    link: Link,
+    admission_year: int = ADMISSION_YEAR,
+    rules: Rules = Rules.CURRENT,
+) -> Fit | Reject:
+    """Подходит ли строка к диплому: сначала профиль, потом степень, класс и год.
+
+    По проекту 2027 дипломы 9 класса олимпиад 2026/27 и позже льгот не дают.
+    """
     if link.olympiad_id != diploma.olympiad_id:
         return Reject.PROFILE
     if diploma.stage is Stage.REGIONAL:
         return Reject.STAGE
+    if (
+        rules is Rules.PROJECT_2027
+        and diploma.grade == 9
+        and diploma.year is not None
+        and diploma.year >= RULES_2027_FROM_YEAR
+    ):
+        return Reject.NEW_GRADE
 
     subjects = subject_keys(link.subject)
     fit: Fit
@@ -310,22 +335,11 @@ def better(a: Fit, b: Fit) -> Fit:
 # ---------------------------------------------------------------- правила 2027 (проект)
 
 
-class Rules(StrEnum):
-    """По каким правилам считать льготы призёров."""
-
-    CURRENT = "current"
-    PROJECT_2027 = "project2027"
-
-
 class Change(StrEnum):
     """Что правила 2027 делают со строкой БВИ."""
 
     HUNDRED = "hundred"  # БВИ превращается в «100 баллов» по профильному предмету
     CHECK = "check"  # может измениться — проверить в правилах вуза
-
-
-# Первый год олимпиады, к которому применяют новые нормы: сезон 2026/27, год окончания.
-RULES_2027_FROM_YEAR = 2027
 
 
 def prize_change(diploma: Diploma) -> Change | None:

@@ -68,7 +68,7 @@ beforeEach(() => {
             },
           ],
           totals: counts,
-          rejected: { role: 0, grade: 0, year: 0, team: 0 },
+          rejected: { role: 0, grade: 0, year: 0, team: 0, new_grade: 0 },
           results: [],
           university: null,
           rows: [],

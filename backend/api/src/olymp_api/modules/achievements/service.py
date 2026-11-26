@@ -420,7 +420,7 @@ async def match_diplomas(
         for index, diploma in enumerate(diplomas):
             if diploma is None or diploma.olympiad_id != link.olympiad_id:
                 continue
-            result = match(diploma, link, admission_year)
+            result = match(diploma, link, admission_year, rules)
             if isinstance(result, Reject):
                 rejected[result].add(benefit_id)
                 continue

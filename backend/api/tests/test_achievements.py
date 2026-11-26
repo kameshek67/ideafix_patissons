@@ -560,6 +560,17 @@ async def test_project_2027_does_not_touch_winners_vsosh_and_old_diplomas(
         assert project["changes"] == {"to_hundred": 0, "universities": 0, "check": 0}
 
 
+async def test_project_2027_grade_9_gives_no_benefit(client: httpx.AsyncClient) -> None:
+    hse = await form(client, "вышка")
+    diploma = spec(hse, "математика", "p.9.2027")
+    now = await match(client, diploma)
+    project = await match(client, diploma, rules="project2027")
+    assert now["totals"]["programs"] > 0
+    assert project["totals"]["programs"] == 0
+    assert project["rejected"]["new_grade"] > 0
+    assert now["rejected"]["new_grade"] == 0
+
+
 async def test_project_2027_unknown_year_needs_check(client: httpx.AsyncClient) -> None:
     hse = await form(client, "вышка")
     diploma = spec(hse, "математика", "p.11.0")

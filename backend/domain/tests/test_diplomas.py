@@ -12,6 +12,7 @@ from olymp_domain.diplomas import (
     Link,
     Reject,
     Role,
+    Rules,
     Stage,
     better,
     bvi_change,
@@ -291,6 +292,20 @@ def test_better() -> None:
 # ---------------------------------------------------------------- правила 2027 (проект)
 
 PRIZE_2027 = replace(MATH, role=Role.PRIZE, year=2027)
+
+
+def test_project_2027_grade_9_does_not_give_benefits() -> None:
+    grade9 = replace(PRIZE_2027, grade=9)
+    assert match(grade9, link()) is Fit.EXACT
+    assert match(grade9, link(), rules=Rules.PROJECT_2027) is Reject.NEW_GRADE
+    # победителей и ВсОШ новый порядок классов тоже затрагивает
+    assert (
+        match(replace(grade9, role=Role.WINNER, vsosh=True), link(), rules=Rules.PROJECT_2027)
+        is Reject.NEW_GRADE
+    )
+    # прежние сезоны и диплом без года остаются по действующим правилам
+    assert match(replace(grade9, year=2026), link(), rules=Rules.PROJECT_2027) is Fit.EXACT
+    assert match(replace(grade9, year=None), link(), rules=Rules.PROJECT_2027) is Fit.EXACT
 
 
 def test_prize_change_only_for_prizes_of_new_season() -> None:

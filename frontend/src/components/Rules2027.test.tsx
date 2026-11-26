@@ -58,7 +58,7 @@ function match(url: URL) {
     rules: project ? "project2027" : "current",
     changes: project ? { to_hundred: 2, universities: 1, check: 1 } : null,
     totals,
-    rejected: { role: 0, grade: 0, year: 0, team: 0 },
+    rejected: { role: 0, grade: 0, year: 0, team: 0, new_grade: 0 },
     results: [{ university: hse, programs: 3, bvi: totals.bvi, sto: totals.sto, other: 0, check: 0, to_hundred: project ? 2 : 0, law: [] }],
     university: url.searchParams.get("university_id") ? hse : null,
     rows: url.searchParams.get("university_id") ? rows : [],

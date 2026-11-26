@@ -59,7 +59,7 @@ function match(url: URL) {
   return {
     diplomas: [],
     totals,
-    rejected: { role: 0, grade: 0, year: 0, team: 0 },
+    rejected: { role: 0, grade: 0, year: 0, team: 0, new_grade: 0 },
     results: [
       { university: hse, programs: 2, bvi: 2, sto: 0, other: 0, check: 0, law: [], ege_confirmed: ege.length ? 1 : null },
       { university: urfu, programs: 1, bvi: 1, sto: 0, other: 0, check: 0, law: [], ege_confirmed: ege.length ? 0 : null },

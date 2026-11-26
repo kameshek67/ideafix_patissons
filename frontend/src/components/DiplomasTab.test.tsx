@@ -22,6 +22,8 @@ const vsosh = { ...olympiad, id: 6, canonical_name: "Всероссийская 
 // вузы без таблицы льгот в ответе подбора
 let noTable: { id: number; name: string; short_name: string }[] = [];
 let lawResults: string[] = [];
+let rejectedGrade = 4;
+let rejectedNewGrade = 0;
 const university = {
   id: 18,
   name: "Уральский федеральный университет (УрФУ)",
@@ -62,7 +64,7 @@ function matchResponse(spec: string, rules = "current") {
     totals: counts,
     rules,
     changes: project ? { to_hundred: 30, universities: 4, check: 2 } : null,
-    rejected: { role: 0, grade: regional ? 0 : 4, year: 0, team: 0 },
+    rejected: { role: 0, grade: regional ? 0 : rejectedGrade, year: 0, team: 0, new_grade: rejectedNewGrade },
     results: regional
       ? []
       : [
@@ -94,6 +96,8 @@ beforeEach(() => {
   requests.length = 0;
   noTable = [];
   lawResults = [];
+  rejectedGrade = 4;
+  rejectedNewGrade = 0;
   vi.stubGlobal(
     "fetch",
     vi.fn(async (input: Request | string) => {
@@ -259,6 +263,25 @@ describe("вкладка «Дипломы»", () => {
     await waitFor(() => expect(summary().getByText("БВИ: 224")).toBeTruthy());
     expect(document.querySelector("#rules-2027-note")).toBeNull();
     expect(document.querySelector("#diploma-share")).toBeTruthy();
+  });
+
+  it("по проекту 2027 диплом 9 класса не подходит с причиной новых правил", async () => {
+    rejectedGrade = 0;
+    rejectedNewGrade = 3;
+    localStorage.setItem(
+      "olymp.diplomas.v1",
+      JSON.stringify([{ spec: `${HSE_KEY}.математика.p.9.2027`, olympiad: "«Высшая проба»", profile: "математика" }]),
+    );
+    renderApp();
+    fireEvent.click(screen.getByRole("tab", { name: "Дипломы" }));
+    fireEvent.click(screen.getByRole("button", { name: "Правила 2027 (проект)" }));
+    await waitFor(() =>
+      expect(
+        screen.getByText(
+          "Не подошли по условиям вузов: 3 льготы — по новым правилам учитываются дипломы 10–11 класса.",
+        ),
+      ).toBeTruthy(),
+    );
   });
 
   it("честно говорит про вузы без таблицы льгот", async () => {

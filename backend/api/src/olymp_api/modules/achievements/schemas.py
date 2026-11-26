@@ -76,6 +76,8 @@ class Rejected(ResponseModel):
     grade: int
     year: int
     team: int
+    # по проекту 2027: диплом 9 класса нового сезона не даёт льгот
+    new_grade: int
 
 
 EgeStatus = Literal["confirmed", "short", "missing_score", "no_threshold"]
