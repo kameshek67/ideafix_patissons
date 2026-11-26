@@ -7,7 +7,7 @@
 
 Ключ совпадения записи: (вуз, код направления, олимпиада, профиль, тип льготы) — всё, кроме
 кода, в нормализованном виде, поэтому «Высшая проба» и «ВСЕРОССИЙСКАЯ ОЛИМПИАДА ШКОЛЬНИКОВ
-«ВЫСШАЯ ПРОБА»» — одна и та же олимпиада.
+«ВЫСШАЯ ПРОБА»» — одна и та же олимпиада. Код «*» в эталоне — «любое направление этого вуза».
 """
 
 from __future__ import annotations
@@ -29,6 +29,7 @@ BenefitType = Literal["bvi", "100", "extra_points"]
 WinnerRole = Literal["winner", "prizewinner", "both"]
 
 SCHEMA_FILE = "schema.json"
+METRICS_PREFIX = "baseline-"  # метрики прогона лежат рядом с эталоном, но эталоном не являются
 RE_SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -52,8 +53,14 @@ class Document(_Model):
     title: str = Field(default="", description="Название документа")
     pages: list[Annotated[int, Field(ge=1)]] = Field(
         default_factory=list,
-        description="Номера размеченных страниц с единицы; у HTML-страницы — [1]. "
-        "В эталоне обязательны: на остальных страницах предсказания не штрафуются",
+        description="Номера размеченных страниц с единицы; у HTML-страницы — [1]; у xlsx — номера "
+        "листов. В эталоне обязательны: на остальных страницах предсказания не штрафуются",
+    )
+    rows: tuple[Annotated[int, Field(ge=1)], Annotated[int, Field(ge=1)]] | None = Field(
+        default=None,
+        description="Размеченные строки табличного документа: [первая, последняя] включительно, "
+        "с единицы, на листах из pages. null — размечено всё. Предсказания с известной строкой "
+        "вне диапазона не штрафуются",
     )
 
     @field_validator("sha256")
@@ -65,6 +72,13 @@ class Document(_Model):
     @classmethod
     def _pages(cls, value: list[int]) -> list[int]:
         return sorted(set(value))
+
+    @field_validator("rows")
+    @classmethod
+    def _rows(cls, value: tuple[int, int] | None) -> tuple[int, int] | None:
+        if value is not None and value[0] > value[1]:
+            raise ValueError("rows: первая строка больше последней")
+        return value
 
 
 class Ege(_Model):
@@ -86,7 +100,12 @@ class Ege(_Model):
 class Source(_Model):
     url: str = Field(min_length=1, description="Адрес документа (как в document.url)")
     sha256: str = Field(description="SHA-256 документа (как в document.sha256)")
-    page: int = Field(ge=1, description="Страница документа с единицы")
+    page: int = Field(ge=1, description="Страница документа с единицы; у xlsx — номер листа")
+    row: int | None = Field(
+        default=None,
+        ge=1,
+        description="Строка листа с единицы — только у табличных документов (см. document.rows)",
+    )
     quote: str = Field(
         min_length=1,
         description="Дословная цитата со страницы, из которой видна запись (строка таблицы или "
@@ -102,8 +121,17 @@ class Source(_Model):
 class Record(_Model):
     university: str = Field(min_length=1)
     campaign: int = Field(ge=2020, le=2040)
-    program_code: str = Field(min_length=1, description="Код направления, например 01.03.02")
+    program_code: str = Field(
+        min_length=1,
+        description="Код направления, например 01.03.02; «*» — документ не привязывает льготу "
+        "к направлениям, она действует на любом направлении вуза",
+    )
     program_name: str = Field(default="", description="Название направления")
+    division: str = Field(
+        default="",
+        description="Подразделение (факультет, институт) из заголовка раздела — если документ "
+        "делит льготы по ним; пусто, если не делит",
+    )
     benefit_type: BenefitType = Field(
         description="bvi — без вступительных; 100 — 100 баллов; extra_points — баллы за ИД"
     )
@@ -154,6 +182,11 @@ class ExtractionFile(_Model):
             if doc.pages and rec.source.page not in doc.pages:
                 raise ValueError(
                     f"{where}: страница {rec.source.page} не входит в document.pages {doc.pages}"
+                )
+            row = rec.source.row
+            if doc.rows and row is not None and not doc.rows[0] <= row <= doc.rows[1]:
+                raise ValueError(
+                    f"{where}: строка {row} не входит в document.rows {list(doc.rows)}"
                 )
         return self
 
@@ -234,7 +267,7 @@ def load_file(path: Path) -> ExtractionFile:
 
 
 def load_dir(directory: Path) -> dict[str, ExtractionFile]:
-    """Все *.json каталога (кроме schema.json) по имени файла без расширения.
+    """Все *.json каталога (кроме schema.json и baseline-*.json) по имени файла без расширения.
 
     Ошибки собираются по всем файлам и поднимаются одним исключением."""
     if not directory.is_dir():
@@ -242,7 +275,7 @@ def load_dir(directory: Path) -> dict[str, ExtractionFile]:
     files: dict[str, ExtractionFile] = {}
     errors: list[str] = []
     for path in sorted(directory.glob("*.json")):
-        if path.name == SCHEMA_FILE:
+        if path.name == SCHEMA_FILE or path.name.startswith(METRICS_PREFIX):
             continue
         try:
             files[path.stem] = load_file(path)

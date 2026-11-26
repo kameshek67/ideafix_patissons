@@ -12,14 +12,21 @@ PAGE2 = "01.03.02 Высшая проба: победители и призёр�
 PAGE3 = "09.03.01 Ломоносов: призёры"
 
 
-def rec(code: str, olympiad: str, page: int = 2, quote: str = PAGE2, **extra: object) -> dict:
+def rec(
+    code: str,
+    olympiad: str,
+    page: int = 2,
+    quote: str = PAGE2,
+    source_row: int | None = None,
+    **extra: object,
+) -> dict:
     return {
         "university": "Вуз",
         "campaign": 2027,
         "program_code": code,
         "benefit_type": "bvi",
         "olympiad": olympiad,
-        "source": {"url": URL, "sha256": SHA, "page": page, "quote": quote},
+        "source": {"url": URL, "sha256": SHA, "page": page, "quote": quote, "row": source_row},
         **extra,
     }
 
@@ -98,6 +105,43 @@ def test_pages_outside_gold_are_not_penalised() -> None:
     assert r.pred == 1 and r.matched == 1
 
 
+def test_rows_outside_gold_range_are_not_penalised() -> None:
+    gold = file([rec("01.03.02", "МОШ")])
+    gold.document.rows = (2, 56)
+    pred = file(
+        [
+            rec("01.03.02", "МОШ", source_row=3),
+            rec("01.03.02", "Ломоносов", source_row=700),
+            rec("01.03.02", "Высшая проба"),  # строка неизвестна — считается
+        ]
+    )
+    r = ev.run({"d": gold}, {"d": pred})[0][0]
+    assert r.pred == 2 and r.matched == 1
+
+
+def test_any_code_gold_matches_every_program_without_extra_penalty() -> None:
+    gold = file([rec("*", "МОШ", winner_role="both"), rec("*", "Ломоносов")])
+    pred = file(
+        [
+            rec("01.03.02", "МОШ", winner_role="both"),
+            rec("09.03.01", "МОШ", winner_role="both"),
+            rec("09.03.01", "Ломоносов"),
+            rec("09.03.01", "Высшая проба"),
+        ]
+    )
+    r = ev.run({"d": gold}, {"d": pred})[0][0]
+    assert r.matched == 2 and r.pred == 3  # лишней считается только «Высшая проба»
+    assert r.recall == 1 and r.field_ok["winner_role"] == 2
+
+
+def test_loose_profile_matches_old_base_rows_without_profile() -> None:
+    gold = file([rec("01.03.02", "МОШ", profile="Математика")])
+    pred = file([rec("01.03.02", "МОШ")])
+    g, p = [ev.row_of(r) for r in gold.records], [ev.row_of(r) for r in pred.records]
+    assert ev.match_rows(g, p) == []
+    assert len(ev.match_rows(g, p, loose_profile=True)) == 1
+
+
 def test_missing_pred_file_gives_zero_recall() -> None:
     r = ev.run({"d": GOLD}, {})[0][0]
     assert r.recall == 0 and r.precision is None and r.note == "нет файла"
@@ -173,6 +217,28 @@ def test_db_row_is_limited_to_gold_codes_and_known_types() -> None:
     assert [r.key[1] for r in rows] == ["01.03.02"]
     assert rows[0].winner_role == "winner" and rows[0].ege_min == 75
     assert ev.db_rows_of({**raw, "benefit_type": "Фаст-трек"}, {"01.03.02"}, "Вуз") == []
+    assert ev.db_rows_of(raw, {"01.03.02"}, "Вуз", {"100"}) == []  # в документе только 100 баллов
+    assert len(ev.db_rows_of(raw, None, "Вуз")) == 2  # эталон с «*»: все направления
+
+
+def test_db_rows_without_codes_are_linked_by_division() -> None:
+    raw = {
+        "code": "",
+        "direction": "Механико-математический факультет",
+        "benefit_type": "БВИ",
+        "source_url": "",
+        "winner_role": "победители",
+        "level": "I",
+        "profile": "",
+        "grade": "11 класс",
+        "confirm_subjects": [],
+        "min_ege_score": None,
+        "olympiad": "Турнир городов",
+    }
+    units = {"механикоматематическийфакультет": {"01.05.01"}}
+    rows = ev.db_rows_of(raw, {"01.05.01"}, "МГУ", None, units)
+    assert [r.key[1] for r in rows] == ["01.05.01"]
+    assert ev.db_rows_of(raw, {"01.05.01"}, "МГУ") == []
 
 
 def test_cli_prints_table_and_writes_json(tmp_path: Path, capsys) -> None:  # type: ignore[no-untyped-def]

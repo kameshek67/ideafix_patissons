@@ -90,10 +90,24 @@ def test_load_dir_reports_every_broken_file(tmp_path: Path) -> None:
     (tmp_path / "ok.json").write_text(json.dumps(payload()), encoding="utf-8")
     (tmp_path / "bad.json").write_text("{}", encoding="utf-8")
     (tmp_path / "schema.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "baseline-xlsx.json").write_text("{}", encoding="utf-8")
     with pytest.raises(ExtractionError, match="bad.json"):
         load_dir(tmp_path)
     (tmp_path / "bad.json").unlink()
     assert list(load_dir(tmp_path)) == ["ok"]
+
+
+def test_document_rows_are_checked() -> None:
+    data = payload()
+    data["document"]["rows"] = [2, 56]
+    data["records"][0]["source"]["row"] = 10
+    assert ExtractionFile.model_validate(data).document.rows == (2, 56)
+    data["records"][0]["source"]["row"] = 57
+    with pytest.raises(ValueError, match="document.rows"):
+        ExtractionFile.model_validate(data)
+    data["document"]["rows"] = [9, 3]
+    with pytest.raises(ValueError, match="первая строка"):
+        ExtractionFile.model_validate(data)
 
 
 def test_committed_schema_is_current() -> None:

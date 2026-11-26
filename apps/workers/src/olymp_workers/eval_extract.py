@@ -4,9 +4,11 @@
     olymp-eval-extract --gold data/eval/extraction --pred db          # базовая линия: старый XLSX
     olymp-eval-extract --gold data/eval/extraction --pred data/extracted --check-quotes --json out.json
 
-Считается только то, что лежит на размеченных страницах документа (document.pages эталона):
-предсказания с других страниц не штрафуются. Записи совпадают по ключу
-(вуз, код направления, олимпиада, профиль, тип льготы); поля сравниваются у совпавших.
+Считается только то, что лежит на размеченных страницах документа (document.pages эталона)
+и, у таблиц, в размеченных строках (document.rows): предсказания вне них не штрафуются.
+Записи совпадают по ключу (вуз, код направления, олимпиада, профиль, тип льготы); поля
+сравниваются у совпавших. Код «*» в эталоне — любое направление вуза: ему отвечает любая запись
+с тем же остальным ключом, а остальные такие записи при других кодах не считаются лишними.
 Без --check-quotes сеть не нужна.
 """
 
@@ -54,6 +56,7 @@ class Row:
     ege_min: int | None
     ege_subjects: frozenset[str]
     page: int | None = None  # None — у выгрузки из базы страниц нет
+    row: int | None = None
     url: str = ""
     quote: str = ""
 
@@ -74,6 +77,7 @@ def row_of(record: Record) -> Row:
         ege_min=ege.min if ege else None,
         ege_subjects=frozenset(ege.subjects) if ege else frozenset(),
         page=record.source.page,
+        row=record.source.row,
         url=record.source.url,
         quote=record.source.quote,
     )
@@ -86,24 +90,64 @@ def _agreement(a: Row, b: Row) -> int:
     return sum(1 for f in FIELDS if getattr(a, f) == getattr(b, f))
 
 
-def match_rows(gold: Sequence[Row], pred: Sequence[Row]) -> list[tuple[Row, Row]]:
-    """Пары «эталон — предсказание» по ключу; при повторах ключа первыми берутся лучшие по полям."""
+ANY_CODE = "*"
+
+
+def _tail(key: Key) -> tuple[str, ...]:
+    """Ключ без кода направления."""
+    return key[0], *key[2:]
+
+
+def _no_profile(key: Key) -> tuple[str, ...]:
+    """Ключ без кода и профиля: старая база профиль не хранит."""
+    return key[0], key[1], key[2], key[4]
+
+
+def match_rows(
+    gold: Sequence[Row], pred: Sequence[Row], *, loose_profile: bool = False
+) -> list[tuple[Row, Row]]:
+    """Пары «эталон — предсказание» по ключу; при повторах ключа первыми берутся лучшие по полям.
+
+    У эталона с кодом «*» кандидаты — записи с любым кодом. С loose_profile оставшиеся записи
+    без профиля (выгрузка из старой базы) подходят эталону с любым профилем."""
     by_key: dict[Key, list[int]] = defaultdict(list)
+    by_tail: dict[tuple[str, ...], list[int]] = defaultdict(list)
+    by_bare: dict[tuple[str, ...], list[int]] = defaultdict(list)
     for j, p in enumerate(pred):
         by_key[p.key].append(j)
-    candidates = [
-        (_agreement(g, pred[j]), i, j) for i, g in enumerate(gold) for j in by_key.get(g.key, ())
-    ]
-    candidates.sort(key=lambda c: (-c[0], c[1], c[2]))
+        by_tail[_tail(p.key)].append(j)
+        if loose_profile and not p.key[3]:
+            by_bare[_no_profile(p.key)].append(j)
     used_gold: set[int] = set()
     used_pred: set[int] = set()
     pairs: list[tuple[Row, Row]] = []
-    for _, i, j in candidates:
-        if i in used_gold or j in used_pred:
-            continue
-        used_gold.add(i)
-        used_pred.add(j)
-        pairs.append((gold[i], pred[j]))
+
+    def take(candidates: list[tuple[int, int, int]]) -> None:
+        candidates.sort(key=lambda c: (-c[0], c[1], c[2]))
+        for _, i, j in candidates:
+            if i in used_gold or j in used_pred:
+                continue
+            used_gold.add(i)
+            used_pred.add(j)
+            pairs.append((gold[i], pred[j]))
+
+    take(
+        [
+            (_agreement(g, pred[j]), i, j)
+            for i, g in enumerate(gold)
+            for j in (by_tail[_tail(g.key)] if g.key[1] == ANY_CODE else by_key.get(g.key, ()))
+        ]
+    )
+    if loose_profile:
+        take(
+            [
+                (_agreement(g, pred[j]), i, j)
+                for i, g in enumerate(gold)
+                if i not in used_gold and g.key[3]
+                for j in by_bare.get(_no_profile(g.key), ())
+                if j not in used_pred
+            ]
+        )
     return pairs
 
 
@@ -244,12 +288,19 @@ def evaluate_document(
     *,
     checker: QuoteChecker | None = None,
     note: str = "",
+    loose_profile: bool = False,
 ) -> DocResult:
     """Метрики одного документа; pred_rows уже сужены до страниц эталона."""
     gold_rows = [row_of(r) for r in gold.records]
-    result = DocResult(name, gold.document.university, gold=len(gold_rows), pred=len(pred_rows))
+    pairs = match_rows(gold_rows, pred_rows, loose_profile=loose_profile)
+    # записи с другими кодами при эталоне «*» — тот же случай, а не лишние
+    any_code = {_tail(g.key) for g in gold_rows if g.key[1] == ANY_CODE}
+    used = {id(p) for _, p in pairs}
+    spread = sum(1 for p in pred_rows if _tail(p.key) in any_code and id(p) not in used)
+    result = DocResult(
+        name, gold.document.university, gold=len(gold_rows), pred=len(pred_rows) - spread
+    )
     result.note = note
-    pairs = match_rows(gold_rows, pred_rows)
     result.matched = len(pairs)
     for g, p in pairs:
         for f in FIELDS:
@@ -257,7 +308,7 @@ def evaluate_document(
                 result.field_ok[f] += 1
         if p.winner_role is not None and p.winner_role != g.winner_role:
             result.role_wrong += 1
-    result.pred_fields = len(pred_rows) * len(FIELDS)
+    result.pred_fields = result.pred * len(FIELDS)
     result.empty = sum(r.empty_fields() for r in pred_rows)
     if checker is not None:
         result.gold_quotes = checker.check(gold_rows)
@@ -266,9 +317,17 @@ def evaluate_document(
     return result
 
 
-def in_scope(rows: Sequence[Row], pages: Sequence[int]) -> list[Row]:
+def in_scope(
+    rows: Sequence[Row], pages: Sequence[int], span: tuple[int, int] | None = None
+) -> list[Row]:
+    """Записи на размеченных страницах и строках; где страница или строка неизвестны — остаются."""
     wanted = set(pages)
-    return [r for r in rows if r.page is None or r.page in wanted]
+    return [
+        r
+        for r in rows
+        if (r.page is None or r.page in wanted)
+        and (span is None or r.row is None or span[0] <= r.row <= span[1])
+    ]
 
 
 def find_pred(
@@ -304,6 +363,7 @@ JOIN olympiads o ON o.id = bo.olympiad_id
 WHERE b.layer = 'detailed' AND u.id = %s
 ORDER BY b.id, bo.id
 """
+RE_IMENI = re.compile(r"\bимени\b", re.IGNORECASE)
 ROMAN_LEVELS = {"I": 1, "II": 2, "III": 3}
 
 
@@ -330,13 +390,25 @@ def db_grades(value: str) -> frozenset[int]:
     return frozenset(grades)
 
 
-def db_rows_of(db_row: dict[str, Any], codes: set[str], university: str) -> list[Row]:
+def db_rows_of(
+    db_row: dict[str, Any],
+    codes: set[str] | None,
+    university: str,
+    types: set[str] | None = None,
+    units: dict[str, set[str]] | None = None,
+) -> list[Row]:
+    """Строки базы в виде для сравнения; codes и types сужают до того, что есть в документе.
+
+    codes=None — эталон с кодом «*»: подходят любые направления. units — коды эталона по
+    подразделениям: старая база у части вузов (МГУ) держит льготы по факультетам, без кодов."""
     btype = DB_TYPES.get(db_row["benefit_type"])
-    if btype is None or not db_row["olympiad"]:
+    if btype is None or not db_row["olympiad"] or (types is not None and btype not in types):
         return []
     program_codes = set(RE_CODE.findall(f"{db_row['code'] or ''} {db_row['direction'] or ''}"))
+    if not program_codes and units:
+        program_codes = units.get(squash(db_row["direction"] or ""), set())
     rows = []
-    for code in sorted(program_codes & codes):
+    for code in sorted(program_codes if codes is None else program_codes & codes):
         rows.append(
             Row(
                 key=(
@@ -359,13 +431,14 @@ def db_rows_of(db_row: dict[str, Any], codes: set[str], university: str) -> list
 
 def pick_university(conn: Any, name: str) -> tuple[int, str] | None:
     """Вуз базы для названия из эталона: точное совпадение, иначе самый большой по числу направлений."""
-    key = squash(name)
+    key = squash(RE_IMENI.sub("им.", name))
     rows = conn.execute(
         """SELECT u.id, u.name, u.short_name, count(p.id) FROM universities u
            LEFT JOIN programs p ON p.university_id = u.id GROUP BY u.id"""
     ).fetchall()
-    exact = [r for r in rows if key in (squash(r[1]), squash(r[2] or ""))]
-    near = [r for r in rows if key and (squash(r[1]).startswith(key) or key in squash(r[1]))]
+    names = [(r, squash(RE_IMENI.sub("им.", r[1])), squash(r[2] or "")) for r in rows]
+    exact = [r for r, full, short in names if key in (full, short)]
+    near = [r for r, full, _ in names if key and key in full]
     for group in (exact, near):
         if group:
             best = max(group, key=lambda r: r[3])
@@ -379,10 +452,19 @@ def db_rows(conn: Any, gold: ExtractionFile) -> tuple[list[Row], str]:
     found = pick_university(conn, gold.document.university)
     if found is None:
         return [], "вуза нет в базе"
-    codes = {r.program_code for r in gold.records}
+    codes: set[str] | None = {r.program_code for r in gold.records}
+    if ANY_CODE in (codes or ()):
+        codes = None
+    types: set[str] = {r.benefit_type for r in gold.records}
+    units: dict[str, set[str]] = defaultdict(set)
+    for r in gold.records:
+        if r.division:
+            units[squash(r.division)].add(r.program_code)
     with conn.cursor(row_factory=dict_row) as cur:
         raw = cur.execute(DB_SQL, (found[0],)).fetchall()
-    rows = [row for r in raw for row in db_rows_of(r, codes, gold.document.university)]
+    rows = [
+        row for r in raw for row in db_rows_of(r, codes, gold.document.university, types, units)
+    ]
     return rows, f"база: {found[1]}"
 
 
@@ -400,15 +482,15 @@ def run(
     for name, gold in gold_files.items():
         if conn is not None:
             rows, note = db_rows(conn, gold)
-            rows = in_scope(rows, gold.document.pages)
-            results.append(evaluate_document(name, gold, rows, note=note))
+            rows = in_scope(rows, gold.document.pages, gold.document.rows)
+            results.append(evaluate_document(name, gold, rows, note=note, loose_profile=True))
             continue
         assert pred_files is not None
         pred = find_pred(name, gold, pred_files)
         if pred is None:
             results.append(evaluate_document(name, gold, [], checker=checker, note="нет файла"))
             continue
-        rows = in_scope([row_of(r) for r in pred.records], gold.document.pages)
+        rows = in_scope([row_of(r) for r in pred.records], gold.document.pages, gold.document.rows)
         results.append(evaluate_document(name, gold, rows, checker=checker))
     total = DocResult("ИТОГО", "")
     for r in results:
