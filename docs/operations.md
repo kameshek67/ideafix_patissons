@@ -29,6 +29,20 @@
   `sudo -u deploy /opt/ideafix/releases/<sha>/infra/deploy/remote.sh <sha> --no-pull`.
 - Миграции назад не откатываются. Миграцию, которую нельзя применить поверх старого кода, выкатывай в два шага.
 
+### Первая выкатка на новый сервер
+
+Сейчас workflow `deploy` в репозитории выключен, а адрес в нём — старый сервер. Чтобы выкатить на новый:
+
+1. На сервере один раз: `infra/deploy/server/setup.sh` (пользователь `deploy`, Caddy с HTTPS для домена, каталоги `/opt/ideafix`).
+2. В `.github/workflows/deploy.yml` поменять `DEPLOY_HOST` и `DEPLOY_KNOWN_HOST` (строку даёт `ssh-keyscan -t ed25519 <адрес>`).
+3. Секрет репозитория `DEPLOY_SSH_KEY` — закрытый ключ, открытая часть которого добавлена `setup.sh` пользователю `deploy`.
+4. `/opt/ideafix/shared/.env` по образцу `.env.example`: обязательно `OLYMP_ADMISSION_YEAR=2027`; `OLYMP_LLM_*` — если нужен
+   помощник (без них он выключен); `OLYMP_OPS_TOKEN` — для разбора новых документов; токен бота MAX — если нужен бот.
+5. Включить выкатку: `gh workflow enable deploy -R kameshek67/ideafix_patissons`, перезапустить последний `ci` в `main`.
+6. Проверить: `https://<домен>/api/v1/stats`, главная, `/quality`; пройти сценарий из `presentation/demo.md`.
+
+После выкатки перед защитой в `main` только исправления: каждый пуш снова выкатывается.
+
 ### Команды на сервере
 
 `ideafix ps`, `ideafix logs -f api`, `ideafix exec api sh` — это `docker compose` текущего релиза.
