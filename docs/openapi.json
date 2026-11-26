@@ -691,6 +691,37 @@
         "title": "BenefitReportIn",
         "type": "object"
       },
+      "CardTrack": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "profile": {
+            "title": "Profile",
+            "type": "string"
+          },
+          "profile_id": {
+            "title": "Profile Id",
+            "type": "integer"
+          },
+          "topics": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Topics",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "profile_id",
+          "profile",
+          "topics"
+        ],
+        "title": "CardTrack",
+        "type": "object"
+      },
       "ChatMessage": {
         "properties": {
           "content": {
@@ -1643,6 +1674,64 @@
         "title": "Note",
         "type": "object"
       },
+      "OlympiadCard": {
+        "description": "Что это за олимпиада и для кого: по официальному сайту, вручную проверено.",
+        "properties": {
+          "checked": {
+            "title": "Checked",
+            "type": "string"
+          },
+          "formats": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Formats",
+            "type": "array"
+          },
+          "grades": {
+            "title": "Grades",
+            "type": "string"
+          },
+          "site_url": {
+            "title": "Site Url",
+            "type": "string"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          },
+          "stages": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Stages",
+            "type": "array"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "tracks": {
+            "items": {
+              "$ref": "#/components/schemas/CardTrack"
+            },
+            "title": "Tracks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "site_url",
+          "summary",
+          "grades",
+          "formats",
+          "stages",
+          "source_url",
+          "checked",
+          "tracks"
+        ],
+        "title": "OlympiadCard",
+        "type": "object"
+      },
       "OlympiadHit": {
         "description": "Олимпиада в автокомплите и в выдаче поиска.",
         "properties": {
@@ -1687,6 +1776,28 @@
           "mentions": {
             "title": "Mentions",
             "type": "integer"
+          },
+          "profile_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Id"
+          },
+          "profile_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Name"
           },
           "profiles": {
             "anyOf": [
@@ -1735,7 +1846,9 @@
           "in_rsosh_2026_27",
           "rank",
           "is_featured",
-          "profiles"
+          "profiles",
+          "profile_id",
+          "profile_name"
         ],
         "title": "OlympiadHit",
         "type": "object"
@@ -1854,6 +1967,16 @@
       "OlympiadSearch": {
         "description": "«Куда поступить с моей олимпиадой»: список вузов, а с university_id — строки вуза.",
         "properties": {
+          "card": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OlympiadCard"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "fallback": {
             "default": [],
             "items": {
@@ -1933,7 +2056,8 @@
           "shown_programs",
           "total_universities",
           "truncated",
-          "fallback"
+          "fallback",
+          "card"
         ],
         "title": "OlympiadSearch",
         "type": "object"
@@ -4120,6 +4244,18 @@
               "title": "Limit",
               "type": "integer"
             }
+          },
+          {
+            "description": "Разбирать запрос «олимпиада + профиль» («нто ии») и ставить такие первыми",
+            "in": "query",
+            "name": "with_profile",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Разбирать запрос «олимпиада + профиль» («нто ии») и ставить такие первыми",
+              "title": "With Profile",
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -4463,6 +4599,22 @@
               "minimum": 1,
               "title": "Limit",
               "type": "integer"
+            }
+          },
+          {
+            "description": "summary — список вузов со счётчиками, без строк льгот (для экрана списка); с university_id строки отдаются всегда",
+            "in": "query",
+            "name": "view",
+            "required": false,
+            "schema": {
+              "default": "full",
+              "description": "summary — список вузов со счётчиками, без строк льгот (для экрана списка); с university_id строки отдаются всегда",
+              "enum": [
+                "full",
+                "summary"
+              ],
+              "title": "View",
+              "type": "string"
             }
           }
         ],

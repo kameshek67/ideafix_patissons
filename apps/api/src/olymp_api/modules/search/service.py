@@ -8,6 +8,7 @@ import re
 from typing import Any
 
 from fastapi import HTTPException
+from olymp_domain.profile_query import collapse_profiles
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from olymp_api.db import fetch_all, fetch_one, scalar
@@ -16,6 +17,7 @@ from olymp_api.olympiads import (
     BENEFIT_ORDER,
     OLYMPIAD_FIELDS,
     olympiads_for_benefits,
+    resolve_olympiad_profiles,
     resolve_olympiads,
     serialize_benefit,
 )
@@ -174,7 +176,9 @@ async def by_olympiad(
     region: str | None,
     benefit_type: str | None,
     limit: int,
+    view: str = "full",
 ) -> dict[str, Any]:
+    """view="summary" без university_id отдаёт вузы со счётчиками, но без строк льгот."""
     if olympiad_id:
         one = await fetch_one(
             session,
@@ -184,6 +188,12 @@ async def by_olympiad(
         matched = [one] if one else []
     else:
         matched = await resolve_olympiads(session, q)
+        # «нто ии», «высшая проба матем»: олимпиада и профиль из одной строки запроса
+        if not profile_id and not (matched and matched[0]["rank"] == 0):
+            combined = await resolve_olympiad_profiles(session, q, 1)
+            if combined:
+                profile_id = combined[0]["profile_id"]
+                matched = [combined[0]]
 
     if not matched:
         return {
@@ -198,8 +208,8 @@ async def by_olympiad(
 
     ids = [m["id"] for m in matched[:5]]
 
-    # профили выбранной олимпиады — для чипов-фильтров на фронте
-    profiles = await fetch_all(
+    # профили выбранной олимпиады — для чипов-фильтров на фронте; мусор и дубли схлопнуты
+    all_profiles = await fetch_all(
         session,
         """SELECT id, olympiad_id, name, mentions, bvi_count, sto_count, uni_count,
                   level, level_2026_27
@@ -207,6 +217,15 @@ async def by_olympiad(
            ORDER BY mentions DESC, name, olympiad_id, id""",
         {"ids": ids},
     )
+    profiles: list[dict[str, Any]] = []
+    merged: dict[int, list[int]] = {}
+    for oid in ids:
+        shown, hidden = collapse_profiles(
+            [p for p in all_profiles if p["olympiad_id"] == oid], keep=[profile_id or 0]
+        )
+        profiles += shown
+        merged.update(hidden)
+    profiles.sort(key=lambda p: (-p["mentions"], p["name"], p["olympiad_id"], p["id"]))
     without_profile = await scalar(
         session,
         """SELECT COUNT(*) FROM benefit_olympiads
@@ -217,8 +236,9 @@ async def by_olympiad(
     params: dict[str, Any] = {"ids": ids}
     where = ["bo.olympiad_id = ANY(:ids)", "b.layer <> 'raw'"]
     if profile_id:
-        where.append("bo.profile_id = :profile_id")
-        params["profile_id"] = profile_id
+        # выбор схлопнутого профиля включает и строки его дублей
+        where.append("bo.profile_id = ANY(:profile_ids)")
+        params["profile_ids"] = [profile_id, *merged.get(profile_id, [])]
     if university_id:
         where.append("u.id = :university_id")
         params["university_id"] = university_id
@@ -249,9 +269,13 @@ async def by_olympiad(
     totals_by_university = {row["university_id"]: row for row in totals}
     programs_total = sum(row["programs_total"] for row in totals)
 
-    rows = await fetch_all(
-        session,
-        f"""SELECT {BENEFIT_FIELDS},
+    summary = view == "summary" and not university_id
+    rows = (
+        []
+        if summary
+        else await fetch_all(
+            session,
+            f"""SELECT {BENEFIT_FIELDS},
                    p.id AS program_id, p.faculty_or_direction, p.profile_name, p.code,
                    p.note AS program_note, p.source_url AS program_url,
                    p.source_title AS program_source_title, {UNIVERSITY_FIELDS},
@@ -270,7 +294,8 @@ async def by_olympiad(
                      CASE b.benefit_type WHEN 'БВИ' THEN 0 WHEN '100 баллов' THEN 1 ELSE 2 END,
                      b.id, bo.olympiad_id, bo.id
             LIMIT :row_limit""",
-        {**params, "row_limit": limit * 15},
+            {**params, "row_limit": limit * 15},
+        )
     )
 
     universities_map: dict[int, dict[str, Any]] = {}
@@ -355,8 +380,29 @@ async def by_olympiad(
         "total_programs": programs_total,
         "shown_programs": len(programs_seen),
         "total_universities": len(results),
-        "truncated": len(programs_seen) < programs_total,
+        "truncated": not summary and len(programs_seen) < programs_total,
+        "card": await olympiad_card(session, matched[0]["id"]),
     }
+
+
+async def olympiad_card(session: AsyncSession, olympiad_id: int) -> dict[str, Any] | None:
+    """Короткая карточка олимпиады из data/olympiad_cards.json; нет карточки — None."""
+    info = await fetch_one(
+        session,
+        """SELECT site_url, summary, grades, formats, stages, source_url, checked
+           FROM olympiad_info WHERE olympiad_id = :id""",
+        {"id": olympiad_id},
+    )
+    if not info:
+        return None
+    tracks = await fetch_all(
+        session,
+        """SELECT t.name, t.profile_id, p.name AS profile, t.topics
+           FROM olympiad_tracks t JOIN olympiad_profiles p ON p.id = t.profile_id
+           WHERE t.olympiad_id = :id ORDER BY t.id""",
+        {"id": olympiad_id},
+    )
+    return {**info, "checked": info["checked"].isoformat(), "tracks": tracks}
 
 
 # ---------------------------------------------------------------- запасной поиск

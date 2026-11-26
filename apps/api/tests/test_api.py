@@ -210,3 +210,133 @@ async def test_universities_beyond_limit_have_full_card(client: httpx.AsyncClien
     assert empty, "нужен вуз без показанных направлений"
     keys = {frozenset(r["university"]) for r in data["results"]}
     assert len(keys) == 1
+
+
+@pytest.mark.parametrize(
+    ("query", "olympiad", "profile"),
+    [
+        ("нто ии", "НТО", "искусственный интеллект"),
+        ("НТО искусственный интеллект", "НТО", "искусственный интеллект"),
+        ("ии нто", "НТО", "искусственный интеллект"),
+        ("нто иб", "НТО", "информационная безопасность"),
+        ("нто мобильные", "НТО", "разработка мобильных приложений"),
+        ("нто бпла", "НТО", "беспилотные авиационные системы"),
+        ("высшая проба матем", "«Высшая проба»", "математика"),
+        ("вышка математика", "«Высшая проба»", "математика"),
+        ("высшая проба инфа", "«Высшая проба»", "информатика"),
+        ("ломоносов физика", "«Ломоносов»", "физика"),
+        ("всош математика", "ВсОШ", "математика"),
+    ],
+)
+async def test_olympiad_suggest_with_profile(
+    client: httpx.AsyncClient, query: str, olympiad: str, profile: str
+) -> None:
+    items = (await client.get("/v1/olympiads", params={"q": query, "with_profile": True})).json()[
+        "items"
+    ]
+    assert (items[0]["short_name"], items[0]["profile_name"]) == (olympiad, profile)
+    # Enter без выбора подсказки даёт то же: олимпиада и профиль найдены по тексту запроса
+    data = (await client.get("/v1/search/by-olympiad", params={"q": query})).json()
+    assert data["matched_olympiads"][0]["id"] == items[0]["id"]
+    assert data["profile_id"] == items[0]["profile_id"]
+
+
+@pytest.mark.parametrize("query", ["нто", "высшая проба", "олимпиада по ии"])
+async def test_olympiad_suggest_without_profile(client: httpx.AsyncClient, query: str) -> None:
+    items = (await client.get("/v1/olympiads", params={"q": query, "with_profile": True})).json()[
+        "items"
+    ]
+    assert items and items[0]["profile_id"] is None
+    # профиль, которого нет у олимпиады, ничего не придумываем
+    nothing = await client.get("/v1/olympiads", params={"q": "нто кулинария", "with_profile": True})
+    assert all(i["profile_id"] is None for i in nothing.json()["items"])
+    # без with_profile ответ прежний
+    plain = (await client.get("/v1/olympiads", params={"q": "нто ии"})).json()["items"]
+    assert all(i["profile_id"] is None for i in plain)
+
+
+async def test_profile_chips_hide_junk(client: httpx.AsyncClient) -> None:
+    nto = (await client.get("/v1/olympiads", params={"q": "нто"})).json()["items"][0]
+    data = (
+        await client.get("/v1/search/by-olympiad", params={"q": "нто", "olympiad_id": nto["id"]})
+    ).json()
+    names = [p["name"] for p in data["profiles"]]
+    assert all(p["mentions"] > 0 for p in data["profiles"])
+    assert "летающая" not in names and "разработка мобильных предложений" not in names
+    assert "разработка мобильных приложений" in names
+    assert len(names) < nto["profiles"] and all(
+        p["level_2026_27"] is not None for p in data["profiles"]
+    )
+    listed = (await client.get(f"/v1/olympiads/{nto['id']}/profiles")).json()
+    assert [p["name"] for p in listed["items"]] == names
+
+
+async def test_merged_profile_includes_rows_of_its_duplicates(client: httpx.AsyncClient) -> None:
+    nto = (await client.get("/v1/olympiads", params={"q": "нто"})).json()["items"][0]
+    profiles = (await client.get(f"/v1/olympiads/{nto['id']}/profiles")).json()["items"]
+    target = next(p for p in profiles if p["name"] == "летающая робототехника")
+    base = {"q": "нто", "olympiad_id": nto["id"], "view": "summary"}
+    one = await client.get("/v1/search/by-olympiad", params={**base, "profile_id": target["id"]})
+    assert one.json()["total_universities"] > 0
+
+
+async def test_by_olympiad_summary_has_no_rows(client: httpx.AsyncClient) -> None:
+    params = {"q": "нто"}
+    full = await client.get("/v1/search/by-olympiad", params=params)
+    summary = await client.get("/v1/search/by-olympiad", params={**params, "view": "summary"})
+    a, b = full.json(), summary.json()
+    assert len(summary.content) * 20 < len(full.content)
+    assert b["total_programs"] == a["total_programs"] > 0
+    assert b["total_universities"] == a["total_universities"] == len(b["results"])
+    assert not b["truncated"] and all(r["programs"] == [] for r in b["results"])
+    assert [
+        (r["university"]["id"], r["bvi"], r["sto"], r["other"], r["programs_total"])
+        for r in b["results"]
+    ] == [
+        (r["university"]["id"], r["bvi"], r["sto"], r["other"], r["programs_total"])
+        for r in a["results"]
+    ]
+    # вуз раскрывают отдельным запросом: строки приходят и при view=summary
+    uni = b["results"][0]["university"]["id"]
+    one = (
+        await client.get(
+            "/v1/search/by-olympiad", params={**params, "view": "summary", "university_id": uni}
+        )
+    ).json()
+    assert one["results"][0]["programs"] and one["results"][0]["programs"][0]["benefits"]
+
+
+async def test_by_olympiad_view_is_validated(client: httpx.AsyncClient) -> None:
+    response = await client.get("/v1/search/by-olympiad", params={"q": "нто", "view": "x"})
+    assert response.status_code == 422
+
+
+async def test_olympiad_card_in_search(client: httpx.AsyncClient) -> None:
+    data = (
+        await client.get("/v1/search/by-olympiad", params={"q": "нто", "view": "summary"})
+    ).json()
+    card = data["card"]
+    assert card["site_url"].startswith("https://") and card["summary"] and card["grades"]
+    assert card["source_url"].startswith("https://") and card["checked"]
+    assert card["formats"] and isinstance(card["tracks"], list)
+    # у олимпиады с треками профиль трека есть и среди профилей
+    with_tracks = (
+        await client.get("/v1/search/by-olympiad", params={"q": "покори воробьевы горы"})
+    ).json()
+    assert all(t["profile_id"] and t["name"] for t in with_tracks["card"]["tracks"])
+
+
+async def test_olympiad_without_card_has_none(client: httpx.AsyncClient) -> None:
+    items = (await client.get("/v1/olympiads", params={"limit": 200})).json()["items"]
+    without = None
+    for item in items:
+        data = (
+            await client.get(
+                "/v1/search/by-olympiad",
+                params={"q": item["short_name"], "olympiad_id": item["id"], "view": "summary"},
+            )
+        ).json()
+        if data["card"] is None:
+            without = data
+            break
+    assert without is not None and without["matched_olympiads"]

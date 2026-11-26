@@ -55,10 +55,14 @@ async def olympiads(
     q: str | None = Query(None, max_length=200),
     featured: bool = False,
     limit: int = Query(20, ge=1, le=200),
+    with_profile: bool = Query(
+        False,
+        description="Разбирать запрос «олимпиада + профиль» («нто ии») и ставить такие первыми",
+    ),
     session: AsyncSession = Depends(get_session),
 ) -> Any:
     """Автокомплит по названиям и сокращениям («всош», «пвг», «вышка»), без q — популярные."""
-    return await service.olympiads(session, q, featured, limit)
+    return await service.olympiads(session, q, featured, limit, with_profile)
 
 
 @router.get("/olympiads/{olympiad_id}/profiles", response_model=OlympiadProfiles)

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -38,6 +38,11 @@ async def by_olympiad(
     region: str | None = None,
     benefit_type: str | None = None,
     limit: int = Query(400, ge=1, le=2000),
+    view: Literal["full", "summary"] = Query(
+        "full",
+        description="summary — список вузов со счётчиками, без строк льгот (для экрана списка); "
+        "с university_id строки отдаются всегда",
+    ),
     session: AsyncSession = Depends(get_session),
 ) -> Any:
     """Обратный поиск «куда поступить с моей олимпиадой»: список вузов, а с university_id —
@@ -54,13 +59,14 @@ async def by_olympiad(
             region,
             benefit_type,
             limit,
+            view,
         )
     )
     if (hit := await cache_get(request, key)) is not None:
         return hit
     data = OlympiadSearch.model_validate(
         await service.by_olympiad(
-            session, q, olympiad_id, profile_id, university_id, region, benefit_type, limit
+            session, q, olympiad_id, profile_id, university_id, region, benefit_type, limit, view
         )
     )
     payload = data.model_dump(mode="json")

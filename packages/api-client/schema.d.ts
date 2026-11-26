@@ -726,6 +726,17 @@ export interface components {
             /** Row Key */
             row_key: string;
         };
+        /** CardTrack */
+        CardTrack: {
+            /** Name */
+            name: string;
+            /** Profile */
+            profile: string;
+            /** Profile Id */
+            profile_id: number;
+            /** Topics */
+            topics: string[];
+        };
         /** ChatMessage */
         ChatMessage: {
             /** Content */
@@ -1071,6 +1082,28 @@ export interface components {
             text: string;
         };
         /**
+         * OlympiadCard
+         * @description Что это за олимпиада и для кого: по официальному сайту, вручную проверено.
+         */
+        OlympiadCard: {
+            /** Checked */
+            checked: string;
+            /** Formats */
+            formats: string[];
+            /** Grades */
+            grades: string;
+            /** Site Url */
+            site_url: string;
+            /** Source Url */
+            source_url: string;
+            /** Stages */
+            stages: string[];
+            /** Summary */
+            summary: string;
+            /** Tracks */
+            tracks: components["schemas"]["CardTrack"][];
+        };
+        /**
          * OlympiadHit
          * @description Олимпиада в автокомплите и в выдаче поиска.
          */
@@ -1089,6 +1122,10 @@ export interface components {
             kind: string;
             /** Mentions */
             mentions: number;
+            /** Profile Id */
+            profile_id: number | null;
+            /** Profile Name */
+            profile_name: string | null;
             /** Profiles */
             profiles: number | null;
             /** Rank */
@@ -1146,6 +1183,7 @@ export interface components {
          * @description «Куда поступить с моей олимпиадой»: список вузов, а с university_id — строки вуза.
          */
         OlympiadSearch: {
+            card: components["schemas"]["OlympiadCard"] | null;
             /**
              * Fallback
              * @default []
@@ -2145,6 +2183,8 @@ export interface operations {
                 q?: string | null;
                 featured?: boolean;
                 limit?: number;
+                /** @description Разбирать запрос «олимпиада + профиль» («нто ии») и ставить такие первыми */
+                with_profile?: boolean;
             };
             header?: never;
             path?: never;
@@ -2300,6 +2340,8 @@ export interface operations {
                 region?: string | null;
                 benefit_type?: string | null;
                 limit?: number;
+                /** @description summary — список вузов со счётчиками, без строк льгот (для экрана списка); с university_id строки отдаются всегда */
+                view?: "full" | "summary";
             };
             header?: never;
             path?: never;

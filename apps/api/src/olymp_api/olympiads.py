@@ -3,6 +3,7 @@
 from typing import Any
 
 from olymp_domain import squash
+from olymp_domain.profile_query import collapse_profiles, match_profiles, split_query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .db import Row, fetch_all
@@ -49,6 +50,66 @@ async def resolve_olympiads(session: AsyncSession, q: str, limit: int = 12) -> l
             LIMIT :limit""",
         {"key": key, "prefix": key + "%", "limit": limit},
     )
+
+
+# профиль в запросе принимаем, если он совпал хотя бы по началу слова («матем», «интеллект»)
+MIN_PROFILE_SCORE = 50
+
+
+async def resolve_olympiad_profiles(session: AsyncSession, q: str, limit: int = 3) -> list[Row]:
+    """«нто ии», «высшая проба матем»: олимпиада и остаток запроса, разобранный как профиль.
+
+    Возвращает олимпиады (как resolve_olympiads) с полями profile_id и profile_name, лучшие
+    совпадения первыми. Остаток ищется среди профилей, которые видны на экране (без дублей).
+    """
+    key = squash(q)
+    if len(key) < 4:
+        return []
+    aliases = await fetch_all(
+        session,
+        """SELECT DISTINCT olympiad_id, squash_alias FROM olympiad_aliases
+           WHERE length(squash_alias) >= 2
+                 AND length(:key) - length(squash_alias) >= 2
+                 AND (strpos(:key, squash_alias) = 1
+                      OR right(:key, length(squash_alias)) = squash_alias)""",
+        {"key": key},
+    )
+    pairs = split_query(key, [(a["olympiad_id"], a["squash_alias"]) for a in aliases])
+    hits: list[tuple[int, int, int, Row]] = []  # (-оценка, порядок, строки, профиль)
+    profiles_of: dict[int, list[Row]] = {}
+    for order, (olympiad_id, rest) in enumerate(pairs[:12]):
+        if olympiad_id not in profiles_of:
+            all_profiles = await fetch_all(
+                session,
+                """SELECT id, olympiad_id, name, mentions, level_2026_27 FROM olympiad_profiles
+                   WHERE olympiad_id = :id""",
+                {"id": olympiad_id},
+            )
+            profiles_of[olympiad_id] = collapse_profiles(all_profiles)[0]
+        for profile, score in match_profiles(rest, profiles_of[olympiad_id]):
+            if score >= MIN_PROFILE_SCORE:
+                hits.append((-score, order, -profile["mentions"], profile))
+    hits.sort(key=lambda h: h[:3])
+    chosen, seen = [], set()
+    for _, _, _, profile in hits:
+        if profile["id"] not in seen:
+            seen.add(profile["id"])
+            chosen.append(profile)
+    chosen = chosen[:limit]
+    if not chosen:
+        return []
+    olympiads = {
+        o["id"]: o
+        for o in await fetch_all(
+            session,
+            f"SELECT {OLYMPIAD_FIELDS} FROM olympiads o WHERE o.id = ANY(:ids)",
+            {"ids": list({p["olympiad_id"] for p in chosen})},
+        )
+    }
+    return [
+        {**olympiads[p["olympiad_id"]], "profile_id": p["id"], "profile_name": p["name"]}
+        for p in chosen
+    ]
 
 
 async def olympiads_for_benefits(

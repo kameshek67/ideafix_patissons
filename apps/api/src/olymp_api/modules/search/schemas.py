@@ -93,6 +93,26 @@ class FallbackHit(ResponseModel):
     university: str
 
 
+class CardTrack(ResponseModel):
+    name: str
+    profile_id: int
+    profile: str
+    topics: list[str]
+
+
+class OlympiadCard(ResponseModel):
+    """Что это за олимпиада и для кого: по официальному сайту, вручную проверено."""
+
+    site_url: str
+    summary: str
+    grades: str
+    formats: list[str]
+    stages: list[str]
+    source_url: str
+    checked: str
+    tracks: list[CardTrack]
+
+
 class OlympiadSearch(ResponseModel):
     """«Куда поступить с моей олимпиадой»: список вузов, а с university_id — строки вуза."""
 
@@ -108,3 +128,5 @@ class OlympiadSearch(ResponseModel):
     truncated: bool = False
     # олимпиада не опознана — похожие строки по тексту условий
     fallback: list[FallbackHit] = []
+    # карточка первой олимпиады; None — карточки в базе нет
+    card: OlympiadCard | None = None

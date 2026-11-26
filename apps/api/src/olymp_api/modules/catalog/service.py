@@ -3,10 +3,11 @@
 from typing import Any
 
 from fastapi import HTTPException
+from olymp_domain.profile_query import collapse_profiles
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from olymp_api.db import fetch_all, fetch_one, scalar
-from olymp_api.olympiads import OLYMPIAD_FIELDS, resolve_olympiads
+from olymp_api.olympiads import OLYMPIAD_FIELDS, resolve_olympiad_profiles, resolve_olympiads
 
 REGION_ORDER = {"Москва": 0, "Санкт-Петербург": 1, "Регионы": 2}
 
@@ -158,10 +159,13 @@ async def programs(
 
 
 async def olympiads(
-    session: AsyncSession, q: str | None, featured: bool, limit: int
+    session: AsyncSession, q: str | None, featured: bool, limit: int, with_profile: bool = False
 ) -> dict[str, Any]:
     if q:
         items = await resolve_olympiads(session, q, limit)
+        if with_profile:
+            # «нто ии» — сначала олимпиада с профилем, потом обычные совпадения
+            items = [*await resolve_olympiad_profiles(session, q), *items][:limit]
     else:
         items = await fetch_all(
             session,
@@ -177,7 +181,7 @@ async def olympiads(
             for r in await fetch_all(
                 session,
                 """SELECT olympiad_id, COUNT(*) AS cnt FROM olympiad_profiles
-                   WHERE olympiad_id = ANY(:ids) GROUP BY olympiad_id""",
+                   WHERE olympiad_id = ANY(:ids) AND mentions > 0 GROUP BY olympiad_id""",
                 {"ids": ids},
             )
         }
@@ -194,12 +198,14 @@ async def olympiad_profiles(session: AsyncSession, olympiad_id: int) -> dict[str
     )
     if not olympiad:
         raise HTTPException(status_code=404, detail="Олимпиада не найдена")
-    items = await fetch_all(
-        session,
-        """SELECT id, name, mentions, bvi_count, sto_count, uni_count, level, level_2026_27
-           FROM olympiad_profiles WHERE olympiad_id = :id
-           ORDER BY mentions DESC, name""",
-        {"id": olympiad_id},
+    items, _ = collapse_profiles(
+        await fetch_all(
+            session,
+            """SELECT id, name, mentions, bvi_count, sto_count, uni_count, level, level_2026_27
+               FROM olympiad_profiles WHERE olympiad_id = :id
+               ORDER BY mentions DESC, name""",
+            {"id": olympiad_id},
+        )
     )
     unassigned = await scalar(
         session,

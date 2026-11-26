@@ -32,6 +32,9 @@ class OlympiadHit(ResponseModel):
     is_featured: int | None = None
     # число профилей олимпиады; только в /v1/olympiads
     profiles: int | None = None
+    # запрос «нто ии» опознан как олимпиада + профиль; только в /v1/olympiads?with_profile=true
+    profile_id: int | None = None
+    profile_name: str | None = None
 
 
 class ProfileHit(ResponseModel):
