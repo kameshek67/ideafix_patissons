@@ -14,13 +14,14 @@ from typing import Any
 
 import psycopg
 from olymp_domain.extraction import ExtractionFile, Record, quote_found
+from olymp_domain.urls import is_personal_list
 
 from olymp_workers.ai.documents import DocumentError, DocumentStore, safe_url
 from olymp_workers.eval_extract import Row, db_rows, match_rows, row_of
 from olymp_workers.extract.adapters import pick
 from olymp_workers.extract.build import extract
 from olymp_workers.extract.layout import load
-from olymp_workers.refresh_sources import documents_on_page, is_personal_list
+from olymp_workers.refresh_sources import documents_on_page
 
 EXAMPLES = 5
 RE_PDF_XLSX = re.compile(r"\.(pdf|xlsx)($|[?#])", re.IGNORECASE)

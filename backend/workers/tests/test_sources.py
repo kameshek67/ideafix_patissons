@@ -14,7 +14,7 @@ import pytest
 from olymp_db.session import psycopg_dsn
 from olymp_workers.ai.documents import DocumentStore, safe_url
 from olymp_workers.eval_extract import Row
-from olymp_workers.sources import cli, jobs, pipeline
+from olymp_workers.sources import cli, grade, jobs, pipeline
 from olymp_workers.sources.cli import main as cli_main
 from olymp_workers.sources.cli import recheck_sources
 
@@ -317,3 +317,64 @@ def test_recheck_site_unavailable_only_logs(
     assert "HTTP 404" in caplog.text
     assert conn.execute("SELECT count(*), max(error) FROM source_jobs").fetchone() == (1, "")
     assert conn.execute("SELECT last_sha256 FROM sources").fetchone() == (old_hash,)
+
+
+def grade_of(conn: psycopg.Connection[Any], job_id: int) -> tuple[str, list[str]]:
+    return conn.execute(
+        "SELECT grade, grade_reasons FROM source_jobs WHERE id = %s", (job_id,)
+    ).fetchone()
+
+
+def test_job_gets_grade_with_reasons(conn: psycopg.Connection[Any], tmp_path: Any) -> None:
+    _, job_id, _ = jobs.enqueue(conn, XLSX, UNIVERSITY)
+    assert jobs.run_job(conn, job_id, store_for(tmp_path, {XLSX: XLSX_PAGE})) == "review"
+    mark, reasons = grade_of(conn, job_id)
+    # цитаты на месте, но записей три, а вуза и олимпиад в пустой базе нет
+    assert mark == "yellow"
+    assert any("записей мало: 3" in r for r in reasons)
+    assert any("вуза нет в базе" in r for r in reasons)
+    assert any("олимпиад сопоставлено 0%" in r for r in reasons)
+
+
+def test_failed_job_is_red_with_error_as_reason(
+    conn: psycopg.Connection[Any], tmp_path: Any
+) -> None:
+    _, job_id, _ = jobs.enqueue(conn, XLSX, UNIVERSITY)
+    assert jobs.run_job(conn, job_id, store_for(tmp_path, {})) == "failed"
+    mark, reasons = grade_of(conn, job_id)
+    assert mark == "red" and reasons == [status_of(conn, job_id)[1]]
+
+
+def result_of(found: int, checked: int, records: int = 12, removed: int = 0) -> pipeline.JobResult:
+    file = pipeline.ExtractionFile.model_construct(records=[object()] * records)
+    return pipeline.JobResult(
+        files=[file], quotes_checked=checked, quotes_found=found, diff={"removed": removed}
+    )
+
+
+@pytest.mark.parametrize(
+    ("result", "olympiads", "codes", "expected"),
+    [
+        (result_of(100, 100), (12, 12), (12, 12, True), "green"),
+        (result_of(98, 100), (12, 12), (12, 12, True), "green"),
+        (result_of(97, 100), (12, 12), (12, 12, True), "yellow"),  # цитаты слабее 98%
+        (result_of(100, 100), (10, 12), (12, 12, True), "yellow"),  # олимпиады 83%
+        (result_of(100, 100), (12, 12), (9, 12, True), "yellow"),  # кодов нет у вуза
+        (result_of(100, 100, removed=2), (12, 12), (12, 12, True), "yellow"),
+        (result_of(100, 100, records=9), (9, 9), (9, 9, True), "yellow"),  # мало записей
+        (result_of(89, 100), (12, 12), (12, 12, True), "red"),
+    ],
+)
+def test_grade_thresholds(
+    monkeypatch: pytest.MonkeyPatch,
+    conn: psycopg.Connection[Any],
+    result: pipeline.JobResult,
+    olympiads: tuple[int, int],
+    codes: tuple[int, int, bool],
+    expected: str,
+) -> None:
+    monkeypatch.setattr(grade, "olympiads_matched", lambda c, f: olympiads)
+    monkeypatch.setattr(grade, "codes_existing", lambda c, f: codes)
+    graded = grade.grade_job(conn, result)
+    assert graded.grade == expected
+    assert bool(graded.reasons) == (expected != "green")

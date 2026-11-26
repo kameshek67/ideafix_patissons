@@ -24,6 +24,7 @@ from psycopg.types.json import Jsonb
 from olymp_workers.ai.documents import DocumentError, DocumentStore, safe_url
 from olymp_workers.document_records import accept_document
 
+from .grade import Grade, grade_job
 from .pipeline import JobError, JobResult, run_pipeline
 
 log = logging.getLogger("olymp.sources")
@@ -121,7 +122,8 @@ def enqueue_changed(conn: psycopg.Connection[Any], source_id: int) -> int:
 def recover_stuck(conn: psycopg.Connection[Any]) -> int:
     """Задачи, брошенные упавшим воркером, становятся ошибкой, а не висят вечно."""
     rows = conn.execute(
-        """UPDATE source_jobs SET status = 'failed', updated_at = now(),
+        """UPDATE source_jobs SET status = 'failed', updated_at = now(), grade = 'red',
+                  grade_reasons = '["обработка прервалась, поставь ссылку заново"]'::jsonb,
                   error = 'обработка прервалась, поставь ссылку заново'
            WHERE status IN ('fetching', 'extracting')
                  AND updated_at < now() - make_interval(mins => %s) RETURNING id""",
@@ -188,11 +190,11 @@ def run_job(
         )
     except JobError as exc:
         conn.rollback()
-        set_status(conn, job_id, "failed", error=str(exc))
+        set_status(conn, job_id, "failed", **failure(str(exc)))
     except Exception as exc:  # noqa: BLE001 - воркер живёт дальше, оператор видит причину
         log.exception("задача %s упала", job_id)
         conn.rollback()
-        set_status(conn, job_id, "failed", error=f"внутренняя ошибка ({type(exc).__name__})")
+        set_status(conn, job_id, "failed", **failure(f"внутренняя ошибка ({type(exc).__name__})"))
     else:
         _finish(conn, job_id, source_id, result)
     status = _one(conn, "SELECT status FROM source_jobs WHERE id = %s", (job_id,))[0]
@@ -200,7 +202,18 @@ def run_job(
     return str(status)
 
 
+def failure(error: str) -> dict[str, Any]:
+    """Поля неудавшейся задачи: ошибка и красная оценка с той же причиной."""
+    return {"error": error, "grade": "red", "grade_reasons": [error]}
+
+
 def _finish(conn: psycopg.Connection[Any], job_id: int, source_id: int, result: JobResult) -> None:
+    try:
+        graded = grade_job(conn, result)
+    except Exception as exc:  # noqa: BLE001 - без оценки задача не пропадает, оператор решает сам
+        log.exception("оценка задачи %s не удалась", job_id)
+        conn.rollback()
+        graded = Grade("red", [f"автопроверка не сработала ({type(exc).__name__})"])
     conn.execute(
         "UPDATE sources SET kind = %s, last_checked_at = now(), last_sha256 = %s WHERE id = %s",
         (result.kind, result.sha256, source_id),
@@ -215,6 +228,8 @@ def _finish(conn: psycopg.Connection[Any], job_id: int, source_id: int, result: 
         quotes_checked=result.quotes_checked,
         quotes_found=result.quotes_found,
         diff=result.diff,
+        grade=graded.grade,
+        grade_reasons=graded.reasons,
     )
 
 

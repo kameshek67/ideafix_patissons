@@ -179,3 +179,38 @@ async def test_reject_keeps_records_out(
     assert db.execute("SELECT count(*) FROM document_records").fetchone() == (0,)
     assert (await ops.get("/v1/ops/jobs/99999", headers=AUTH)).status_code == 404
     assert (await ops.post("/v1/ops/jobs/99999/accept", headers=AUTH)).status_code == 404
+
+
+async def test_jobs_carry_grade_origin_and_filter(
+    ops: httpx.AsyncClient, db: psycopg.Connection[Any]
+) -> None:
+    mine = (
+        await ops.post("/v1/ops/sources", json={"url": URL, "university": "Вуз"}, headers=AUTH)
+    ).json()["job_id"]
+    db.execute(
+        "UPDATE source_jobs SET grade = 'yellow', grade_reasons = '[\"записей мало: 3\"]' WHERE id = %s",
+        (mine,),
+    )
+    source = db.execute(
+        "INSERT INTO sources (university, url, added_by) VALUES ('Вуз', %s, 'user') RETURNING id",
+        ("https://example.edu/user.pdf",),
+    ).fetchone()
+    assert source
+    theirs = db.execute(
+        "INSERT INTO source_jobs (source_id, origin, comment) VALUES (%s, 'user', 'новые правила')"
+        " RETURNING id",
+        (source[0],),
+    ).fetchone()
+    assert theirs
+    db.commit()
+
+    jobs = {j["id"]: j for j in (await ops.get("/v1/ops/jobs", headers=AUTH)).json()}
+    assert jobs[mine]["origin"] == "operator" and jobs[mine]["grade"] == "yellow"
+    assert jobs[mine]["grade_reasons"] == ["записей мало: 3"]
+    assert (jobs[theirs[0]]["origin"], jobs[theirs[0]]["grade"]) == ("user", "")
+    assert jobs[theirs[0]]["comment"] == "новые правила"
+    only_users = (await ops.get("/v1/ops/jobs?origin=user", headers=AUTH)).json()
+    assert [j["id"] for j in only_users] == [theirs[0]]
+    detail = (await ops.get(f"/v1/ops/jobs/{mine}", headers=AUTH)).json()
+    assert detail["grade"] == "yellow"
+    assert (await ops.get("/v1/ops/jobs?origin=x", headers=AUTH)).status_code == 422

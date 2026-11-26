@@ -47,9 +47,10 @@ async def jobs(
     status: str | None = Query(
         None, pattern="^(queued|fetching|extracting|review|accepted|rejected|failed)$"
     ),
+    origin: str | None = Query(None, pattern="^(operator|user)$"),
     limit: int = Query(50, ge=1, le=200),
 ) -> Any:
-    return await service.list_jobs(session, status, limit)
+    return await service.list_jobs(session, status, limit, origin)
 
 
 @router.get("/jobs/{job_id}", response_model=JobDetail)

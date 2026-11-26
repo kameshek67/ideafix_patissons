@@ -10,7 +10,8 @@ from olymp_api.db import fetch_all, fetch_one
 
 ACTIVE = ("queued", "fetching", "extracting", "review")
 JOB_COLUMNS = """j.id, j.source_id, s.university, s.url, j.status, j.error, j.records_count,
-    j.quotes_checked, j.quotes_found, j.rebuild_needed, j.created_at, j.updated_at"""
+    j.quotes_checked, j.quotes_found, j.rebuild_needed, j.created_at, j.updated_at,
+    j.origin, j.comment, j.grade, j.grade_reasons"""
 JOB_FROM = "FROM source_jobs j JOIN sources s ON s.id = j.source_id"
 
 
@@ -74,12 +75,15 @@ async def list_sources(session: AsyncSession) -> list[dict[str, Any]]:
     )
 
 
-async def list_jobs(session: AsyncSession, status: str | None, limit: int) -> list[dict[str, Any]]:
+async def list_jobs(
+    session: AsyncSession, status: str | None, limit: int, origin: str | None = None
+) -> list[dict[str, Any]]:
     return await fetch_all(
         session,
         f"SELECT {JOB_COLUMNS} {JOB_FROM} WHERE (CAST(:status AS text) IS NULL OR j.status = :status)"
+        " AND (CAST(:origin AS text) IS NULL OR j.origin = :origin)"
         " ORDER BY j.id DESC LIMIT :limit",
-        {"status": status, "limit": limit},
+        {"status": status, "origin": origin, "limit": limit},
     )
 
 

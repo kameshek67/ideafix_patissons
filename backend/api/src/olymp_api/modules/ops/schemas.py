@@ -46,6 +46,14 @@ class JobOut(ResponseModel):
     rebuild_needed: bool
     created_at: datetime
     updated_at: datetime
+    # operator — поставил оператор, user — прислал посетитель сайта
+    origin: str
+    # пояснение посетителя к ссылке; у задач оператора пусто
+    comment: str
+    # оценка автопроверки: green, yellow или red; пусто — ещё не оценена
+    grade: str
+    # чем оценка слабее зелёной, простыми словами
+    grade_reasons: list[str]
 
 
 class JobDetail(JobOut):

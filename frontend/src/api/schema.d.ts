@@ -499,6 +499,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Suggestion
+         * @description «Предложить вуз или документ»: ссылка на сайт вуза встаёт в очередь разбора, оператор
+         *     принимает результат вручную. Годится только адрес сайта вуза: домен совпадает с доменом
+         *     известных документов вуза или это .ru / .рф. Списки людей не принимаются; ссылка, которая
+         *     у нас уже есть, возвращает exists. Если запрос из мини-приложения MAX, бот ответит автору,
+         *     когда документ добавят. В ответе только статус.
+         */
+        post: operations["create_suggestion_v1_suggestions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/universities": {
         parameters: {
             query?: never;
@@ -1948,6 +1972,29 @@ export interface components {
             /** Sto */
             sto: number;
         };
+        /** SuggestionCreated */
+        SuggestionCreated: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "created" | "exists";
+        };
+        /**
+         * SuggestionIn
+         * @description Ссылка на страницу или документ вуза с олимпиадными льготами.
+         */
+        SuggestionIn: {
+            /**
+             * Comment
+             * @default
+             */
+            comment: string;
+            /** University */
+            university: string;
+            /** Url */
+            url: string;
+        };
         /** Universities */
         Universities: {
             /** Count */
@@ -2828,6 +2875,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Stats"];
+                };
+            };
+        };
+    };
+    create_suggestion_v1_suggestions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SuggestionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuggestionCreated"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -591,6 +591,8 @@ class DocumentRecord(Base):
 
 
 SOURCE_KINDS = ("page", "document")
+JOB_ORIGINS = ("operator", "user")
+JOB_GRADES = ("", "green", "yellow", "red")
 JOB_STATUSES = (
     "queued",
     "fetching",
@@ -624,6 +626,8 @@ class SourceJob(Base):
     __tablename__ = "source_jobs"
     __table_args__ = (
         CheckConstraint(f"status IN ({_in(JOB_STATUSES)})", name="status"),
+        CheckConstraint(f"origin IN ({_in(JOB_ORIGINS)})", name="origin"),
+        CheckConstraint(f"grade IN ({_in(JOB_GRADES)})", name="grade"),
         Index(None, "status"),
         Index(None, "source_id"),
     )
@@ -647,6 +651,19 @@ class SourceJob(Base):
     payload: Mapped[list[Any]] = mapped_column(JSONB, default=list, server_default=sa_text("'[]'"))
     rebuild_needed: Mapped[bool] = mapped_column(
         Boolean, default=False, server_default=sa_text("false")
+    )
+    # operator — ссылку поставил оператор, user — посетитель («Предложить вуз или документ»)
+    origin: Mapped[str] = _text("operator")
+    comment: Mapped[str] = _text()
+    # пользователь MAX, которому бот ответит после решения оператора
+    max_user_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    user_notified_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    # оценка автопроверки: green / yellow / red; пусто — задачу ещё не оценили
+    grade: Mapped[str] = _text()
+    grade_reasons: Mapped[list[Any]] = mapped_column(
+        JSONB, default=list, server_default=sa_text("'[]'")
     )
     rebuilt_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

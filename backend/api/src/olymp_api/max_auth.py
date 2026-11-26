@@ -97,3 +97,16 @@ async def max_user(request: Request) -> MaxUser:
         return validate_init_data(init_data, settings.max_bot_token, settings.max_init_data_ttl)
     except InitDataError as exc:
         raise HTTPException(401, f"Данные запуска MAX не прошли проверку: {exc}") from None
+
+
+def optional_max_user_id(request: Request) -> int | None:
+    """Пользователь MAX по подписанным данным запуска; без них или с чужими — None: запрос
+    принимается как анонимный, просто бот не сможет ответить."""
+    settings = request.app.state.settings
+    init_data = request.headers.get(HEADER, "")
+    if not init_data or not settings.max_bot_token:
+        return None
+    try:
+        return validate_init_data(init_data, settings.max_bot_token, settings.max_init_data_ttl).id
+    except InitDataError:
+        return None

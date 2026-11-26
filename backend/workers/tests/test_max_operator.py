@@ -317,3 +317,42 @@ def test_committed_scenarios_hold(built_database_url: str) -> None:
     scenarios = report_regressions.load(report_regressions.DEFAULT_PATH)
     with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
         assert report_regressions.check(conn, scenarios) == []
+
+
+def add_suggestion(conn: psycopg.Connection, **values: Any) -> int:
+    source = conn.execute(
+        "INSERT INTO sources (university, url, added_by) VALUES ('Вуз Тестовый', %s, 'user')"
+        " RETURNING id",
+        (f"https://example.edu/{values.pop('slug', 'a')}.pdf",),
+    ).fetchone()
+    assert source
+    fields = {"origin": "user", "status": "accepted", "max_user_id": 555, **values}
+    row = conn.execute(
+        f"INSERT INTO source_jobs (source_id, {', '.join(fields)})"  # noqa: S608
+        f" VALUES (%s, {', '.join(['%s'] * len(fields))}) RETURNING id",
+        [source[0], *fields.values()],
+    ).fetchone()
+    assert row
+    conn.commit()
+    return row[0]
+
+
+def test_author_of_accepted_suggestion_gets_thanks_once(
+    operator: Operator, db: psycopg.Connection
+) -> None:
+    try:
+        job = add_suggestion(db)
+        add_suggestion(db, slug="b", status="review")  # ещё не принято
+        add_suggestion(db, slug="c", max_user_id=None)  # аноним
+        add_suggestion(db, slug="d", origin="operator")  # задача оператора
+        api = MaxApi()
+        run(api, once=True, operator=operator)
+        assert api.to(555) == [{"text": "Добавили документ вуза Вуз Тестовый, спасибо."}]
+        assert [q for p, q, _ in api.sent if p == "/messages"] == [{"user_id": 555}]
+        assert db.execute(
+            "SELECT user_notified_at IS NOT NULL FROM source_jobs WHERE id = %s", (job,)
+        ).fetchone() == (True,)
+        assert run(MaxApi(), once=True, operator=operator) == 0
+    finally:
+        db.execute("DELETE FROM sources")
+        db.commit()

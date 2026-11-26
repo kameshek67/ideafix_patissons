@@ -78,6 +78,9 @@ class Settings(BaseSettings):
     # «Нашли ошибку в данных»: с одного посетителя в час и всего в сутки
     report_rate_limit: int = 5
     report_daily_limit: int = 500
+    # «Предложить вуз или документ»: с одного посетителя в час и всего в сутки
+    suggestion_rate_limit: int = 5
+    suggestion_daily_limit: int = 200
     share_ttl_days: int = 90
     # Разбор новых документов (docs/operations.md): токен оператора для /v1/ops/*. Не задан —
     # эндпоинты отвечают 404. Уведомление о готовности задачи (OLYMP_OPS_WEBHOOK_URL) шлёт воркер

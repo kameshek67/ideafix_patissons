@@ -10,7 +10,8 @@
     /operator           список команд
 
 Автору жалобы из MAX бот пишет, когда статус сменился на «исправлено», «данные верны» или
-«дубль». Остальным пользователям бот отвечает как раньше (см. max_bot). База нужна только
+«дубль»; автору ссылки из «Предложить вуз или документ» — когда оператор принял разбор.
+Остальным пользователям бот отвечает как раньше (см. max_bot). База нужна только
 этому режиму: без OLYMP_MAX_OPERATOR_IDS бот в неё не ходит.
 """
 
@@ -192,6 +193,11 @@ def stats_text(stats: dict[str, Any]) -> str:
     )
 
 
+def suggestion_reply(job: dict[str, Any]) -> dict[str, Any]:
+    """Ответ автору ссылки из «Предложить вуз или документ» после принятия оператором."""
+    return {"text": clip(f"Добавили документ вуза {job['university']}, спасибо.")}
+
+
 # ---------------------------------------------------------------- работа с базой
 
 
@@ -268,6 +274,21 @@ class Reports:
                 "UPDATE data_reports SET user_notified_status = %s WHERE id = %s",
                 (status, report_id),
             )
+            conn.commit()
+
+    def accepted_suggestions(self) -> list[dict[str, Any]]:
+        """Принятые задачи из «Предложить вуз или документ», автору из MAX ещё не ответили."""
+        with closing(self.connect()) as conn:
+            return conn.execute(
+                """SELECT j.id, j.max_user_id, s.university FROM source_jobs j
+                   JOIN sources s ON s.id = j.source_id
+                   WHERE j.origin = 'user' AND j.status = 'accepted' AND j.max_user_id IS NOT NULL
+                         AND j.user_notified_at IS NULL ORDER BY j.id LIMIT 20"""
+            ).fetchall()
+
+    def mark_suggestion_answered(self, job_id: int) -> None:
+        with closing(self.connect()) as conn:
+            conn.execute("UPDATE source_jobs SET user_notified_at = now() WHERE id = %s", (job_id,))
             conn.commit()
 
     def stats(self) -> dict[str, Any]:
@@ -397,7 +418,13 @@ class Operator:
         for report in self.reports.unanswered():
             action: Action = ("send", report["max_user_id"], user_reply(report))
             out.append(([action], self.answered(report["id"], report["status"])))
+        for job in self.reports.accepted_suggestions():
+            reply: Action = ("send", job["max_user_id"], suggestion_reply(job))
+            out.append(([reply], self.suggestion_answered(job["id"])))
         return out
+
+    def suggestion_answered(self, job_id: int) -> Callable[[], None]:
+        return lambda: self.reports.mark_suggestion_answered(job_id)
 
     def announced(self, report_id: int) -> Callable[[], None]:
         return lambda: self.reports.mark_announced(report_id)

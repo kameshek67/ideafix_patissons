@@ -4043,6 +4043,52 @@
         "title": "StatsUniversity",
         "type": "object"
       },
+      "SuggestionCreated": {
+        "properties": {
+          "status": {
+            "enum": [
+              "created",
+              "exists"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "SuggestionCreated",
+        "type": "object"
+      },
+      "SuggestionIn": {
+        "description": "Ссылка на страницу или документ вуза с олимпиадными льготами.",
+        "properties": {
+          "comment": {
+            "default": "",
+            "maxLength": 500,
+            "title": "Comment",
+            "type": "string"
+          },
+          "university": {
+            "maxLength": 300,
+            "minLength": 2,
+            "title": "University",
+            "type": "string"
+          },
+          "url": {
+            "maxLength": 2000,
+            "minLength": 8,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "university"
+        ],
+        "title": "SuggestionIn",
+        "type": "object"
+      },
       "Universities": {
         "properties": {
           "count": {
@@ -5683,6 +5729,48 @@
         "summary": "Stats",
         "tags": [
           "catalog"
+        ]
+      }
+    },
+    "/v1/suggestions": {
+      "post": {
+        "description": "«Предложить вуз или документ»: ссылка на сайт вуза встаёт в очередь разбора, оператор\nпринимает результат вручную. Годится только адрес сайта вуза: домен совпадает с доменом\nизвестных документов вуза или это .ru / .рф. Списки людей не принимаются; ссылка, которая\nу нас уже есть, возвращает exists. Если запрос из мини-приложения MAX, бот ответит автору,\nкогда документ добавят. В ответе только статус.",
+        "operationId": "create_suggestion_v1_suggestions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuggestionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuggestionCreated"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Suggestion",
+        "tags": [
+          "suggestions"
         ]
       }
     },
