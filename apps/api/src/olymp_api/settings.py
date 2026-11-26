@@ -1,5 +1,20 @@
 from olymp_domain.diplomas import ADMISSION_YEAR
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class LLMProfile(BaseModel):
+    """Провайдер и модель для прогона оценки помощника: `--provider имя` берёт отсюда адрес,
+    ключ и модель, остальное — из общих настроек llm_*. Цена за миллион токенов нужна, если
+    провайдер не отдаёт цену ответа сам."""
+
+    base_url: str
+    api_key: str
+    model: str
+    fallback_model: str | None = None
+    price_in: float | None = None
+    price_out: float | None = None
+    currency: str = "₽"
 
 
 class Settings(BaseSettings):
@@ -46,6 +61,9 @@ class Settings(BaseSettings):
     # общий бюджет обращений к модели в сутки на весь сервис; 0 — без ограничения. Одно сообщение
     # стоит 2–3 обращения, бесплатный OpenRouter даёт около 50 запросов в сутки на аккаунт
     llm_daily_requests: int = 45
+    # профили для `just assistant-eval --provider имя`: JSON в OLYMP_LLM_PROFILES, например
+    # {"giga": {"base_url": "https://…/v1", "api_key": "…", "model": "…", "price_in": 0.1}}
+    llm_profiles: dict[str, LLMProfile] = {}
     # лимиты сообщений на пользователя MAX, вне MAX — на IP
     assistant_rate_per_minute: int = 10
     assistant_rate_per_day: int = 100

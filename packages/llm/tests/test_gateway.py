@@ -8,6 +8,7 @@ from olymp_llm import (
     TextDelta,
     ToolCall,
     ToolCalls,
+    Usage,
     complete,
     provider_from_env,
 )
@@ -82,6 +83,22 @@ async def test_other_servers_do_not_get_openrouter_field() -> None:
     )
     await collect(p)
     assert "provider" not in seen[0]
+
+
+async def test_usage_is_requested_on_demand_and_reported() -> None:
+    seen: list[dict[str, object]] = []
+    usage = {"choices": [], "usage": {"prompt_tokens": 120, "completion_tokens": 30, "cost": 0.002}}
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        seen.append(json.loads(request.content))
+        return httpx.Response(200, content=sse(text_chunk("ok"), usage))
+
+    events = await collect(provider(httpx.MockTransport(handle), include_usage=True))
+    assert events == [TextDelta("ok"), Usage(120, 30, 0.002)]
+    assert seen[0]["stream_options"] == {"include_usage": True}
+    # чат расход не просит: не все серверы принимают поле, но если отдали — событие приходит
+    await collect(provider(httpx.MockTransport(handle)))
+    assert "stream_options" not in seen[1]
 
 
 async def test_assembles_tool_call_from_parts() -> None:

@@ -9,8 +9,18 @@ import structlog
 from olymp_api.llm import LLMError, TextDelta, ToolCall, ToolCalls
 from olymp_api.llm.fake import FakeProvider
 from olymp_api.main import create_app
-from olymp_api.modules.assistant import context, evaluate, factcheck, prompt, service
+from olymp_api.modules.assistant import (
+    build_cases,
+    claims,
+    context,
+    evaluate,
+    factcheck,
+    prompt,
+    service,
+)
+from olymp_api.modules.assistant.claims import Ledger
 from olymp_api.modules.assistant.context import DialogContext
+from olymp_api.modules.assistant.expectations import Spec
 from olymp_api.modules.assistant.factcheck import Entity, Vocabulary, check
 from olymp_api.modules.assistant.schemas import ChatMessage
 from olymp_api.modules.assistant.tools import HANDLERS, ToolContext, ToolResult
@@ -645,65 +655,50 @@ async def test_tool_results_stay_small(real: Any) -> None:
 # ---------------------------------------------------------------- набор оценки
 
 
-@pytest.mark.parametrize(("path", "count"), [(evaluate.DEFAULT_SET, 33), (evaluate.DIALOG_SET, 20)])
-def test_eval_set_is_valid(path: Any, count: int) -> None:
-    cases = evaluate.load_cases(path)
-    assert len(cases) == count
-    assert len({case.id for case in cases}) == len(cases)
-    checks = [check for case in cases for check in case.checks if check]
-    assert {tool for check in checks for tool in check.tools} <= set(HANDLERS)
-    assert all(len(case.checks) == len(case.turns) for case in cases)
-
-
-def test_eval_sets_have_unique_ids_together() -> None:
+def test_eval_set_is_valid() -> None:
     cases = evaluate.load_cases(*evaluate.DEFAULT_SETS)
+    assert 60 <= len(cases) <= 80
     assert len({case.id for case in cases}) == len(cases)
-    dialogs = [case for case in cases if len(case.turns) > 1]
-    assert len(dialogs) >= 15
-    assert any(case.conditions for case in cases)
+    assert {tool for case in cases for tool in case.tools} <= set(HANDLERS)
+    assert len([case for case in cases if len(case.turns) > 1]) >= 4
+    # ожидания выведены из базы: у каждого вопроса про данные есть факты или запреты
+    asked = [c for c in cases if c.spec.data in {"present", "absent"}]
+    assert len(asked) >= 50
+    assert all(c.spec.facts for c in cases if c.spec.data == "present")
+    assert all(c.spec.forbidden for c in cases if c.kind == "olympiad_unis")
+    assert {c.spec.data for c in cases} == {"present", "absent", "none"}
 
 
-def test_old_format_is_one_turn() -> None:
+def test_eval_set_has_no_word_checks() -> None:
+    """Проверок «в ответе есть слово» нет: только факты из базы и запрещённые утверждения."""
+    rows = [json.loads(line) for line in evaluate.CASES_SET.read_text().splitlines() if line]
+    forbidden_fields = {"include", "include_all", "exclude", "must_mention_conditions", "checks"}
+    assert not [row["id"] for row in rows if forbidden_fields & set(row)]
+    phrases = [p for row in rows for p in row["expect"].get("forbidden_phrases", [])]
+    assert len(phrases) <= 3  # только для подмены правил: утечка текста промпта
+
+
+def test_questions_and_cases_match() -> None:
+    questions = [
+        json.loads(line) for line in evaluate.QUESTIONS_SET.read_text().splitlines() if line
+    ]
+    cases = [json.loads(line) for line in evaluate.CASES_SET.read_text().splitlines() if line]
+    assert [q["id"] for q in questions] == [c["id"] for c in cases]
+    assert [q["turns"] for q in questions] == [c["turns"] for c in cases]
+
+
+def test_case_parse() -> None:
     case = evaluate.parse_case({"id": "x", "question": "?", "tools": ["find_profiles"]})
     assert case.turns == ["?"]
-    assert case.checks == [evaluate.Check(tools=["find_profiles"])]
-
-
-def test_top_level_checks_go_to_last_turn() -> None:
-    case = evaluate.parse_case(
-        {
-            "id": "x",
-            "turns": ["а", "б"],
-            "checks": [{"include": ["1"]}, None],
-            "must_mention_conditions": ["85"],
-        }
-    )
-    assert case.checks == [
-        evaluate.Check(include=["1"]),
-        evaluate.Check(must_mention_conditions=["85"]),
-    ]
-    with pytest.raises(ValueError, match="checks"):
-        evaluate.parse_case({"id": "y", "turns": ["а", "б"], "checks": [None]})
+    assert (case.tools, case.spec) == (["find_profiles"], Spec())
     with pytest.raises(ValueError, match="неизвестные"):
         evaluate.parse_case({"id": "z", "question": "?", "includes": ["опечатка"]})
-
-
-def test_judge() -> None:
-    check = evaluate.Check(tools=["find_profiles"], include=["нто"], exclude=["выдумка"])
-    assert evaluate.judge(check, "Попробуй НТО", ["find_profiles"], None) == []
-    assert evaluate.judge(check, "Попробуй НТО", [], None)
-    assert evaluate.judge(check, "Ничего", ["find_profiles"], None)
-    assert evaluate.judge(check, "НТО и выдумка", ["find_profiles"], None)
-    assert evaluate.judge(check, "НТО", ["find_profiles"], "unavailable")
-    both = evaluate.Check(include_all=["НТО", "Юниор"])
-    assert evaluate.judge(both, "НТО и «Юниор»", [], None) == []
-    assert evaluate.judge(both, "Только НТО", [], None)
-    conditions = evaluate.Check(must_mention_conditions=["85", "победител"], max_tools=1)
-    assert evaluate.judge(conditions, "Только победителям, ЕГЭ от 85", ["a"], None) == []
-    assert evaluate.judge(conditions, "Победителям, ЕГЭ от 85", ["a", "b"], None)
-    assert evaluate.judge(conditions, "Победителям и призёрам", [], None) == [
-        "не названо условие «85»"
-    ]
+    with pytest.raises(ValueError, match="неизвестные поля ожиданий"):
+        evaluate.parse_case({"id": "z", "question": "?", "expect": {"include": ["слово"]}})
+    with pytest.raises(ValueError, match="data"):
+        evaluate.parse_case({"id": "z", "question": "?", "expect": {"data": "maybe"}})
+    with pytest.raises(ValueError, match="turns"):
+        evaluate.parse_case({"id": "z", "turns": ["а", ""]})
 
 
 async def test_eval_runs_on_fake_provider(built_database_url: str) -> None:
@@ -711,7 +706,10 @@ async def test_eval_runs_on_fake_provider(built_database_url: str) -> None:
     fake = FakeProvider(
         [[tool("find_profiles", {"keywords": ["робот"]})], [TextDelta("Попробуй НТО")]]
     )
-    case = evaluate.Case.single("x", "Люблю роботов", tools=["find_profiles"], include=["нто"])
+    case = evaluate.Case.single(
+        "x", "Люблю роботов", data="present", facts=[{"olympiads": ["НТО"]}]
+    )
+    case.tools = ["find_profiles"]
     async with app.state.session_factory() as session:
         vocab = await factcheck.load_vocabulary(session)
         outcome = await evaluate.run_case(case, fake, session, vocab)
@@ -953,3 +951,95 @@ async def test_verified_previous_answer_counts_as_facts() -> None:
     assert (
         len((await ask("В МФТИ точно дают БВИ.")).fake.requests) == 2
     )  # повтор: МФТИ не из данных
+
+
+# ---------------------------------------------------------------- строки базы и прогон оценки
+
+
+async def test_ledger_loads_rows_from_base(built_database_url: str) -> None:
+    app = create_app(Settings(_env_file=None, database_url=built_database_url))
+    async with app.state.session_factory() as session:
+        vocab = await factcheck.load_vocabulary(session)
+        (nto,) = vocab.entities("olympiad", "НТО")
+        ledger = Ledger(session)
+        answer = "НТО даёт БВИ в МФТИ."
+        assert not ledger.known(set(), {nto.id})
+        await ledger.ensure(answer, vocab)
+        await ledger.ensure(answer, vocab)  # повторно не грузит
+        assert ledger.known(set(), {nto.id})
+        rows = ledger.select(set(), {nto.id})
+        assert rows and {r.olympiad_id for r in rows} == {nto.id}
+        assert {r.kind for r in rows} >= {"БВИ"}
+        # у МФТИ в базе нет строк, привязанных к олимпиадам: пара «МФТИ × НТО» не в перечне
+        assert claims.check_claims(answer, vocab, ledger)[0].kind == "not_listed"
+    await app.state.engine.dispose()
+
+
+async def test_eval_runs_on_stub_and_writes_report(built_database_url: str) -> None:
+    app = create_app(Settings(_env_file=None, database_url=built_database_url))
+    cases = evaluate.select_cases(
+        evaluate.load_cases(*evaluate.DEFAULT_SETS), "hobby-robots,nodata-hogwarts,offtopic-essay"
+    )
+    assert len(cases) == 3
+    data = await evaluate.run(
+        cases, evaluate.StubProvider(), app.state.session_factory, provider_label="stub", echo=False
+    )
+    await app.state.engine.dispose()
+    assert (data["provider"], data["model"], data["prompt_version"]) == ("stub", "stub", "6")
+    assert data["date"] and data["data_version"]
+    stats = data["summary"]
+    assert stats["cases"] == 3 and stats["tokens_prompt"] and stats["answer_p50"] is not None
+    # подставная модель всегда отвечает «данных нет»: выдумок нет, а где данные есть — ошибка
+    assert stats["fabrication_final"] == 0.0 and stats["no_data_where_data_final"] == 1.0
+    by_id = {c["id"]: c for c in data["cases"]}
+    assert by_id["nodata-hogwarts"]["passed"]
+    assert not by_id["hobby-robots"]["passed"]
+    json.dumps(data, ensure_ascii=False)
+
+
+async def test_cases_are_built_from_the_base(built_database_url: str) -> None:
+    app = create_app(Settings(_env_file=None, database_url=built_database_url))
+    questions = [
+        {
+            "id": "robots",
+            "kind": "hobby",
+            "persona": "школьник",
+            "turns": ["Люблю роботов"],
+            "about": {"like": ["робот"]},
+        },
+        {
+            "id": "nto",
+            "kind": "olympiad_unis",
+            "turns": ["Где НТО даёт БВИ?"],
+            "about": {"olympiad": "НТО", "benefit": "БВИ"},
+        },
+        {
+            "id": "mfti",
+            "kind": "pair",
+            "turns": ["МФТИ и НТО?"],
+            "about": {"university": "МФТИ", "olympiad": "НТО", "data": "absent"},
+        },
+    ]
+    async with app.state.session_factory() as session:
+        built = await build_cases.build(session, questions)
+        with pytest.raises(ValueError, match="id"):
+            await build_cases.build(session, [questions[0], questions[0]])
+        with pytest.raises(ValueError, match="нет"):
+            await build_cases.build(
+                session,
+                [
+                    {
+                        "id": "x",
+                        "kind": "pair",
+                        "turns": ["?"],
+                        "about": {**questions[2]["about"], "data": "present"},
+                    }
+                ],
+            )
+    await app.state.engine.dispose()
+    robots, nto, mfti = (Spec.parse(case["expect"]) for case in built)
+    assert robots.data == "present" and "НТО" in robots.facts[0].olympiads
+    assert nto.facts[0].olympiads == ("НТО",) and nto.facts[0].min == 2
+    assert "МФТИ" in nto.forbidden[0].universities  # у МФТИ в базе нет строк НТО
+    assert mfti.data == "absent" and {f.benefit for f in mfti.forbidden} == {"БВИ", "100 баллов"}
+    assert built[1]["about"] == questions[1]["about"] and built[1]["expect"]["facts"][0]["db"]

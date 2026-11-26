@@ -251,12 +251,10 @@ def test_hedge_without_facts_is_allowed(vocab: Vocabulary) -> None:
 
 
 def test_younger_grades_claim_is_not_caught_by_words(vocab: Vocabulary) -> None:
-    """Выдумка из раздела 1 плана: «Юниор» для младших классов. Чисел в ней нет, поэтому
-    factcheck её не видит — её ловит exclude «младш» в наборе оценки."""
+    """Выдумка из раздела 1 плана: «Юниор» для младших классов. Чисел в ней нет, и названий не
+    из данных тоже: словами её не поймать (в наборе оценки нужен факт «9–11 класс» из карточки)."""
     facts = Facts.collect([PROFILES])
-    answer = "«Юниор» рассчитан как раз на младшие классы."
-    assert check(answer, facts, vocab) == []
-    assert evaluate.judge(evaluate.Check(exclude=["младш"]), answer, [], None)
+    assert check("«Юниор» рассчитан как раз на младшие классы.", facts, vocab) == []
 
 
 def test_sentences_keep_initials_together() -> None:
@@ -302,10 +300,9 @@ async def test_dialog_runs_turn_by_turn(vocab: Vocabulary, fake_tools: list[str]
         {
             "id": "pmi",
             "turns": ["Хочу в ВШЭ на ПМИ", "А какой балл ЕГЭ?"],
-            "checks": [
-                {"tools": ["olympiads_for_program"], "include": ["Высшая проба"]},
-                {"must_mention_conditions": ["85", "победител"], "max_tools": 0},
-            ],
+            "tools": ["olympiads_for_program"],
+            "max_tools": 0,
+            "expect": {"data": "present", "facts": [{"olympiads": ["«Высшая проба»"]}]},
         }
     )
     outcome = await evaluate.run_case(case, fake, None, vocab)
@@ -328,9 +325,14 @@ async def test_dialog_runs_turn_by_turn(vocab: Vocabulary, fake_tools: list[str]
     retry = fake.requests[-1]
     assert retry["tools"] == [] and "«обычно»" in retry["messages"][-1]["content"]
     assert second.answer == "Только победителям 11 класса, ЕГЭ от 85."
-    assert outcome.conditions_named is True
+    # метрика до фактчекера: сырой ответ модели с «обычно» виден отдельно от итогового
+    assert second.retried
+    assert second.raw_answer.endswith("обычно регистрация осенью.")
+    assert [v.kind for v in second.raw_violations] == ["hedge"]
+    assert second.violations == []
     assert outcome.violations == []
-    assert outcome.passed
+    # факт «Высшая проба» ожидался в последней реплике, а её ответ про неё не говорит
+    assert [r for r in outcome.reasons if r.startswith("реплика 2: нет факта")]
 
 
 async def test_dialog_catches_invented_fact_in_follow_up(
@@ -346,12 +348,7 @@ async def test_dialog_catches_invented_fact_in_follow_up(
         ]
     )
     case = evaluate.parse_case(
-        {
-            "id": "x",
-            "turns": ["Хочу в ВШЭ на ПМИ", "А какой балл ЕГЭ?"],
-            "max_tools": 0,
-            "must_mention_conditions": ["85"],
-        }
+        {"id": "x", "turns": ["Хочу в ВШЭ на ПМИ", "А какой балл ЕГЭ?"], "max_tools": 0}
     )
     outcome = await evaluate.run_case(case, fake, None, vocab)
     # выдумки не дошли до ученика: повтор тоже с ними, поэтому предложение вырезано
@@ -359,7 +356,8 @@ async def test_dialog_catches_invented_fact_in_follow_up(
     assert "«МГУ»" in fake.requests[-1]["messages"][-1]["content"]
     assert second.answer == f"Нужен ЕГЭ от 85.\n\n{CUT_NOTE}"
     assert outcome.violations == []
-    assert outcome.conditions_named is True
+    # а в сыром ответе выдумки были: до фактчекера «МГУ» и число не из данных
+    assert {(v.kind, v.fragment) for v in second.raw_violations} == {("entity", "МГУ")}
     assert any("вызовов инструментов 1 > 0" in reason for reason in outcome.reasons)
 
 
@@ -375,22 +373,27 @@ async def test_dialog_stops_after_error(vocab: Vocabulary) -> None:
 async def test_report_summary_and_compare(vocab: Vocabulary, fake_tools: list[str]) -> None:
     fake = FakeProvider([[TextDelta("Привет! Чем увлекаешься?")], [TextDelta("Нет данных.")]])
     cases = [
-        evaluate.Case.single("a", "Привет", include=["?"]),
-        evaluate.Case.single("b", "Что такое X?", include=["есть"]),
+        evaluate.Case.single("a", "Привет", clarify=True),
+        evaluate.Case.single("b", "Что такое X?", data="absent"),
     ]
     outcomes = [await evaluate.run_case(case, fake, None, vocab) for case in cases]
-    data = evaluate.report(outcomes, "fake")
+    data = evaluate.report(outcomes, "fake", provider="тест", cases_file="x.jsonl")
     summary = data["summary"]
-    assert (summary["cases"], summary["passed"], summary["no_fabrication_share"]) == (2, 1, 1.0)
-    assert summary["conditions_share"] is None and summary["dialogs_passed_share"] is None
-    assert summary["first_delta_p50"] is not None and summary["rounds_mean"] == 1
+    assert (summary["cases"], summary["passed"]) == (2, 2)
+    assert summary["error_share_raw"] == summary["error_share_final"] == 0
+    assert summary["fabrication_raw"] == summary["fabrication_final"] == 0
+    assert summary["dialogs_passed_share"] is None and summary["rounds_mean"] == 1
+    assert summary["first_delta_p50"] is not None
+    assert (data["provider"], data["model"], data["prompt_version"]) == ("тест", "fake", "6")
+    assert data["date"] and data["gate"]["who_type_errors"]
     json.dumps(data, ensure_ascii=False)  # отчёт сохраняется в JSON
 
     better = json.loads(json.dumps(data))
     better["summary"]["passed_share"] = 1.0
     better["cases"][1]["passed"] = True
-    lines = evaluate.compare(data, better)
-    assert "  пройдено: 0.50 → 1.00 (+0.50)" in lines
+    worse = json.loads(json.dumps(data))
+    worse["cases"][1]["passed"] = False
+    lines = evaluate.compare(worse, better)
     assert "  b: стал проходить" in lines
 
 

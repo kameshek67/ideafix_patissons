@@ -37,7 +37,19 @@ class ToolCalls:
     calls: tuple[ToolCall, ...]
 
 
-LLMEvent = TextDelta | ToolCalls
+@dataclass(frozen=True)
+class Usage:
+    """Расход токенов обращения, если провайдер его отдаёт (последний кусок потока).
+
+    cost — цена обращения, если провайдер считает её сам (OpenRouter: usage.cost).
+    """
+
+    prompt_tokens: int
+    completion_tokens: int
+    cost: float | None = None
+
+
+LLMEvent = TextDelta | ToolCalls | Usage
 
 
 class LLMError(Exception):
@@ -70,6 +82,7 @@ class OpenAICompatibleProvider:
         temperature: float | None = None,
         top_p: float | None = None,
         deny_data_collection: bool = True,
+        include_usage: bool = False,
         transport: httpx.AsyncBaseTransport | None = None,
     ) -> None:
         self.url = base_url.rstrip("/") + "/chat/completions"
@@ -82,6 +95,9 @@ class OpenAICompatibleProvider:
         self.top_p = top_p
         # параметр есть только у OpenRouter, другие серверы могут отвергнуть лишнее поле
         self.deny_data_collection = deny_data_collection and "openrouter.ai" in base_url
+        # просить у сервера расход токенов в потоке; оценка включает, чат — нет: не все серверы
+        # принимают поле stream_options
+        self.include_usage = include_usage
         self.transport = transport
 
     @property
@@ -123,6 +139,8 @@ class OpenAICompatibleProvider:
             body["top_p"] = self.top_p
         if tools:
             body["tools"] = tools
+        if self.include_usage:
+            body["stream_options"] = {"include_usage": True}
         if self.deny_data_collection:
             body["provider"] = {"data_collection": "deny"}
         return body
@@ -165,11 +183,24 @@ class OpenAICompatibleProvider:
             )
 
 
+def _usage(raw: Any) -> Usage | None:
+    if not isinstance(raw, dict):
+        return None
+    cost = raw.get("cost")
+    return Usage(
+        int(raw.get("prompt_tokens") or 0),
+        int(raw.get("completion_tokens") or 0),
+        float(cost) if isinstance(cost, int | float) and not isinstance(cost, bool) else None,
+    )
+
+
 def _events(chunk: dict[str, Any], pending: dict[int, dict[str, str]]) -> list[LLMEvent]:
     """Разбирает кусок потока; части вызовов инструментов копятся в pending по индексу."""
     if "error" in chunk:
         raise _Retryable("ошибка в потоке")
     events: list[LLMEvent] = []
+    if usage := _usage(chunk.get("usage")):
+        events.append(usage)
     for choice in chunk.get("choices") or []:
         delta = choice.get("delta") or {}
         if text := delta.get("content"):

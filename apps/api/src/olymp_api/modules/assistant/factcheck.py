@@ -26,7 +26,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from olymp_api.db import data_version, fetch_all
 
 EntityKind = Literal["university", "olympiad"]
-ViolationKind = Literal["entity", "number", "hedge"]
+ViolationKind = Literal[
+    "entity", "number", "hedge", "role", "benefit_type", "threshold", "not_listed"
+]
 
 
 @dataclass(frozen=True)
@@ -227,7 +229,8 @@ class Vocabulary:
                 self._keys.setdefault(entity, set()).add(key)
 
     def add_university(self, id_: int, name: str, short_name: str = "") -> None:
-        entity = Entity("university", id_, short_name or name)
+        # у длинных названий краткое обрезано «…»: подпись берём полную
+        entity = Entity("university", id_, name if short_name.endswith("…") else short_name or name)
         self.add(entity, name, short_name)
         self.add(entity, *university_names(name, short_name), full=False)
 
@@ -265,6 +268,11 @@ class Vocabulary:
                     continue
                 if not all(_token_match(term.tokens[j], words[i + j]) for j in range(n)):
                     continue
+                if any(
+                    _BREAK.search(text[found[i + j].end() : found[i + j + 1].start()])
+                    for j in range(n - 1)
+                ):
+                    continue  # название не бывает на стыке строк и предложений: «КФУ.\n- Олимпиада»
                 if strict and not self._allowed(term, text, found[i], found[i + n - 1]):
                     continue
                 if _after_namesake(words, i):
@@ -297,6 +305,11 @@ class Vocabulary:
             after = text[last.end() : last.end() + 2]
             return any(q in before for q in _QUOTES_OPEN) and any(q in after for q in _QUOTES_CLOSE)
         return True
+
+    def entities(self, kind: EntityKind, label: str) -> frozenset[Entity]:
+        """Сущности вида kind с такой подписью (короткое название из базы)."""
+        found = {e for group in self._terms.values() for e in group if e.kind == kind}
+        return frozenset(e for e in found if e.label == label)
 
     def known(self, facts: "Facts") -> set[Entity]:
         """Сущности, которые есть в фактах диалога."""
@@ -346,6 +359,7 @@ class VocabularyCache:
 
 # ---------------------------------------------------------------- факты
 
+_BREAK = re.compile(r"[\n!?;]")
 _ROMAN = {"I": 1, "II": 2, "III": 3}
 _DASH = r"[-–—−]"
 _ID_KEYS = re.compile(r"(^|_)id$")

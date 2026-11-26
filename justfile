@@ -65,9 +65,14 @@ max-check:
 max-link *ARGS:
     uv run python scripts/max_dev_link.py {{ARGS}}
 
-# оценить модель из OLYMP_LLM_* на наборе вопросов: --limit 5 --pause 10 (тратит лимит провайдера)
+# оценить модель на наборе вопросов: --provider имя (профиль из OLYMP_LLM_PROFILES) или stub без
+# LLM-API, --model, --limit 5 --pause 10, --out отчёт.json (тратит лимит провайдера)
 assistant-eval *ARGS:
     uv run python -m olymp_api.modules.assistant.evaluate {{ARGS}}
+
+# пересобрать ожидания набора из собранной базы: apps/api/tests/assistant_questions.jsonl -> assistant_cases.jsonl
+assistant-cases:
+    uv run python -m olymp_api.modules.assistant.build_cases
 
 # ИИ-черновики карточек олимпиад: just ai-cards sites | just ai-cards draft --top 50 (нужны база и OLYMP_LLM_*)
 ai-cards *ARGS:

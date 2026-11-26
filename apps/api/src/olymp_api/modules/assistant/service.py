@@ -17,7 +17,7 @@ import time
 import uuid
 from collections import Counter
 from collections.abc import AsyncIterator, Awaitable, Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 import structlog
@@ -25,9 +25,17 @@ from olymp_domain.pii import mask_personal_data
 
 from olymp_api.llm import LLMError, LLMProvider, TextDelta, ToolCalls
 
+from .claims import Ledger, check_claims
 from .context import DialogContext, advance, encode
 from .factcheck import Facts, Violation, Vocabulary, check, cut
-from .prompt import CONTEXT_NOTE, DIPLOMAS_NOTE, FIX_NOTE, PROMPT_VERSION, SYSTEM_PROMPT
+from .prompt import (
+    CONTEXT_NOTE,
+    DIPLOMAS_NOTE,
+    FIX_CLAIMS_NOTE,
+    FIX_NOTE,
+    PROMPT_VERSION,
+    SYSTEM_PROMPT,
+)
 from .schemas import ChatMessage
 from .tools import TOOLS, ToolContext, ToolResult, error, run_tool
 
@@ -61,6 +69,9 @@ NO_DATA_ANSWER = (
 )
 CUT_NOTE = "Остального в базе нет: проверь на официальном сайте олимпиады или в правилах приёма."
 MAX_FIX_ITEMS = 8
+# нарушения фактов диалога и нарушения по базе (claims): повтор получает разные подсказки
+FACT_KINDS = frozenset({"entity", "number", "hedge"})
+BASE_KINDS = frozenset({"role", "benefit_type", "threshold", "not_listed"})
 # оговорка — отдельным событием notice: не часть ответа и в историю модели не попадает
 DISCLAIMER = "Проверь условия в правилах приёма вуза: они меняются каждый год."
 SUGGESTIONS = [
@@ -103,6 +114,29 @@ class Review:
     facts: Facts
     vocab: Vocabulary
     retried: bool = False
+    ledger: Ledger | None = None  # строки условий базы для проверки «кому», типа и порога
+    trace: "Trace | None" = None
+
+
+@dataclass
+class Trace:
+    """Ответ модели до проверки: оценке нужны нарушения сырого ответа отдельно от итогового."""
+
+    raw_answer: str = ""
+    raw_problems: list[Violation] = field(default_factory=list)
+    retry_answer: str | None = None
+    retry_problems: list[Violation] = field(default_factory=list)
+    ledger: Ledger | None = None  # чтобы оценка проверила итоговый ответ тем же набором строк
+    facts: Facts | None = None
+
+
+async def problems_of(answer: str, checker: Review) -> list[Violation]:
+    """Нарушения ответа: факты диалога (factcheck) и утверждения по базе (claims)."""
+    found = check(answer, checker.facts, checker.vocab)
+    if checker.ledger is not None:
+        await checker.ledger.ensure(answer, checker.vocab)
+        found += check_claims(answer, checker.vocab, checker.ledger)
+    return found
 
 
 def collect_facts(
@@ -123,8 +157,16 @@ def collect_facts(
 
 
 def fix_request(problems: list[Violation]) -> str:
-    items = list(dict.fromkeys(f"«{p.fragment}»" for p in problems))[:MAX_FIX_ITEMS]
-    return FIX_NOTE.format(items=", ".join(items))
+    items = list(dict.fromkeys(f"«{p.fragment}»" for p in problems if p.kind in FACT_KINDS))
+    claims = list(
+        dict.fromkeys(f"«{p.fragment}» ({p.detail})" for p in problems if p.kind in BASE_KINDS)
+    )
+    note = FIX_NOTE.format(items=", ".join(items[:MAX_FIX_ITEMS])) if items else ""
+    if claims:
+        note += (" " if note else "") + FIX_CLAIMS_NOTE.format(
+            items="; ".join(claims[:MAX_FIX_ITEMS])
+        )
+    return note
 
 
 def log_problems(stage: str, problems: list[Violation]) -> None:
@@ -158,13 +200,17 @@ async def review(answer: str, checker: Review) -> str:
     """Проверка готового ответа до показа ученику (V2, V4): выдуманные вузы и олимпиады, числа
     не из данных, «обычно…» про олимпиаду. Нарушения — один повтор генерации; повтор тоже
     с нарушениями — предложения с ними вырезаются; вырезано всё — «в базе нет данных»."""
-    problems = check(answer, checker.facts, checker.vocab)
+    problems = await problems_of(answer, checker)
+    if checker.trace:
+        checker.trace.raw_answer, checker.trace.raw_problems = answer, problems
     if not problems:
         return answer
     log_problems("answer", problems)
     retry = await regenerate(checker, answer, problems)
     if retry:
-        again = check(retry, checker.facts, checker.vocab)
+        again = await problems_of(retry, checker)
+        if checker.trace:
+            checker.trace.retry_answer, checker.trace.retry_problems = retry, again
         if not again:
             return retry
         log_problems("retry", again)
@@ -237,11 +283,14 @@ async def conversation(
     key: bytes,
     dialog: DialogContext | None = None,
     vocab: Vocabulary | None = None,
+    trace: Trace | None = None,
+    ledger: Ledger | None = None,
 ) -> AsyncIterator[Event]:
     """События одного ответа: status, delta, notice, entities, sources, done или error.
 
     dialog — проверенный контекст прошлых ответов: его id сразу доступны инструментам, сводка
-    фактов идёт в системное сообщение. key подписывает новый контекст в событии done.
+    фактов идёт в системное сообщение. key подписывает новый контекст в событии done. trace —
+    для оценки: сюда попадает ответ модели до проверки и его нарушения.
     """
     if dialog:
         dialog.seed(ctx)
@@ -312,7 +361,12 @@ async def conversation(
         return
     yield "status", {"text": STATUS_CHECKING}
     facts = collect_facts(results, messages, dialog)
-    checker = Review(provider, history, spend, facts, vocab or Vocabulary())
+    ledger = ledger or Ledger(ctx.session)
+    checker = Review(
+        provider, history, spend, facts, vocab or Vocabulary(), ledger=ledger, trace=trace
+    )
+    if trace is not None:
+        trace.ledger, trace.facts = ledger, facts
     answer = (await review(answer, checker)).strip()
     for part in chunks(answer):
         yield "delta", {"text": part}

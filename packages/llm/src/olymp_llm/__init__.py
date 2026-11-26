@@ -8,6 +8,7 @@ from .gateway import (
     TextDelta,
     ToolCall,
     ToolCalls,
+    Usage,
     complete,
     provider_from_env,
 )
@@ -20,6 +21,7 @@ __all__ = [
     "TextDelta",
     "ToolCall",
     "ToolCalls",
+    "Usage",
     "complete",
     "provider_from_env",
 ]
