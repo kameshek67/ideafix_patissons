@@ -1,0 +1,159 @@
+{
+  "pred": "db",
+  "documents": [
+    {
+      "document": "hse-1120646356-holdout",
+      "university": "НИУ ВШЭ (Москва)",
+      "gold": 7,
+      "pred": 170,
+      "matched": 7,
+      "precision": 0.041176470588235294,
+      "recall": 1.0,
+      "fields": {
+        "winner_role": 1.0,
+        "levels": 1.0,
+        "grades": 1.0,
+        "ege_min": 1.0,
+        "ege_subjects": 1.0
+      },
+      "role_wrong": 0,
+      "quotes": null,
+      "gold_quotes": null,
+      "empty_rate": 0.3611764705882353,
+      "passes": false,
+      "note": "база: НИУ ВШЭ (Москва)"
+    },
+    {
+      "document": "itmo-rsosh-bvi-holdout",
+      "university": "Университет ИТМО",
+      "gold": 279,
+      "pred": 1221,
+      "matched": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "fields": {
+        "winner_role": null,
+        "levels": null,
+        "grades": null,
+        "ege_min": null,
+        "ege_subjects": null
+      },
+      "role_wrong": 0,
+      "quotes": null,
+      "gold_quotes": null,
+      "empty_rate": 0.6,
+      "passes": false,
+      "note": "база: Университет ИТМО"
+    },
+    {
+      "document": "kfu-prilozhenie3-holdout",
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "gold": 20,
+      "pred": 905,
+      "matched": 3,
+      "precision": 0.0033149171270718232,
+      "recall": 0.15,
+      "fields": {
+        "winner_role": 1.0,
+        "levels": 1.0,
+        "grades": 0.0,
+        "ege_min": 1.0,
+        "ege_subjects": 1.0
+      },
+      "role_wrong": 0,
+      "quotes": null,
+      "gold_quotes": null,
+      "empty_rate": 0.29392265193370165,
+      "passes": false,
+      "note": "база: Казанский (Приволжский) федеральный университет (КФУ)"
+    },
+    {
+      "document": "msu-olymp-benefits-holdout",
+      "university": "МГУ им. М.В. Ломоносова",
+      "gold": 21,
+      "pred": 18,
+      "matched": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "fields": {
+        "winner_role": null,
+        "levels": null,
+        "grades": null,
+        "ege_min": null,
+        "ege_subjects": null
+      },
+      "role_wrong": 0,
+      "quotes": null,
+      "gold_quotes": null,
+      "empty_rate": 0.5888888888888889,
+      "passes": false,
+      "note": "база: МГУ им. М.В. Ломоносова"
+    },
+    {
+      "document": "ranepa-olymp-bvi-holdout",
+      "university": "РАНХиГС (Президентская академия)",
+      "gold": 100,
+      "pred": 0,
+      "matched": 0,
+      "precision": null,
+      "recall": 0.0,
+      "fields": {
+        "winner_role": null,
+        "levels": null,
+        "grades": null,
+        "ege_min": null,
+        "ege_subjects": null
+      },
+      "role_wrong": 0,
+      "quotes": null,
+      "gold_quotes": null,
+      "empty_rate": null,
+      "passes": false,
+      "note": "база: РАНХиГС (Президентская академия)"
+    },
+    {
+      "document": "spbu-bac-spec-olymp-1-holdout",
+      "university": "СПбГУ",
+      "gold": 116,
+      "pred": 3,
+      "matched": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "fields": {
+        "winner_role": null,
+        "levels": null,
+        "grades": null,
+        "ege_min": null,
+        "ege_subjects": null
+      },
+      "role_wrong": 0,
+      "quotes": null,
+      "gold_quotes": null,
+      "empty_rate": 1.0,
+      "passes": false,
+      "note": "база: СПбГУ"
+    }
+  ],
+  "total": {
+    "document": "ИТОГО",
+    "university": "",
+    "gold": 543,
+    "pred": 2317,
+    "matched": 10,
+    "precision": 0.0043159257660768235,
+    "recall": 0.01841620626151013,
+    "fields": {
+      "winner_role": 1.0,
+      "levels": 1.0,
+      "grades": 0.7,
+      "ege_min": 1.0,
+      "ege_subjects": 1.0
+    },
+    "role_wrong": 0,
+    "quotes": null,
+    "gold_quotes": null,
+    "empty_rate": 0.46335779024600776,
+    "passes": false,
+    "note": ""
+  }
+}
