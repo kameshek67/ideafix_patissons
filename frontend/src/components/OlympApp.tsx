@@ -593,11 +593,40 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     if (tab === "olymp" && search.query) void runOlympiadSearch({ ...search, benefitType: type });
     else
       setProgramState((state) =>
-        state.kind === "data" ? { ...state, type, renderId: ++programRenders.current } : state,
+        state.kind === "data" ? { ...state, type } : state,
       );
   }
 
   // ---------------------------------------------------------------- разметка
+  // пока грузится новый результат, прежний остаётся на экране (приглушённый, с полоской сверху),
+  // а не заменяется скелетоном: экран не мигает
+  const lastProgram = useRef<ProgramState | null>(null);
+  if (programState.kind === "data") lastProgram.current = programState;
+  else if (programState.kind !== "loading") lastProgram.current = null;
+  const lastOlymp = useRef<OlympState | null>(null);
+  if (olympState.kind === "results" || olympState.kind === "university") lastOlymp.current = olympState;
+  else if (olympState.kind !== "loading") lastOlymp.current = null;
+
+  const renderProgram = (state: ProgramState) => {
+    switch (state.kind) {
+      case "start":
+        return <IlluState kind="uni" text={state.text} />;
+      case "loading":
+        return <Skeleton />;
+      case "error":
+        return <LoadError message={state.message} onRetry={state.retry} />;
+      case "data":
+        return (
+          <ProgramView
+            key={state.renderId}
+            data={state.data}
+            benefitType={state.type}
+            goToOlympiad={goToOlympiad}
+          />
+        );
+    }
+  };
+
   const programResult = (() => {
     if (initError && programState.kind === "start" && programState.text === UNI_START) {
       return (
@@ -610,37 +639,22 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
         />
       );
     }
-    switch (programState.kind) {
-      case "start":
-        return <IlluState kind="uni" text={programState.text} />;
-      case "loading":
-        return <Skeleton />;
-      case "error":
-        return <LoadError message={programState.message} onRetry={programState.retry} />;
-      case "data":
-        return (
-          <ProgramView
-            key={programState.renderId}
-            data={programState.data}
-            benefitType={programState.type}
-            goToOlympiad={goToOlympiad}
-          />
-        );
-    }
+    if (programState.kind === "loading" && lastProgram.current) return renderProgram(lastProgram.current);
+    return renderProgram(programState);
   })();
 
-  const olympResult = (() => {
-    switch (olympState.kind) {
+  const renderOlymp = (state: OlympState) => {
+    switch (state.kind) {
       case "start":
         return <IlluState kind="olymp" text={OLYMP_START} />;
       case "loading":
         return <Skeleton />;
       case "error":
-        return <LoadError message={olympState.message} onRetry={olympState.retry} />;
+        return <LoadError message={state.message} onRetry={state.retry} />;
       case "results":
         return (
           <OlympiadResults
-            data={olympState.data}
+            data={state.data}
             profileId={search.profileId}
             benefitType={search.benefitType}
             onProfile={(profileId) => void runOlympiadSearch({ ...search, profileId, benefitType })}
@@ -653,8 +667,8 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
       case "university":
         return (
           <UniversityBenefits
-            data={olympState.data}
-            university={olympState.university}
+            data={state.data}
+            university={state.university}
             profileId={search.profileId}
             benefitType={search.benefitType}
             totalUniversities={listData?.total_universities ?? 0}
@@ -663,7 +677,11 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
           />
         );
     }
-  })();
+  };
+
+  const olympResult = olympState.kind === "loading" && lastOlymp.current ? renderOlymp(lastOlymp.current) : renderOlymp(olympState);
+  const programBusy = programState.kind === "loading" && lastProgram.current !== null;
+  const olympBusy = olympState.kind === "loading" && lastOlymp.current !== null;
 
   return (
     <>
@@ -781,7 +799,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
             />
           </div>
 
-          <div id="program-result" className="space-y-3">
+          <div id="program-result" className="busy-line space-y-3" data-busy={programBusy || undefined} aria-busy={programBusy || undefined}>
             <TablesContext.Provider value={programTables}>{programResult}</TablesContext.Provider>
           </div>
           </div>
@@ -858,7 +876,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
             ) : null}
           </div>
 
-          <div id="olymp-result" className="space-y-3">
+          <div id="olymp-result" className="busy-line space-y-3" data-busy={olympBusy || undefined} aria-busy={olympBusy || undefined}>
             <TablesContext.Provider value={olympTables}>{olympResult}</TablesContext.Provider>
           </div>
         </section>

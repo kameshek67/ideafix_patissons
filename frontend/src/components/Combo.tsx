@@ -26,7 +26,7 @@ interface Props<T> {
 // idle — панель ещё ни разу не открывали: список пустой, как в прототипе
 type ListState<T> =
   | { kind: "idle" }
-  | { kind: "loading" }
+  | { kind: "loading"; previous: ComboItem<T>[] | null }
   | { kind: "error"; query: string }
   | { kind: "items"; items: ComboItem<T>[] };
 
@@ -52,7 +52,8 @@ export function Combo<T>({
 
   async function refresh(q: string) {
     const current = ++seq.current;
-    setList({ kind: "loading" });
+    // прежние подсказки остаются, пока ищем новые: список не схлопывается на каждой букве
+    setList((state) => ({ kind: "loading", previous: state.kind === "items" ? state.items : state.kind === "loading" ? state.previous : null }));
     try {
       const items = await onSearch(q);
       if (current === seq.current) setList({ kind: "items", items });
@@ -71,6 +72,8 @@ export function Combo<T>({
     if (open) return close();
     setOpen(true);
     setSearch("");
+    // при открытии старый список не показываем: он мог быть для другого вуза
+    setList({ kind: "idle" });
     void refresh("");
   }
 
@@ -86,6 +89,8 @@ export function Combo<T>({
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
   }, [close]);
+
+  const items = list.kind === "items" ? list.items : list.kind === "loading" ? (list.previous ?? []) : [];
 
   return (
     <div className="combo" id={id} ref={root}>
@@ -117,8 +122,8 @@ export function Combo<T>({
             timer.current = setTimeout(() => void refresh(q.trim()), 180);
           }}
         />
-        <div className="combo-list">
-          {list.kind === "idle" ? null : list.kind === "loading" ? (
+        <div className={list.kind === "loading" && list.previous ? "combo-list is-loading" : "combo-list"}>
+          {list.kind === "idle" ? null : list.kind === "loading" && !list.previous ? (
             <div className="suggest-empty">Загрузка…</div>
           ) : list.kind === "error" ? (
             <div className="suggest-empty" role="alert">
@@ -127,11 +132,12 @@ export function Combo<T>({
                 Повторить
               </button>
             </div>
-          ) : list.items.length ? (
-            list.items.map((item) => (
+          ) : items.length ? (
+            items.map((item) => (
               <button
                 key={item.key}
                 className="combo-item"
+                aria-busy={list.kind === "loading" || undefined}
                 onClick={() => {
                   close();
                   onPick(item);

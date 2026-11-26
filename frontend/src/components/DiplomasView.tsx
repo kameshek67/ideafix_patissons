@@ -112,6 +112,8 @@ export function DiplomasView(props: Props) {
     queryKey: ["achievements", specs, benefitType, scores, rules2027, university?.id],
     queryFn: () => getAchievements(specs, { ...typeQuery, university_id: university!.id }),
     enabled: specs.length > 0 && university !== null,
+    // смена фильтра или ЕГЭ: таблица того же вуза остаётся на месте, пока приходят новые строки
+    placeholderData: (prev, prevQuery) => (prevQuery?.queryKey.at(-1) === university?.id ? prev : undefined),
   });
 
   const data = specs.length ? matchQ.data : undefined;
@@ -137,38 +139,46 @@ export function DiplomasView(props: Props) {
         <LoadError message={matchQ.error.message} />
       ) : !data ? (
         <Skeleton />
-      ) : university ? (
-        <UniversityDetail
-          university={university}
-          data={detailQ.data}
-          error={detailQ.error?.message ?? null}
-          entries={entries}
-          law={data.results.find((r) => r.university.id === university.id)?.law ?? []}
-          total={data.results.length}
-          onBack={() => setUniversity(null)}
-          openProgram={props.openProgram}
-        />
       ) : (
-        <Results
-          data={data}
-          benefitType={benefitType}
-          readOnly={!!props.readOnly}
-          onUniversity={openUniversity}
-          share={
-            // ссылка открывается по действующим правилам — проект не отправляем
-            props.readOnly || rules2027 ? null : (
-              <ShareButton
-                id="diploma-share"
-                wide
-                prefetch={active}
-                label="Поделиться итогами"
-                request={{ kind: "diplomas", diplomas: specs, benefit_type: shareBenefitType(benefitType) }}
-                title="Мои дипломы"
-                text={diplomasShareText(data)}
-              />
-            )
-          }
-        />
+        <div
+          className="busy-line space-y-3"
+          data-busy={matchQ.isPlaceholderData || detailQ.isPlaceholderData || undefined}
+          aria-busy={matchQ.isPlaceholderData || detailQ.isPlaceholderData || undefined}
+        >
+          {university ? (
+            <UniversityDetail
+              university={university}
+              data={detailQ.data}
+              error={detailQ.error?.message ?? null}
+              entries={entries}
+              law={data.results.find((r) => r.university.id === university.id)?.law ?? []}
+              total={data.results.length}
+              onBack={() => setUniversity(null)}
+              openProgram={props.openProgram}
+            />
+          ) : (
+            <Results
+              data={data}
+              benefitType={benefitType}
+              readOnly={!!props.readOnly}
+              onUniversity={openUniversity}
+              share={
+                // ссылка открывается по действующим правилам — проект не отправляем
+                props.readOnly || rules2027 ? null : (
+                  <ShareButton
+                    id="diploma-share"
+                    wide
+                    prefetch={active}
+                    label="Поделиться итогами"
+                    request={{ kind: "diplomas", diplomas: specs, benefit_type: shareBenefitType(benefitType) }}
+                    title="Мои дипломы"
+                    text={diplomasShareText(data)}
+                  />
+                )
+              }
+            />
+          )}
+        </div>
       )}
     </>
   );

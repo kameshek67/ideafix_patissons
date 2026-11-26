@@ -129,4 +129,60 @@ describe("GoalView", () => {
     fireEvent.click(screen.getByRole("button", { name: /Убрать/ }));
     await waitFor(() => expect(screen.getByText(/до трёх направлений/)).toBeTruthy());
   });
+
+  it("добавили второе направление: прежний рейтинг остаётся под полоской загрузки, а не скелетоном", async () => {
+    let release: () => void = () => undefined;
+    let goalCalls = 0;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: Request | string) => {
+        const url = new URL(typeof input === "string" ? input : input.url, "http://localhost");
+        let body: unknown = {};
+        if (url.pathname.endsWith("/programs")) {
+          body = {
+            count: 2,
+            items: [programs[0], programs[1]].map((p) => ({
+              ...p,
+              university_id: 5,
+              profile_name: "",
+              note: "",
+              source_url: "",
+              source_sheet: "",
+              region: "Москва",
+              region_group: "Москва",
+              bvi: 1,
+              sto: 1,
+              table_rows: 2,
+            })),
+          };
+        } else if (url.pathname.endsWith("/goals/olympiads")) {
+          if (++goalCalls === 2) await new Promise<void>((resolve) => (release = resolve));
+          body = { programs: [programs[0]], items: [item({ bvi_programs: [1], hundred_programs: [] })] };
+        }
+        return new Response(JSON.stringify(body), { headers: { "content-type": "application/json" } });
+      }),
+    );
+    render(
+      <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+        <GoalView universities={[university as never]} goToOlympiad={vi.fn()} />
+      </QueryClientProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Вуз цели" }));
+    fireEvent.click(await screen.findByText("НИУ ВШЭ (Москва)", { selector: "span" }));
+    fireEvent.click(screen.getByRole("button", { name: "Направление цели" }));
+    fireEvent.click(await screen.findByText("Направление 1"));
+    await screen.findByText("«Высшая проба» — математика");
+
+    fireEvent.click(screen.getByRole("button", { name: "Направление цели" }));
+    fireEvent.click(await screen.findByText("Направление 2"));
+    const result = document.getElementById("goal-result")!;
+    await waitFor(() => expect(result.getAttribute("data-busy")).toBe("true"));
+    // пока считается новый рейтинг, прежний на месте и скелетона нет
+    expect(screen.getByText("«Высшая проба» — математика")).toBeTruthy();
+    expect(result.querySelector(".skeleton")).toBeNull();
+
+    release();
+    await waitFor(() => expect(result.getAttribute("data-busy")).toBeNull());
+    expect(screen.getByText("«Высшая проба» — математика")).toBeTruthy();
+  });
 });

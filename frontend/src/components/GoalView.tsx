@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   friendlyError,
@@ -123,6 +123,8 @@ export function GoalView({ universities, goToOlympiad }: Props) {
     queryFn: () => getGoalOlympiads(ids),
     enabled: ids.length > 0,
     staleTime: 60_000,
+    // добавил или убрал направление: прежний рейтинг остаётся, пока считается новый
+    placeholderData: keepPreviousData,
   });
 
   function universityItems(q: string): ComboItem<UniversityItem>[] {
@@ -217,7 +219,7 @@ export function GoalView({ universities, goToOlympiad }: Props) {
         </ul>
       ) : null}
 
-      <div id="goal-result" className="space-y-3">
+      <div id="goal-result" className="busy-line space-y-3" data-busy={goal.isPlaceholderData || undefined} aria-busy={goal.isPlaceholderData || undefined}>
         {!ids.length ? (
           <IlluState kind="uni" text={START} />
         ) : goal.isPending ? (
