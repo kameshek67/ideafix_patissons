@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode, useLayoutEffect, useRef } from "react";
-import { type OlympiadSearch, shareBenefitType, type UniversityInfo } from "@/lib/api";
+import { type OlympiadCard, type OlympiadSearch, shareBenefitType, type UniversityInfo } from "@/lib/api";
 import { conditionsLine } from "@/lib/conditions";
 import { codesOf, dash, fmt, place, plural } from "@/lib/format";
 import { levelChange } from "@/lib/rsosh";
@@ -68,6 +68,79 @@ function OlympiadHead({
   );
 }
 
+const MONTHS = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+
+/** «2026-11-08» -> «8 ноября 2026». */
+function checkedDate(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return y && m && d ? `${d} ${MONTHS[m - 1]} ${y}` : iso;
+}
+
+/** Короткая карточка олимпиады: что это, для кого, сайт, секции и откуда это известно. */
+function CardBlock({
+  card,
+  data,
+  profileId,
+  onPick,
+}: {
+  card: OlympiadCard;
+  data: OlympiadSearch;
+  profileId: number | null;
+  onPick: (id: number | null) => void;
+}) {
+  const shown = new Set(data.profiles.map((p) => p.id));
+  return (
+    <div className="card p-4" id="olympiad-card">
+      <h3 className="block-title">Об олимпиаде</h3>
+      <p className="mt-2 text-[13.5px] leading-snug">{card.summary}</p>
+      <dl className="mt-2 space-y-1 text-[13px]">
+        <div>
+          <dt className="inline meta-text">Для кого: </dt>
+          <dd className="inline">{card.grades}</dd>
+        </div>
+        {card.formats.length ? (
+          <div>
+            <dt className="inline meta-text">Формат: </dt>
+            <dd className="inline">{card.formats.join(", ")}</dd>
+          </div>
+        ) : null}
+      </dl>
+      {card.tracks.length ? (
+        <div className="mt-3">
+          <div className="text-[12.5px] meta-text mb-1.5">Секции и треки</div>
+          <div className="chip-group">
+            {card.tracks.map((t) =>
+              shown.has(t.profile_id) ? (
+                <button
+                  key={t.name}
+                  className={`chip ${profileId === t.profile_id ? "chip-on" : ""}`}
+                  title={`Профиль в таблицах вузов: ${t.profile}`}
+                  onClick={() => onPick(t.profile_id)}
+                >
+                  {t.name}
+                </button>
+              ) : (
+                <span key={t.name} className="badge badge-soft" title={`Профиль в таблицах вузов: ${t.profile}`}>
+                  {t.name}
+                </span>
+              ),
+            )}
+          </div>
+        </div>
+      ) : null}
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px]">
+        <a className="link-cell" href={card.site_url} target="_blank" rel="noopener">
+          Сайт олимпиады
+        </a>
+        <a className="link-cell" href={card.source_url} target="_blank" rel="noopener">
+          Источник
+        </a>
+        <span className="text-[12px] meta-text">{`проверено ${checkedDate(card.checked)}`}</span>
+      </div>
+    </div>
+  );
+}
+
 function ProfileChips({
   data,
   profileId,
@@ -105,6 +178,11 @@ function ProfileChips({
             onClick={() => onPick(p.id)}
           >
             {p.name.length > 44 ? p.name.slice(0, 43) + "…" : p.name}
+            {p.level_2026_27 ? (
+              <span className="chip-level" title="Уровень по перечню РСОШ на 2026/27">
+                {p.level_2026_27}
+              </span>
+            ) : null}
             <span className="chip-count">{fmt(p.mentions)}</span>
           </button>
         ))}
@@ -200,6 +278,7 @@ export function OlympiadResults({
         <span className="badge badge-soft">{`${fmt(data.total_universities)} ${vuzov(data.total_universities)}`}</span>
         <span className="badge badge-soft">{`${fmt(data.total_programs)} ${napravleniy(data.total_programs)}`}</span>
       </OlympiadHead>
+      {data.card ? <CardBlock card={data.card} data={data} profileId={profileId} onPick={onProfile} /> : null}
       <ProfileChips data={data} profileId={profileId} onPick={onProfile} />
       {onRegion ? <RegionChips regions={regions} region={region} onPick={onRegion} /> : null}
       {data.results.length ? (

@@ -4,6 +4,7 @@ import type { EgeScores } from "./ege";
 export type UniversityItem = Schemas["UniversityItem"];
 export type ProgramItem = Schemas["ProgramItem"];
 export type OlympiadHit = Schemas["OlympiadHit"];
+export type OlympiadCard = Schemas["OlympiadCard"];
 export type ProgramSearch = Schemas["ProgramSearch"];
 export type OlympiadSearch = Schemas["OlympiadSearch"];
 export type UniversityInfo = Schemas["UniversityInfo"];
@@ -52,7 +53,7 @@ export const getPrograms = (universityId: number, q: string) =>
     }),
   );
 
-export const getOlympiads = (query: { q?: string; limit?: number }) =>
+export const getOlympiads = (query: { q?: string; limit?: number; with_profile?: boolean }) =>
   unwrap(api.GET("/v1/olympiads", { params: { query } }));
 
 export const getByProgram = (programId: number) =>
@@ -66,6 +67,8 @@ export interface OlympiadQuery {
   university_id?: number;
   /** группа регионов: «Москва», «Санкт-Петербург», «Регионы» */
   region?: string;
+  /** summary — список вузов со счётчиками, без строк льгот (строки вуза грузятся с university_id) */
+  view?: "full" | "summary";
 }
 
 export const getByOlympiad = (query: OlympiadQuery) =>

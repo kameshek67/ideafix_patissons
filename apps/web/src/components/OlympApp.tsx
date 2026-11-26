@@ -86,6 +86,12 @@ interface SearchState {
   region: string;
 }
 
+/** «НТО — Искусственный интеллект»: олимпиада и найденный в запросе профиль. */
+function suggestTitle(o: OlympiadHit): string {
+  if (!o.profile_name) return o.short_name;
+  return `${o.short_name} — ${o.profile_name.charAt(0).toUpperCase()}${o.profile_name.slice(1)}`;
+}
+
 const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
 /** Параметры обратного поиска — как searchParams() в прототипе. */
@@ -96,6 +102,8 @@ function searchQuery(s: SearchState, extra: Partial<OlympiadQuery> = {}): Olympi
     ...(s.profileId ? { profile_id: s.profileId } : {}),
     ...(s.benefitType !== "Все" ? { benefit_type: s.benefitType } : {}),
     ...(s.region !== "Все" ? { region: s.region } : {}),
+    // список вузов — без строк льгот (для НТО это 7 МБ вместо 18 КБ); строки грузятся при раскрытии вуза
+    view: "summary",
     ...extra,
   };
 }
@@ -323,7 +331,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
       try {
         data = await queryClient.fetchQuery({
           queryKey: ["olympiads", "suggest", q],
-          queryFn: () => getOlympiads({ q, limit: 8 }),
+          queryFn: () => getOlympiads({ q, limit: 8, with_profile: true }),
           staleTime: 60_000,
         });
       } catch {
@@ -356,17 +364,23 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     resetOlympTables();
     setListData(data);
     setOlympState({ kind: "results", data });
+    // запрос «нто ии» без выбора подсказки: сервер сам нашёл олимпиаду и профиль — запоминаем их,
+    // чтобы чипы показали выбранный профиль, а «Все профили» не вернули его обратно
+    const found = data.matched_olympiads[0];
+    if (!state.olympiad && found) {
+      setSearch({ ...state, olympiad: { id: found.id, short_name: found.short_name }, profileId: data.profile_id });
+    }
   }
 
-  function goToOlympiad(id: number, name: string) {
+  function goToOlympiad(id: number, name: string, profileId: number | null = null, label = name) {
     setTab("olymp");
-    setInput(name);
+    setInput(label);
     hideSuggest();
     // регион — выбор ученика, а не олимпиады: при переходе к другой олимпиаде он сохраняется
     void runOlympiadSearch({
       query: name,
       olympiad: { id, short_name: name },
-      profileId: null,
+      profileId,
       benefitType,
       region: search.region,
     });
@@ -788,8 +802,14 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
             <div id="olymp-suggest" className={suggestOpen ? "suggest" : "suggest hidden"}>
               {suggestItems === null ? null : suggestItems.length ? (
                 suggestItems.map((o) => (
-                  <div key={o.id} className="suggest-item" onClick={() => goToOlympiad(o.id, o.short_name)}>
-                    <div className="font-medium text-[15px]">{o.short_name}</div>
+                  <div
+                    key={`${o.id}-${o.profile_id ?? ""}`}
+                    className="suggest-item"
+                    onClick={() =>
+                      goToOlympiad(o.id, o.short_name, o.profile_id, o.profile_name ? suggestTitle(o) : o.short_name)
+                    }
+                  >
+                    <div className="font-medium text-[15px]">{suggestTitle(o)}</div>
                     <div className="text-[12.5px] meta-text truncate">{o.canonical_name}</div>
                     <div className="mt-1.5 flex gap-1 flex-wrap">
                       <span className="badge badge-bvi">{`БВИ: ${fmt(o.bvi_count)}`}</span>
