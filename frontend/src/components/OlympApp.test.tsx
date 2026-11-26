@@ -58,6 +58,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  delete responses["/api/v1/assistant/config"];
   cleanup();
   vi.unstubAllGlobals();
 });
@@ -100,5 +101,29 @@ describe("OlympApp", () => {
     fireEvent.click(document.querySelector("#combo-university .combo-item")!);
     expect(screen.getByText("Теперь выбери направление: в НИУ ВШЭ (Москва) их 67 в базе")).toBeTruthy();
     expect(screen.getByLabelText("Направление").hasAttribute("disabled")).toBe(false);
+  });
+
+  it("помощник выключен: кнопка на месте, по нажатию — пояснение, чат не открывается", async () => {
+    responses["/api/v1/assistant/config"] = { enabled: false, suggestions: [] };
+    renderApp();
+    const fab = await screen.findByRole("button", { name: /Спросить ИИ/ });
+    await waitFor(() => expect(screen.getByText("Популярные:")).toBeTruthy());
+    fireEvent.click(fab);
+    expect(await screen.findByText("Помощник сейчас выключен на этом стенде.")).toBeTruthy();
+    expect(screen.getByText(/вкладка «Дипломы» работают без него/)).toBeTruthy();
+    expect(document.getElementById("assistant-sheet")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Понятно" }));
+    expect(screen.queryByText("Помощник сейчас выключен на этом стенде.")).toBeNull();
+    expect(screen.getByRole("button", { name: /Спросить ИИ/ })).toBeTruthy();
+  });
+
+  it("помощник включён: кнопка открывает чат", async () => {
+    responses["/api/v1/assistant/config"] = { enabled: true, suggestions: ["Какие олимпиады дают БВИ?"] };
+    renderApp();
+    const fab = await screen.findByRole("button", { name: /Спросить ИИ/ });
+    await waitFor(() => expect(document.getElementById("assistant-sheet")).not.toBeNull());
+    fireEvent.click(fab);
+    expect(document.getElementById("assistant-sheet")!.hasAttribute("hidden")).toBe(false);
+    expect(screen.queryByText("Помощник сейчас выключен на этом стенде.")).toBeNull();
   });
 });

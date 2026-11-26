@@ -30,6 +30,7 @@ import { type OnboardingMode, onboardingMode } from "@/lib/onboarding";
 import { parseStartParam, type StartIntent } from "@/lib/startParam";
 import { showToast } from "@/lib/toast";
 import { AboutModal } from "./AboutModal";
+import { AssistantOff } from "./AssistantOff";
 import { AssistantChat } from "./AssistantChat";
 import { Combo, type ComboItem } from "./Combo";
 import { TablesContext, useTablesStore } from "./DataTable";
@@ -477,7 +478,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   }
 
   // ---------------------------------------------------------------- помощник
-  // без настроек LLM ответ enabled: false или ошибка: кнопки нет, приложение работает как обычно
+  // без настроек LLM ответ enabled: false или ошибка: кнопка остаётся, но вместо чата открывается пояснение
   const assistantQ = useQuery({
     queryKey: ["assistant-config"],
     queryFn: getAssistantConfig,
@@ -486,6 +487,8 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
   });
   const assistant = assistantQ.data?.enabled ? assistantQ.data : null;
   const [chatOpen, setChatOpen] = useState(false);
+  const [offOpen, setOffOpen] = useState(false);
+  const offVisible = offOpen && !assistant;
   // ученик ушёл из чата к карточке: «Назад» вернёт его в диалог
   const [chatLeft, setChatLeft] = useState(false);
 
@@ -503,12 +506,15 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
     setChatOpen(true);
   }
 
+  const closeOff = useCallback(() => setOffOpen(false), []);
+
   // ---------------------------------------------------------------- кнопка «Назад»
   // срабатывает последний открытый шаг: окно, чат, вуз в выдаче, затем прошлая вкладка
   useMaxBackButton(trailSize ? backTab : null);
   useMaxBackButton(aboutOpen ? () => setAboutOpen(false) : null);
   useMaxBackButton(tab === "olymp" && olympState.kind === "university" ? backToList : null);
   useMaxBackButton(chatOpen ? () => setChatOpen(false) : chatLeft ? openChat : null);
+  useMaxBackButton(offVisible ? closeOff : null);
 
   // ---------------------------------------------------------------- запуск по ссылке
   // https://max.ru/<бот>?startapp=diplomas | olympiad-<id> | program-<id> | s_<token>
@@ -936,28 +942,32 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
         </p>
       </main>
 
-      {/* ПОМОЩНИК */}
-      {assistant ? (
-        <>
-          {!chatOpen && !sheet && !aboutOpen && !onboarding ? (
-            <button id="assistant-fab" className="btn-primary assistant-fab" type="button" onClick={openChat}>
-              <span aria-hidden="true">✦</span> Спросить ИИ
-              {chatLeft ? <span className="assistant-dot" aria-label="Есть диалог" /> : null}
-            </button>
-          ) : null}
-          <AssistantChat
-            open={chatOpen}
-            suggestions={assistant.suggestions}
-            diplomas={diplomas.entries.map((entry) => entry.spec)}
-            onClose={() => setChatOpen(false)}
-            onEntity={(entity) => {
-              setChatOpen(false);
-              setChatLeft(true);
-              navigate(entityIntent(entity));
-            }}
-          />
-        </>
+      {/* ПОМОЩНИК: кнопка видна всегда; выключен на стенде — по нажатию объяснение */}
+      {!chatOpen && !offVisible && !sheet && !aboutOpen && !onboarding ? (
+        <button
+          id="assistant-fab"
+          className="btn-primary assistant-fab"
+          type="button"
+          onClick={assistant ? openChat : () => setOffOpen(true)}
+        >
+          <span aria-hidden="true">✦</span> Спросить ИИ
+          {assistant && chatLeft ? <span className="assistant-dot" aria-label="Есть диалог" /> : null}
+        </button>
       ) : null}
+      {assistant ? (
+        <AssistantChat
+          open={chatOpen}
+          suggestions={assistant.suggestions}
+          diplomas={diplomas.entries.map((entry) => entry.spec)}
+          onClose={() => setChatOpen(false)}
+          onEntity={(entity) => {
+            setChatOpen(false);
+            setChatLeft(true);
+            navigate(entityIntent(entity));
+          }}
+        />
+      ) : null}
+      {offVisible ? <AssistantOff checking={assistantQ.isPending} onClose={closeOff} /> : null}
 
       {/* ОНБОРДИНГ — первый запуск */}
       {onboarding ? <Onboarding mode={onboarding} onFinish={finishOnboarding} /> : null}
