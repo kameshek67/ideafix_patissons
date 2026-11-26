@@ -173,19 +173,23 @@ def grades_allowed(grade: str, role: str = "") -> frozenset[int]:
     return frozenset(found)
 
 
-RE_SEASON = re.compile(r"(?<!\d)(20\d\d)\s*/\s*(\d{4}|\d{2})(?!\d)")
+RE_YEARS = re.compile(r"(?<!\d)(20\d\d)\s*([-–—/])\s*(\d{4}|\d{2})(?!\d)")
 RE_YEAR = re.compile(r"(?<!\d)20\d\d(?!\d)")
 
 
 def years_allowed(text: str) -> frozenset[int]:
     """Годы олимпиад, дипломы которых принимаются; пустое множество — по общему правилу.
 
-    «2023, 2024» — годы; «2024/25» и «2024/2025» — сезон, засчитываем год окончания.
+    «2023, 2024» — годы; «2024/25», «2024-25» и «2024/2025» — сезон, год окончания;
+    «2023–2026» — диапазон из двух четырёхзначных годов.
     """
     found: set[int] = set()
-    for start, end in RE_SEASON.findall(text):
-        found.add(int(end) if len(end) == 4 else int(start[:2] + end))
-    found.update(int(y) for y in RE_YEAR.findall(RE_SEASON.sub(" ", text)))
+    for start, sep, end in RE_YEARS.findall(text):
+        if sep == "/" or len(end) == 2:
+            found.add(int(end) if len(end) == 4 else int(start[:2] + end))
+        else:
+            found.update(range(int(start), int(end) + 1))
+    found.update(int(y) for y in RE_YEAR.findall(RE_YEARS.sub(" ", text)))
     return frozenset(found)
 
 
@@ -319,8 +323,10 @@ def match(
     if diploma.grade is not None and grades and diploma.grade not in grades:
         return Reject.GRADE
 
-    years = years_allowed(link.years) or frozenset(diploma_years(admission_year))
-    if diploma.year is not None and diploma.year not in years:
+    years = years_allowed(link.years)
+    if diploma.year is not None and (
+        diploma.year not in diploma_years(admission_year) or (years and diploma.year not in years)
+    ):
         return Reject.YEAR
     # вуз не написал «кому»: победителю подходит, призёру — проверить, не только ли победителям
     if not link.role.strip() and diploma.role is Role.PRIZE:

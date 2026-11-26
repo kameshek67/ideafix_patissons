@@ -134,6 +134,10 @@ def test_grades(grade: str, role: str, expected: set[int]) -> None:
         ("2025/2026", {2026}),
         ("2024/25, 2025/26", {2025, 2026}),
         ("2021/2022, 2022/2023", {2022, 2023}),
+        ("2023–2026", {2023, 2024, 2025, 2026}),
+        ("2024-25", {2025}),  # сезон 2024/25
+        ("2024-2025", {2024, 2025}),
+        ("2023–2026, 2027—2028", {2023, 2024, 2025, 2026, 2027, 2028}),
         ("2023", {2023}),
         ("", set()),
     ],
@@ -244,6 +248,21 @@ def test_match_role_grade_year() -> None:
     assert match(MATH, link(years="2024/25, 2025/26")) is Fit.EXACT
 
 
+@pytest.mark.parametrize(
+    ("years", "year", "admission_year", "expected"),
+    [
+        ("2022, 2023, 2024", 2023, 2027, Reject.YEAR),  # год назван, но диплом просрочен
+        ("2024, 2025, 2026", 2025, 2027, Fit.EXACT),
+        ("2024, 2025", 2026, 2027, Reject.YEAR),
+        ("2020/2021, 2021/2022", 2021, 2022, Fit.EXACT),
+    ],
+)
+def test_match_explicit_years_keep_window(
+    years: str, year: int, admission_year: int, expected: Fit | Reject
+) -> None:
+    assert match(replace(MATH, year=year), link(years=years), admission_year) is expected
+
+
 def test_match_unknown_grade_and_year_do_not_filter() -> None:
     unknown = Diploma(1, 10, profile_keys("математика"), Role.PRIZE, None, None)
     assert match(unknown, link(grade="11 класс", years="2023")) is Fit.EXACT
@@ -280,8 +299,8 @@ def test_match_empty_role_prize_needs_check() -> None:
 def test_old_diploma_expires_by_default() -> None:
     old = Diploma(1, 10, profile_keys("математика"), Role.WINNER, 11, 2021)
     assert match(old, link()) is Reject.YEAR
-    # вуз сам перечислил старые сезоны — значит, принимает
-    assert match(old, link(years="2020/2021, 2021/2022")) is Fit.EXACT
+    # явные годы вуза не продлевают срок действия диплома
+    assert match(old, link(years="2020/2021, 2021/2022")) is Reject.YEAR
 
 
 def test_better() -> None:

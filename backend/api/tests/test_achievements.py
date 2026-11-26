@@ -168,10 +168,11 @@ async def test_admission_year_sets_valid_diplomas(
     first = await match(client, spec(hse, "математика", "w.11.2024"))
     assert not first["diplomas"][0]["expired"] and first["totals"]["programs"] > 100
     stale = await match(client, spec(hse, "математика", "w.11.2023"))
-    # у вузов, которые сами назвали 2023 год, диплом всё же засчитывается — но их меньше
+    # даже у вузов, которые сами назвали 2023 год, срок действия диплома истёк
     assert (
         stale["diplomas"][0]["expired"]
-        and stale["totals"]["programs"] < first["totals"]["programs"]
+        and stale["totals"]["programs"] == 0
+        and stale["rejected"]["year"] > 0
     )
 
     # год поступления настраивается: для 2026 — олимпиады 2023–2026
