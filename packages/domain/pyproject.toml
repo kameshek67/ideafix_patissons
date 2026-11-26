@@ -3,7 +3,7 @@ name = "olymp-domain"
 version = "0.0.0"
 description = "Чистый код без БД и сети: нормализация текста, справочник олимпиад, разбор условий"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = ["pydantic>=2.7"]
 
 [build-system]
 requires = ["hatchling"]

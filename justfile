@@ -31,6 +31,10 @@ refresh-sources *ARGS:
 ai-verify *ARGS:
     uv run olymp-ai-verify {{ARGS}}
 
+# оценка извлечения льгот по эталону: just eval-extract --pred data/extracted | --pred db [--check-quotes --json out.json]
+eval-extract *ARGS:
+    uv run olymp-eval-extract {{ARGS}}
+
 # воркер фоновых задач (Dramatiq + RabbitMQ)
 worker:
     uv run dramatiq olymp_workers.tasks --processes 1 --threads 2

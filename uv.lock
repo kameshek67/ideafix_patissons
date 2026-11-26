@@ -1119,6 +1119,12 @@ requires-dist = [
 name = "olymp-domain"
 version = "0.0.0"
 source = { editable = "packages/domain" }
+dependencies = [
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pydantic", specifier = ">=2.7" }]
 
 [[package]]
 name = "olymp-llm"

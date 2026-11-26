@@ -24,6 +24,7 @@ olymp-validate = "olymp_workers.validate:main"
 olymp-max-bot = "olymp_workers.max_bot:main"
 olymp-ai-cards = "olymp_workers.ai_cards:main"
 olymp-ai-verify = "olymp_workers.ai.verify:main"
+olymp-eval-extract = "olymp_workers.eval_extract:main"
 
 [build-system]
 requires = ["hatchling"]

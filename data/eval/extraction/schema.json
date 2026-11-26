@@ -1,0 +1,260 @@
+{
+  "$defs": {
+    "Document": {
+      "additionalProperties": false,
+      "properties": {
+        "university": {
+          "description": "Вуз, как он назван в документе",
+          "minLength": 1,
+          "title": "University",
+          "type": "string"
+        },
+        "campaign": {
+          "description": "Год приёмной кампании, например 2027",
+          "maximum": 2040,
+          "minimum": 2020,
+          "title": "Campaign",
+          "type": "integer"
+        },
+        "url": {
+          "description": "Адрес документа",
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "sha256": {
+          "description": "SHA-256 файла документа, 64 шестнадцатеричных символа",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "title": {
+          "default": "",
+          "description": "Название документа",
+          "title": "Title",
+          "type": "string"
+        },
+        "pages": {
+          "description": "Номера размеченных страниц с единицы; у HTML-страницы — [1]. В эталоне обязательны: на остальных страницах предсказания не штрафуются",
+          "items": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Pages",
+          "type": "array"
+        }
+      },
+      "required": [
+        "university",
+        "campaign",
+        "url",
+        "sha256"
+      ],
+      "title": "Document",
+      "type": "object"
+    },
+    "Ege": {
+      "additionalProperties": false,
+      "properties": {
+        "subjects": {
+          "description": "Коды предметов ЕГЭ для подтверждения: rus, math, inf, phys, chem, bio, soc, hist, lit, foreign, geo",
+          "items": {
+            "type": "string"
+          },
+          "title": "Subjects",
+          "type": "array"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Минимальный балл ЕГЭ",
+          "title": "Min"
+        }
+      },
+      "title": "Ege",
+      "type": "object"
+    },
+    "Record": {
+      "additionalProperties": false,
+      "properties": {
+        "university": {
+          "minLength": 1,
+          "title": "University",
+          "type": "string"
+        },
+        "campaign": {
+          "maximum": 2040,
+          "minimum": 2020,
+          "title": "Campaign",
+          "type": "integer"
+        },
+        "program_code": {
+          "description": "Код направления, например 01.03.02",
+          "minLength": 1,
+          "title": "Program Code",
+          "type": "string"
+        },
+        "program_name": {
+          "default": "",
+          "description": "Название направления",
+          "title": "Program Name",
+          "type": "string"
+        },
+        "benefit_type": {
+          "description": "bvi — без вступительных; 100 — 100 баллов; extra_points — баллы за ИД",
+          "enum": [
+            "bvi",
+            "100",
+            "extra_points"
+          ],
+          "title": "Benefit Type",
+          "type": "string"
+        },
+        "olympiad": {
+          "description": "Название олимпиады, как в документе",
+          "minLength": 1,
+          "title": "Olympiad",
+          "type": "string"
+        },
+        "profile": {
+          "default": "",
+          "description": "Профиль олимпиады; пусто, если не указан",
+          "title": "Profile",
+          "type": "string"
+        },
+        "levels": {
+          "description": "Уровни олимпиады из перечня: 1, 2, 3; пусто — не указан",
+          "items": {
+            "maximum": 3,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Levels",
+          "type": "array"
+        },
+        "winner_role": {
+          "anyOf": [
+            {
+              "enum": [
+                "winner",
+                "prizewinner",
+                "both"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "winner — победители, prizewinner — призёры, both — и те и другие; null — в документе не сказано (пустое значение лучше догадки)",
+          "title": "Winner Role"
+        },
+        "grades": {
+          "description": "Классы диплома; пусто — не указаны",
+          "items": {
+            "maximum": 11,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Grades",
+          "type": "array"
+        },
+        "ege": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ege"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Подтверждение ЕГЭ; null — не требуется"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "note": {
+          "default": "",
+          "description": "Оговорки документа, которые не влезли в поля",
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "university",
+        "campaign",
+        "program_code",
+        "benefit_type",
+        "olympiad",
+        "source"
+      ],
+      "title": "Record",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "description": "Адрес документа (как в document.url)",
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "sha256": {
+          "description": "SHA-256 документа (как в document.sha256)",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "page": {
+          "description": "Страница документа с единицы",
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "quote": {
+          "description": "Дословная цитата со страницы, из которой видна запись (строка таблицы или абзац); пробелы, переносы и кавычки при проверке не важны",
+          "minLength": 1,
+          "title": "Quote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "sha256",
+        "page",
+        "quote"
+      ],
+      "title": "Source",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "document": {
+      "$ref": "#/$defs/Document"
+    },
+    "records": {
+      "items": {
+        "$ref": "#/$defs/Record"
+      },
+      "title": "Records",
+      "type": "array"
+    }
+  },
+  "required": [
+    "document",
+    "records"
+  ],
+  "title": "ExtractionFile",
+  "type": "object"
+}
