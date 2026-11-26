@@ -38,6 +38,10 @@ data-diff:
 refresh-sources *ARGS:
     {{uv}} olymp-refresh-sources {{ARGS}}
 
+# собрать официальные материалы олимпиад (положения, задания, расписания) с их сайтов
+materials:
+    {{uv}} olymp-materials
+
 # ИИ-сверка строк льгот с документами вузов: --sample 20, --university итмо, --dry-run
 ai-verify *ARGS:
     {{uv}} olymp-ai-verify {{ARGS}}

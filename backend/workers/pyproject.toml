@@ -20,6 +20,7 @@ dependencies = [
 olymp-ingest = "olymp_workers.ingest:main"
 olymp-extra-points = "olymp_workers.extra_points:main"
 olymp-refresh-sources = "olymp_workers.refresh_sources:main"
+olymp-materials = "olymp_workers.materials:main"
 olymp-rsosh = "olymp_workers.rsosh:main"
 olymp-validate = "olymp_workers.validate:main"
 olymp-snapshot = "olymp_workers.snapshot:main"
