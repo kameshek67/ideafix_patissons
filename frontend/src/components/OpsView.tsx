@@ -19,6 +19,8 @@ import {
   IN_WORK,
   jobErrorText,
   shortUrl,
+  GRADE_BADGE,
+  GRADE_LABEL,
   STATUS_BADGE,
   STATUS_LABEL,
   STEPS,
@@ -107,6 +109,20 @@ function StatusBadge({ status }: { status: string }) {
   return <span className={`badge ${STATUS_BADGE[status] ?? "badge-soft"}`}>{STATUS_LABEL[status] ?? status}</span>;
 }
 
+/** Оценка автопроверки: пусто, пока задачу не оценили. */
+function GradeBadge({ grade }: { grade: string }) {
+  if (!GRADE_LABEL[grade]) return null;
+  return (
+    <span className={`badge ${GRADE_BADGE[grade]}`} title="Оценка автопроверки">
+      {`Проверка: ${GRADE_LABEL[grade].toLowerCase()}`}
+    </span>
+  );
+}
+
+function UserMark() {
+  return <span className="badge badge-soft">от пользователя</span>;
+}
+
 // ------------------------------------------------------------------ карточка задачи
 
 function JobDetail({
@@ -138,6 +154,8 @@ function JobDetail({
   const changed = count(diff.changed);
   const examples = EXAMPLE_KINDS.flatMap((kind) => (diff.examples?.[kind] ?? []).map((ex) => ({ ...ex, kind }))).slice(0, 5);
   const failure = data?.error ?? job.error;
+  const grade = data?.grade ?? job.grade;
+  const reasons = data?.grade_reasons ?? job.grade_reasons;
 
   async function decide(kind: "accept" | "reject") {
     setBusy(true);
@@ -174,8 +192,20 @@ function JobDetail({
         <div className="ops-fade" key={detail.isPending ? "wait" : "ready"}>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <StatusBadge status={status} />
+            <GradeBadge grade={grade} />
+            {job.origin === "user" ? <UserMark /> : null}
             <span className="text-[12.5px] meta-text">{timeOf(data?.updated_at ?? job.updated_at)}</span>
           </div>
+          {reasons.length ? (
+            <ul className="mt-2 list-disc pl-5 text-[13px] leading-[18px]" aria-label="Что насторожило автопроверку">
+              {reasons.map((reason) => (
+                <li key={reason}>{reason}</li>
+              ))}
+            </ul>
+          ) : null}
+          {job.origin === "user" && job.comment ? (
+            <p className="mt-2 text-[13px] leading-[18px] meta-text break-words">{`Комментарий: ${job.comment}`}</p>
+          ) : null}
           <p className="mt-2 text-[13px] leading-[18px]">
             <a href={job.url} target="_blank" rel="noreferrer" className="link-cell break-all" title={job.url}>
               {shortUrl(job.url, 60)}
@@ -333,7 +363,12 @@ function JobDetail({
           </div>
         ) : (
           <div className="flex gap-2">
-            <button type="button" className="btn-primary flex-1" disabled={!data} onClick={() => setConfirm("accept")}>
+            <button
+              type="button"
+              className={grade === "green" ? "btn-primary ops-accept-ok flex-[2]" : "btn-primary flex-1"}
+              disabled={!data}
+              onClick={() => setConfirm("accept")}
+            >
               Принять
             </button>
             <button type="button" className="btn-secondary flex-1" disabled={!data} onClick={() => setConfirm("reject")}>
@@ -568,6 +603,12 @@ function JobRow({ job, selected, onSelect }: { job: OpsJob; selected: boolean; o
         <span className="ops-row-name">{job.university}</span>
         <StatusBadge status={job.status} />
       </span>
+      {job.grade || job.origin === "user" ? (
+        <span className="mt-1 flex flex-wrap items-center gap-1.5">
+          <GradeBadge grade={job.grade} />
+          {job.origin === "user" ? <UserMark /> : null}
+        </span>
+      ) : null}
       <span className="ops-row-url block" title={job.url}>
         {shortUrl(job.url)}
       </span>
@@ -606,7 +647,12 @@ function JobsList({
   onSelect: (id: number) => void;
 }) {
   const [filter, setFilter] = useState<StatusGroup | "all">("all");
-  const list = useMemo(() => jobs.data ?? [], [jobs.data]);
+  const [onlyUsers, setOnlyUsers] = useState(false);
+  const all = useMemo(() => jobs.data ?? [], [jobs.data]);
+  const usersCount = useMemo(() => all.filter((job) => job.origin === "user").length, [all]);
+  // «от пользователей» опустело — фильтр снимается сам, как и фильтр по статусу
+  const users = onlyUsers && usersCount > 0;
+  const list = useMemo(() => (users ? all.filter((job) => job.origin === "user") : all), [all, users]);
   const counts = useMemo(() => {
     const result: Record<StatusGroup, number> = { work: 0, review: 0, accepted: 0, rejected: 0, failed: 0 };
     for (const job of list) result[groupOf(job.status)] += 1;
@@ -653,6 +699,16 @@ function JobsList({
             >
               Все <span className="chip-count">{list.length}</span>
             </button>
+            {usersCount > 0 ? (
+              <button
+                type="button"
+                className={`chip ${users ? "chip-on" : ""}`}
+                aria-pressed={users}
+                onClick={() => setOnlyUsers((v) => !v)}
+              >
+                От пользователей <span className="chip-count">{usersCount}</span>
+              </button>
+            ) : null}
             {GROUPS.filter((g) => counts[g] > 0).map((g) => (
               <button
                 key={g}

@@ -669,6 +669,8 @@ html[data-max="android"] .table-toolbar .chip-ghost { display: none; }
 .ops-doc { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; }
 .ops-doc + .ops-doc { border-top: 1px solid #F6EEF9; }
 .ops-confirm { display: grid; gap: 10px; }
+.ops-panel-actions .ops-accept-ok { background: #17733F; box-shadow: 0 0 0 3px #C7EBD5; }
+.ops-panel-actions .ops-accept-ok:hover:not(:disabled) { background: #125C32; }
 .ops-confirm .btn-primary, .ops-confirm .btn-secondary, .ops-panel-actions .btn-primary, .ops-panel-actions .btn-secondary { height: 46px; }
 
 /* ---------- анимации сайта ----------

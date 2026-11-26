@@ -16,6 +16,10 @@ const job = {
   rebuild_needed: false,
   created_at: "2026-11-26T09:00:00+00:00",
   updated_at: "2026-11-26T10:30:00+00:00",
+  origin: "operator",
+  comment: "",
+  grade: "",
+  grade_reasons: [] as string[],
 };
 
 const detail = {
@@ -271,5 +275,50 @@ describe("страница оператора", () => {
     fireEvent.click(screen.getByRole("button", { name: "Назад" }));
     expect(screen.getByRole("button", { name: "Принять" })).toBeTruthy();
     expect(requestsTo("/api/v1/ops/jobs/12/reject", "POST").length).toBe(0);
+  });
+  it("оценка автопроверки и пометка «от пользователя» видны в списке и в карточке", async () => {
+    jobsList = [
+      {
+        ...job,
+        origin: "user",
+        comment: "новые правила",
+        grade: "yellow",
+        grade_reasons: ["записей мало: 3 (нужно от 10)"],
+      },
+      { ...job, id: 14, university: "МГУ", grade: "green" },
+    ];
+    jobDetail = { ...detail, ...(jobsList[0] as object) };
+    renderView();
+    expect(await screen.findByText("Проверка: жёлтая")).toBeTruthy();
+    expect(screen.getByText("Проверка: зелёная")).toBeTruthy();
+    expect(screen.getAllByText("от пользователя")).toHaveLength(1);
+
+    fireEvent.click(screen.getByText("НИУ «МЭИ»"));
+    const card = await screen.findByRole("region", { name: "Задача 12" });
+    expect(await within(card).findByText("записей мало: 3 (нужно от 10)")).toBeTruthy();
+    expect(within(card).getByText("от пользователя")).toBeTruthy();
+    expect(within(card).getByText("Комментарий: новые правила")).toBeTruthy();
+    // жёлтую принимают без выделения
+    expect(within(card).getByRole("button", { name: "Принять" }).className).not.toContain("ops-accept-ok");
+  });
+
+  it("у зелёной задачи кнопка «Принять» выделена", async () => {
+    jobsList = [{ ...job, grade: "green" }];
+    jobDetail = { ...detail, grade: "green" };
+    renderView();
+    fireEvent.click(await screen.findByText("НИУ «МЭИ»"));
+    const card = await screen.findByRole("region", { name: "Задача 12" });
+    expect(within(card).getByRole("button", { name: "Принять" }).className).toContain("ops-accept-ok");
+  });
+
+  it("фильтр «От пользователей» оставляет только присланное посетителями", async () => {
+    jobsList = [{ ...job, origin: "user" }, { ...job, id: 14, university: "МГУ" }];
+    renderView();
+    await screen.findByText("МГУ");
+    fireEvent.click(screen.getByRole("button", { name: /От пользователей/ }));
+    expect(screen.queryByText("МГУ")).toBeNull();
+    expect(screen.getAllByText("НИУ «МЭИ»").length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole("button", { name: /От пользователей/ }));
+    expect(screen.getByText("МГУ")).toBeTruthy();
   });
 });

@@ -14,6 +14,7 @@ import { ShareButton } from "./ShareButton";
 import { ReportError } from "./ReportError";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
 import { badgeClass, Clamp2, DerivedMark, DocumentMark, documentPage, EmptyState, NotInListBadge } from "./ui";
+import { SuggestButton } from "./SuggestDialog";
 
 const vuzov = (n: number) => plural(n, "вуз", "вуза", "вузов");
 const napravleniy = (n: number) => plural(n, "направление", "направления", "направлений");
@@ -255,6 +256,9 @@ export function OlympiadResults({
           title="Олимпиада не найдена"
           text="Проверь написание или выбери из подсказок: в базе олимпиады перечня РСОШ, ВсОШ и международные."
         />
+        <div className="flex justify-center">
+          <SuggestButton />
+        </div>
         {fallback.length ? (
           <div className="card p-4">
             <h3 className="block-title mb-2">Похожее по тексту условий</h3>

@@ -1,6 +1,7 @@
 "use client";
 
 import { IconCloseModal } from "./icons";
+import { SuggestButton } from "./SuggestDialog";
 
 interface Props {
   open: boolean;
@@ -94,6 +95,9 @@ export function AboutModal({ open, onClose, campaign }: Props) {
             <a id="about-quality" className="underline" href="/quality">
               Насколько можно верить данным
             </a>
+          </p>
+          <p className="mt-2 text-[13.5px] leading-[19px]">
+            Нет вуза или документа? <SuggestButton variant="link" />
           </p>
         </div>
       </div>

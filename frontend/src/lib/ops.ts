@@ -22,6 +22,19 @@ export const STATUS_BADGE: Record<string, string> = {
   failed: "badge-err",
 };
 
+/** Оценка автопроверки: подпись и цвет бейджа. */
+export const GRADE_LABEL: Record<string, string> = {
+  green: "Зелёная",
+  yellow: "Жёлтая",
+  red: "Красная",
+};
+
+export const GRADE_BADGE: Record<string, string> = {
+  green: "badge-ok",
+  yellow: "badge-warn",
+  red: "badge-err",
+};
+
 /** Шаги разбора: по ним рисуется индикатор у задач в работе. */
 export const STEPS = ["queued", "fetching", "extracting", "review"] as const;
 export const IN_WORK = new Set(["queued", "fetching", "extracting"]);

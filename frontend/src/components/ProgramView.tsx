@@ -9,6 +9,7 @@ import { DataTable, useTables } from "./DataTable";
 import { IconSummaryChevron } from "./icons";
 import { ShareButton } from "./ShareButton";
 import { badgeClass, Clamp2, DerivedMark, DocumentMark, documentPage, EmptyState, TYPE_STYLE } from "./ui";
+import { SuggestButton } from "./SuggestDialog";
 import { conditionsLine } from "@/lib/conditions";
 import { RowReport } from "./BenefitReport";
 import { ReportError } from "./ReportError";
@@ -184,6 +185,9 @@ export function ProgramView({ data, benefitType, goToOlympiad }: Props) {
             title="В базе нет таблицы для этого направления"
             text="Это не значит, что льготы нет: вуз описал правило общим текстом или не разложил его по таблице. Смотри общие правила ниже и документ приёмной комиссии."
           />
+          <div className="flex justify-center">
+            <SuggestButton university={university.name} />
+          </div>
           {university.docs_url ? (
             <a className="source-btn" href={university.docs_url} target="_blank" rel="noreferrer">
               <span className="source-btn-text">

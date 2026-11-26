@@ -25,6 +25,7 @@ import { EgeBlock } from "./EgeBlock";
 import { Rules2027 } from "./Rules2027";
 import { ShareButton } from "./ShareButton";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
+import { SuggestButton } from "./SuggestDialog";
 import type { DiplomaStorage, SyncState } from "./useMyDiplomas";
 import {
   badgeClass,
@@ -324,7 +325,8 @@ function NoTableNote({ items }: { items: AchievementsMatch["no_table"] }) {
           </button>
         </>
       ) : null}
-      {". Льготы там могут быть — смотри правила приёма на сайте вуза."}
+      {". Льготы там могут быть — смотри правила приёма на сайте вуза. "}
+      <SuggestButton variant="link" />
     </p>
   );
 }

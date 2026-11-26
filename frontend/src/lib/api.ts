@@ -140,6 +140,25 @@ export async function sendReport(body: ReportRequest, initData?: string | null):
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
 }
 
+export type SuggestionRequest = Schemas["SuggestionIn"];
+/** created — взяли в проверку, exists — такая ссылка уже есть, rejected — сервер объяснил, чем она не подошла. */
+export type SuggestionResult = { status: "created" | "exists" } | { status: "rejected"; reason: string };
+
+/** «Предложить вуз или документ». Из MAX передаём данные запуска: бот ответит, когда документ добавят. */
+export async function sendSuggestion(body: SuggestionRequest, initData?: string | null): Promise<SuggestionResult> {
+  const { data, error, response } = await api.POST("/v1/suggestions", {
+    body,
+    ...(initData ? { headers: maxHeaders(initData) } : {}),
+  });
+  if (response.ok && data) return data;
+  if (response.status === 422 || response.status === 429) {
+    const title = (error as { title?: unknown } | undefined)?.title;
+    const reason = typeof title === "string" && title ? title : "Ссылка не подошла";
+    return { status: "rejected", reason: response.status === 429 ? "Слишком много ссылок, попробуй позже" : reason };
+  }
+  throw new ApiError(response.status, response.statusText);
+}
+
 // дипломы пользователя MAX: API узнаёт его по подписанным данным запуска мини-приложения
 const maxHeaders = (initData: string) => ({ "X-Max-Init-Data": initData });
 
@@ -218,6 +237,12 @@ export interface OpsJobDetail {
   rebuild_needed: boolean;
   created_at: string;
   updated_at: string;
+  /** operator — поставил оператор, user — прислал посетитель сайта */
+  origin: "operator" | "user";
+  comment: string;
+  /** оценка автопроверки; пусто — ещё не оценена */
+  grade: "" | "green" | "yellow" | "red";
+  grade_reasons: string[];
   documents: Record<string, unknown>[];
   diff: Record<string, unknown>;
 }
