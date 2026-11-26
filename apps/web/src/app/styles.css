@@ -524,6 +524,9 @@ html[data-max="android"] .table-toolbar .chip-ghost { display: none; }
 /* «Нашли ошибку в данных?» под источниками */
 .report-link { margin-top: 6px; font-size: 12.5px; color: var(--brand-ink); text-decoration: underline; text-underline-offset: 2px; }
 .report-form { margin-top: 10px; }
+.row-report { margin-top: 2px; }
+.row-report .report-link { margin-top: 0; font-size: 11.5px; color: var(--muted); }
+.fixed-mark { font-size: 11.5px; color: #17733F; line-height: 1.3; }
 .report-form .btn-primary, .report-form .btn-secondary { height: 40px; padding: 0 16px; }
 
 /* статусы подтверждения баллами ЕГЭ */

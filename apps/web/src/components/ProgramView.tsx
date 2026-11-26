@@ -10,6 +10,7 @@ import { IconSummaryChevron } from "./icons";
 import { ShareButton } from "./ShareButton";
 import { badgeClass, Clamp2, DerivedMark, EmptyState, TYPE_STYLE } from "./ui";
 import { conditionsLine } from "@/lib/conditions";
+import { RowReport } from "./BenefitReport";
 import { ReportError } from "./ReportError";
 import { SourceBlock } from "./SourceBlock";
 
@@ -23,6 +24,8 @@ interface ProgramRow {
   confirm: string;
   min_ege: string;
   derived: boolean;
+  row_key: string;
+  fixed_at: string | null;
 }
 
 function programRows(group: BenefitGroup): ProgramRow[] {
@@ -36,6 +39,8 @@ function programRows(group: BenefitGroup): ProgramRow[] {
     confirm: dash(b.confirm_subject),
     min_ege: dash(b.min_ege),
     derived: b.derived,
+    row_key: b.row_key,
+    fixed_at: b.fixed_at,
   }));
 }
 
@@ -59,6 +64,7 @@ function programColumns(goToOlympiad: (id: number, name: string) => void): Colum
             // на телефоне колонки «Кому», «Класс» и «ЕГЭ» скрыты: условия — второй строкой
             <div className="mt-0.5 text-[11.5px] leading-snug meta-text sm:hidden">{conditionsLine(r)}</div>
           ) : null}
+          <RowReport row={r} />
         </>
       ),
     },

@@ -17,6 +17,7 @@ import { codesOf, dash, fmt, place, plural } from "@/lib/format";
 import { levelChange } from "@/lib/rsosh";
 import { diplomasShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
+import { RowReport } from "./BenefitReport";
 import { DataTable } from "./DataTable";
 import { IconChevronLeft, IconChevronRight, IconPlus, IconTrash } from "./icons";
 import { useMaxBackButton } from "./MaxProvider";
@@ -424,6 +425,8 @@ interface DetailRow {
   derived: boolean;
   /** подсказка «проверить»: профиль в правилах не указан или не указано, кому льгота */
   check: string | null;
+  row_key: string;
+  fixed_at: string | null;
 }
 
 function detailRows(rows: AchievementRow[], entries: DiplomaEntry[]): DetailRow[] {
@@ -455,6 +458,8 @@ function detailRows(rows: AchievementRow[], entries: DiplomaEntry[]): DetailRow[
       egeSubjects: ege_subjects ?? [],
       derived: b.derived,
       check: fit === "check" ? CHECK_HINT : fit === "role" ? ROLE_HINT : null,
+      row_key: b.row_key,
+      fixed_at: b.fixed_at,
     };
   });
 }
@@ -478,6 +483,7 @@ function detailColumns(openProgram: (id: number) => void, several: boolean): Col
           {conditionsLine(r) ? (
             <div className="mt-0.5 text-[11.5px] leading-snug meta-text sm:hidden">{conditionsLine(r)}</div>
           ) : null}
+          <RowReport row={r} />
         </>
       ),
     },

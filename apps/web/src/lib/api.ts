@@ -113,11 +113,17 @@ export async function sendAssistantFeedback(messageId: string, rating: 1 | -1): 
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
 }
 
-export type ReportRequest = Schemas["ProgramReportIn"] | Schemas["OlympiadReportIn"];
+export type BenefitReportRequest = Schemas["BenefitReportIn"];
+export type BenefitReportReason = BenefitReportRequest["reason"];
+export type ReportRequest = Schemas["ProgramReportIn"] | Schemas["OlympiadReportIn"] | BenefitReportRequest;
 
-/** «Нашли ошибку в данных». */
-export async function sendReport(body: ReportRequest): Promise<void> {
-  const { response } = await api.POST("/v1/reports", { body });
+/** «Нашли ошибку в данных» и «Не совпадает с документом» у строки льготы. Из MAX
+ *  передаём данные запуска: так бот ответит автору, когда оператор проверит. */
+export async function sendReport(body: ReportRequest, initData?: string | null): Promise<void> {
+  const { response } = await api.POST("/v1/reports", {
+    body,
+    ...(initData ? { headers: maxHeaders(initData) } : {}),
+  });
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
 }
 

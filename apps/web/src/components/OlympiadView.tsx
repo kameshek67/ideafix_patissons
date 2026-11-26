@@ -7,6 +7,7 @@ import { codesOf, dash, fmt, place, plural } from "@/lib/format";
 import { levelChange } from "@/lib/rsosh";
 import { olympiadShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
+import { RowReport } from "./BenefitReport";
 import { DataTable } from "./DataTable";
 import { IconChevronLeft, IconChevronRight } from "./icons";
 import { ShareButton } from "./ShareButton";
@@ -251,6 +252,8 @@ interface UniversityRow {
   grade: string;
   confirm: string;
   derived: boolean;
+  row_key: string;
+  fixed_at: string | null;
 }
 
 function universityRows(data: OlympiadSearch): UniversityRow[] {
@@ -275,6 +278,8 @@ function universityRows(data: OlympiadSearch): UniversityRow[] {
           grade: dash(b.grade),
           confirm: [b.confirm_subject, b.min_ege && `≥${b.min_ege}`].filter(Boolean).join(" ") || "—",
           derived: b.derived,
+          row_key: b.row_key,
+          fixed_at: b.fixed_at,
         });
       });
     }),
@@ -301,6 +306,7 @@ function universityColumns(openProgram: (id: number) => void): Column<University
           {conditionsLine(r) ? (
             <div className="mt-0.5 text-[11.5px] leading-snug meta-text sm:hidden">{conditionsLine(r)}</div>
           ) : null}
+          <RowReport row={r} />
         </>
       ),
     },
