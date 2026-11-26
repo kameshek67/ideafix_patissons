@@ -9,7 +9,7 @@ venv/
 # Node / Next.js
 node_modules/
 .next/
-apps/web/next-env.d.ts
+frontend/next-env.d.ts
 *.tsbuildinfo
 
 # локальные настройки

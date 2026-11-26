@@ -2,13 +2,14 @@
 FROM python:3.13-slim AS base
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
 RUN pip install uv==0.13.7
-WORKDIR /app
-COPY pyproject.toml uv.lock ./
-COPY packages/domain packages/domain
-COPY packages/db packages/db
-COPY packages/llm packages/llm
-COPY apps/api apps/api
-COPY apps/workers apps/workers
+# раскладка как в репозитории: пути до data/ считаются от файлов кода (backend/ рядом с data/)
+WORKDIR /app/backend
+COPY backend/pyproject.toml backend/uv.lock ./
+COPY backend/domain domain
+COPY backend/db db
+COPY backend/llm llm
+COPY backend/api api
+COPY backend/workers workers
 RUN uv sync --frozen --no-dev --package olymp-api --package olymp-workers
 
 FROM python:3.13-slim
@@ -16,7 +17,7 @@ RUN useradd -r -u 10001 olymp
 WORKDIR /app
 COPY --from=base /app /app
 # XLSX и кэш ссылок на документы подключаются томом в /app/data
-ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONUTF8=1 OLYMP_DATA_DIR=/app/data
+ENV PATH="/app/backend/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONUTF8=1 OLYMP_DATA_DIR=/app/data
 USER olymp
 EXPOSE 8000
 # первые 60 с проверяем каждые 2 с: сайт (depends_on: healthy) стартует сразу, как API готов,

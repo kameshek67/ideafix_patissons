@@ -6,9 +6,9 @@
 # данные и сгенерированные файлы — не показывать построчный diff в PR
 data/university_documents.json linguist-generated=true
 docs/openapi.json linguist-generated=true
-packages/api-client/schema.d.ts linguist-generated=true
-uv.lock linguist-generated=true
-package-lock.json linguist-generated=true -diff
+frontend/src/api/schema.d.ts linguist-generated=true
+backend/uv.lock linguist-generated=true
+frontend/package-lock.json linguist-generated=true -diff
 
 # бинарные
 *.xlsx binary

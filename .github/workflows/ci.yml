@@ -16,6 +16,9 @@ permissions:
 jobs:
   python:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     services:
       postgres:
         image: pgvector/pgvector:pg17
@@ -31,14 +34,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-        with: {enable-cache: true}
+        with: {enable-cache: true, cache-dependency-glob: backend/uv.lock}
+      # версия Python — из .python-version (uv читает файл сам)
       - run: uv sync --all-packages --locked
       - run: uv run ruff check .
       - run: uv run ruff format --check .
-      - run: uv run mypy packages apps
+      - run: uv run mypy api workers domain db llm
       - run: uv run lint-imports
       - name: миграции — одна голова, модели совпадают со схемой
-        working-directory: packages/db
+        working-directory: backend/db
         env: {OLYMP_DATABASE_URL: postgresql+psycopg://olymp:olymp@localhost:5432/olymp}
         run: |
           heads=$(uv run alembic heads | wc -l)
@@ -47,24 +51,33 @@ jobs:
           uv run alembic check
       # в тестах база собирается из настоящего XLSX и сверяется с итогами прототипа
       - run: uv run pytest -q
+      - name: выдача совпадает со снимком data/snapshot, проверка качества данных
+        env: {OLYMP_DATABASE_URL: "postgresql+psycopg://olymp:olymp@localhost:5432/olymp"}
+        run: |
+          uv run olymp-ingest
+          uv run olymp-snapshot --check
+          uv run olymp-validate
       - name: контракт API актуален
         run: |
-          uv run python -m olymp_api.openapi_cli > docs/openapi.json
-          git diff --exit-code docs/openapi.json
+          uv run python -m olymp_api.openapi_cli > ../docs/openapi.json
+          git diff --exit-code ../docs/openapi.json
 
   web:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: 22, cache: npm}
+        with: {node-version-file: .nvmrc, cache: npm, cache-dependency-path: frontend/package-lock.json}
       - run: npm ci
-      - run: npm run gen:api --workspace olymp-web
+      - run: npm run gen:api
       - name: клиент API актуален
-        run: git diff --exit-code packages/api-client/schema.d.ts
-      - run: npm run lint --workspace olymp-web
-      - run: npm test --workspace olymp-web
-      - run: npm run build --workspace olymp-web
+        run: git diff --exit-code src/api/schema.d.ts
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
 
   # образы собираются и API отвечает — иначе это выяснилось бы только при выкатке main
   docker:

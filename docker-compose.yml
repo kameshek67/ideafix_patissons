@@ -6,7 +6,7 @@
 # При первом старте сервис migrate применяет миграции и собирает базу из
 # data/Olimpiady_BVI_100ballov.xlsx (около минуты, видно в `docker compose logs -f migrate`).
 # База живёт в томе pgdata и переживает пересоздание контейнеров.
-# Для разработки (API и сайт с хоста) — infra/compose.yaml, см. README.
+# Для разработки (API и сайт с хоста): `just up` поднимает только postgres, redis и rabbitmq.
 #
 # Мини-приложение MAX: токен бота — в .env (OLYMP_MAX_BOT_TOKEN), сайту нужен HTTPS:
 #   docker compose --profile tunnel up --build -d   # временный адрес https://….trycloudflare.com
@@ -61,7 +61,7 @@ services:
   #   docker compose run --rm migrate olymp-ingest
   migrate:
     <<: *python
-    working_dir: /app/packages/db
+    working_dir: /app/backend/db
     command: ["sh", "-c", "alembic upgrade head && olymp-ingest --if-stale && olymp-extra-points"]
     environment:
       OLYMP_DATABASE_URL: postgresql+psycopg://olymp:olymp@postgres:5432/olymp

@@ -15,8 +15,6 @@
 *.log
 # в образы не входят: данные подключаются томом, остальное к приложению не относится
 data/
-design/
 docs/
 presentation/
-scripts/
 PostgreSQL/

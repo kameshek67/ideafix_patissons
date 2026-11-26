@@ -67,17 +67,19 @@ curl "http://localhost:8000/v1/search/by-program?program_id=130"
 
 ### Зависимости
 
-Полный список Python-библиотек с версиями — [requirements.txt](requirements.txt). В разработке
-зависимости ведёт `uv` (`pyproject.toml` + `uv.lock`); после их изменения `requirements.txt`
-обновляется командой `uv export --all-packages --no-hashes --no-emit-workspace -o requirements.txt`.
-Зависимости сайта — `package.json` и `package-lock.json`.
+Полный список Python-библиотек с версиями — [backend/requirements.txt](backend/requirements.txt). В разработке
+зависимости ведёт `uv` (`backend/pyproject.toml` + `backend/uv.lock`); после их изменения
+`requirements.txt` обновляется командой
+`cd backend && uv export --all-packages --no-hashes --no-emit-workspace -o requirements.txt`.
+Зависимости сайта — `frontend/package.json` и `frontend/package-lock.json`.
 
 ## Разработка
 
 Нужны `uv`, Node.js 22+, Docker и `just` (без `just` команды из `justfile` можно запускать напрямую).
 
 ```bash
-cp .env.example .env && uv sync --all-packages && npm install
+cp .env.example .env
+(cd backend && uv sync --all-packages) && (cd frontend && npm ci)
 just up && just seed      # PostgreSQL, Redis, RabbitMQ; миграции и сборка базы из XLSX
 just api                  # API на :8000, Swagger — /docs
 just web                  # сайт на :3000
@@ -88,7 +90,7 @@ just web                  # сайт на :3000
 | Все проверки, как в CI | `just check` (= `just lint` + `just test`) |
 | Проверка качества данных | `just validate` (`--check-links` — плюс ссылки по сети) |
 | Обновить ссылки на документы вузов | `just refresh-sources` |
-| После изменения эндпоинтов | `just openapi`: пересоздаёт `docs/openapi.json` и типы `packages/api-client` |
+| После изменения эндпоинтов | `just openapi`: пересоздаёт `docs/openapi.json` и типы `frontend/src/api` |
 | Новая миграция БД | `just migration "описание"` |
 | Весь стек в Docker (сайт :8080) | `just app` |
 
@@ -123,16 +125,15 @@ just web                  # сайт на :3000
 
 | Папка | Что |
 |---|---|
-| `apps/api` | FastAPI, модульный монолит: каталог, поиск, «Мои дипломы», «Поделиться», баллы, ИИ-помощник |
-| `apps/web` | Next.js: сайт и мини-приложение MAX |
-| `apps/workers` | сборка базы из XLSX, обход сайтов вузов, проверки данных, бот MAX, фоновые задачи |
-| `packages/domain` | чистая логика: нормализация названий, справочник олимпиад, условия дипломов |
-| `packages/db` | модели SQLAlchemy и миграции Alembic — единственное место схемы БД |
-| `packages/llm` | шлюз к языковым моделям для API и воркеров |
-| `packages/api-client` | типы API для сайта, генерируются из `docs/openapi.json` |
+| `backend/api` | FastAPI, модульный монолит: каталог, поиск, «Мои дипломы», «Поделиться», баллы, ИИ-помощник |
+| `backend/workers` | сборка базы из XLSX, обход сайтов вузов, проверки данных, бот MAX, фоновые задачи |
+| `backend/domain` | чистая логика: нормализация названий, справочник олимпиад, условия дипломов |
+| `backend/db` | модели SQLAlchemy и миграции Alembic — единственное место схемы БД |
+| `backend/llm` | шлюз к языковым моделям для API и воркеров |
+| `frontend` | Next.js: сайт и мини-приложение MAX; типы API — `src/api`, генерируются из `docs/openapi.json` |
 | `infra` | Dockerfile'ы, окружение разработки, скрипты стенда |
 | `data` | исходный XLSX, баллы за достижения, карточки олимпиад, ссылки на документы вузов |
-| `scripts`, `design`, `presentation` | утилиты, макеты, презентация |
+| `docs`, `presentation` | план, контракт API, макеты, презентация |
 
 Правила кода: Python 3.13 (ruff, mypy `--strict`), TypeScript strict; схема БД меняется только
 миграциями; контракт API — `docs/openapi.json`, он генерируется из FastAPI и руками не правится;
