@@ -1,0 +1,1662 @@
+{
+  "document": {
+    "university": "НИУ ВШЭ (Москва)",
+    "campaign": 2026,
+    "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+    "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+    "title": "Приложение 2. Особые права при приеме на обучение по программам бакалавриата НИУ ВШЭ (г. Москва) для поступающих в 2026 году",
+    "pages": [
+      1,
+      2
+    ]
+  },
+  "records": [
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников «Высшая проба»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Всероссийская олимпиада школьников «Высшая проба» | математика | математика | математика | 75 и более | Право на прием БВИ | математика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников «Высшая проба»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Всероссийская олимпиада школьников «Высшая проба» | математика | математика | математика | 75 и более | Право на прием БВИ | математика | Победителям и призерам | 10 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников «Высшая проба»",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Всероссийская олимпиада школьников «Высшая проба» | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Всероссийская олимпиада школьников «Высшая проба»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Всероссийская олимпиада школьников «Высшая проба» | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Всесибирская открытая олимпиада школьников",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Всесибирская открытая олимпиада школьников | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Всесибирская открытая олимпиада школьников",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Всесибирская открытая олимпиада школьников | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Всесибирская открытая олимпиада школьников",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Всесибирская открытая олимпиада школьников | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Вузовско-академическая олимпиада по информатике",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Вузовско-академическая олимпиада по информатике | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Городская открытая олимпиада школьников по физике",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Городская открытая олимпиада школьников по физике | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Инженерная олимпиада школьников",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Инженерная олимпиада школьников | физика | физика | физика | 75 и более | Право на прием БВИ | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Инженерная олимпиада школьников",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Инженерная олимпиада школьников | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Шаг в будущее»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Олимпиада школьников «Шаг в будущее» | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Интернет-олимпиада школьников по физике",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Интернет-олимпиада школьников по физике | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Международная олимпиада «Innopolis Open»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Международная олимпиада «Innopolis Open» | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Международная олимпиада «Innopolis Open»",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Международная олимпиада «Innopolis Open» | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Межрегиональная олимпиада школьников имени И.Я. Верченко",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Межрегиональная олимпиада школьников имени И.Я. Верченко | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Московская олимпиада школьников",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "математика математика математика 75 и более Право на прием БВИ математика 11 класс призерам Победителям и математика математика математика 75 и более Право на прием БВИ математика 10 класс призерам Московская олимпиада школьников"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Московская олимпиада школьников",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "математика математика математика 75 и более Право на прием БВИ математика 10 класс призерам Московская олимпиада школьников"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Московская олимпиада школьников",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "Московская олимпиада школьников Право на прием БВИ физика Победителям 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Московская олимпиада школьников",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "физика физика физика 75 и более Победителям и Право на 100 баллов физика 11 класс призерам"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Московская олимпиада школьников",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 1,
+        "quote": "информатика информатика информатика 75 и более Право на 100 баллов информатика Победителям 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Объединенная межвузовская олимпиада школьников",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Объединенная межвузовская олимпиада школьников | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "«Формула Единства»/«Третье тысячелетие»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "«Формула Единства»/«Третье тысячелетие» | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада Курчатов",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада Курчатов | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада Курчатов",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада Курчатов | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Олимпиада школьников «Ломоносов»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Ломоносов» | математика | математика | математика | 75 и более | Право на прием БВИ | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Ломоносов»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Ломоносов» | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Ломоносов»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Ломоносов» | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям и призерам | 10 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Ломоносов»",
+      "profile": "русский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "rus"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Ломоносов» | русский язык | русский язык | русский язык | 75 и более | Право на 100 баллов | русский язык | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Ломоносов»",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Ломоносов» | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Олимпиада школьников «Ломоносов»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Ломоносов» | физика | физика | физика | 75 и более | Право на прием БВИ | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Ломоносов»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Ломоносов» | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Олимпиада школьников «Покори Воробьевы горы!»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Покори Воробьевы горы!» | математика | математика | математика | 75 и более | Право на прием БВИ | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Покори Воробьевы горы!»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Покори Воробьевы горы!» | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Покори Воробьевы горы!»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Покори Воробьевы горы!» | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям и призерам | 10 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Олимпиада школьников «Покори Воробьевы горы!»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Покори Воробьевы горы!» | физика | физика | физика | 75 и более | Право на прием БВИ | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Покори Воробьевы горы!»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Покори Воробьевы горы!» | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Робофест»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Робофест» | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Физтех»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Физтех» | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Олимпиада школьников «Физтех»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Физтех» | физика | физика | физика | 75 и более | Право на прием БВИ | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников «Физтех»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников «Физтех» | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников по информатике и программированию",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников по информатике и программированию | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников по программированию «ТехноКубок»",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников по программированию «ТехноКубок» | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Олимпиада школьников Санкт-Петербургского государственного университета",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников Санкт- Петербургского государственного университета | математика | математика | математика | 75 и более | Право на прием БВИ | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников Санкт-Петербургского государственного университета",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников Санкт- Петербургского государственного университета | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников Санкт-Петербургского государственного университета",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников Санкт- Петербургского государственного университета | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям и призерам | 10 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников Санкт-Петербургского государственного университета",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников Санкт- Петербургского государственного университета | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников Санкт-Петербургского государственного университета",
+      "profile": "филология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "rus"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников Санкт- Петербургского государственного университета | филология | иностранный язык, литература, русский язык | русский язык | 75 и более | Право на 100 баллов | русский язык | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада школьников Санкт-Петербургского государственного университета",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада школьников Санкт- Петербургского государственного университета | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Олимпиада Юношеской математической школы",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Олимпиада Юношеской математической школы | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Открытая межвузовская олимпиада школьников Сибирского Федерального округа «Будущее Сибири»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Открытая межвузовская олимпиада школьников Сибирского Федерального округа «Будущее Сибири» | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Открытая олимпиада школьников",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Открытая олимпиада школьников | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Открытая олимпиада школьников по программированию",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Открытая олимпиада школьников по программированию | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Открытая олимпиада школьников по программированию «Когнитивные технологии»",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Открытая олимпиада школьников по программированию «Когнитивные технологии» | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Отраслевая физико-математическая олимпиада школьников «Росатом»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Отраслевая физико-математическая олимпиада школьников «Росатом» | физика | физика | физика | 75 и более | Право на прием БВИ | физика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Отраслевая физико-математическая олимпиада школьников «Росатом»",
+      "profile": "физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Отраслевая физико-математическая олимпиада школьников «Росатом» | физика | физика | физика | 75 и более | Право на 100 баллов | физика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Отраслевая физико-математическая олимпиада школьников «Росатом»",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Отраслевая физико-математическая олимпиада школьников «Росатом» | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Отраслевая физико-математическая олимпиада школьников «Росатом»",
+      "profile": "информатика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "inf"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Отраслевая физико-математическая олимпиада школьников «Росатом» | информатика | информатика | информатика | 75 и более | Право на 100 баллов | информатика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Санкт-Петербургская олимпиада школьников",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "winner",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Санкт-Петербургская олимпиада школьников | математика | математика | математика | 75 и более | Право на прием БВИ | математика | Победителям | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Санкт-Петербургская олимпиада школьников",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        11
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Санкт-Петербургская олимпиада школьников | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям и призерам | 11 класс"
+      },
+      "note": ""
+    },
+    {
+      "university": "НИУ ВШЭ (Москва)",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "100",
+      "olympiad": "Санкт-Петербургская олимпиада школьников",
+      "profile": "математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [
+        10
+      ],
+      "ege": {
+        "subjects": [
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://ba.hse.ru/mirror/pubs/share/1120646356",
+        "sha256": "187a60323ba0636fcfa60ac2805914cf5f8e3161683cb6a400c67f8e8f2ac204",
+        "page": 2,
+        "quote": "Санкт-Петербургская олимпиада школьников | математика | математика | математика | 75 и более | Право на 100 баллов | математика | Победителям и призерам | 10 класс"
+      },
+      "note": ""
+    }
+  ]
+}
