@@ -49,6 +49,10 @@ async def test_report_is_saved_with_screen_names(
 async def test_report_validation(client: httpx.AsyncClient) -> None:
     short = {"kind": "program", "program_id": 1, "message": "ой"}
     assert (await client.post("/v1/reports", json=short)).status_code == 422
+    blank = {"kind": "program", "program_id": 1, "message": "     "}
+    assert (await client.post("/v1/reports", json=blank)).status_code == 422
+    padded = {"kind": "olympiad", "olympiad_id": 999_999, "message": "   ой   "}
+    assert (await client.post("/v1/reports", json=padded)).status_code == 422
     missing = {"kind": "olympiad", "olympiad_id": 999_999, "message": "Ошибка в данных"}
     assert (await client.post("/v1/reports", json=missing)).status_code == 404
     other = {"kind": "diplomas", "message": json.dumps({"x": 1})}
@@ -131,11 +135,21 @@ async def test_benefit_report_validation(client: httpx.AsyncClient) -> None:
     post = lambda **extra: client.post(  # noqa: E731
         "/v1/reports", json={"kind": "benefit", "row_key": key, "reason": "other", **extra}
     )
-    assert (await post()).status_code == 201  # комментарий и ссылка необязательны
+    assert (
+        await post(reason="no_benefit")
+    ).status_code == 201  # комментарий и ссылка необязательны
+    assert (await post(message="Не совпадает с документом")).status_code == 201
+    assert (await post()).status_code == 422  # причина «другое» без пояснения
+    assert (await post(message="     ")).status_code == 422
     assert (await post(reason="что-то")).status_code == 422
-    assert (await post(link="javascript:alert(1)")).status_code == 422
+    assert (await post(message="Не совпадает", link="javascript:alert(1)")).status_code == 422
     assert (await post(message="x" * 1001)).status_code == 422
-    missing = {"kind": "benefit", "row_key": "нет-такой", "reason": "other"}
+    missing = {
+        "kind": "benefit",
+        "row_key": "нет-такой",
+        "reason": "other",
+        "message": "Нет такой строки",
+    }
     assert (await client.post("/v1/reports", json=missing)).status_code == 404
 
 

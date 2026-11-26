@@ -1,10 +1,17 @@
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import AfterValidator, BaseModel, Field, field_validator, model_validator
 
 from olymp_api.schemas import ResponseModel
 
-Message = Annotated[str, Field(min_length=5, max_length=1000)]
+
+def _has_text(value: str) -> str:
+    if len(value.strip()) < 5:
+        raise ValueError("сообщение короче 5 символов")
+    return value
+
+
+Message = Annotated[str, Field(min_length=5, max_length=1000), AfterValidator(_has_text)]
 
 # причины жалобы на строку льготы: что именно не совпало с документом
 BenefitReason = Literal[
@@ -52,6 +59,12 @@ class BenefitReportIn(BaseModel):
         if value and not value.lower().startswith(("http://", "https://")):
             raise ValueError("ссылка должна начинаться с http:// или https://")
         return value
+
+    @model_validator(mode="after")
+    def other_needs_message(self) -> Self:
+        if self.reason == "other" and len(self.message.strip()) < 5:
+            raise ValueError("для причины «другое» нужно пояснение от 5 символов")
+        return self
 
 
 ReportIn = Annotated[
