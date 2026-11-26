@@ -8,7 +8,7 @@ import type { Column } from "@/lib/table";
 import { DataTable, useTables } from "./DataTable";
 import { IconSummaryChevron } from "./icons";
 import { ShareButton } from "./ShareButton";
-import { badgeClass, Clamp2, DerivedMark, EmptyState, TYPE_STYLE } from "./ui";
+import { badgeClass, Clamp2, DerivedMark, DocumentMark, documentPage, EmptyState, TYPE_STYLE } from "./ui";
 import { conditionsLine } from "@/lib/conditions";
 import { RowReport } from "./BenefitReport";
 import { ReportError } from "./ReportError";
@@ -24,6 +24,8 @@ interface ProgramRow {
   confirm: string;
   min_ege: string;
   derived: boolean;
+  doc_page: number | null;
+  doc_quote: string;
   row_key: string;
   fixed_at: string | null;
 }
@@ -39,6 +41,8 @@ function programRows(group: BenefitGroup): ProgramRow[] {
     confirm: dash(b.confirm_subject),
     min_ege: dash(b.min_ege),
     derived: b.derived,
+    doc_page: documentPage(b),
+    doc_quote: b.source_quote,
     row_key: b.row_key,
     fixed_at: b.fixed_at,
   }));
@@ -60,6 +64,7 @@ function programColumns(goToOlympiad: (id: number, name: string) => void): Colum
             r.olympiad
           )}
           <DerivedMark derived={r.derived} />
+          <DocumentMark page={r.doc_page} quote={r.doc_quote} />
           {conditionsLine(r) ? (
             // на телефоне колонки «Кому», «Класс» и «ЕГЭ» скрыты: условия — второй строкой
             <div className="mt-0.5 text-[11.5px] leading-snug meta-text sm:hidden">{conditionsLine(r)}</div>

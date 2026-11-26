@@ -728,6 +728,13 @@ export interface components {
              * @default
              */
             row_key: string;
+            /** Source Page */
+            source_page: number | null;
+            /**
+             * Source Quote
+             * @default
+             */
+            source_quote: string;
             /** Source Sheet */
             source_sheet: string;
             /** Source Title */

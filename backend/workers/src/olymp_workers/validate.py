@@ -122,9 +122,11 @@ def validate(conn: psycopg.Connection, check_links: bool) -> Report:
     )
 
     # --- связи «льгота ↔ олимпиада» -------------------------------------
-    rows_total = one("SELECT COUNT(*) FROM benefits WHERE layer IN ('detailed','derived')")
+    rows_total = one(
+        "SELECT COUNT(*) FROM benefits WHERE layer IN ('detailed','derived','document')"
+    )
     rows_unlinked = one(
-        """SELECT COUNT(*) FROM benefits b WHERE b.layer IN ('detailed','derived')
+        """SELECT COUNT(*) FROM benefits b WHERE b.layer IN ('detailed','derived','document')
            AND NOT EXISTS (SELECT 1 FROM benefit_olympiads bo WHERE bo.benefit_id=b.id)"""
     )
     share = rows_unlinked / rows_total * 100 if rows_total else 0
@@ -137,7 +139,7 @@ def validate(conn: psycopg.Connection, check_links: bool) -> Report:
             for name, cnt in q(
                 """SELECT u.name, COUNT(*) FROM benefits b
                    JOIN programs p ON p.id=b.program_id JOIN universities u ON u.id=p.university_id
-                   WHERE b.layer IN ('detailed','derived')
+                   WHERE b.layer IN ('detailed','derived','document')
                      AND NOT EXISTS (SELECT 1 FROM benefit_olympiads bo WHERE bo.benefit_id=b.id)
                    GROUP BY u.id ORDER BY 2 DESC LIMIT 5"""
             )
@@ -154,7 +156,7 @@ def validate(conn: psycopg.Connection, check_links: bool) -> Report:
     dupes = one(f"""SELECT COALESCE(SUM(c - 1), 0) FROM (
                       SELECT COUNT(*) AS c FROM benefits b
                       JOIN benefit_olympiads bo ON bo.benefit_id = b.id
-                      WHERE b.layer IN ('detailed','derived')
+                      WHERE b.layer IN ('detailed','derived','document')
                       GROUP BY {DUP_KEY} HAVING COUNT(*) > 1) d""")
     r.check(
         dupes > 0,
@@ -166,7 +168,7 @@ def validate(conn: psycopg.Connection, check_links: bool) -> Report:
                 f"""SELECT u.name, SUM(d.c - 1) FROM (
                       SELECT b.program_id AS pid, COUNT(*) AS c FROM benefits b
                       JOIN benefit_olympiads bo ON bo.benefit_id = b.id
-                      WHERE b.layer IN ('detailed','derived')
+                      WHERE b.layer IN ('detailed','derived','document')
                       GROUP BY {DUP_KEY} HAVING COUNT(*) > 1) d
                     JOIN programs p ON p.id = d.pid JOIN universities u ON u.id = p.university_id
                     GROUP BY u.id ORDER BY 2 DESC LIMIT 5"""
@@ -214,7 +216,7 @@ def validate(conn: psycopg.Connection, check_links: bool) -> Report:
     empty_programs = q("""SELECT u.name, COUNT(*) FROM programs p
                           JOIN universities u ON u.id=p.university_id
                           WHERE NOT EXISTS (SELECT 1 FROM benefits b
-                                            WHERE b.program_id=p.id AND b.layer IN ('detailed','derived'))
+                                            WHERE b.program_id=p.id AND b.layer IN ('detailed','derived','document'))
                           GROUP BY u.id ORDER BY 2 DESC""")
     total_empty = sum(cnt for _, cnt in empty_programs)
     r.check(

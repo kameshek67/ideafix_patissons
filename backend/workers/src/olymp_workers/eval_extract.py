@@ -1,7 +1,7 @@
 """Оценка извлечения льгот из документов по эталону (docs/plan.md, «Метрики»).
 
     olymp-eval-extract --gold data/eval/extraction --pred data/extracted
-    olymp-eval-extract --gold data/eval/extraction --pred db          # базовая линия: старый XLSX
+    olymp-eval-extract --gold data/eval/extraction --pred db          # то, что сейчас в базе (XLSX и слой document)
     olymp-eval-extract --gold data/eval/extraction --pred data/extracted --check-quotes --json out.json
 
 Считается только то, что лежит на размеченных страницах документа (document.pages эталона)
@@ -360,7 +360,7 @@ JOIN programs p ON p.id = b.program_id
 JOIN universities u ON u.id = p.university_id
 JOIN benefit_olympiads bo ON bo.benefit_id = b.id
 JOIN olympiads o ON o.id = bo.olympiad_id
-WHERE b.layer IN ('detailed', 'derived') AND u.id = %s
+WHERE b.layer IN ('detailed', 'derived', 'document') AND u.id = %s
 ORDER BY b.id, bo.id
 """
 RE_IMENI = re.compile(r"\bимени\b", re.IGNORECASE)

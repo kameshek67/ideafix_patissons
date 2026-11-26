@@ -319,7 +319,7 @@ async def no_table_universities(session: AsyncSession) -> list[dict[str, Any]]:
         """SELECT u.id, u.name, u.short_name FROM universities u
            WHERE NOT EXISTS (
                SELECT 1 FROM programs p JOIN benefits b ON b.program_id = p.id
-               WHERE p.university_id = u.id AND b.layer IN ('detailed', 'derived'))
+               WHERE p.university_id = u.id AND b.layer IN ('detailed', 'derived', 'document'))
            ORDER BY u.name, u.id""",
     )
 
@@ -353,7 +353,7 @@ async def law_universities(
             """SELECT u.id FROM universities u
                WHERE EXISTS (
                        SELECT 1 FROM programs p JOIN benefits b ON b.program_id = p.id
-                       WHERE p.university_id = u.id AND b.layer IN ('detailed', 'derived'))
+                       WHERE p.university_id = u.id AND b.layer IN ('detailed', 'derived', 'document'))
                  AND NOT EXISTS (
                        SELECT 1 FROM programs p JOIN benefits b ON b.program_id = p.id
                        JOIN benefit_olympiads bo ON bo.benefit_id = b.id

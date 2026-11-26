@@ -13,7 +13,7 @@ import { IconChevronLeft, IconChevronRight } from "./icons";
 import { ShareButton } from "./ShareButton";
 import { ReportError } from "./ReportError";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
-import { badgeClass, Clamp2, DerivedMark, EmptyState, NotInListBadge } from "./ui";
+import { badgeClass, Clamp2, DerivedMark, DocumentMark, documentPage, EmptyState, NotInListBadge } from "./ui";
 
 const vuzov = (n: number) => plural(n, "вуз", "вуза", "вузов");
 const napravleniy = (n: number) => plural(n, "направление", "направления", "направлений");
@@ -331,6 +331,8 @@ interface UniversityRow {
   grade: string;
   confirm: string;
   derived: boolean;
+  doc_page: number | null;
+  doc_quote: string;
   row_key: string;
   fixed_at: string | null;
 }
@@ -357,6 +359,8 @@ function universityRows(data: OlympiadSearch): UniversityRow[] {
           grade: dash(b.grade),
           confirm: [b.confirm_subject, b.min_ege && `≥${b.min_ege}`].filter(Boolean).join(" ") || "—",
           derived: b.derived,
+          doc_page: documentPage(b),
+          doc_quote: b.source_quote,
           row_key: b.row_key,
           fixed_at: b.fixed_at,
         });
@@ -398,6 +402,7 @@ function universityColumns(openProgram: (id: number) => void): Column<University
         <>
           <span className={`badge ${badgeClass(r.type)}`}>{r.type}</span>
           <DerivedMark derived={r.derived} />
+          <DocumentMark page={r.doc_page} quote={r.doc_quote} />
         </>
       ),
     },

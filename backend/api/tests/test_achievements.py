@@ -286,8 +286,10 @@ async def test_international_team_gets_bvi(client: httpx.AsyncClient) -> None:
     data = await match(client, spec(ioi, None, "p.0.0"))
     assert data["totals"]["bvi"] > 5
     assert data["rejected"]["team"] == 0
+    # лист ВШЭ и перечень МГУ (слой документов)
     assert {r["university"]["short_name"] for r in data["results"] if not r["law"]} == {
-        "НИУ ВШЭ (Москва)"
+        "НИУ ВШЭ (Москва)",
+        "МГУ им. М.В. Ломоносова",
     }
     # IMO — отдельная олимпиада, а не «Формула Единства»
     imo = await form(client, "международная математическая олимпиада")

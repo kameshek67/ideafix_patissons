@@ -89,6 +89,9 @@ class Benefit(ResponseModel):
     source_title: str
     source_url: str
     source_sheet: str
+    # у строк слоя document: страница документа вуза (у xlsx — лист) и цитата из него
+    source_page: int | None = None
+    source_quote: str = ""
     # стабильный ключ строки: по нему приходит жалоба «не совпадает с документом»
     row_key: str = ""
     # когда по жалобе пользователя строку исправили; None — не исправляли

@@ -705,6 +705,22 @@
             "title": "Row Key",
             "type": "string"
           },
+          "source_page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Page"
+          },
+          "source_quote": {
+            "default": "",
+            "title": "Source Quote",
+            "type": "string"
+          },
           "source_sheet": {
             "title": "Source Sheet",
             "type": "string"
@@ -749,6 +765,8 @@
           "source_title",
           "source_url",
           "source_sheet",
+          "source_page",
+          "source_quote",
           "row_key",
           "fixed_at",
           "olympiads",

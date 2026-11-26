@@ -16,7 +16,7 @@ UNIVERSITY_COUNTERS = """COUNT(DISTINCT p.id) AS programs,
                          SUM(CASE WHEN b.benefit_type = 'БВИ' THEN 1 ELSE 0 END) AS bvi,
                          SUM(CASE WHEN b.benefit_type = '100 баллов' THEN 1 ELSE 0 END) AS sto,
                          COUNT(b.id) AS benefits,
-                         SUM(CASE WHEN b.layer IN ('detailed', 'derived') THEN 1 ELSE 0 END)
+                         SUM(CASE WHEN b.layer IN ('detailed', 'derived', 'document') THEN 1 ELSE 0 END)
                              AS table_rows"""
 
 
@@ -145,7 +145,7 @@ async def programs(
                    SUM(CASE WHEN b.benefit_type = 'БВИ' THEN 1 ELSE 0 END) AS bvi,
                    SUM(CASE WHEN b.benefit_type = '100 баллов' THEN 1 ELSE 0 END) AS sto,
                    COUNT(b.id) AS benefits,
-                   SUM(CASE WHEN b.layer IN ('detailed', 'derived') THEN 1 ELSE 0 END)
+                   SUM(CASE WHEN b.layer IN ('detailed', 'derived', 'document') THEN 1 ELSE 0 END)
                        AS table_rows
             FROM programs p
             JOIN universities u ON u.id = p.university_id

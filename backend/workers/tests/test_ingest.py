@@ -18,22 +18,27 @@ from olymp_workers.olympiad_cards import CARDS_FILE, load_olympiad_cards
 #    раскрываются в строки (+235: Горный, Иннополис, ЦУ, МГЮА, НГУ и др.), общее правило КФУ
 #    «олимпиады всех уровней — на направления по профилю» даёт ВсОШ по предметам ВИ (+206),
 #    льгота сборным из «ВШЭ международные» раскрыта по программам (+174), IMO, OWAO и IJSO больше
-#    не приклеиваются к «Формуле Единства», СПб астрономической и «Юниору» (олимпиад 173 -> 176).
+#    не приклеиваются к «Формуле Единства», СПб астрономической и «Юниору» (олимпиад 173 -> 176);
+#  - B12b: слой document — льготы из data/extracted поверх XLSX: +5657 строк (ВШЭ 116, ИТМО 49, КФУ 252,
+#    МАИ 1378, МЭИ 400, МГУ 259, РАНХиГС 3203), заменено 164 строки XLSX (ВШЭ 84, ИТМО 33, КФУ 47),
+#    +123 направления вузов, у которых не было направления с таким кодом (МАИ, МЭИ, МГУ, РАНХиГС, КФУ).
 EXPECTED = {
     "universities": "39",
-    "programs": "710",
-    "benefits": "53727",
-    "benefits_bvi": "30929",
-    "benefits_sto": "21994",
+    "programs": "833",
+    "benefits": "59220",
+    "benefits_bvi": "36305",
+    "benefits_sto": "22111",
     "benefits_raw": "859",
-    "benefits_rows": "53250",
-    "benefits_derived": "26729",
+    "benefits_rows": "58743",
+    "benefits_derived": "26678",
     "benefits_notes": "477",
     "olympiads": "176",
-    "profiles": "638",
-    "links": "63385",
-    "keywords": "123574",
+    "profiles": "658",
+    "links": "68878",
+    "keywords": "137963",
     "fts": "on",
+    "documents_added": "5657",
+    "documents_replaced": "164",
 }
 
 
@@ -151,17 +156,18 @@ def test_itmo_01_03_02_keeps_roles_and_short_named_olympiads(built_database_url:
                JOIN benefit_olympiads bo ON bo.benefit_id = b.id
                JOIN olympiads o ON o.id = bo.olympiad_id
                WHERE u.short_name = 'Университет ИТМО' AND p.code LIKE '%01.03.02%'
-                 AND b.layer IN ('detailed', 'derived')"""
+                 AND b.layer IN ('detailed', 'derived', 'document')"""
         ).fetchall()
-    got = {tuple(r) for r in rows}
+    # строки документа пишут профиль с заглавной буквы
+    got = {(o, p.lower(), role) for o, p, role in rows}
     assert ("«Высшая проба»", "информатика", "победители и призёры") in got
     assert ("«Высшая проба»", "математика", "победители и призёры") in got
     assert not any(r[0] == "«Высшая проба»" and r[2] == "победители" for r in got)
     assert ("МОШ", "информатика", "победители и призёры") in got
     assert ("ЮМШ", "математика", "победители и призёры") in got
-    assert ("«Покори Воробьёвы горы!»", "математика", "только победители") in got
+    assert ("«Покори Воробьёвы горы!»", "математика", "победители") in got
     assert ("НТО", "информатика", "победители") in got
-    assert ("«ТехноКубок»", "информатика", "только победители") in got
+    assert ("«ТехноКубок»", "информатика", "победители") in got
 
 
 def test_rebuild_only_when_data_or_parser_changed(built_database_url: str) -> None:
@@ -380,3 +386,72 @@ def test_ege_requirements_are_parsed(built_database_url: str) -> None:
     assert parsed / nonempty >= 0.95
     assert mismatched == 0
     assert math == (["inf", "math"], 75)
+
+
+def test_document_layer_rows_have_document_source(built_database_url: str) -> None:
+    """Строки слоя document: источник — документ вуза со страницей и цитатой."""
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        total = conn.execute("SELECT COUNT(*) FROM benefits WHERE layer = 'document'").fetchone()[0]
+        bad = conn.execute(
+            """SELECT COUNT(*) FROM benefits WHERE layer = 'document'
+               AND (source_url = '' OR source_title = '' OR source_page IS NULL OR source_quote = ''
+                    OR row_key = '' OR NOT EXISTS (SELECT 1 FROM benefit_olympiads bo
+                                                   WHERE bo.benefit_id = benefits.id))"""
+        ).fetchone()[0]
+        others = conn.execute(
+            "SELECT COUNT(*) FROM benefits WHERE layer <> 'document' AND source_page IS NOT NULL"
+        ).fetchone()[0]
+    assert total == 5657
+    assert (bad, others) == (0, 0)
+
+
+def test_universities_without_tables_get_document_tables(built_database_url: str) -> None:
+    """МАИ и МЭИ были почти пусты (два текстовых правила): теперь у них есть таблицы льгот,
+    а «Высшая проба» в МАИ находится и в таблице, и в поиске."""
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        rows = dict(
+            conn.execute(
+                """SELECT u.short_name, COUNT(*) FROM benefits b
+                   JOIN programs p ON p.id = b.program_id
+                   JOIN universities u ON u.id = p.university_id
+                   WHERE b.layer = 'document' GROUP BY u.short_name"""
+            ).fetchall()
+        )
+        proba = conn.execute(
+            """SELECT COUNT(*) FROM benefits b
+               JOIN programs p ON p.id = b.program_id
+               JOIN universities u ON u.id = p.university_id
+               JOIN benefit_olympiads bo ON bo.benefit_id = b.id
+               JOIN olympiads o ON o.id = bo.olympiad_id
+               WHERE b.layer = 'document' AND u.short_name = 'МАИ' AND o.short_name LIKE '%проба%'"""
+        ).fetchone()[0]
+        indexed = conn.execute(
+            """SELECT COUNT(*) FROM search_index s JOIN benefits b ON b.id = s.benefit_id
+               JOIN programs p ON p.id = b.program_id JOIN universities u ON u.id = p.university_id
+               WHERE b.layer = 'document' AND u.short_name = 'МАИ'
+                 AND s.document @@ to_tsquery('simple', 'проба:*')"""
+        ).fetchone()[0]
+    assert rows["МАИ"] == 1378 and rows["НИУ «МЭИ»"] == 400
+    assert proba > 0 and indexed > 0
+
+
+def test_document_row_replaces_xlsx_twin(built_database_url: str) -> None:
+    """Строка XLSX с тем же ключом (направление, олимпиада, профиль, тип) заменена документом."""
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        twins = conn.execute(
+            """SELECT COUNT(*) FROM benefits d
+               JOIN benefit_olympiads dbo ON dbo.benefit_id = d.id
+               JOIN benefits x ON x.program_id = d.program_id AND x.benefit_type = d.benefit_type
+                                  AND x.layer IN ('detailed', 'derived')
+               JOIN benefit_olympiads xbo ON xbo.benefit_id = x.id
+                                             AND xbo.olympiad_id = dbo.olympiad_id
+                                             AND xbo.profile = dbo.profile
+               WHERE d.layer = 'document'"""
+        ).fetchone()[0]
+    assert twins == 0
+
+
+def test_document_records_survive_rebuild() -> None:
+    from olymp_db.models import DATA_TABLES
+
+    assert "document_records" not in DATA_TABLES

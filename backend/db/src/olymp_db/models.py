@@ -41,7 +41,7 @@ NAMING = {
 }
 
 BENEFIT_TYPES = ("БВИ", "100 баллов", "Особое право (БВИ/100)", "Фаст-трек", "ИД (доп. баллы)")
-LAYERS = ("summary", "detailed", "derived", "raw")
+LAYERS = ("summary", "detailed", "derived", "raw", "document")
 
 CText = Text(collation="C")
 
@@ -145,6 +145,9 @@ class Benefit(Base):
     source_title: Mapped[str] = _text()
     source_url: Mapped[str] = _text()
     source_sheet: Mapped[str] = _text()
+    # у слоя document: страница документа (у xlsx — лист) и дословная цитата
+    source_page: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    source_quote: Mapped[str] = _text()
     # стабильный ключ строки (хэш смысловых полей), в отличие от id не зависит от порядка сборки
     row_key: Mapped[str] = _text()
 
@@ -527,6 +530,38 @@ class DataReport(Base):
         DateTime(timezone=True), nullable=True
     )
     user_notified_status: Mapped[str] = _text()
+
+
+DOCUMENT_ORIGINS = ("file", "operator")
+
+
+class DocumentRecord(Base):
+    """Принятая запись о льготе, извлечённая из документа вуза (формат olymp_domain.extraction).
+
+    Не таблица сборки: пересборка её не стирает. Документ — набор записей с одним url; приём
+    нового набора заменяет прежние записи этого url. Ссылок на таблицы сборки нет: вуз и
+    направление сопоставляются при сборке по названию и коду.
+    """
+
+    __tablename__ = "document_records"
+    __table_args__ = (
+        CheckConstraint(f"origin IN ({_in(DOCUMENT_ORIGINS)})", name="origin"),
+        Index(None, "document_url"),
+    )
+
+    id: Mapped[int] = _pk()
+    document_url: Mapped[str] = mapped_column(CText)
+    document_sha256: Mapped[str] = mapped_column(CText)
+    document_title: Mapped[str] = _text()
+    university: Mapped[str] = mapped_column(CText)
+    campaign: Mapped[int] = mapped_column(SmallInteger)
+    # запись целиком, как в файле извлечения (extraction.Record)
+    record: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    accepted_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    accepted_by: Mapped[str] = _text()
+    origin: Mapped[str] = _text("operator")
 
 
 # Таблицы с данными сборки: их очищает и заново наполняет olymp-ingest.

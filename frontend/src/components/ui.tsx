@@ -101,6 +101,23 @@ export function DerivedMark({ derived }: { derived: boolean }) {
   );
 }
 
+/** Строка взята из документа вуза: страница и цитата — в подсказке. */
+export function DocumentMark({ page, quote }: { page: number | null; quote: string }) {
+  if (page === null) return null;
+  return (
+    <>
+      {" "}
+      <span className="badge badge-soft" title={quote ? `Цитата из документа: ${quote}` : undefined}>
+        из документа вуза, стр. {page}
+      </span>
+    </>
+  );
+}
+
+/** Страница документа вуза у строки слоя document, иначе null. */
+export const documentPage = (b: { layer: string; source_page?: number | null }) =>
+  b.layer === "document" ? (b.source_page ?? 0) : null;
+
 /** Олимпиады нет в перечне РСОШ на 2026/27: диплом этого года льгот не даст. */
 export function NotInListBadge({ olympiad }: { olympiad: { in_rsosh_2026_27?: boolean | null } | null | undefined }) {
   if (!notInList(olympiad)) return null;

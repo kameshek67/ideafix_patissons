@@ -26,7 +26,17 @@ import { Rules2027 } from "./Rules2027";
 import { ShareButton } from "./ShareButton";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
 import type { DiplomaStorage, SyncState } from "./useMyDiplomas";
-import { badgeClass, Clamp2, DerivedMark, EmptyState, LoadError, NotInListBadge, Skeleton } from "./ui";
+import {
+  badgeClass,
+  Clamp2,
+  DerivedMark,
+  DocumentMark,
+  documentPage,
+  EmptyState,
+  LoadError,
+  NotInListBadge,
+  Skeleton,
+} from "./ui";
 
 const vuzov = (n: number) => plural(n, "вуз", "вуза", "вузов");
 const vuzah = (n: number) => plural(n, "вузе", "вузах", "вузах");
@@ -452,6 +462,8 @@ interface DetailRow {
   egeGap: number | null;
   egeSubjects: string[];
   derived: boolean;
+  doc_page: number | null;
+  doc_quote: string;
   /** подсказка «проверить»: профиль в правилах не указан или не указано, кому льгота */
   check: string | null;
   /** по проекту правил 2027: hundred — БВИ станет «100 баллов», check — может измениться */
@@ -488,6 +500,8 @@ function detailRows(rows: AchievementRow[], entries: DiplomaEntry[]): DetailRow[
       egeGap: ege_gap ?? null,
       egeSubjects: ege_subjects ?? [],
       derived: b.derived,
+      doc_page: documentPage(b),
+      doc_quote: b.source_quote,
       change: change ?? null,
       check: fit === "check" ? CHECK_HINT : fit === "role" ? ROLE_HINT : null,
       row_key: b.row_key,
@@ -528,6 +542,7 @@ function detailColumns(openProgram: (id: number) => void, several: boolean): Col
         <>
           <span className={`badge ${badgeClass(r.type)}`}>{r.type}</span>
           <DerivedMark derived={r.derived} />
+          <DocumentMark page={r.doc_page} quote={r.doc_quote} />
           {r.change ? (
             <>
               {" "}

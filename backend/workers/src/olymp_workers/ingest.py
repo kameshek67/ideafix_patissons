@@ -69,6 +69,7 @@ from olymp_domain.textutils import (
     squash,
 )
 
+from .document_layer import EXTRACTED_DIR, apply_documents
 from .extra_points import load_extra_points
 from .olympiad_cards import CARDS_FILE, load_olympiad_cards
 from .row_keys import RowFields, assign_row_keys
@@ -576,6 +577,10 @@ class DetailRow:
     years: str = ""
     note: str = ""
     source_url: str = ""
+    # слой document: название документа, страница и дословная цитата
+    source_title: str = ""
+    source_page: int | None = None
+    source_quote: str = ""
 
 
 def cell(row: Sequence, idx: int) -> str:
@@ -1262,14 +1267,15 @@ class Ingestor:
         with self.conn.pipeline():
             self.expand_profile_rules()
             self.expand_vsosh_general()
+        self.apply_university_pages()
+        self.apply_official_sources()
+        self.apply_documents()
         # id льгот выдавали сами — сдвигаем последовательность, чтобы вставки после сборки
         # (если они когда-нибудь понадобятся) не столкнулись с занятыми id
         self.conn.execute(
             "SELECT setval(pg_get_serial_sequence('benefits', 'id'), %s + 1, false)",
             (self.last_benefit_id,),
         )
-        self.apply_university_pages()
-        self.apply_official_sources()
         merged = self.merge_profile_fragments()
         if merged:
             log(f"      склеено обрывков профилей: {merged}")
@@ -1306,6 +1312,17 @@ class Ingestor:
             f" (без профиля в базе {stats['missing_profiles']}), олимпиад вне перечня"
             f" {stats['not_listed']}"
         )
+
+    def apply_documents(self) -> None:
+        """Слой document: льготы из документов вузов поверх XLSX (document_layer.py)."""
+        result = apply_documents(self, DATA_DIR / EXTRACTED_DIR, log)
+        added = sum(s["added"] for s in result.values())
+        replaced = sum(s["replaced"] for s in result.values())
+        log(f"      документы: добавлено строк {added}, заменено строк XLSX {replaced}")
+        self.set_meta("documents_added", str(added))
+        self.set_meta("documents_replaced", str(replaced))
+        if added:
+            self.update_counters()
 
     def parse_ege_requirements(self) -> tuple[int, int]:
         """confirm_subjects и min_ege_score из текста. Различных пар текста — пара сотен,
@@ -1879,14 +1896,17 @@ class Ingestor:
             self.seen_rows[key] = 0  # id проставим после вставки
 
         source_title, source_link = split_source(detail.source_url)
+        if layer == "document":
+            source_title = detail.source_title
         self.last_benefit_id += 1
         benefit_id = self.last_benefit_id
         self.conn.execute(
             """INSERT INTO benefits
                (id, program_id, benefit_type, raw_conditions_text, layer, olympiad_profile,
                 olympiad_subject, level, winner_role, grade, confirm_subject, min_ege,
-                award_subject, years, note, source_title, source_url, source_sheet)
-               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                award_subject, years, note, source_title, source_url, source_sheet,
+                source_page, source_quote)
+               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
             (
                 benefit_id,
                 program_id,
@@ -1906,6 +1926,8 @@ class Ingestor:
                 source_title,
                 source_link,
                 source_sheet,
+                detail.source_page,
+                detail.source_quote,
             ),
         )
         self.benefit_years[benefit_id] = detail.years
@@ -2562,7 +2584,7 @@ class Ingestor:
             "benefits_bvi": "SELECT COUNT(*) FROM benefits WHERE benefit_type='БВИ' AND layer <> 'raw'",
             "benefits_sto": "SELECT COUNT(*) FROM benefits WHERE benefit_type='100 баллов' AND layer <> 'raw'",
             "benefits_raw": "SELECT COUNT(*) FROM benefits WHERE layer = 'raw'",
-            "benefits_rows": "SELECT COUNT(*) FROM benefits WHERE layer IN ('detailed','derived')",
+            "benefits_rows": "SELECT COUNT(*) FROM benefits WHERE layer IN ('detailed','derived','document')",
             "benefits_derived": "SELECT COUNT(*) FROM benefits WHERE layer = 'derived'",
             "benefits_notes": "SELECT COUNT(*) FROM benefits WHERE layer = 'summary'",
             "olympiads": "SELECT COUNT(*) FROM olympiads",
@@ -2629,11 +2651,12 @@ def build_fingerprint(xlsx_path: str) -> str:
     нормализация текста, справочник олимпиад, страницы вузов). Тогда `--if-stale` пересоберёт базу.
     """
     import olymp_domain.ege as ege
+    import olymp_domain.extraction as extraction
     import olymp_domain.olympiad_cards as cards
     import olymp_domain.olympiad_seeds as seeds
     import olymp_domain.textutils as textutils
 
-    from . import olympiad_cards, row_keys, rsosh, university_pages
+    from . import document_layer, olympiad_cards, row_keys, rsosh, university_pages
 
     parts = [
         Path(xlsx_path),
@@ -2645,6 +2668,9 @@ def build_fingerprint(xlsx_path: str) -> str:
         Path(seeds.__file__),
         DATA_DIR / CARDS_FILE,
         DATA_DIR / RSOSH_FILE,
+        *sorted((DATA_DIR / EXTRACTED_DIR).glob("*.json")),
+        Path(document_layer.__file__),
+        Path(extraction.__file__),
         Path(rsosh.__file__),
         Path(olympiad_cards.__file__),
         Path(cards.__file__),
