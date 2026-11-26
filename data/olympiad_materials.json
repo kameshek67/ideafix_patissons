@@ -1,0 +1,713 @@
+{
+ "checked": "2026-11-26",
+ "materials": [
+  {
+   "olympiad": "Всероссийская Сеченовская олимпиада школьников",
+   "kind": "tasks",
+   "title": "Архив",
+   "url": "https://www.sechenov.ru/univers/structure/facultie/dovuz/olimpiady/arkhiv/"
+  },
+  {
+   "olympiad": "Всероссийская Сеченовская олимпиада школьников",
+   "kind": "regulations",
+   "title": "Положение ВСОШ биология 2025-2026.pdf",
+   "url": "https://www.sechenov.ru/upload/iblock/e3a/enqroa4gyxdaqf0d4crsh8wf6os38xbj/Polozhenie-VSOSH-biologiya-2025_2026.pdf"
+  },
+  {
+   "olympiad": "Всероссийская Сеченовская олимпиада школьников",
+   "kind": "regulations",
+   "title": "Положение ВСОШ химия 2025-2026.pdf",
+   "url": "https://www.sechenov.ru/upload/iblock/f90/6y3nx9htc3leylwqhm0cgeno22daqxm1/Polozhenie-VSOSH-khimiya-2025_2026.pdf"
+  },
+  {
+   "olympiad": "Всероссийская Сеченовская олимпиада школьников",
+   "kind": "regulations",
+   "title": "Регламент ВСОШ биология 2025-2026 .pdf",
+   "url": "https://www.sechenov.ru/upload/iblock/777/q301kq642aiduvns6zdndlh52mi7wtmo/Reglament-VSOSH-biologiya-2025_2026-.pdf"
+  },
+  {
+   "olympiad": "Всероссийская олимпиада по агрогенетике «Иннагрика»",
+   "kind": "tasks",
+   "title": "Архив",
+   "url": "https://innagrika.ru/olimpiada/arhiv/"
+  },
+  {
+   "olympiad": "Всероссийская олимпиада по агрогенетике «Иннагрика»",
+   "kind": "tasks",
+   "title": "Задания и победители прошлых лет",
+   "url": "https://innagrika.ru/olimpiada/zadanija-i-pobediteli-proshlyh-let/"
+  },
+  {
+   "olympiad": "Всероссийская олимпиада школьников «Высшая проба»",
+   "kind": "schedule",
+   "title": "Расписание 2 тура отборочного этапа",
+   "url": "https://olymp.hse.ru/mmo/timetable1"
+  },
+  {
+   "olympiad": "Всероссийская олимпиада школьников «Высшая проба»",
+   "kind": "tasks",
+   "title": "Архив",
+   "url": "https://olymp.hse.ru/mmo/archive"
+  },
+  {
+   "olympiad": "Всероссийская олимпиада школьников «Высшая проба»",
+   "kind": "schedule",
+   "title": "Расписание 1 тура",
+   "url": "https://olymp.hse.ru/mmo/timetable"
+  },
+  {
+   "olympiad": "Всероссийская олимпиада школьников «Высшая проба»",
+   "kind": "schedule",
+   "title": "Расписание",
+   "url": "https://olymp.hse.ru/mmo/timetable2"
+  },
+  {
+   "olympiad": "Всероссийская олимпиада школьников «Миссия выполнима. Твоё призвание — финансист!»",
+   "kind": "schedule",
+   "title": "Расписание",
+   "url": "https://ruz.fa.ru/"
+  },
+  {
+   "olympiad": "Всероссийская олимпиада школьников «Миссия выполнима. Твоё призвание — финансист!»",
+   "kind": "schedule",
+   "title": "Календарь олимпиады",
+   "url": "https://www.fa.ru/for-applicants/olympiads/mission/calendar/"
+  },
+  {
+   "olympiad": "Всероссийская олимпиада школьников «Миссия выполнима. Твоё призвание — финансист!»",
+   "kind": "tasks",
+   "title": "Задания и критерии",
+   "url": "https://www.fa.ru/for-applicants/olympiads/mission/examples/"
+  },
+  {
+   "olympiad": "Всесибирская открытая олимпиада школьников",
+   "kind": "schedule",
+   "title": "Академический календарь",
+   "url": "https://sesc.nsu.ru/education/academic-calendar/"
+  },
+  {
+   "olympiad": "Герценовская олимпиада школьников",
+   "kind": "schedule",
+   "title": "Редакционно-издательская деятельность",
+   "url": "https://www.herzen.spb.ru/about/struct-uni/other-podr/izdatelstvo/"
+  },
+  {
+   "olympiad": "Герценовская олимпиада школьников",
+   "kind": "schedule",
+   "title": "Расписание",
+   "url": "https://guide.herzen.spb.ru/schedule"
+  },
+  {
+   "olympiad": "Герценовская олимпиада школьников",
+   "kind": "schedule",
+   "title": "Информация для работодателей",
+   "url": "https://www.herzen.spb.ru/graduates/informatsiya-dlya-rabotodateley"
+  },
+  {
+   "olympiad": "Инженерная олимпиада школьников",
+   "kind": "tasks",
+   "title": "Задания прошлых лет",
+   "url": "https://olymp.mephi.ru/engineering/about/traning/task_of_previous_years"
+  },
+  {
+   "olympiad": "Интернет-олимпиада школьников по физике",
+   "kind": "schedule",
+   "title": "Расписание",
+   "url": "https://distolymp2.spbu.ru/olymp/index_tours.html"
+  },
+  {
+   "olympiad": "Кутафинская олимпиада школьников по праву",
+   "kind": "schedule",
+   "title": "Редакционно-издательский совет",
+   "url": "https://msal.ru/content/ob-universitete/sovety/redaktsionno-izdatelskiy-sovet-universiteta/"
+  },
+  {
+   "olympiad": "Кутафинская олимпиада школьников по праву",
+   "kind": "tasks",
+   "title": "Отчеты и решения по НИР",
+   "url": "https://msal.ru/content/nauka/otchety-i-resheniya-po-nir/"
+  },
+  {
+   "olympiad": "Кутафинская олимпиада школьников по праву",
+   "kind": "schedule",
+   "title": "Расписание",
+   "url": "https://msal.ru/content/obrazovanie/raspisaniee/"
+  },
+  {
+   "olympiad": "Кутафинская олимпиада школьников по праву",
+   "kind": "regulations",
+   "title": "Документы и положения",
+   "url": "https://msal.ru/content/ob-universitete/sovety/uchenyy-sovet/dokumenty56/"
+  },
+  {
+   "olympiad": "Кутафинская олимпиада школьников по праву",
+   "kind": "tasks",
+   "title": "Пробные варианты заданий отборочного этапа Олимпиады",
+   "url": "https://olympic.msal.ru/"
+  },
+  {
+   "olympiad": "Кутафинская олимпиада школьников по праву",
+   "kind": "tasks",
+   "title": "Инструкция по выполнению заданий отборочного этапа Олимпиады",
+   "url": "https://msal.ru/upload/medialibrary/a1f/43mxsjj7pilfo43h3nujav42pamo3kiu.pdf"
+  },
+  {
+   "olympiad": "Международная олимпиада по финансовой безопасности",
+   "kind": "tasks",
+   "title": "Олимпиадные задания II этапа 2021",
+   "url": "https://rosfinolymp.ru/file/1419/tasks.pdf"
+  },
+  {
+   "olympiad": "Международная олимпиада по финансовой безопасности",
+   "kind": "tasks",
+   "title": "Олимпиадные задания II этапа 2022 для студентов",
+   "url": "https://rosfinolymp.ru/file/3579/zadaniya-i-otvety-studentov-2022-pdf"
+  },
+  {
+   "olympiad": "Международная олимпиада по финансовой безопасности",
+   "kind": "tasks",
+   "title": "Олимпиадные задания II этапа 2022 для школьников",
+   "url": "https://rosfinolymp.ru/file/3580/zadaniya-i-otvety-shkolnikov-2022-pdf"
+  },
+  {
+   "olympiad": "Международная олимпиада по финансовой безопасности",
+   "kind": "regulations",
+   "title": "Положение об олимпиаде",
+   "url": "https://rosfinolymp.ru/file/13441/%D0%9F%D0%BE%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5_2025_%D0%A3%D1%82%D0%B2%D0%B5%D1%80%D0%B6%D0%B4%D0%B5%D0%BD%D0%BE_%D0%9E%D1%80%D0%B3%D0%BA%D0%BE%D0%BC%D0%B8%D1%82%D0%B5%D1%82%D0%BE%D0%BC.pdf"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников «Евразийская лингвистическая олимпиада»",
+   "kind": "schedule",
+   "title": "Календарь",
+   "url": "https://elo.linguanet.ru/"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников «Евразийская лингвистическая олимпиада»",
+   "kind": "tasks",
+   "title": "Архив",
+   "url": "https://elo.linguanet.ru/"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников «Евразийская лингвистическая олимпиада»",
+   "kind": "regulations",
+   "title": "Положение PDF",
+   "url": "https://elo.linguanet.ru/pol_2026-2027.pdf"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников «Евразийская лингвистическая олимпиада»",
+   "kind": "regulations",
+   "title": "Регламент PDF",
+   "url": "https://elo.linguanet.ru/reg_2026-2027.pdf"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников «Евразийская лингвистическая олимпиада»",
+   "kind": "regulations",
+   "title": "Положение об апелляции PDF",
+   "url": "https://elo.linguanet.ru/ap_2026-2027.pdf"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников «Евразийская лингвистическая олимпиада»",
+   "kind": "tasks",
+   "title": "Критерии оценивания заданий очного тура 2025-2026 год (все классы)",
+   "url": "https://elo.linguanet.ru/assets/files/data/2/52b62d992c93609696f0c111217a52b5.pdf"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников «Евразийская лингвистическая олимпиада»",
+   "kind": "tasks",
+   "title": "Критерии оценивания творческого задания заключительного этапа (10-11 классы)",
+   "url": "https://elo.linguanet.ru/assets/files/data/1/17/6941aaa0fafe7ce7852d2e43f85685e5.pdf"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников УрФУ «Изумруд»",
+   "kind": "schedule",
+   "title": "Подать заявку",
+   "url": "https://dovuz.urfu.ru/olymps/izumrud/registration"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников УрФУ «Изумруд»",
+   "kind": "tasks",
+   "title": "Проходные баллы прошлых лет",
+   "url": "https://dovuz.urfu.ru/olymps/izumrud/criteria"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников УрФУ «Изумруд»",
+   "kind": "tasks",
+   "title": "Победители и призеры прошлых лет",
+   "url": "https://dovuz.urfu.ru/olymps/izumrud/archive-winners"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников УрФУ «Изумруд»",
+   "kind": "schedule",
+   "title": "Расписание заключительного этапа",
+   "url": "https://dovuz.urfu.ru/olymps/izumrud/internal-stage"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников УрФУ «Изумруд»",
+   "kind": "regulations",
+   "title": "Официальные документы Положения, регламенты и документы олимпиады. Смотреть документы",
+   "url": "https://dovuz.urfu.ru/olymps/izumrud/reglament"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников УрФУ «Изумруд»",
+   "kind": "tasks",
+   "title": "Архив олимпиады «Изумруд»",
+   "url": "https://dovuz.urfu.ru/olymps/izumrud/final-results?year=2024"
+  },
+  {
+   "olympiad": "Международная олимпиада школьников УрФУ «Изумруд»",
+   "kind": "schedule",
+   "title": "Задать вопрос",
+   "url": "https://dovuz.urfu.ru/tracker"
+  },
+  {
+   "olympiad": "Межрегиональная олимпиада школьников «Архитектура и искусство»",
+   "kind": "schedule",
+   "title": "Календарь приёма",
+   "url": "https://aai.sfedu.ru/master"
+  },
+  {
+   "olympiad": "Межрегиональная олимпиада школьников «Архитектура и искусство»",
+   "kind": "schedule",
+   "title": "Расписание занятий",
+   "url": "https://aai.sfedu.ru/student-studies"
+  },
+  {
+   "olympiad": "Межрегиональная олимпиада школьников «Архитектура и искусство»",
+   "kind": "schedule",
+   "title": "Календарь олимпиады",
+   "url": "https://aai.sfedu.ru/olympiad"
+  },
+  {
+   "olympiad": "Межрегиональная олимпиада школьников «Архитектура и искусство»",
+   "kind": "tasks",
+   "title": "Задания",
+   "url": "https://aai.sfedu.ru/olympiad"
+  },
+  {
+   "olympiad": "Межрегиональная олимпиада школьников «Архитектура и искусство»",
+   "kind": "tasks",
+   "title": "Войска беспилотных систем: задачи, преимущества и перспективы профессии",
+   "url": "https://aai.sfedu.ru/news-post?id=156"
+  },
+  {
+   "olympiad": "Межрегиональная олимпиада школьников «Архитектура и искусство»",
+   "kind": "tasks",
+   "title": "Задачи войск беспилотных систем",
+   "url": "https://aai.sfedu.ru/news-post?id=154"
+  },
+  {
+   "olympiad": "Межрегиональная олимпиада школьников «Архитектура и искусство»",
+   "kind": "regulations",
+   "title": "Порядок поступления на службу в войсках БПЛА",
+   "url": "https://aai.sfedu.ru/news-post?id=13"
+  },
+  {
+   "olympiad": "Межрегиональная олимпиада школьников «Будущие исследователи — будущее науки»",
+   "kind": "tasks",
+   "title": "КАЛЕНДАРЬ (сроки, задания, результаты)",
+   "url": "https://bibn.unn.ru/calendar.html"
+  },
+  {
+   "olympiad": "Межрегиональные предметные олимпиады Казанского (Приволжского) федерального университета",
+   "kind": "schedule",
+   "title": "Расписание",
+   "url": "https://malun.kpfu.ru/dovuzovskaya-podgotovka/raspisanie-zanyatiy-malogo-universiteta-kfu"
+  },
+  {
+   "olympiad": "Межрегиональные предметные олимпиады Казанского (Приволжского) федерального университета",
+   "kind": "schedule",
+   "title": "Расписание",
+   "url": "https://malun.kpfu.ru/dovuzovskaya-podgotovka/raspisanie-zanyatiy-malogo-universiteta-kfu-8-9"
+  },
+  {
+   "olympiad": "Межрегиональные предметные олимпиады Казанского (Приволжского) федерального университета",
+   "kind": "schedule",
+   "title": "Расписание",
+   "url": "https://malun.kpfu.ru/dovuzovskaya-podgotovka/raspisanie-zanyatiy-malogo-universiteta-kfu-10-11"
+  },
+  {
+   "olympiad": "Межрегиональные предметные олимпиады Казанского (Приволжского) федерального университета",
+   "kind": "tasks",
+   "title": "Архив заданий и решений",
+   "url": "https://malun.kpfu.ru/mpoarh"
+  },
+  {
+   "olympiad": "Межрегиональные предметные олимпиады Казанского (Приволжского) федерального университета",
+   "kind": "tasks",
+   "title": "Архив рейтинговых списков",
+   "url": "https://malun.kpfu.ru/dovuzovskaya-podgotovka/arkhiv-reytingovykh-spiskov"
+  },
+  {
+   "olympiad": "Межрегиональные предметные олимпиады Казанского (Приволжского) федерального университета",
+   "kind": "tasks",
+   "title": "Архив заданий и решений",
+   "url": "https://malun.kpfu.ru/mpo/fc/arc"
+  },
+  {
+   "olympiad": "Межрегиональные предметные олимпиады Казанского (Приволжского) федерального университета",
+   "kind": "regulations",
+   "title": "Положение о Межрегиональных предметных олимпиадах КФУ",
+   "url": "https://malun.kpfu.ru/sites/default/files/%D0%9F%D0%BE%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5%20%D0%9C%D0%9F%D0%9E%202026-2027_1.pdf"
+  },
+  {
+   "olympiad": "Межрегиональные предметные олимпиады Казанского (Приволжского) федерального университета",
+   "kind": "regulations",
+   "title": "Регламент проведения Межрегиональных предметных олимпиад КФУ",
+   "url": "https://malun.kpfu.ru/sites/default/files/%D0%A0%D0%B5%D0%B3%D0%BB%D0%B0%D0%BC%D0%B5%D0%BD%D1%82%20%D0%9C%D0%9F%D0%9E%20%D0%9A%D0%A4%D0%A3%202026-27_0.pdf"
+  },
+  {
+   "olympiad": "Общероссийская олимпиада школьников «Основы православной культуры»",
+   "kind": "tasks",
+   "title": "Архив заданий",
+   "url": "https://opk.pravolimp.ru/contest_files"
+  },
+  {
+   "olympiad": "Общероссийская олимпиада школьников «Основы православной культуры»",
+   "kind": "tasks",
+   "title": "Архив заданий",
+   "url": "https://ovio.pravolimp.ru/contest_files"
+  },
+  {
+   "olympiad": "Общероссийская олимпиада школьников «Основы православной культуры»",
+   "kind": "tasks",
+   "title": "Архив заданий",
+   "url": "https://aksios.pravolimp.ru/contest_files"
+  },
+  {
+   "olympiad": "Олимпиада «Курчатов»",
+   "kind": "tasks",
+   "title": "Задания прошлых лет",
+   "url": "https://olimpiadakurchatov.ru/tasks"
+  },
+  {
+   "olympiad": "Олимпиада «Курчатов»",
+   "kind": "regulations",
+   "title": "Положение об олимпиаде «Курчатов»",
+   "url": "https://old.olimpiadakurchatov.ru/upload/files/2026/Polojenie_1.pdf"
+  },
+  {
+   "olympiad": "Олимпиада «Курчатов»",
+   "kind": "regulations",
+   "title": "Регламент олимпиады «Курчатов»",
+   "url": "https://old.olimpiadakurchatov.ru/upload/files/2026/Reglament.pdf"
+  },
+  {
+   "olympiad": "Олимпиада «Курчатов»",
+   "kind": "tasks",
+   "title": "Архивная версия сайта",
+   "url": "https://old.olimpiadakurchatov.ru/"
+  },
+  {
+   "olympiad": "Олимпиада Юношеской математической школы",
+   "kind": "schedule",
+   "title": "Расписание",
+   "url": "https://yumsh.ru/cms/groups/sched"
+  },
+  {
+   "olympiad": "Олимпиада Юношеской математической школы",
+   "kind": "regulations",
+   "title": "Особый порядок поступления",
+   "url": "https://yumsh.ru/cms/classes/benefits"
+  },
+  {
+   "olympiad": "Олимпиада Юношеской математической школы",
+   "kind": "tasks",
+   "title": "Архив",
+   "url": "https://yumsh.ru/cms/yumsh-olymp/archive"
+  },
+  {
+   "olympiad": "Олимпиада Юношеской математической школы",
+   "kind": "schedule",
+   "title": "Задать вопрос",
+   "url": "https://yumsh.ru/cms/contact"
+  },
+  {
+   "olympiad": "Олимпиада по комплексу предметов «Культура и искусство»",
+   "kind": "tasks",
+   "title": "Предметы Все о предметах, формы заданий, литература, примеры",
+   "url": "https://olimp.prouniver.ru/subjects/"
+  },
+  {
+   "olympiad": "Олимпиада по комплексу предметов «Культура и искусство»",
+   "kind": "tasks",
+   "title": "Архив Собрание документов олимпиады по годам",
+   "url": "https://olimp.prouniver.ru/archive/"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Гранит науки»",
+   "kind": "tasks",
+   "title": "Задания и решения",
+   "url": "https://ogn.spmi.ru/zadaniya-i-resheniya-po-profilyu-estestvennye-nauki"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Гранит науки»",
+   "kind": "tasks",
+   "title": "Задания и решения",
+   "url": "https://ogn.spmi.ru/zadaniya-i-resheniya-po-profilyu-khimiya"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Гранит науки»",
+   "kind": "tasks",
+   "title": "Задания и решения",
+   "url": "https://ogn.spmi.ru/zadaniya-i-resheniya-po-profilyu-informatika"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Ломоносов»",
+   "kind": "schedule",
+   "title": "Календарь мероприятий",
+   "url": "https://olymp.msu.ru/rus/event/search"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Ломоносов»",
+   "kind": "schedule",
+   "title": "График отборочного этапа",
+   "url": "https://olymp.msu.ru/rus/page/main/29/page/grafik-provedeniya-otborochnogo-ehtapa"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Ломоносов»",
+   "kind": "tasks",
+   "title": "Задания прошлых лет",
+   "url": "https://olymp.msu.ru/rus/page/main/29/page/zadaniya-olimpiady-proshlyh-let"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Ломоносов»",
+   "kind": "tasks",
+   "title": "Архив олимпиад прошлых лет",
+   "url": "https://olymp.msu.ru/rus/page/main/29/page/olimpiady-proshlyh-let"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Ломоносов»",
+   "kind": "regulations",
+   "title": "Положение об олимпиаде",
+   "url": "https://olymp.msu.ru/rus/page/main/29/page/polozhenie-ob-olimpiade-shkolnikov-lomonosov"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Ломоносов»",
+   "kind": "regulations",
+   "title": "Регламент олимпиады",
+   "url": "https://olymp.msu.ru/rus/page/main/29/page/reglament-provedeniya-olimpiady-lomonosov-v-2026-2027-uchebnom-godu"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Ломоносов»",
+   "kind": "regulations",
+   "title": "Положение об апелляциях",
+   "url": "https://olymp.msu.ru/rus/page/main/29/page/polozhenie-ob-apellyaciyah-na-rezultaty-olimpiady-shkolnikov-lomonosov-2026-2027"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Ломоносов»",
+   "kind": "schedule",
+   "title": "Опубликован график проведения отборочного этапа",
+   "url": "https://olymp.msu.ru/rus/page/main/29/news/c188c505-0990-4f74-8166-6d99de739c2f"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Надежда энергетики»",
+   "kind": "regulations",
+   "title": "Положение об олимпиаде",
+   "url": "https://www.energy-hope.ru:443/about/report.html"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Надежда энергетики»",
+   "kind": "regulations",
+   "title": "Регламент проведения",
+   "url": "https://www.energy-hope.ru:443/about/reglament.html"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Надежда энергетики»",
+   "kind": "schedule",
+   "title": "График",
+   "url": "https://www.energy-hope.ru:443/actual/grafik.html"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Надежда энергетики»",
+   "kind": "tasks",
+   "title": "Материалы заданий",
+   "url": "https://www.energy-hope.ru:443/actual/tasks.html"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Надежда энергетики»",
+   "kind": "tasks",
+   "title": "Материалы заданий прошлых лет",
+   "url": "https://www.energy-hope.ru:443/olymp/tasks.html"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Надежда энергетики»",
+   "kind": "tasks",
+   "title": "ПРИЗЕРАМ ПРОШЛЫХ ЛЕТ",
+   "url": "https://www.energy-hope.ru:443/lastyear/fisgia.html"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Надежда энергетики»",
+   "kind": "regulations",
+   "title": "Положение об олимпиаде, Регламент проведения Олимпиады Действующие редакции Положения об олимпиаде и Регламента проведения Олимпиады подробнее...",
+   "url": "https://www.energy-hope.ru:443/advice00000001.html"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Надежда энергетики»",
+   "kind": "schedule",
+   "title": "Опубликован предполагаемый график проведения Олимпиады в 2026/2027 учебном году. \" onError=\"this.src='/img/news/picture_not_exist.png'\"> Опубликован предполагаемый график проведения Олимпиады в 2026/2027 учебном году. 06.10.2026",
+   "url": "https://www.energy-hope.ru:443/news00000685.html"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Надежда энергетики»",
+   "kind": "schedule",
+   "title": "Опубликован график подведения итогов заключительного этапа по математике, по компьютерному моделированию и по информатике. \" onError=\"this.src='/img/news/picture_not_exist.png'\"> Опубликован график подведения итогов заключительного этапа по математике, по компьютерному моделированию и по информатике. 02.04.2026",
+   "url": "https://www.energy-hope.ru:443/news00000677.html"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Покори Воробьёвы горы!»",
+   "kind": "regulations",
+   "title": "Регламент олимпиады",
+   "url": "https://pvg.mk.ru/media/docs/Reglament_PVG_-2025-26-10-26.pdf"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Покори Воробьёвы горы!»",
+   "kind": "regulations",
+   "title": "Положение об апелляции",
+   "url": "https://pvg.mk.ru/media/docs/pvg_appeal_provision.pdf"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Покори Воробьёвы горы!»",
+   "kind": "tasks",
+   "title": "Архив",
+   "url": "https://pvg.mk.ru/archive/archive/"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Шаг в будущее»",
+   "kind": "schedule",
+   "title": "Календарь событий Олимпиады",
+   "url": "https://olymp.bmstu.ru/ru/calendar"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Шаг в будущее»",
+   "kind": "schedule",
+   "title": "Компьютерное моделирование и графика",
+   "url": "https://olymp.bmstu.ru/ru/graphics-olymp"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Шаг в будущее»",
+   "kind": "tasks",
+   "title": "Задания прошлых лет, критерии их оценивания и авторские решения",
+   "url": "https://olymp.bmstu.ru/ru/variants"
+  },
+  {
+   "olympiad": "Олимпиада школьников «Шаг в будущее»",
+   "kind": "schedule",
+   "title": "Внимание! Изменение даты отборочного этапа по химии",
+   "url": "https://olymp.bmstu.ru/ru/news/2026/11/13/vnimanie-izmenenie-daty-otborochnogo-etapa-po-khimii"
+  },
+  {
+   "olympiad": "Олимпиада школьников РАНХиГС",
+   "kind": "regulations",
+   "title": "Порядок организации защит диссертаций",
+   "url": "https://www.ranepa.ru/podgotovka-nauchnykh-kadrov/zashchity-dissertatsii/"
+  },
+  {
+   "olympiad": "Олимпиада школьников РАНХиГС",
+   "kind": "schedule",
+   "title": "Календарь научных событий",
+   "url": "https://www.ranepa.ru/nauka/kalendar-nauchnyx-meropriyatij/"
+  },
+  {
+   "olympiad": "Олимпиада школьников РАНХиГС",
+   "kind": "tasks",
+   "title": "Архив заданий",
+   "url": "https://www.ranepa.ru/olymp/arkhiv-zadaniy/"
+  },
+  {
+   "olympiad": "Олимпиада школьников Санкт-Петербургского государственного университета",
+   "kind": "tasks",
+   "title": "Архив",
+   "url": "https://olympiada.spbu.ru/arkhiv.html"
+  },
+  {
+   "olympiad": "Олимпиада школьников по программированию «ТехноКубок»",
+   "kind": "tasks",
+   "title": "архив",
+   "url": "https://techno-cup.ru/archive"
+  },
+  {
+   "olympiad": "Олимпиада школьников по программированию «ТехноКубок»",
+   "kind": "regulations",
+   "title": "Изучить подробные правила и порядок участия можно в разделе «Помощь»",
+   "url": "https://techno-cup.ru/help"
+  },
+  {
+   "olympiad": "Открытая химическая олимпиада",
+   "kind": "regulations",
+   "title": "Регламент проведения Олимпиады",
+   "url": "https://misis.ru/files/-/c2822554147bf4c31af455ffe7880fd1/_u0420_u0435_u0433_u043B_u0430_u043C_u0435_u043D_u0442_20_u041E_u0425_u041E.pdf"
+  },
+  {
+   "olympiad": "Открытая химическая олимпиада",
+   "kind": "regulations",
+   "title": "Положение об олимпиаде",
+   "url": "https://misis.ru/files/-/e99e75e0e927b9344d2373c439e914cd/_u041F_u043E_u043B_u043E_u0436_u0435_u043D_u0438_u0435_20_u041E_u0425_u041E.pdf"
+  },
+  {
+   "olympiad": "Открытая химическая олимпиада",
+   "kind": "tasks",
+   "title": "Методические материалы, задания, работы победителей и призеров",
+   "url": "https://misis.ru/applicants/school-leavers/competitions/oho/more/"
+  },
+  {
+   "olympiad": "Отраслевая физико-математическая олимпиада школьников «Росатом»",
+   "kind": "regulations",
+   "title": "Регламент проведения заключительного этапа олимпиады Росатом по информатике в естественных науках с применением дистанционных технологий",
+   "url": "https://olymp.mephi.ru/content/public/portal-media/olymp-source/9b/9b28f2c5c825ea29807e3178834bdf31c19883ce602a2f615e85e0a90ee130a4.pdf"
+  },
+  {
+   "olympiad": "Отраслевая физико-математическая олимпиада школьников «Росатом»",
+   "kind": "tasks",
+   "title": "Задания прошлых лет олимпиады",
+   "url": "https://olymp.mephi.ru/rosatom_it/training"
+  },
+  {
+   "olympiad": "Отраслевая физико-математическая олимпиада школьников «Росатом»",
+   "kind": "regulations",
+   "title": "Регламент проведения олимпиады",
+   "url": "https://olymp.mephi.ru/content/public/uploads/files/rosatom_inf/ra_informatika_reglament.pdf"
+  },
+  {
+   "olympiad": "Плехановская олимпиада школьников",
+   "kind": "schedule",
+   "title": "Расписание",
+   "url": "https://rasp.rea.ru/"
+  },
+  {
+   "olympiad": "Плехановская олимпиада школьников",
+   "kind": "tasks",
+   "title": "Архив заданий",
+   "url": "https://www.rea.ru/pk/entrant/posh/arhiv-zadaniy"
+  },
+  {
+   "olympiad": "Плехановская олимпиада школьников",
+   "kind": "schedule",
+   "title": "Управление «Издательский дом»",
+   "url": "https://www.rea.ru/structure/departments/upravlenie-izdatelskiy-dom"
+  },
+  {
+   "olympiad": "Региональный конкурс школьников Челябинского университетского образовательного округа",
+   "kind": "tasks",
+   "title": "Фотоархив Фотоархив",
+   "url": "https://www.csu.ru/about/fotoarhiv/"
+  },
+  {
+   "olympiad": "Региональный конкурс школьников Челябинского университетского образовательного округа",
+   "kind": "schedule",
+   "title": "Расписание Расписание",
+   "url": "https://www.csu.ru/students/timetable/"
+  },
+  {
+   "olympiad": "Региональный конкурс школьников Челябинского университетского образовательного округа",
+   "kind": "schedule",
+   "title": "Календарь событий Календарь событий",
+   "url": "https://www.csu.ru/press/calendar/"
+  },
+  {
+   "olympiad": "Региональный конкурс школьников Челябинского университетского образовательного округа",
+   "kind": "schedule",
+   "title": "Издательство Издательство",
+   "url": "https://publish.csu.ru/"
+  }
+ ]
+}
