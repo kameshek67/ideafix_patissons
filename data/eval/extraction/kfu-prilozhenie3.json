@@ -1,0 +1,2173 @@
+{
+  "document": {
+    "university": "Казанский (Приволжский) федеральный университет",
+    "campaign": 2026,
+    "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+    "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+    "title": "Приложение 3 к Правилам приёма КФУ на 2026–2027 учебный год: соответствие профилей ВсОШ направлениям (копия файла prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf из веб-архива)",
+    "pages": [
+      4,
+      5
+    ]
+  },
+  "records": [
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "03.05.01",
+      "program_name": "Астрономия",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Астрономия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "1 Астрономия Физика 03.05.01 Астрономия"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "06.03.01",
+      "program_name": "Биология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "2 Биология Биология 06.03.01 Биология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "05.03.06",
+      "program_name": "Экология и природопользование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "05.03.06 Экология и природопользование"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "06.03.02",
+      "program_name": "Почвоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "06.03.02 Почвоведение"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "19.03.01",
+      "program_name": "Биотехнология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "19.03.01 Биотехнология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "31.05.01",
+      "program_name": "Лечебное дело",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "31.05.01 Лечебное дело"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "31.05.03",
+      "program_name": "Стоматология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "31.05.03 Стоматология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "30.05.01",
+      "program_name": "Медицинская биохимия",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "30.05.01 Медицинская биохимия"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "33.05.01",
+      "program_name": "Фармация",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "33.05.01 Фармация"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "37.03.01",
+      "program_name": "Психология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "37.03.01 Психология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "37.05.01",
+      "program_name": "Клиническая психология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "37.05.01 Клиническая психология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.02",
+      "program_name": "Психолого-педагогическое образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "44.03.02 Психолого-педагогическое образование"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.03",
+      "program_name": "Специальное (дефектологическое) образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "44.03.03 Специальное (дефектологическое) образование"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.05",
+      "program_name": "Педагогическое образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "bio"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "44.03.05 Педагогическое образование (с двумя профилями подготовки)"
+      },
+      "note": "Педагогическое образование (с двумя профилями подготовки)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "05.03.01",
+      "program_name": "Геология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "geo"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "3 География География 05.03.01 Геология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "05.03.02",
+      "program_name": "География",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "geo"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "05.03.02 География"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "05.03.03",
+      "program_name": "Картография и геоинформатика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "geo"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "05.03.03 Картография и геоинформатика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "05.03.04",
+      "program_name": "Гидрометеорология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "geo"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "05.03.04 Гидрометеорология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "05.03.06",
+      "program_name": "Экология и природопользование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "geo"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "05.03.06 Экология и природопользование"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.05",
+      "program_name": "Педагогическое образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "geo"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "44.03.05 Педагогическое образование (с двумя профилями подготовки)"
+      },
+      "note": "Педагогическое образование (с двумя профилями подготовки)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "07.03.01",
+      "program_name": "Архитектура",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Искусство (мировая художественная культура)",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "5 Искусство (мировая художественная - 07.03.01 Архитектура"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.04",
+      "program_name": "Профессиональное обучение",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Искусство (мировая художественная культура)",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "44.03.04 Профессиональное обучение (по отраслям) (Дизайн интерьера, предметный и промышленный дизайн)"
+      },
+      "note": "Профессиональное обучение (по отраслям) (Дизайн интерьера, предметный и промышленный дизайн) | Профессиональное обучение (по отраслям) (Дизайн среды и архитектурное пространство) | Профессиональное обучение (по отраслям) (Фэшн-дизайн)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "51.03.01",
+      "program_name": "Культурология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Искусство (мировая художественная культура)",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "51.03.01 Культурология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "54.03.01",
+      "program_name": "Дизайн",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Искусство (мировая художественная культура)",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "54.03.01 Дизайн"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "46.03.01",
+      "program_name": "История",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "6 История История 46.03.01 История"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "47.03.03",
+      "program_name": "Религиоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "47.03.03 Религиоведение"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "48.03.01",
+      "program_name": "Теология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "48.03.01 Теология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "41.03.01",
+      "program_name": "Зарубежное регионоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "41.03.01 Зарубежное регионоведение"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "41.03.02",
+      "program_name": "Регионоведение России",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "41.03.02 Регионоведение России"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "41.03.04",
+      "program_name": "Политология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "41.03.04 Политология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "41.03.05",
+      "program_name": "Международные отношения",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "41.03.05 Международные отношения"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "43.03.02",
+      "program_name": "Туризм",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "43.03.02 Туризм"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "46.03.03",
+      "program_name": "Антропология и этнология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "46.03.03 Антропология и этнология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "46.03.04",
+      "program_name": "Археология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "46.03.04 Археология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "58.03.01",
+      "program_name": "Востоковедение и африканистика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "58.03.01 Востоковедение и африканистика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.05",
+      "program_name": "Педагогическое образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "hist"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "44.03.05 Педагогическое образование (с двумя профилями подготовки) (профиль: История и иностранные (европейский и"
+      },
+      "note": "Педагогическое образование (с двумя профилями подготовки) (профиль: История и иностранные (европейский и восточный) языки; История, обществознание)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "42.03.02",
+      "program_name": "Журналистика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "lit"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "7 Литература Литература 42.03.02 Журналистика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "42.03.04",
+      "program_name": "Телевидение",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "lit"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "42.03.04 Телевидение"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "54.03.01",
+      "program_name": "Дизайн",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "lit"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "54.03.01 Дизайн"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "42.03.05",
+      "program_name": "Медиакоммуникации",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "lit"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "42.03.05 Медиакоммуникации"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "45.03.01",
+      "program_name": "Филология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "lit"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "45.03.01 Филология (профиль: Прикладная филология: русский язык и литература)"
+      },
+      "note": "Филология (профиль: Прикладная филология: русский язык и литература) | Филология (профиль: Прикладная филология: татарский язык и литература, журналистика) | Филология (профиль: Прикладная филология: иностранный (английский) язык в международной коммуникации) | Филология (профиль: Зарубежная филология: иностранный (английский) язык и литература, переводоведение)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.05",
+      "program_name": "Педагогическое образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "lit"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "44.03.05 Педагогическое образование (с двумя профилями подготовки) (профиль: Русский язык и литература)"
+      },
+      "note": "Педагогическое образование (с двумя профилями подготовки) (профиль: Русский язык и литература)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "05.03.06",
+      "program_name": "Экология и природопользование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Основы безопасности и защиты Родины",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "10 Основы безопасности и защиты Родины - 05.03.06 Экология и природопользование"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "19.03.01",
+      "program_name": "Биотехнология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Основы безопасности и защиты Родины",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 4,
+        "quote": "19.03.01 Биотехнология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "31.05.01",
+      "program_name": "Лечебное дело",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Основы безопасности и защиты Родины",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "31.05.01 Лечебное дело"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "30.05.01",
+      "program_name": "Медицинская биохимия",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Основы безопасности и защиты Родины",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "30.05.01 Медицинская биохимия"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "33.05.01",
+      "program_name": "Фармация",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Основы безопасности и защиты Родины",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "33.05.01 Фармация"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.05",
+      "program_name": "Педагогическое образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Основы безопасности и защиты Родины",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "44.03.05 Педагогическое образование (с двумя профилями подготовки) (профиль: Биология и английский язык; Биология и"
+      },
+      "note": "Педагогическое образование (с двумя профилями подготовки) (профиль: Биология и английский язык; Биология и безопасность жизнедеятельности) | Педагогическое образование (с двумя профилями подготовки) (профиль: Физическая культура и безопасность жизнедеятельности; Физическая культура и дополнительное образование (спортивная подготовка))"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "40.03.01",
+      "program_name": "Юриспруденция",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Право",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "11 Право Обществознание 40.03.01 Юриспруденция"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "40.05.04",
+      "program_name": "Судебная и прокурорская деятельность",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Право",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "40.05.04 Судебная и прокурорская деятельность"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.05",
+      "program_name": "Педагогическое образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Русский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "rus"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "12 Русский язык Русский язык 44.03.05 Педагогическое образование (с двумя профилями подготовки) (профиль: Русский язык и литература)"
+      },
+      "note": "Педагогическое образование (с двумя профилями подготовки) (профиль: Русский язык и литература) | Педагогическое образование (с двумя профилями подготовки) (профиль: Русский язык и иностранный (английский) язык) | Педагогическое образование (с двумя профилями подготовки) (профиль: Русский язык как иностранный и иностранный (китайский) язык) | Педагогическое образование (с двумя профилями подготовки) (профиль: Родной (татарский) язык и литература и иностранный (китайский) язык)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "45.03.01",
+      "program_name": "Филология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Русский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "rus"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "45.03.01 Филология (профиль: Прикладная филология: русский язык и литература)"
+      },
+      "note": "Филология (профиль: Прикладная филология: русский язык и литература) | Филология (профиль: Прикладная филология: татарский язык и литература, журналистика)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "07.03.01",
+      "program_name": "Архитектура",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Технология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "13 Технология - 07.03.01 Архитектура"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "12.03.04",
+      "program_name": "Биотехнические системы и технологии",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Технология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "12.03.04 Биотехнические системы и технологии"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "19.03.01",
+      "program_name": "Биотехнология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Технология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "19.03.01 Биотехнология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "13.03.02",
+      "program_name": "Электроэнергетика и электротехника",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Технология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "13.03.02 Электроэнергетика и электротехника (профиль \"Электроснабжение\")"
+      },
+      "note": "Электроэнергетика и электротехника (профиль \"Электроснабжение\")"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "15.03.06",
+      "program_name": "Мехатроника и робототехника",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Технология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "15.03.06 Мехатроника и робототехника (профиль: Компьютерные технологии в мехатронике и робототехнике)"
+      },
+      "note": "Мехатроника и робототехника (профиль: Компьютерные технологии в мехатронике и робототехнике)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "27.03.02",
+      "program_name": "Управление качеством",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Технология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "27.03.02 Управление качеством (профиль: Управление роботизированными производственными системами)"
+      },
+      "note": "Управление качеством (профиль: Управление роботизированными производственными системами)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "28.03.01",
+      "program_name": "Нанотехнологии и микросистемная техника",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Технология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "28.03.01 Нанотехнологии и микросистемная техника"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.01",
+      "program_name": "Педагогическое образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Технология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "44.03.01 Педагогическое образование (профиль: Технология и робототехника)"
+      },
+      "note": "Педагогическое образование (профиль: Технология и робототехника)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.04",
+      "program_name": "Профессиональное обучение",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Технология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "44.03.04 Профессиональное обучение (по отраслям) (Дизайн интерьера, предметный и промышленный дизайн)"
+      },
+      "note": "Профессиональное обучение (по отраслям) (Дизайн интерьера, предметный и промышленный дизайн) | Профессиональное обучение (по отраслям) (Дизайн среды и архитектурное пространство) | Профессиональное обучение (по отраслям) (Фэшн-дизайн)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "54.03.01",
+      "program_name": "Дизайн",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Технология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "54.03.01 Дизайн"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.05",
+      "program_name": "Педагогическое образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Физическая культура",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "14 Физическая культура - 44.03.05 Педагогическое образование (с двумя профилями подготовки) (профили: Физическая культура и безопасность"
+      },
+      "note": "Педагогическое образование (с двумя профилями подготовки) (профили: Физическая культура и безопасность жизнедеятельности; Физическая культура и дополнительное образование (спортивная подготовка)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "03.03.02",
+      "program_name": "Физика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "15 Физика Физика 03.03.02 Физика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "03.03.03",
+      "program_name": "Радиофизика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "03.03.03 Радиофизика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "03.05.01",
+      "program_name": "Астрономия",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "03.05.01 Астрономия"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "10.03.01",
+      "program_name": "Информационная безопасность",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "10.03.01 Информационная безопасность"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "10.05.03",
+      "program_name": "Информационная безопасность автоматизированных систем",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "10.05.03 Информационная безопасность автоматизированных систем"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "12.03.04",
+      "program_name": "Биотехнические системы и технологии",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "12.03.04 Биотехнические системы и технологии"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "21.03.03",
+      "program_name": "Геодезия и дистанционное зондирование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "21.03.03 Геодезия и дистанционное зондирование"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "27.03.05",
+      "program_name": "Инноватика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "27.03.05 Инноватика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "28.03.01",
+      "program_name": "Нанотехнологии и микросистемная техника",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Физика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "phys"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "28.03.01 Нанотехнологии и микросистемная техника"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "04.03.01",
+      "program_name": "Химия",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "16 Химия Химия 04.03.01 Химия"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "04.05.01",
+      "program_name": "Фундаментальная и прикладная химия",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "04.05.01 Фундаментальная и прикладная химия"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "27.03.05",
+      "program_name": "Инноватика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "27.03.05 Инноватика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "28.03.01",
+      "program_name": "Нанотехнологии и микросистемная техника",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "28.03.01 Нанотехнологии и микросистемная техника"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "30.05.01",
+      "program_name": "Медицинская биохимия",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "30.05.01 Медицинская биохимия"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "31.05.01",
+      "program_name": "Лечебное дело",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "31.05.01 Лечебное дело"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "31.05.03",
+      "program_name": "Стоматология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "31.05.03 Стоматология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "33.05.01",
+      "program_name": "Фармация",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "33.05.01 Фармация"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "44.03.01",
+      "program_name": "Педагогическое образование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Химия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "chem"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "44.03.01 Педагогическое образование (профиль: Химия)"
+      },
+      "note": "Педагогическое образование (профиль: Химия)"
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "05.03.02",
+      "program_name": "География",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "geo",
+          "bio",
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "17 Экология География, Биология, Математика 05.03.02 География"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "05.03.03",
+      "program_name": "Картография и геоинформатика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "geo",
+          "bio",
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "05.03.03 Картография и геоинформатика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "05.03.06",
+      "program_name": "Экология и природопользование",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "geo",
+          "bio",
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "05.03.06 Экология и природопользование"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "19.03.01",
+      "program_name": "Биотехнология",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "geo",
+          "bio",
+          "math"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "19.03.01 Биотехнология"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "38.03.01",
+      "program_name": "Экономика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экономика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "math",
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "18 Экономика Математика, 38.03.01 Экономика"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "38.03.02",
+      "program_name": "Менеджмент",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экономика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "math",
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "38.03.02 Менеджмент"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "38.03.03",
+      "program_name": "Управление персоналом",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экономика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "math",
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "38.03.03 Управление персоналом"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "38.03.04",
+      "program_name": "Государственное и муниципальное управление",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экономика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "math",
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "38.03.04 Государственное и муниципальное управление"
+      },
+      "note": ""
+    },
+    {
+      "university": "Казанский (Приволжский) федеральный университет",
+      "campaign": 2026,
+      "program_code": "38.03.05",
+      "program_name": "Бизнес-информатика",
+      "benefit_type": "bvi",
+      "olympiad": "Всероссийская олимпиада школьников",
+      "profile": "Экономика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": {
+        "subjects": [
+          "math",
+          "soc"
+        ],
+        "min": 75
+      },
+      "source": {
+        "url": "https://web.archive.org/web/2026id_/https://admissions.kpfu.ru/wp-content/uploads/2026/01/prilozhenie_3_pp2026_1-ot-27.01-poslednyaya.pdf",
+        "sha256": "f46579e895ee4a41220a479a182bf9318039e0f7824f2be19faa1bbd64686dc9",
+        "page": 5,
+        "quote": "38.03.05 Бизнес-информатика"
+      },
+      "note": ""
+    }
+  ]
+}

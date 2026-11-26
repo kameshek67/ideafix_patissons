@@ -1,0 +1,3015 @@
+{
+  "document": {
+    "university": "СПбГУ",
+    "campaign": 2026,
+    "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+    "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+    "title": "Соответствие направлений подготовки профилям республиканских олимпиад школьников ДНР и ЛНР, 2026",
+    "pages": [
+      1,
+      2
+    ]
+  },
+  "records": [
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.01",
+      "program_name": "Экономика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 38.03.01 Экономика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.03",
+      "program_name": "Управление персоналом",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 38.03.03 Управление персоналом | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "39.03.01",
+      "program_name": "Социология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 39.03.01 Социология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "39.03.02",
+      "program_name": "Социальная работа",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 39.03.02 Социальная работа | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "40.03.01",
+      "program_name": "Юриспруденция",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 40.03.01 Юриспруденция | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "41.03.05",
+      "program_name": "Международные отношения",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 41.03.05 Международные отношения | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "42.03.01",
+      "program_name": "Реклама и связи с общественностью",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 42.03.01 Реклама и связи с общественностью | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "42.03.02",
+      "program_name": "Журналистика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 42.03.02 Журналистика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "43.03.02",
+      "program_name": "Туризм",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 43.03.02 Туризм | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "45.03.01",
+      "program_name": "Филология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 45.03.01 Филология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "45.03.02",
+      "program_name": "Лингвистика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 45.03.02 Лингвистика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "45.05.01",
+      "program_name": "Перевод и переводоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 45.05.01 Перевод и переводоведение | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.01",
+      "program_name": "Философия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 47.03.01 Философия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.03",
+      "program_name": "Религиоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 47.03.03 Религиоведение | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "50.03.01",
+      "program_name": "Искусства и гуманитарные науки",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 50.03.01 Искусства и гуманитарные науки | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "50.03.03",
+      "program_name": "История искусств",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 50.03.03 История искусств | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.01",
+      "program_name": "Культурология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 51.03.01 Культурология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.04",
+      "program_name": "Музеология и охрана объектов культурного и природного наследия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 51.03.04 Музеология и охрана объектов культурного и природного наследия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "58.03.01",
+      "program_name": "Востоковедение и африканистика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Английский язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Английский язык | 58.03.01 Востоковедение и африканистика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Астрономия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Астрономия | 01.03.01 Математика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "01.03.02",
+      "program_name": "Прикладная математика и информатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Астрономия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Астрономия | 01.03.02 Прикладная математика и информатика (ОП «Современное программирование (с дополнительной квалификацией «Программист»)») | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат; ОП «Современное программирование (с дополнительной квалификацией «Программист»)»"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "02.03.01",
+      "program_name": "Математика и компьютерные науки",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Астрономия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Астрономия | 02.03.01 Математика и компьютерные науки (ОП «AI360: Математика машинного обучения») | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат; ОП «AI360: Математика машинного обучения» | Уровень образования: Бакалавриат; ОП «Науки о данных (с дополнительной квалификацией «Специалист по большим данным»)»"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "03.03.01",
+      "program_name": "Прикладные математика и физика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Астрономия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Астрономия | 03.03.01 Прикладные математика и физика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "03.03.02",
+      "program_name": "Физика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Астрономия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Астрономия | 03.03.02 Физика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "03.05.01",
+      "program_name": "Астрономия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Астрономия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Астрономия | 03.05.01 Астрономия | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "03.05.02",
+      "program_name": "Фундаментальная и прикладная физика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Астрономия",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Астрономия | 03.05.02 Фундаментальная и прикладная физика | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.02",
+      "program_name": "География",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 05.03.02 География | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.03",
+      "program_name": "Картография и геоинформатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 05.03.03 Картография и геоинформатика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.04",
+      "program_name": "Гидрометеорология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 05.03.04 Гидрометеорология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.06",
+      "program_name": "Экология и природопользование",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 05.03.06 Экология и природопользование | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "06.03.01",
+      "program_name": "Биология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 06.03.01 Биология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "06.03.02",
+      "program_name": "Почвоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 06.03.02 Почвоведение | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "31.05.01",
+      "program_name": "Лечебное дело",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 31.05.01 Лечебное дело | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "31.05.03",
+      "program_name": "Стоматология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 31.05.03 Стоматология | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "33.05.01",
+      "program_name": "Фармация",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 33.05.01 Фармация | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "37.03.01",
+      "program_name": "Психология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 37.03.01 Психология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "37.05.01",
+      "program_name": "Клиническая психология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 37.05.01 Клиническая психология | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "37.05.02",
+      "program_name": "Психология служебной деятельности",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 37.05.02 Психология служебной деятельности | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "49.03.02",
+      "program_name": "Физическая культура для лиц с отклонениями в состоянии здоровья (адаптивная физическая культура)",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Биология",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Биология | 49.03.02 Физическая культура для лиц с отклонениями в состоянии здоровья (адаптивная физическая культура) | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.01",
+      "program_name": "Геология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 05.03.01 Геология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.02",
+      "program_name": "География",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 05.03.02 География | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.03",
+      "program_name": "Картография и геоинформатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 05.03.03 Картография и геоинформатика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.04",
+      "program_name": "Гидрометеорология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 05.03.04 Гидрометеорология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.06",
+      "program_name": "Экология и природопользование",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 05.03.06 Экология и природопользование | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "06.03.02",
+      "program_name": "Почвоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 06.03.02 Почвоведение | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "21.03.01",
+      "program_name": "Нефтегазовое дело",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 21.03.01 Нефтегазовое дело | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "21.03.02",
+      "program_name": "Землеустройство и кадастры",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 21.03.02 Землеустройство и кадастры | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.01",
+      "program_name": "Экономика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 38.03.01 Экономика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "41.03.05",
+      "program_name": "Международные отношения",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 41.03.05 Международные отношения | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "43.03.02",
+      "program_name": "Туризм",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 43.03.02 Туризм | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "46.03.01",
+      "program_name": "История",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 46.03.01 История | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.01",
+      "program_name": "Философия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 47.03.01 Философия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.03",
+      "program_name": "Религиоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 47.03.03 Религиоведение | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.01",
+      "program_name": "Культурология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 51.03.01 Культурология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.04",
+      "program_name": "Музеология и охрана объектов культурного и природного наследия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "География",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "География | 51.03.04 Музеология и охрана объектов культурного и природного наследия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 01.03.01 Математика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "01.03.02",
+      "program_name": "Прикладная математика и информатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 01.03.02 Прикладная математика и информатика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "02.03.01",
+      "program_name": "Математика и компьютерные науки",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 02.03.01 Математика и компьютерные науки (ОП «AI360: Математика машинного обучения») | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат; ОП «AI360: Математика машинного обучения» | Уровень образования: Бакалавриат; ОП «Науки о данных (с дополнительной квалификацией «Специалист по большим данным»)»"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "02.03.02",
+      "program_name": "Фундаментальная информатика и информационные технологии",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 02.03.02 Фундаментальная информатика и информационные технологии | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "02.03.03",
+      "program_name": "Математическое обеспечение и администрирование информационных систем",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 02.03.03 Математическое обеспечение и администрирование информационных систем | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.01",
+      "program_name": "Геология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 05.03.01 Геология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.02",
+      "program_name": "География",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 05.03.02 География | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.03",
+      "program_name": "Картография и геоинформатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 05.03.03 Картография и геоинформатика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.04",
+      "program_name": "Гидрометеорология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 05.03.04 Гидрометеорология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.06",
+      "program_name": "Экология и природопользование",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 05.03.06 Экология и природопользование | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "06.03.02",
+      "program_name": "Почвоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 06.03.02 Почвоведение | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "09.03.03",
+      "program_name": "Прикладная информатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 09.03.03 Прикладная информатика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "09.03.04",
+      "program_name": "Программная инженерия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 09.03.04 Программная инженерия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "21.03.01",
+      "program_name": "Нефтегазовое дело",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 21.03.01 Нефтегазовое дело | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "21.03.02",
+      "program_name": "Землеустройство и кадастры",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 21.03.02 Землеустройство и кадастры | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "27.03.03",
+      "program_name": "Системный анализ и управление",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 27.03.03 Системный анализ и управление | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.01",
+      "program_name": "Экономика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 1,
+        "quote": "Информатика, Информатика и ИКТ | 38.03.01 Экономика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.03",
+      "program_name": "Управление персоналом",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Информатика, Информатика и ИКТ | 38.03.03 Управление персоналом | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.05",
+      "program_name": "Бизнес-информатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Информатика, Информатика и ИКТ | 38.03.05 Бизнес-информатика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "39.03.01",
+      "program_name": "Социология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Информатика, Информатика и ИКТ | 39.03.01 Социология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.01",
+      "program_name": "Философия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Информатика, Информатика и ИКТ | 47.03.01 Философия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.03",
+      "program_name": "Религиоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Информатика, Информатика и ИКТ | 47.03.03 Религиоведение | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.01",
+      "program_name": "Культурология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Информатика, Информатика и ИКТ | 51.03.01 Культурология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.04",
+      "program_name": "Музеология и охрана объектов культурного и природного наследия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Информатика, Информатика и ИКТ",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Информатика, Информатика и ИКТ | 51.03.04 Музеология и охрана объектов культурного и природного наследия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.01",
+      "program_name": "Экономика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 38.03.01 Экономика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.02",
+      "program_name": "Менеджмент",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 38.03.02 Менеджмент | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.03",
+      "program_name": "Управление персоналом",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 38.03.03 Управление персоналом | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.04",
+      "program_name": "Государственное и муниципальное управление",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 38.03.04 Государственное и муниципальное управление | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.05",
+      "program_name": "Бизнес-информатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 38.03.05 Бизнес-информатика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "39.03.01",
+      "program_name": "Социология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 39.03.01 Социология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "39.03.02",
+      "program_name": "Социальная работа",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 39.03.02 Социальная работа | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "40.03.01",
+      "program_name": "Юриспруденция",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 40.03.01 Юриспруденция | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "41.03.04",
+      "program_name": "Политология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 41.03.04 Политология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "41.03.05",
+      "program_name": "Международные отношения",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 41.03.05 Международные отношения | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "42.03.01",
+      "program_name": "Реклама и связи с общественностью",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 42.03.01 Реклама и связи с общественностью | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "42.03.02",
+      "program_name": "Журналистика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 42.03.02 Журналистика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "43.03.02",
+      "program_name": "Туризм",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 43.03.02 Туризм | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "46.03.01",
+      "program_name": "История",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 46.03.01 История | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.01",
+      "program_name": "Философия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 47.03.01 Философия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.03",
+      "program_name": "Религиоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 47.03.03 Религиоведение | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "48.03.01",
+      "program_name": "Теология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 48.03.01 Теология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "50.03.01",
+      "program_name": "Искусства и гуманитарные науки",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 50.03.01 Искусства и гуманитарные науки | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "50.03.03",
+      "program_name": "История искусств",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 50.03.03 История искусств | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.01",
+      "program_name": "Культурология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 51.03.01 Культурология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.04",
+      "program_name": "Музеология и охрана объектов культурного и природного наследия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 51.03.04 Музеология и охрана объектов культурного и природного наследия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "58.03.01",
+      "program_name": "Востоковедение и африканистика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "История",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "История | 58.03.01 Востоковедение и африканистика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "42.03.02",
+      "program_name": "Журналистика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Литература | 42.03.02 Журналистика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "45.03.01",
+      "program_name": "Филология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Литература | 45.03.01 Филология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.01",
+      "program_name": "Философия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Литература | 47.03.01 Философия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.03",
+      "program_name": "Религиоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Литература | 47.03.03 Религиоведение | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "50.03.01",
+      "program_name": "Искусства и гуманитарные науки",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Литература | 50.03.01 Искусства и гуманитарные науки | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "50.03.03",
+      "program_name": "История искусств",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Литература | 50.03.03 История искусств | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.01",
+      "program_name": "Культурология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Литература | 51.03.01 Культурология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.04",
+      "program_name": "Музеология и охрана объектов культурного и природного наследия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Литература",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Литература | 51.03.04 Музеология и охрана объектов культурного и природного наследия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "01.03.01",
+      "program_name": "Математика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 01.03.01 Математика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "01.03.02",
+      "program_name": "Прикладная математика и информатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 01.03.02 Прикладная математика и информатика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "01.05.01",
+      "program_name": "Фундаментальные математика и механика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 01.05.01 Фундаментальные математика и механика | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "02.03.01",
+      "program_name": "Математика и компьютерные науки",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 02.03.01 Математика и компьютерные науки | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "02.03.02",
+      "program_name": "Фундаментальная информатика и информационные технологии",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 02.03.02 Фундаментальная информатика и информационные технологии | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "03.03.01",
+      "program_name": "Прикладные математика и физика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 03.03.01 Прикладные математика и физика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "03.03.02",
+      "program_name": "Физика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 03.03.02 Физика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "03.05.02",
+      "program_name": "Фундаментальная и прикладная физика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 03.05.02 Фундаментальная и прикладная физика | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "04.03.02",
+      "program_name": "Химия, физика и механика материалов",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 04.03.02 Химия, физика и механика материалов | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.01",
+      "program_name": "Геология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 05.03.01 Геология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.02",
+      "program_name": "География",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 05.03.02 География | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.03",
+      "program_name": "Картография и геоинформатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 05.03.03 Картография и геоинформатика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.04",
+      "program_name": "Гидрометеорология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 05.03.04 Гидрометеорология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "05.03.06",
+      "program_name": "Экология и природопользование",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 05.03.06 Экология и природопользование | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "06.03.02",
+      "program_name": "Почвоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 06.03.02 Почвоведение | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "21.03.01",
+      "program_name": "Нефтегазовое дело",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 21.03.01 Нефтегазовое дело | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "21.03.02",
+      "program_name": "Землеустройство и кадастры",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 21.03.02 Землеустройство и кадастры | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "27.03.03",
+      "program_name": "Системный анализ и управление",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 27.03.03 Системный анализ и управление | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "37.03.01",
+      "program_name": "Психология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 37.03.01 Психология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "37.05.01",
+      "program_name": "Клиническая психология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 37.05.01 Клиническая психология | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "37.05.02",
+      "program_name": "Психология служебной деятельности",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 37.05.02 Психология служебной деятельности | Специалитет"
+      },
+      "note": "Уровень образования: Специалитет"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.01",
+      "program_name": "Экономика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 38.03.01 Экономика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.02",
+      "program_name": "Менеджмент",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 38.03.02 Менеджмент | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.03",
+      "program_name": "Управление персоналом",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 38.03.03 Управление персоналом | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.04",
+      "program_name": "Государственное и муниципальное управление",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 38.03.04 Государственное и муниципальное управление | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "38.03.05",
+      "program_name": "Бизнес-информатика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 38.03.05 Бизнес-информатика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "39.03.01",
+      "program_name": "Социология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 39.03.01 Социология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "42.03.01",
+      "program_name": "Реклама и связи с общественностью",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 42.03.01 Реклама и связи с общественностью | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.01",
+      "program_name": "Философия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 47.03.01 Философия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "47.03.03",
+      "program_name": "Религиоведение",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 47.03.03 Религиоведение | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.01",
+      "program_name": "Культурология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 51.03.01 Культурология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "51.03.04",
+      "program_name": "Музеология и охрана объектов культурного и природного наследия",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Математика",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Математика | 51.03.04 Музеология и охрана объектов культурного и природного наследия | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "39.03.01",
+      "program_name": "Социология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Немецкий язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Немецкий язык | 39.03.01 Социология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "39.03.02",
+      "program_name": "Социальная работа",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Немецкий язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Немецкий язык | 39.03.02 Социальная работа | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "40.03.01",
+      "program_name": "Юриспруденция",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Немецкий язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Немецкий язык | 40.03.01 Юриспруденция | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "41.03.05",
+      "program_name": "Международные отношения",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Немецкий язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Немецкий язык | 41.03.05 Международные отношения | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "42.03.01",
+      "program_name": "Реклама и связи с общественностью",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Немецкий язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Немецкий язык | 42.03.01 Реклама и связи с общественностью | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "42.03.02",
+      "program_name": "Журналистика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Немецкий язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Немецкий язык | 42.03.02 Журналистика | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "43.03.02",
+      "program_name": "Туризм",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Немецкий язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Немецкий язык | 43.03.02 Туризм | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "45.03.01",
+      "program_name": "Филология",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Немецкий язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Немецкий язык | 45.03.01 Филология | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат"
+    },
+    {
+      "university": "СПбГУ",
+      "campaign": 2026,
+      "program_code": "45.03.02",
+      "program_name": "Лингвистика",
+      "benefit_type": "bvi",
+      "olympiad": "Республиканские олимпиады школьников Донецкой Народной Республики, Луганской Народной Республики",
+      "profile": "Немецкий язык",
+      "levels": [],
+      "winner_role": "both",
+      "grades": [],
+      "ege": null,
+      "source": {
+        "url": "https://abiturient.spbu.ru/medialibrary/ru/2026/bac/bac_spec_olymp_3_2026.pdf",
+        "sha256": "385a77bfd7233c0c35aed1b2524cd6f7911cd551754b14ccd4172b8910762479",
+        "page": 2,
+        "quote": "Немецкий язык | 45.03.02 Лингвистика (ОП «Балканистика и сравнительно-сопоставительное языкознание (с дополнительными квалификациями «Учитель иностранного языка» / «Специалист в области перевода»)») | Бакалавриат"
+      },
+      "note": "Уровень образования: Бакалавриат; ОП «Балканистика и сравнительно-сопоставительное языкознание (с дополнительными квалификациями «Учитель иностранного языка» / «Специалист в области перевода»)»"
+    }
+  ]
+}
