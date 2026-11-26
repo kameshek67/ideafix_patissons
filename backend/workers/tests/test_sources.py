@@ -1,7 +1,9 @@
 """Разбор ссылки оператора: страница → документы → записи → разница → приём; без сети."""
 
+import hashlib
 import io
 import json
+import logging
 from collections.abc import Iterator
 from typing import Any
 
@@ -12,8 +14,9 @@ import pytest
 from olymp_db.session import psycopg_dsn
 from olymp_workers.ai.documents import DocumentStore, safe_url
 from olymp_workers.eval_extract import Row
-from olymp_workers.sources import jobs, pipeline
+from olymp_workers.sources import cli, jobs, pipeline
 from olymp_workers.sources.cli import main as cli_main
+from olymp_workers.sources.cli import recheck_sources
 
 PAGE = "https://example.edu/olymp/"
 XLSX = "https://example.edu/files/Олимпиады_БВИ.xlsx"
@@ -256,3 +259,61 @@ def test_cli_add_run_accept(
     assert cli_main([*base, "list"]) == 0
     assert "accepted" in capsys.readouterr().out
     assert cli_main([*base, "accept", str(job_id)]) == 1
+
+
+def checked_source(
+    conn: psycopg.Connection[Any], tmp_path: Any, pages: dict[str, tuple[int, bytes, str]]
+) -> str:
+    _, job_id, _ = jobs.enqueue(conn, XLSX, UNIVERSITY, "test")
+    assert jobs.run_job(conn, job_id, store_for(tmp_path, pages)) == "review"
+    old_hash = conn.execute("SELECT last_sha256 FROM sources").fetchone()[0]
+    conn.execute("UPDATE sources SET last_checked_at = now() - interval '8 days'")
+    conn.commit()
+    return old_hash
+
+
+def test_worker_recreates_job_when_source_changed(
+    conn: psycopg.Connection[Any],
+    empty_database_url: str,
+    tmp_path: Any,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    checked_source(conn, tmp_path, {XLSX: XLSX_PAGE})
+    changed = xlsx_bytes() + b"!"
+    page = (200, changed, "application/octet-stream")
+    monkeypatch.setattr(cli, "make_store", lambda cache: store_for(cache, {XLSX: page}))
+    monkeypatch.setenv("OLYMP_SOURCES_RECHECK_DAYS", "0")
+
+    assert cli_main(["--database-url", empty_database_url, "worker", "--once"]) == 0
+    assert conn.execute(
+        "SELECT status, error FROM source_jobs ORDER BY id DESC LIMIT 1"
+    ).fetchone() == (
+        "queued",
+        "документ изменился",
+    )
+    assert conn.execute(
+        "SELECT last_sha256, last_checked_at IS NOT NULL FROM sources"
+    ).fetchone() == (hashlib.sha256(changed).hexdigest(), True)
+
+
+def test_recheck_unchanged_updates_last_checked(
+    conn: psycopg.Connection[Any], tmp_path: Any
+) -> None:
+    old_hash = checked_source(conn, tmp_path, {XLSX: XLSX_PAGE})
+    assert recheck_sources(conn, lambda cache: store_for(cache, {XLSX: XLSX_PAGE}), days=0) is False
+    assert conn.execute("SELECT count(*) FROM source_jobs").fetchone() == (1,)
+    assert conn.execute(
+        "SELECT last_sha256, last_checked_at > now() - interval '1 day' FROM sources"
+    ).fetchone() == (old_hash, True)
+
+
+def test_recheck_site_unavailable_only_logs(
+    conn: psycopg.Connection[Any], tmp_path: Any, caplog: pytest.LogCaptureFixture
+) -> None:
+    old_hash = checked_source(conn, tmp_path, {XLSX: XLSX_PAGE})
+    with caplog.at_level(logging.WARNING, logger="olymp.sources"):
+        assert recheck_sources(conn, lambda cache: store_for(cache, {}), days=0) is False
+    assert "проверка источника" in caplog.text
+    assert "HTTP 404" in caplog.text
+    assert conn.execute("SELECT count(*), max(error) FROM source_jobs").fetchone() == (1, "")
+    assert conn.execute("SELECT last_sha256 FROM sources").fetchone() == (old_hash,)

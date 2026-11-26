@@ -111,11 +111,12 @@ services:
       OLYMP_DATABASE_URL: postgresql+psycopg://olymp:olymp@postgres:5432/olymp
       OLYMP_MAX_CA_DIR: /certs
       OLYMP_OPS_WEBHOOK_URL: ${OLYMP_OPS_WEBHOOK_URL:-}
+      OLYMP_SOURCES_RECHECK_DAYS: ${OLYMP_SOURCES_RECHECK_DAYS:-7}
     volumes: [./data:/app/data, ./infra/certs:/certs:ro]
     depends_on:
       migrate: {condition: service_completed_successfully}
     healthcheck: {disable: true}
-    mem_limit: 256m
+    mem_limit: 512m
     restart: unless-stopped
 
   # фоновые задачи (Dramatiq): обход сайтов вузов и пересборка базы; по умолчанию выключены

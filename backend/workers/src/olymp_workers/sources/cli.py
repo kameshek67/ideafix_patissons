@@ -5,32 +5,34 @@ olymp-sources run 12        # выполнить задачу здесь и се
 olymp-sources list          # задачи и их статусы
 olymp-sources accept 12     # принять записи (потом worker или rebuild пересоберёт базу)
 olymp-sources reject 12
-olymp-sources worker        # цикл: берёт очередь из таблицы раз в 10 секунд
+olymp-sources worker        # цикл: берёт очередь раз в 10 секунд, раз в N дней проверяет источники
 olymp-sources rebuild       # пересобрать базу, если есть принятые, но не учтённые задачи
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import logging
 import os
 import sys
 import tempfile
 import time
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
 
 import psycopg
 from olymp_db.session import database_url, psycopg_dsn
 
-from olymp_workers.ai.documents import DocumentStore
+from olymp_workers.ai.documents import DocumentError, DocumentStore
 from olymp_workers.tls import web_context
 
 from . import jobs
 
 POLL_SECONDS = 10
 RETRY_REBUILD_SECONDS = 300
+RECHECK_DAYS = 7
 
 
 def make_store(cache: Path) -> DocumentStore:
@@ -54,6 +56,53 @@ def process_queue(conn: psycopg.Connection[Any], notify: jobs.Notifier | None) -
     return done
 
 
+def recheck_days() -> int:
+    raw = os.environ.get("OLYMP_SOURCES_RECHECK_DAYS", str(RECHECK_DAYS))
+    try:
+        return int(raw)
+    except ValueError:
+        logging.getLogger("olymp.sources").warning(
+            "OLYMP_SOURCES_RECHECK_DAYS=%s — не число, проверяю раз в %s дней", raw, RECHECK_DAYS
+        )
+        return RECHECK_DAYS
+
+
+def recheck_sources(
+    conn: psycopg.Connection[Any],
+    store_factory: Callable[[Path], DocumentStore] | None = None,
+    days: int | None = None,
+) -> bool:
+    """Проверяет одного просроченного источника; True — создана задача «документ изменился»."""
+    claimed = jobs.claim_recheck(conn, recheck_days() if days is None else days)
+    if claimed is None:
+        return False
+    source_id, url, old_hash = claimed
+    log = logging.getLogger("olymp.sources")
+    with tempfile.TemporaryDirectory(prefix="olymp-sources-") as cache:
+        store = (store_factory or make_store)(Path(cache))
+        try:
+            data = store.raw(url)
+        except DocumentError as exc:
+            log.warning("проверка источника %s не удалась: %s", url, exc)
+            conn.execute("UPDATE sources SET last_checked_at = now() WHERE id = %s", (source_id,))
+            conn.commit()
+            return False
+        finally:
+            store.close()
+    digest = hashlib.sha256(data).hexdigest()
+    if digest == old_hash:
+        conn.execute("UPDATE sources SET last_checked_at = now() WHERE id = %s", (source_id,))
+        conn.commit()
+        return False
+    jobs.enqueue_changed(conn, source_id)
+    conn.execute(
+        "UPDATE sources SET last_checked_at = now(), last_sha256 = %s WHERE id = %s",
+        (digest, source_id),
+    )
+    conn.commit()
+    return True
+
+
 def worker(url: str, *, once: bool = False) -> int:
     notify = jobs.webhook_notifier()
     retry_at = 0.0
@@ -61,6 +110,7 @@ def worker(url: str, *, once: bool = False) -> int:
         while True:
             try:
                 process_queue(conn, notify)
+                recheck_sources(conn)
                 if time.monotonic() >= retry_at and jobs.rebuild_pending(conn) is False:
                     retry_at = time.monotonic() + RETRY_REBUILD_SECONDS
             except psycopg.Error:

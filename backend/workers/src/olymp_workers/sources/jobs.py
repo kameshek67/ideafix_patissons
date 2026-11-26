@@ -92,6 +92,32 @@ def claim_next(conn: psycopg.Connection[Any]) -> int | None:
     return row[0] if row else None
 
 
+def claim_recheck(conn: psycopg.Connection[Any], days: int) -> tuple[int, str, str] | None:
+    """Берёт одного любого источника на проверку: строка sources остаётся заблокированной,
+    пока проверяющий не зафиксирует результат (или не откатит транзакцию при ошибке)."""
+    row = conn.execute(
+        """SELECT s.id, s.url, s.last_sha256 FROM sources s
+           WHERE s.last_checked_at IS NULL OR s.last_checked_at <= now() - make_interval(days => %s)
+           ORDER BY s.id FOR UPDATE OF s SKIP LOCKED LIMIT 1""",
+        (days,),
+    ).fetchone()
+    if row is None:
+        conn.commit()
+        return None
+    return int(row[0]), str(row[1]), str(row[2])
+
+
+def enqueue_changed(conn: psycopg.Connection[Any], source_id: int) -> int:
+    """Задача на изменившийся источник с пометкой причины."""
+    return int(
+        _one(
+            conn,
+            "INSERT INTO source_jobs (source_id, error) VALUES (%s, 'документ изменился') RETURNING id",
+            (source_id,),
+        )[0]
+    )
+
+
 def recover_stuck(conn: psycopg.Connection[Any]) -> int:
     """Задачи, брошенные упавшим воркером, становятся ошибкой, а не висят вечно."""
     rows = conn.execute(
