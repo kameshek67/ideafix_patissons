@@ -39,7 +39,7 @@ jobs:
       - run: uv sync --all-packages --locked
       - run: uv run ruff check .
       - run: uv run ruff format --check .
-      - run: uv run mypy api workers domain db llm
+      - run: uv run mypy api workers domain db llm mcp
       - run: uv run lint-imports
       - name: миграции — одна голова, модели совпадают со схемой
         working-directory: backend/db

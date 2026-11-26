@@ -57,6 +57,7 @@ backend/      Python 3.13, uv workspace
   domain/       чистая логика без базы и сети
   db/           модели SQLAlchemy и миграции Alembic
   llm/          шлюз к языковым моделям
+  mcp/          MCP-сервер: инструменты поверх публичного API для внешних ассистентов
 frontend/     Next.js 16: сайт и мини-приложение MAX (src/app, src/components, src/api)
 data/         исходный XLSX, перечень РСОШ, снимок выдачи, эталоны, извлечённые документы
 infra/        Dockerfile, окружение разработки, скрипты выкатки (infra/deploy)

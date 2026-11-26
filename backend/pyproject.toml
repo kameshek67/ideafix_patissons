@@ -5,7 +5,7 @@ description = "Олимп: монорепозиторий (поиск олимп
 requires-python = ">=3.13"
 
 [tool.uv.workspace]
-members = ["domain", "db", "llm", "api", "workers"]
+members = ["domain", "db", "llm", "api", "workers", "mcp"]
 
 [tool.uv.sources]
 olymp-domain = { workspace = true }
@@ -13,6 +13,7 @@ olymp-db = { workspace = true }
 olymp-llm = { workspace = true }
 olymp-api = { workspace = true }
 olymp-workers = { workspace = true }
+olymp-mcp = { workspace = true }
 
 [dependency-groups]
 dev = [
@@ -55,7 +56,14 @@ module = [
 ignore_errors = true
 
 [tool.importlinter]
-root_packages = ["olymp_api", "olymp_domain", "olymp_db", "olymp_llm", "olymp_workers"]
+root_packages = [
+  "olymp_api",
+  "olymp_domain",
+  "olymp_db",
+  "olymp_llm",
+  "olymp_workers",
+  "olymp_mcp",
+]
 
 [[tool.importlinter.contracts]]
 name = "Модули API не лезут во внутренности друг друга"

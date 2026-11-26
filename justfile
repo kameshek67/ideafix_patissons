@@ -109,7 +109,7 @@ openapi:
 lint:
     cd backend && uv run ruff check .
     cd backend && uv run ruff format --check .
-    cd backend && uv run mypy api workers domain db llm
+    cd backend && uv run mypy api workers domain db llm mcp
     cd backend && uv run lint-imports
     cd frontend && npm run lint
 

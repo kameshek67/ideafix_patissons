@@ -58,7 +58,7 @@
 
 ## Бэкенд
 
-Пять пакетов в одном uv workspace. Правила импортов проверяет `lint-imports`: домен и шлюз LLM ни от чего не зависят, модули API не лезут друг в друга, помощник стоит выше поиска.
+Шесть пакетов в одном uv workspace. Правила импортов проверяет `lint-imports`: домен и шлюз LLM ни от чего не зависят, модули API не лезут друг в друга, помощник стоит выше поиска.
 
 `backend/domain` — логика без базы и сети: разбор условий диплома и ЕГЭ (`diplomas.py`, `ege.py`),
 нормализация названий (`textutils.py`), формат извлечённых записей (`extraction.py`), справочник
@@ -108,6 +108,18 @@ Redis, без него работают в памяти процесса.
 | `ai_cards` | `olymp-ai-cards` | черновики карточек олимпиад |
 | `max_bot`, `max_operator` | `olymp-max-bot` | бот MAX: приветствие и режим оператора |
 | `tasks` | `dramatiq olymp_workers.tasks` | очередь: обход сайтов и пересборка базы |
+
+### Внешние ассистенты (MCP)
+
+`backend/mcp` — сервер `olymp-mcp`: пять инструментов читают только публичное HTTP API, доступа к базе и внутренним модулям нет. Адрес API задаёт `OLYMP_API_URL` (по умолчанию `https://ideafix.patissons.tech/api`), общение идёт через stdio — конфиг для Claude Desktop или любого MCP-клиента:
+
+```json
+{
+  "mcpServers": {
+    "olymp": { "command": "olymp-mcp", "env": { "OLYMP_API_URL": "https://ideafix.patissons.tech/api" } }
+  }
+}
+```
 
 ## Фронтенд
 

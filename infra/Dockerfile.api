@@ -8,6 +8,7 @@ COPY backend/pyproject.toml backend/uv.lock ./
 COPY backend/domain domain
 COPY backend/db db
 COPY backend/llm llm
+COPY backend/mcp mcp
 COPY backend/api api
 COPY backend/workers workers
 RUN uv sync --frozen --no-dev --package olymp-api --package olymp-workers
