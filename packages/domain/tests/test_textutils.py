@@ -164,3 +164,21 @@ def test_profile_list_in_brackets_still_works() -> None:
     rules = parse_profile_rules(text)
     assert rules and rules[0].confirm == [] and rules[0].whole_olympiads == []
     assert "мобильные приложения" in rules[0].profiles
+
+
+def test_vsosh_rule_by_subjects() -> None:
+    (rule,) = parse_profile_rules(
+        "ВсОШ (финал): информатика, математика, труд (технология), физика"
+    )
+    assert rule.scope == "vsosh"
+    assert rule.profiles == ["информатика", "математика", "труд", "физика"]
+    (rule,) = parse_profile_rules("ВсОШ (финал, 9–11 кл.): математика, информатика, физика")
+    assert rule.profiles == ["математика", "информатика", "физика"]
+
+
+def test_vsosh_rule_skips_scholarships_and_general_phrases() -> None:
+    # стипендия — не льгота при приёме; «по профилю» без предметов — не правило по предметам
+    assert not parse_profile_rules("Стипендия 50 000 ₽ — победителям и призёрам ВсОШ по физике")
+    assert not parse_profile_rules(
+        "ВсОШ (финал) и сборные — БВИ по направлениям, соответствующим профилю"
+    )

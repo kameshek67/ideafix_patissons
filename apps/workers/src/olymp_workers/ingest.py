@@ -42,6 +42,7 @@ import openpyxl
 import psycopg
 from olymp_db.models import DATA_TABLES
 from olymp_db.session import database_url, psycopg_dsn
+from olymp_domain.diplomas import is_real_profile
 from olymp_domain.ege import parse_ege_requirement
 from olymp_domain.olympiad_seeds import JUNK_KEYS, SEEDS
 from olymp_domain.textutils import (
@@ -62,6 +63,7 @@ from olymp_domain.textutils import (
     norm_role,
     parse_enumeration,
     parse_profile_rules,
+    profile_stems,
     short_from_quotes,
     split_source,
     squash,
@@ -84,6 +86,7 @@ SOURCES_CACHE = os.environ.get("SOURCES_CACHE", str(DATA_DIR / "university_docum
 
 BVI = "БВИ"
 STO = "100 баллов"
+VSOSH_NAME = "Всероссийская олимпиада школьников (заключительный этап)"
 SPECIAL = "Особое право (БВИ/100)"
 FASTTRACK = "Фаст-трек"
 EXTRA_POINTS = "ИД (доп. баллы)"
@@ -224,6 +227,10 @@ class OlympiadCatalog:
 
     def build(self, wb) -> None:
         raw = self.harvest(wb)
+        # международные олимпиады из «ВШЭ международные» — самостоятельные: иначе «Международная
+        # математическая олимпиада» приклеивалась к «Формуле Единства», IJSO — к «Юниору»,
+        # OWAO — к СПб астрономической, и льгота членам сборных уходила не той олимпиаде
+        international = self.international_keys(wb)
         totals = {key: sum(c.values()) for key, c in raw.items()}
         display = {key: self._best_display(c) for key, c in raw.items()}
 
@@ -241,7 +248,8 @@ class OlympiadCatalog:
             if key in JUNK_KEYS:
                 continue
             seed_idx = self._match_seed(key)
-            if seed_idx is None:
+            # у международных своя запись; общая только Менделеевская (IMChO)
+            if seed_idx is None or (key in international and "менделеев" not in key):
                 continue
             item = self._by_seed[seed_idx]
             item.squash_keys.add(key)
@@ -254,7 +262,9 @@ class OlympiadCatalog:
         leftovers.sort(key=lambda k: len(k))
         own: dict[str, CanonicalOlympiad] = {}
         for key in leftovers:
-            parent = self._find_parent(key, raw, assigned, own, totals)
+            parent = (
+                None if key in international else self._find_parent(key, raw, assigned, own, totals)
+            )
             if parent is not None:
                 parent.squash_keys.add(key)
                 parent.aliases.add(display[key])
@@ -267,6 +277,7 @@ class OlympiadCatalog:
             item = CanonicalOlympiad(
                 short_name=short_from_quotes(name) or self._shorten(name),
                 canonical_name=name,
+                kind="international" if key in international else "rsosh",
             )
             item.squash_keys.add(key)
             item.aliases.add(name)
@@ -318,6 +329,17 @@ class OlympiadCatalog:
             if key in item.squash_keys:
                 return item
         return None
+
+    @staticmethod
+    def international_keys(wb) -> set[str]:
+        if "ВШЭ международные" not in wb.sheetnames:
+            return set()
+        keys = set()
+        for row in wb["ВШЭ международные"].iter_rows(min_row=2, values_only=True):
+            name = clean_name(row[1] if len(row) > 1 else None)
+            if name and len(squash(name)) >= 6:
+                keys.add(squash(name))
+        return keys
 
     def _match_seed(self, key: str) -> int | None:
         for idx, seed in enumerate(SEEDS):
@@ -1239,6 +1261,7 @@ class Ingestor:
         self.profile_levels()
         with self.conn.pipeline():
             self.expand_profile_rules()
+            self.expand_vsosh_general()
         # id льгот выдавали сами — сдвигаем последовательность, чтобы вставки после сборки
         # (если они когда-нибудь понадобятся) не столкнулись с занятыми id
         self.conn.execute(
@@ -1764,6 +1787,7 @@ class Ingestor:
                     program_name="Международные олимпиады: БВИ членам сборных РФ",
                     benefit_type=BVI,
                     olympiad_name=item.canonical_name,
+                    olympiad_id=item.db_id,
                     olympiad_subject=subject,
                     winner_role="члены сборных команд РФ",
                     conditions=f"{item.canonical_name} ({item.short_name}) — предмет соответствия: {subject}",
@@ -1774,8 +1798,52 @@ class Ingestor:
                 source_sheet="ВШЭ международные",
             )
             count += 1
+            count += self.expand_international(item, subject, uid)
         self.stats["international"] = count
         log(f"      «ВШЭ международные»: {count} олимпиад -> БВИ членам сборных")
+
+    def expand_international(
+        self, item: CanonicalOlympiad, subject: str, university_id: int
+    ) -> int:
+        """
+        Приложение 3 ВШЭ даёт БВИ членам сборных «на направления, соответствующие предмету
+        олимпиады». Раскрываем по программам, у которых в листе «ВШЭ ВсОШ» есть тот же предмет.
+        """
+        wanted = {stems for part in re.split(r"[,;]", subject) if (stems := profile_stems(part))}
+        if not wanted or not item.db_id:
+            return 0
+        added = 0
+        seen: set[int] = set()
+        for program_id, program_subject in self.conn.execute(
+            """SELECT b.program_id, b.olympiad_subject FROM benefits b
+               JOIN programs p ON p.id = b.program_id
+               WHERE p.university_id = %s AND b.source_sheet = 'ВШЭ ВсОШ' AND b.benefit_type = %s
+               ORDER BY b.id""",
+            (university_id, BVI),
+        ).fetchall():
+            if program_id in seen or profile_stems(program_subject) not in wanted:
+                continue
+            seen.add(program_id)
+            self.insert_benefit(
+                DetailRow(
+                    university="",
+                    program_name="",
+                    benefit_type=BVI,
+                    olympiad_name=item.canonical_name,
+                    olympiad_id=item.db_id,
+                    olympiad_subject=subject,
+                    winner_role="члены сборных команд РФ",
+                    conditions=f"{item.canonical_name} — предмет соответствия: {subject}",
+                    note="БВИ по ч. 4 ст. 71 273-ФЗ — члены сборных команд РФ; направления — "
+                    "по предмету олимпиады (Приложение 3 НИУ ВШЭ)",
+                    source_url=HSE_SOURCE,
+                ),
+                program_id=program_id,
+                layer="derived",
+                source_sheet="ВШЭ международные",
+            )
+            added += 1
+        return added
 
     # -- вставка льготы ---------------------------------------------------
     def insert_benefit(
@@ -2031,6 +2099,7 @@ class Ingestor:
                ORDER BY CASE b.layer WHEN 'raw' THEN 0 WHEN 'summary' THEN 1 ELSE 2 END, b.id"""
         ).fetchall()
 
+        vsosh_index = self.vsosh_profile_index()
         seen_by_program: dict[tuple[int, str], set[tuple[int, int]]] = {}
         added = rules_used = 0
         for _bid, program_id, btype, text, _note, url, min_ege, confirm in sources:
@@ -2052,9 +2121,14 @@ class Ingestor:
             seen = seen_by_program[key]
             produced = 0
             for rule in rules:
-                # ВсОШ и так прописана отдельными строками в каждом листе —
-                # раскрытие её «по профилю» дало бы только дубли
                 if rule.scope == "vsosh":
+                    # «ВсОШ (финал): математика, физика» — по строке на предмет, если у вуза
+                    # нет подробных строк ВсОШ по этому направлению и предмету
+                    n = self.expand_vsosh_rule(
+                        rule, program_id, btype, url, min_ege, confirm, vsosh_index
+                    )
+                    added += n
+                    produced += n
                     continue
                 rule_confirm = ", ".join(rule.confirm) or confirm
                 # «НТО (все профили)» — все профили олимпиады из справочника
@@ -2128,6 +2202,156 @@ class Ingestor:
                 rules_used += 1
         self.stats["derived"] = added
         log(f"      правил «по профилю» раскрыто: {rules_used} -> +{added} строк")
+
+    def expand_vsosh_general(self) -> None:
+        """
+        КФУ: «победители и призёры олимпиад всех уровней — БВИ на направления, соответствующие
+        профилю, при ЕГЭ ≥75 по предмету профиля». Отдельных строк ВсОШ в таблицах вуза нет,
+        поэтому раскрываем общее правило: направление с вступительным предметом X получает
+        ВсОШ по предмету X (БВИ), если по нему у направления ещё нет строки ВсОШ.
+        """
+        olympiad_id, index, names = self.vsosh_profile_index()
+        if not olympiad_id:
+            return
+        universities = [
+            row[0]
+            for row in self.conn.execute(
+                r"""SELECT DISTINCT p.university_id FROM benefits b
+                   JOIN programs p ON p.id = b.program_id
+                   WHERE b.layer IN ('summary', 'raw') AND b.benefit_type = %s
+                     AND lower(b.raw_conditions_text) ~ 'олимпиад[а-яё]*\s+всех\s+уровней'
+                     AND lower(b.raw_conditions_text) ~ 'соответствующ[а-яё]*\s+профил'""",
+                (BVI,),
+            )
+        ]
+        added = 0
+        for university_id in universities:
+            rows = self.conn.execute(
+                """SELECT b.program_id, b.confirm_subject, b.min_ege, b.source_url
+                   FROM benefits b JOIN programs p ON p.id = b.program_id
+                   WHERE p.university_id = %s AND b.benefit_type = %s AND b.layer = 'detailed'
+                     AND b.confirm_subject <> '' ORDER BY b.program_id, b.id""",
+                (university_id, BVI),
+            ).fetchall()
+            done: set[int] = set()
+            for program_id, confirm, min_ege, url in rows:
+                if program_id in done:
+                    continue
+                done.add(program_id)
+                subjects = {
+                    profile_stems(part)
+                    for part in re.split(r"[,;]", confirm)
+                    if profile_stems(part)
+                }
+                words = {w for stems in subjects for w in stems}
+                covered = self.vsosh_covered(program_id, BVI, olympiad_id)
+                for name in names.values():
+                    stems = profile_stems(name)
+                    if not stems or stems in covered or not set(stems) <= words:
+                        continue
+                    if not any(set(stems) <= set(sub) for sub in subjects):
+                        continue
+                    covered.add(stems)
+                    self.insert_benefit(
+                        DetailRow(
+                            university="",
+                            program_name="",
+                            benefit_type=BVI,
+                            olympiad_name=self.olympiad_names.get(olympiad_id, ""),
+                            olympiad_id=olympiad_id,
+                            olympiad_profile=name,
+                            winner_role="победители и призёры",
+                            confirm_subject=confirm,
+                            min_ege=min_ege,
+                            note="Общее правило вуза: олимпиады всех уровней — БВИ на направления, "
+                            "соответствующие профилю; сверь с приложением вуза",
+                            source_url=url,
+                            conditions=join_parts("ВсОШ (заключительный этап)", f"предмет: {name}"),
+                        ),
+                        program_id=program_id,
+                        layer="derived",
+                        source_sheet="Правило по профилю",
+                    )
+                    added += 1
+        self.stats["derived"] += added
+        log(f"      общих правил ВсОШ по предмету вступительного: +{added} строк")
+
+    def vsosh_profile_index(self) -> tuple[int, ProfileIndex, dict[int, str]]:
+        """Профили ВсОШ (предметы) для раскрытия правил «ВсОШ по предметам»."""
+        olympiad_id = self.olympiad_id_for(VSOSH_NAME) or 0
+        index = ProfileIndex()
+        names: dict[int, str] = {}
+        if olympiad_id:
+            for pid, name in self.conn.execute(
+                "SELECT id, name FROM olympiad_profiles WHERE olympiad_id = %s ORDER BY id",
+                (olympiad_id,),
+            ).fetchall():
+                if is_real_profile(name):
+                    index.add(pid, name)
+                    names[pid] = name
+        return olympiad_id, index, names
+
+    def vsosh_covered(
+        self, program_id: int, benefit_type: str, olympiad_id: int
+    ) -> set[tuple[str, ...]]:
+        """Предметы, по которым у направления уже есть строки ВсОШ (по профилю или предмету)."""
+        covered: set[tuple[str, ...]] = set()
+        for profile_name, subject, award in self.conn.execute(
+            """SELECT COALESCE(pr.name, ''), b.olympiad_subject, b.award_subject
+               FROM benefit_olympiads bo
+               JOIN benefits b ON b.id = bo.benefit_id
+               LEFT JOIN olympiad_profiles pr ON pr.id = bo.profile_id
+               WHERE bo.olympiad_id = %s AND b.program_id = %s AND b.benefit_type = %s
+                 AND b.layer <> 'raw'""",
+            (olympiad_id, program_id, benefit_type),
+        ):
+            for text in (profile_name, *re.split(r"[,;]", f"{subject},{award}")):
+                if stems := profile_stems(text):
+                    covered.add(stems)
+        return covered
+
+    def expand_vsosh_rule(
+        self,
+        rule,
+        program_id: int,
+        benefit_type: str,
+        url: str,
+        min_ege: str,
+        confirm: str,
+        vsosh: tuple[int, ProfileIndex, dict[int, str]],
+    ) -> int:
+        olympiad_id, index, names = vsosh
+        if not olympiad_id:
+            return 0
+        covered = self.vsosh_covered(program_id, benefit_type, olympiad_id)
+        added = 0
+        for token in rule.profiles:
+            for profile_id in index.find(token):
+                name = names[profile_id]
+                if profile_stems(name) in covered:
+                    continue
+                covered.add(profile_stems(name))
+                self.insert_benefit(
+                    DetailRow(
+                        university="",
+                        program_name="",
+                        benefit_type=benefit_type,
+                        olympiad_name=self.olympiad_names.get(olympiad_id, ""),
+                        olympiad_id=olympiad_id,
+                        olympiad_profile=name,
+                        winner_role=rule.role or "победители и призёры",
+                        confirm_subject=", ".join(rule.confirm) or confirm,
+                        min_ege=min_ege,
+                        note="Правило вуза: ВсОШ (заключительный этап) по предмету",
+                        source_url=url,
+                        conditions=join_parts("ВсОШ (заключительный этап)", f"предмет: {name}"),
+                    ),
+                    program_id=program_id,
+                    layer="derived",
+                    source_sheet="Правило по профилю",
+                )
+                added += 1
+        return added
 
     def resolve_enumeration(self, text: str):
         """Строки перечисления -> [(olympiad_id, профиль, предмет, ParsedCondition)]."""

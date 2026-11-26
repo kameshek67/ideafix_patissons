@@ -38,6 +38,9 @@ const vuzam = (n: number) => plural(n, "вузу", "вузам", "вузам");
 
 const CHECK_HINT = "Вуз не указал профиль олимпиады — проверь в правилах, что он подходит к направлению";
 const ROLE_HINT = "Вуз не уточнил, только ли победителям — проверь в правилах";
+const LAW_BADGE = "по закону, проверь профиль";
+const LAW_HINT =
+  "Своих строк по этой олимпиаде у вуза в базе нет. По закону (ст. 71 273-ФЗ) победители и призёры заключительного этапа ВсОШ и члены сборных на международных олимпиадах вправе поступать без экзаменов на направления, соответствующие профилю. Какие направления подходят, решает вуз";
 const NO_TABLE_SHOWN = 5;
 
 interface Props {
@@ -124,6 +127,7 @@ export function DiplomasView(props: Props) {
           data={detailQ.data}
           error={detailQ.error?.message ?? null}
           entries={entries}
+          law={data.results.find((r) => r.university.id === university.id)?.law ?? []}
           total={data.results.length}
           onBack={() => setUniversity(null)}
           openProgram={props.openProgram}
@@ -314,10 +318,11 @@ function Results({
   const t = data.totals;
   const note = rejectedNote(data);
   const regional = data.diplomas.some((d) => d.stage === "r");
+  const lawCount = data.results.filter((r) => r.law.length).length;
   const [onlyConfirmed, setOnlyConfirmed] = useState(false);
   const ege = data.ege;
   const shown = ege && onlyConfirmed ? data.results.filter((u) => u.ege_confirmed) : data.results;
-  if (!t.programs) {
+  if (!t.programs && !lawCount) {
     return (
       <>
         <EmptyState
@@ -343,7 +348,9 @@ function Results({
       <div className="card p-4" id="diploma-summary">
         <div className="card-kicker">{readOnly ? "Эти дипломы дают льготы" : "Ваши дипломы дают льготы"}</div>
         <h2 className="card-title mt-1">
-          {`${fmt(t.programs)} ${napravleniy(t.programs)} в ${fmt(t.universities)} ${vuzah(t.universities)}`}
+          {t.programs
+            ? `${fmt(t.programs)} ${napravleniy(t.programs)} в ${fmt(t.universities)} ${vuzah(t.universities)}`
+            : `Строк в таблицах вузов нет, но по закону БВИ положено`}
         </h2>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {t.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(t.bvi)}`}</span> : null}
@@ -359,6 +366,11 @@ function Results({
         {check ? (
           <p className="mt-1 text-[12.5px] leading-snug meta-text">
             {`«Проверить» — у ${fmt(check)} ${uNapravleniy(check)} вуз не указал профиль олимпиады или не уточнил, только ли победителям: сверь с правилами приёма.`}
+          </p>
+        ) : null}
+        {lawCount ? (
+          <p className="mt-1 text-[12.5px] leading-snug meta-text" id="diploma-law-note">
+            {`${t.programs ? "Ещё в" : "В"} ${fmt(lawCount)} ${vuzah(lawCount)} своих строк по этим олимпиадам нет, но по закону диплом даёт БВИ на направления, соответствующие профилю: они в списке с пометкой «${LAW_BADGE}». Какие направления подходят, решает вуз.`}
           </p>
         ) : null}
         <NoTableNote items={data.no_table ?? []} />
@@ -386,8 +398,15 @@ function Results({
           <button key={r.university.id} className="uni-row" onClick={() => onUniversity(r.university)}>
             <div className="uni-row-main">
               <div className="uni-row-name">{r.university.name}</div>
-              <div className="uni-row-meta">{`${place(r.university)} · ${fmt(r.programs)} ${napravleniy(r.programs)}`}</div>
+              <div className="uni-row-meta">
+                {r.law.length ? place(r.university) : `${place(r.university)} · ${fmt(r.programs)} ${napravleniy(r.programs)}`}
+              </div>
               <div className="uni-row-badges">
+                {r.law.length ? (
+                  <span className="badge badge-soft" title={LAW_HINT}>
+                    {LAW_BADGE}
+                  </span>
+                ) : null}
                 {r.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(r.bvi)}`}</span> : null}
                 {r.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(r.sto)}`}</span> : null}
                 {r.other ? <span className="badge badge-alt">{`${fmt(r.other)} др.`}</span> : null}
@@ -561,6 +580,7 @@ function UniversityDetail({
   data,
   error,
   entries,
+  law,
   total,
   onBack,
   openProgram,
@@ -569,6 +589,8 @@ function UniversityDetail({
   data: AchievementsMatch | undefined;
   error: string | null;
   entries: DiplomaEntry[];
+  /** олимпиады, по которым у вуза нет своих строк, но по закону БВИ положено */
+  law: string[];
   total: number;
   onBack: () => void;
   openProgram: (id: number) => void;
@@ -587,12 +609,18 @@ function UniversityDetail({
         <Skeleton />
       ) : (
         <div className="card p-4" id="diploma-university">
-          <div className="card-kicker">{`${place(u)} · ${fmt(programs)} ${napravleniy(programs)}`}</div>
+          <div className="card-kicker">
+            {law.length ? `${place(u)} · ${LAW_BADGE}` : `${place(u)} · ${fmt(programs)} ${napravleniy(programs)}`}
+          </div>
           <h3 className="card-title mt-1">{u.name}</h3>
           {u.note ? <p className="mt-2 text-[12.5px] leading-snug meta-text">{u.note}</p> : null}
           <SourceBlock sources={detailSources(data.university ?? u, rows)} />
           <div className="mt-3">
-            {rows.length ? (
+            {law.length && !rows.length ? (
+              <p className="text-[13px] leading-snug" id="diploma-law">
+                {`${LAW_HINT}. Строк по олимпиаде «${law.join("», «")}» у этого вуза в нашей базе нет, поэтому направления мы не показываем: проверь в правилах приёма на сайте вуза, какие из них соответствуют профилю твоего диплома.`}
+              </p>
+            ) : rows.length ? (
               <DataTable
                 id={`diplomas-${u.id}`}
                 columns={detailColumns(openProgram, entries.length > 1)}

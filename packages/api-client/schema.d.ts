@@ -519,6 +519,11 @@ export interface components {
             check: number;
             /** Ege Confirmed */
             ege_confirmed: number | null;
+            /**
+             * Law
+             * @default []
+             */
+            law: string[];
             /** Other */
             other: number;
             /** Programs */

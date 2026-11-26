@@ -105,6 +105,9 @@ class AchievementUniversity(ResponseModel):
     check: int
     # направления, подтверждённые баллами ЕГЭ (только если баллы переданы)
     ege_confirmed: int | None = None
+    # строк вуза нет, но по закону диплом даёт БВИ на направления, соответствующие профилю:
+    # олимпиады, по которым права нужно сверить с правилами вуза (пусто — вуз с таблицей)
+    law: list[str] = []
 
 
 class AchievementProgram(ResponseModel):

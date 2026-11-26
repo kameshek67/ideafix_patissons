@@ -360,7 +360,7 @@ JOIN programs p ON p.id = b.program_id
 JOIN universities u ON u.id = p.university_id
 JOIN benefit_olympiads bo ON bo.benefit_id = b.id
 JOIN olympiads o ON o.id = bo.olympiad_id
-WHERE b.layer = 'detailed' AND u.id = %s
+WHERE b.layer IN ('detailed', 'derived') AND u.id = %s
 ORDER BY b.id, bo.id
 """
 RE_IMENI = re.compile(r"\bимени\b", re.IGNORECASE)

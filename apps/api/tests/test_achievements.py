@@ -255,6 +255,45 @@ async def test_vsosh_matches_by_subject(client: httpx.AsyncClient) -> None:
     assert rows and {r["fit"] for r in rows} <= {"exact", "subject", "check", "role"}
 
 
+async def test_vsosh_law_universities_need_check(client: httpx.AsyncClient) -> None:
+    """Вуз без своих строк ВсОШ показан как «по закону, проверь профиль», без выдуманных строк."""
+    vsosh = await form(client, "всош")
+    diploma = spec(vsosh, "математика", "w.11.2026")
+    data = await match(client, diploma)
+    law = [r for r in data["results"] if r["law"]]
+    own = [r for r in data["results"] if not r["law"]]
+    assert law and own
+    # у таких вузов нет ни направлений, ни счётчиков, и они идут после вузов со строками
+    assert all(r["programs"] == 0 and r["bvi"] == 0 and r["check"] == 0 for r in law)
+    assert data["results"][: len(own)] == own
+    assert data["totals"]["universities"] == len(own)
+    # победитель ВсОШ видит больше вузов, чем призёр «Высшей пробы»
+    proba = await form(client, "высшая проба")
+    other = await match(client, spec(proba, "математика", "p.11.2026"))
+    assert len(data["results"]) > len(other["results"])
+    # вуз без таблицы в «по закону» не попадает — по нему отдельная оговорка
+    assert not {u["id"] for u in data["no_table"]} & {r["university"]["id"] for r in law}
+    # строк у такого вуза нет, а фильтр «100 баллов» вузы по закону скрывает
+    detail = await match(client, diploma, university_id=law[0]["university"]["id"])
+    assert detail["rows"] == []
+    sto = await match(client, diploma, benefit_type="100 баллов")
+    assert not [r for r in sto["results"] if r["law"]]
+
+
+async def test_international_team_gets_bvi(client: httpx.AsyncClient) -> None:
+    """Диплом международной олимпиады: БВИ членам сборных из листа ВШЭ раскрыт по программам."""
+    ioi = await form(client, "международная олимпиада по информатике")
+    data = await match(client, spec(ioi, None, "p.0.0"))
+    assert data["totals"]["bvi"] > 5
+    assert data["rejected"]["team"] == 0
+    assert {r["university"]["short_name"] for r in data["results"] if not r["law"]} == {
+        "НИУ ВШЭ (Москва)"
+    }
+    # IMO — отдельная олимпиада, а не «Формула Единства»
+    imo = await form(client, "международная математическая олимпиада")
+    assert imo["olympiad"]["canonical_name"] == "Международная математическая олимпиада"
+
+
 async def test_university_rows(client: httpx.AsyncClient) -> None:
     hse = await form(client, "вышка")
     diploma = spec(hse, "математика", "w.11.2025")

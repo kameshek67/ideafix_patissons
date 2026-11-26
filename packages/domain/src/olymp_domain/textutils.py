@@ -647,6 +647,38 @@ class ProfileRule:
     whole_olympiads: list[str] = field(default_factory=list)
 
 
+# «ВсОШ (финал): математика, физика», «победителям ВсОШ по информатике, математике»
+RE_VSOSH_SUBJECTS = re.compile(r"всош[^;|:]{0,40}(?::|\bпо\s+[а-яё])", re.IGNORECASE)
+RE_VSOSH_JUNK = re.compile(
+    r"\d|₽|кл\b|класс|ур\.|уров|всош|соответств|профил|устанавлива", re.IGNORECASE
+)
+
+
+def vsosh_subjects(chunk: str) -> list[str]:
+    """«ВсОШ (финал, 9–11 кл.): математика, информатика, труд (технология)» -> предметы."""
+    s = clean_text(chunk)
+    m = re.search(r"всош", s, re.IGNORECASE)
+    if not m or re.search(r"стипенд|₽", s, re.IGNORECASE):  # стипендия — не льгота при приёме
+        return []
+    s = s[m.end() :]
+    s = re.sub(r"\([^()]*\)", " ", s)  # «(финал, 9–11 кл.)», «труд (технология)»
+    colon = s.find(":")
+    if colon >= 0:
+        s = s[colon + 1 :]
+    else:
+        by = re.search(r"\bпо\s+", s)
+        if not by:
+            return []
+        s = s[by.end() :]
+    s = re.sub(r"[—–].*$", "", s)  # хвост «— БВИ …»
+    out: list[str] = []
+    for part in re.split(r"[,/;]| и (?=[а-яё])", s):
+        part = clean_text(part).strip(' .;:«»"')
+        if part and _looks_like_profile(part) and not RE_VSOSH_JUNK.search(part):
+            out.append(part)
+    return out
+
+
 def has_profile_rule(text: str) -> bool:
     low = clean_text(text).lower().replace("ё", "е")
     return any(t.replace("ё", "е") in low for t in RULE_TRIGGERS)
@@ -690,7 +722,9 @@ def parse_profile_rules(text: str) -> list[ProfileRule]:
       естественные науки, наносистемы (II–III) — побед. и призёры БВИ»
     """
     s = clean_text(text)
-    if not s or not has_profile_rule(s):
+    triggered = has_profile_rule(s)
+    # правило про ВсОШ по предметам разбираем и без «перечневых» слов вокруг
+    if not s or not (triggered or RE_VSOSH_SUBJECTS.search(s)):
         return []
 
     default_scope = "rsosh" if "перечн" in s.lower() else "any"
@@ -725,12 +759,28 @@ def parse_profile_rules(text: str) -> list[ProfileRule]:
             scope = "rsosh"
         else:
             scope = default_scope
+        if not triggered and scope != "vsosh":
+            continue
         levels = _levels_in(chunk)
         role = (
             norm_role(chunk)
             if ("побед" in chunk.lower() or "призёр" in chunk.lower() or "призер" in chunk.lower())
             else ""
         )
+        if scope == "vsosh":
+            tokens = vsosh_subjects(chunk)
+            if tokens:
+                rules.append(
+                    ProfileRule(
+                        profiles=tokens,
+                        levels=levels,
+                        role=role,
+                        raw=full_chunk[:200],
+                        scope=scope,
+                        confirm=confirm,
+                    )
+                )
+            continue
         # перечисление в скобках: «все технологические профили (a, b, c)»
         groups = re.findall(r"\(([^()]{10,400})\)", chunk)
         source = groups[0] if groups else chunk

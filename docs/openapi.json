@@ -118,6 +118,14 @@
             ],
             "title": "Ege Confirmed"
           },
+          "law": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Law",
+            "type": "array"
+          },
           "other": {
             "title": "Other",
             "type": "integer"
@@ -141,7 +149,8 @@
           "sto",
           "other",
           "check",
-          "ege_confirmed"
+          "ege_confirmed",
+          "law"
         ],
         "title": "AchievementUniversity",
         "type": "object"

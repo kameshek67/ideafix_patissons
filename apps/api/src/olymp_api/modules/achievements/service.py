@@ -12,6 +12,7 @@ from olymp_domain.diplomas import (
     ADMISSION_YEAR,
     CAMPAIGN_YEAR,
     MAX_DIPLOMAS,
+    VSOSH_KEY,
     Diploma,
     DiplomaSpec,
     Fit,
@@ -129,6 +130,7 @@ class Resolved:
             grade=self.spec.grade,
             year=self.spec.year,
             stage=self.spec.stage,
+            international=self.olympiad.get("kind") == "international",
         )
 
 
@@ -139,7 +141,7 @@ async def resolve(session: AsyncSession, specs: list[DiplomaSpec]) -> list[Resol
         row["key"]: row
         for row in await fetch_all(
             session,
-            """SELECT id, squash_key AS key, short_name, canonical_name, in_rsosh_2026_27
+            """SELECT id, squash_key AS key, short_name, canonical_name, in_rsosh_2026_27, kind
                FROM olympiads WHERE squash_key = ANY(:keys)""",
             {"keys": keys},
         )
@@ -277,6 +279,48 @@ async def no_table_universities(session: AsyncSession) -> list[dict[str, Any]]:
     )
 
 
+async def law_universities(
+    session: AsyncSession, diplomas: list[Diploma | None], olympiads: dict[int, str]
+) -> dict[int, list[int]]:
+    """Вузы, где диплом даёт БВИ по закону, но своих строк по этой олимпиаде в базе нет.
+
+    Победители и призёры заключительного этапа ВсОШ и члены сборных на международных
+    олимпиадах вправе поступать без экзаменов на направления, соответствующие профилю
+    (ст. 71 273-ФЗ); какие направления соответствуют, решает вуз. Строк мы не выдумываем:
+    вуз попадает в «проверить» вместе с олимпиадой, по которой права нужно сверить.
+    Вузы без таблицы льгот не берём — по ним есть отдельная оговорка."""
+    ids = {d.olympiad_id for d in diplomas if d and d.stage is Stage.FINAL}
+    if not ids:
+        return {}
+    law = {oid for oid, key in olympiads.items() if oid in ids and key == VSOSH_KEY}
+    international = await fetch_all(
+        session,
+        """SELECT DISTINCT bo.olympiad_id FROM benefit_olympiads bo
+           JOIN benefits b ON b.id = bo.benefit_id
+           WHERE b.source_sheet = 'ВШЭ международные' AND bo.olympiad_id = ANY(:ids)""",
+        {"ids": sorted(ids)},
+    )
+    law.update(row["olympiad_id"] for row in international)
+    out: dict[int, list[int]] = {}
+    for olympiad_id in sorted(law):
+        rows = await fetch_all(
+            session,
+            """SELECT u.id FROM universities u
+               WHERE EXISTS (
+                       SELECT 1 FROM programs p JOIN benefits b ON b.program_id = p.id
+                       WHERE p.university_id = u.id AND b.layer IN ('detailed', 'derived'))
+                 AND NOT EXISTS (
+                       SELECT 1 FROM programs p JOIN benefits b ON b.program_id = p.id
+                       JOIN benefit_olympiads bo ON bo.benefit_id = b.id
+                       WHERE p.university_id = u.id AND bo.olympiad_id = :oid
+                         AND b.layer <> 'raw')""",
+            {"oid": olympiad_id},
+        )
+        for row in rows:
+            out.setdefault(row["id"], []).append(olympiad_id)
+    return out
+
+
 async def match_diplomas(
     session: AsyncSession,
     specs: list[DiplomaSpec],
@@ -357,12 +401,20 @@ async def match_diplomas(
         if not program.sure:
             u["check"] += 1
 
+    law: dict[int, list[int]] = {}
+    if not benefit_type or benefit_type in ("Все", "БВИ"):
+        law = await law_universities(
+            session,
+            diplomas,
+            {r.olympiad["id"]: r.olympiad["key"] for r in resolved if r.olympiad},
+        )
+        law = {uid: ids for uid, ids in law.items() if uid not in universities}
     info = {
         row["university_id"]: row
         for row in await fetch_all(
             session,
             f"SELECT {UNIVERSITY_FIELDS} FROM universities u WHERE u.id = ANY(:ids)",
-            {"ids": sorted(universities)},
+            {"ids": sorted({*universities, *law})},
         )
     }
     # вузы с БВИ — выше; дальше по числу направлений со 100 баллами и прочими льготами
@@ -381,10 +433,25 @@ async def match_diplomas(
         {
             "university": university_of(info[uid]),
             **universities[uid],
+            "law": [],
             **({"ege_confirmed": confirmed.get(uid, 0)} if ege else {}),
         }
         for uid in order
     ]
+    names = {r.olympiad["id"]: r.olympiad["short_name"] for r in resolved if r.olympiad}
+    results.extend(
+        {
+            "university": university_of(info[uid]),
+            "programs": 0,
+            "bvi": 0,
+            "sto": 0,
+            "other": 0,
+            "check": 0,
+            "law": [names[oid] for oid in law[uid]],
+            **({"ege_confirmed": 0} if ege else {}),
+        }
+        for uid in sorted(law, key=lambda uid: (info[uid]["university"], uid))
+    )
 
     out: dict[str, Any] = {
         "diplomas": [

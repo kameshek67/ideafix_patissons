@@ -21,6 +21,7 @@ const VSOSH_KEY = "всероссийскаяолимпиадашкольник�
 const vsosh = { ...olympiad, id: 6, canonical_name: "Всероссийская олимпиада школьников", short_name: "ВсОШ" };
 // вузы без таблицы льгот в ответе подбора
 let noTable: { id: number; name: string; short_name: string }[] = [];
+let lawResults: string[] = [];
 const university = {
   id: 18,
   name: "Уральский федеральный университет (УрФУ)",
@@ -57,7 +58,20 @@ function matchResponse(spec: string) {
     ],
     totals: counts,
     rejected: { role: 0, grade: regional ? 0 : 4, year: 0, team: 0 },
-    results: regional ? [] : [{ university, programs: 96, bvi: 88, sto: 8, other: 0, check: 0 }],
+    results: regional
+      ? []
+      : [
+          { university, programs: 96, bvi: 88, sto: 8, other: 0, check: 0, law: [] },
+          ...lawResults.map((name, i) => ({
+            university: { ...university, id: 900 + i, name },
+            programs: 0,
+            bvi: 0,
+            sto: 0,
+            other: 0,
+            check: 0,
+            law: ["ВсОШ"],
+          })),
+        ],
     university: null,
     rows: [],
     no_table: noTable,
@@ -74,6 +88,7 @@ beforeEach(() => {
   localStorage.setItem("olymp.onboarding.v1", "done");
   requests.length = 0;
   noTable = [];
+  lawResults = [];
   vi.stubGlobal(
     "fetch",
     vi.fn(async (input: Request | string) => {
@@ -227,5 +242,19 @@ describe("вкладка «Дипломы»", () => {
     expect(note.textContent).not.toContain("ШУ");
     fireEvent.click(within(note as HTMLElement).getByRole("button", { name: "и ещё 1" }));
     expect(document.querySelector("#diploma-no-table")!.textContent).toContain("ШУ");
+  });
+
+  it("вуз без своих строк ВсОШ помечен «по закону, проверь профиль»", async () => {
+    lawResults = ["Вуз без строк"];
+    localStorage.setItem(
+      "olymp.diplomas.v1",
+      JSON.stringify([{ spec: `${HSE_KEY}.математика.w.11.2025`, olympiad: "«Высшая проба»", profile: "математика" }]),
+    );
+    renderApp();
+    fireEvent.click(screen.getByRole("tab", { name: "Дипломы" }));
+    await waitFor(() => expect(document.querySelector("#diploma-law-note")).toBeTruthy());
+    expect(document.querySelector("#diploma-law-note")!.textContent).toContain("Ещё в 1 вузе");
+    const list = document.querySelector("#diploma-universities")!;
+    expect(within(list as HTMLElement).getByText("по закону, проверь профиль")).toBeTruthy();
   });
 });

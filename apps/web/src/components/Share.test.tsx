@@ -71,7 +71,7 @@ const routes: Record<string, unknown> = {
     ],
     totals: counts,
     rejected: { role: 0, grade: 0, year: 0, team: 0 },
-    results: [{ university, programs: 96, bvi: 88, sto: 8, other: 0, check: 0 }],
+    results: [{ university, programs: 96, bvi: 88, sto: 8, other: 0, check: 0, law: [] }],
     university: null,
     rows: [],
     no_table: [],

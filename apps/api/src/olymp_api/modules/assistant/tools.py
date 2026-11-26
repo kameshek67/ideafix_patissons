@@ -672,6 +672,8 @@ async def match_diplomas(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
             "bvi": r["bvi"],
             "sto": r["sto"],
             "to_check": r["check"],
+            # своих строк по олимпиаде у вуза нет: по закону БВИ положено, профиль сверить с вузом
+            **({"by_law_check": r["law"]} if r["law"] else {}),
         }
         for r in results
     ]

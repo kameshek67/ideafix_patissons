@@ -237,6 +237,8 @@ class Diploma:
     grade: int | None
     year: int | None
     stage: Stage = Stage.FINAL
+    # международная олимпиада: диплом у участника сборной, поэтому льготы «членам сборных» ему подходят
+    international: bool = False
 
 
 @dataclass(frozen=True)
@@ -280,7 +282,9 @@ def match(diploma: Diploma, link: Link, admission_year: int = ADMISSION_YEAR) ->
 
     roles = roles_allowed(link.role)
     if roles is None:
-        return Reject.TEAM
+        if not diploma.international:
+            return Reject.TEAM
+        roles = frozenset(Role)
     if diploma.role not in roles:
         return Reject.ROLE
 

@@ -225,6 +225,12 @@ def test_match_olympiad_without_profiles() -> None:
 def test_match_role_grade_year() -> None:
     assert match(MATH, link(role="только победители")) is Reject.ROLE
     assert match(MATH, link(role="члены сборных команд РФ")) is Reject.TEAM
+    # диплом международной олимпиады — у участника сборной: льгота «членам сборных» ему подходит
+    team = Diploma(1, None, frozenset(), Role.PRIZE, None, None, international=True)
+    assert (
+        match(team, link(profile_id=None, subject="информатика", role="члены сборных команд РФ"))
+        is Fit.CHECK
+    )
     assert match(MATH, link(grade="10 класс")) is Reject.GRADE
     assert match(MATH, link(grade="10, 11 класс")) is Fit.EXACT
     assert match(MATH, link(years="2023, 2024")) is Reject.YEAR

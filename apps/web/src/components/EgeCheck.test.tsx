@@ -61,8 +61,8 @@ function match(url: URL) {
     totals,
     rejected: { role: 0, grade: 0, year: 0, team: 0 },
     results: [
-      { university: hse, programs: 2, bvi: 2, sto: 0, other: 0, check: 0, ege_confirmed: ege.length ? 1 : null },
-      { university: urfu, programs: 1, bvi: 1, sto: 0, other: 0, check: 0, ege_confirmed: ege.length ? 0 : null },
+      { university: hse, programs: 2, bvi: 2, sto: 0, other: 0, check: 0, law: [], ege_confirmed: ege.length ? 1 : null },
+      { university: urfu, programs: 1, bvi: 1, sto: 0, other: 0, check: 0, law: [], ege_confirmed: ege.length ? 0 : null },
     ],
     university: url.searchParams.get("university_id") ? hse : null,
     rows: url.searchParams.get("university_id")
