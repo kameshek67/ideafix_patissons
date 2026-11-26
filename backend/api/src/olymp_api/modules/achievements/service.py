@@ -4,6 +4,7 @@
 поиске, а условия вуза (кому, класс, годы, предмет) проверяет olymp_domain.diplomas.
 """
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -12,6 +13,7 @@ from olymp_domain.diplomas import (
     ADMISSION_YEAR,
     CAMPAIGN_YEAR,
     MAX_DIPLOMAS,
+    RULES_2027_FROM_YEAR,
     VSOSH_KEY,
     Change,
     Diploma,
@@ -325,7 +327,7 @@ async def no_table_universities(session: AsyncSession) -> list[dict[str, Any]]:
 
 
 async def law_universities(
-    session: AsyncSession, diplomas: list[Diploma | None], olympiads: dict[int, str]
+    session: AsyncSession, diplomas: Sequence[Diploma | None], olympiads: dict[int, str]
 ) -> dict[int, list[int]]:
     """Вузы, где диплом даёт БВИ по закону, но своих строк по этой олимпиаде в базе нет.
 
@@ -458,9 +460,22 @@ async def match_diplomas(
 
     law: dict[int, list[int]] = {}
     if not benefit_type or benefit_type in ("Все", "БВИ"):
+        # «по закону» даём только действующие дипломы, не отсеянные правилом 10–11 класса
+        valid = [
+            diploma
+            for r, diploma in zip(resolved, diplomas, strict=True)
+            if diploma is not None
+            and not r.spec.expired(admission_year)
+            and not (
+                rules is Rules.PROJECT_2027
+                and r.spec.grade == 9
+                and r.spec.year is not None
+                and r.spec.year >= RULES_2027_FROM_YEAR
+            )
+        ]
         law = await law_universities(
             session,
-            diplomas,
+            valid,
             {r.olympiad["id"]: r.olympiad["key"] for r in resolved if r.olympiad},
         )
         law = {uid: ids for uid, ids in law.items() if uid not in universities}

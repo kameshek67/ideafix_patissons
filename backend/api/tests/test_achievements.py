@@ -281,6 +281,24 @@ async def test_vsosh_law_universities_need_check(client: httpx.AsyncClient) -> N
     assert not [r for r in sto["results"] if r["law"]]
 
 
+async def test_vsosh_law_needs_valid_diploma(client: httpx.AsyncClient) -> None:
+    """«По закону» не появляется по просроченному диплому и по 9 классу 2026/27."""
+    vsosh = await form(client, "всош")
+    valid = await match(client, spec(vsosh, "математика", "w.11.2027"))
+    assert [r for r in valid["results"] if r["law"]]
+    # старый и диплом из будущего для года поступления 2027 не действуют
+    for year in (2023, 2028):
+        data = await match(client, spec(vsosh, "математика", f"w.11.{year}"))
+        assert data["diplomas"][0]["expired"]
+        assert not [r for r in data["results"] if r["law"]]
+
+    grade9 = spec(vsosh, "математика", "w.9.2027")
+    assert [r for r in (await match(client, grade9))["results"] if r["law"]]
+    project = await match(client, grade9, rules="project2027")
+    assert project["totals"]["programs"] == 0
+    assert not [r for r in project["results"] if r["law"]]
+
+
 async def test_international_team_gets_bvi(client: httpx.AsyncClient) -> None:
     """Диплом международной олимпиады: БВИ членам сборных из листа ВШЭ раскрыт по программам."""
     ioi = await form(client, "международная олимпиада по информатике")
