@@ -2,12 +2,21 @@ from olymp_domain import squash
 from olymp_domain.textutils import (
     clean_text,
     extract_codes,
+    find_ege_thresholds,
     find_grades,
     find_levels,
+    find_roles,
+    find_subjects,
+    has_profile_rule,
     norm_level,
+    norm_role,
     parse_enumeration,
     parse_profile_rules,
+    profile_stems,
+    split_sentences,
     split_source,
+    split_top_level,
+    vsosh_subjects,
 )
 
 
@@ -182,3 +191,160 @@ def test_vsosh_rule_skips_scholarships_and_general_phrases() -> None:
     assert not parse_profile_rules(
         "ВсОШ (финал) и сборные — БВИ по направлениям, соответствующим профилю"
     )
+
+
+def test_find_levels_keeps_only_recognized_levels() -> None:
+    assert find_levels("олимпиада I уровня, олимпиада II уровня") == ["I", "II"]
+    assert find_levels("ур. 3") == ["III"]
+    assert find_levels("перечневые олимпиады без указания уровня") == []
+
+
+def test_find_roles_distinguishes_only_winners() -> None:
+    assert find_roles("только победители и призёры олимпиады") == [
+        "только победители",
+        "призёры",
+    ]
+    assert find_roles("победители и призёры олимпиад перечня") == ["победители", "призёры"]
+    assert find_roles("призёры ВсОШ") == ["призёры"]
+
+
+def test_norm_role_abbreviations() -> None:
+    assert norm_role("поб.+приз.") == "победители и призёры"
+    assert norm_role("только поб.") == "только победители"
+    assert norm_role("призёры") == "призёры"
+    assert norm_role("олимпиада перечня") == "олимпиада перечня"
+
+
+def test_find_grades_returns_first_grade_of_range() -> None:
+    assert find_grades("для 9–11 кл.") == ["9"]
+    assert find_grades("обучающимся 10, 11 классов") == ["10"]
+    assert find_grades("11 класс") == ["11"]
+
+
+def test_find_ege_thresholds_reads_minimum_scores() -> None:
+    assert find_ege_thresholds("не ниже 75 баллов") == ["75"]
+    assert find_ege_thresholds("≥ 82 балла") == ["82"]
+    assert find_ege_thresholds("не ниже 80 баллов ЕГЭ, ≥ 70 баллов") == ["80", "70"]
+    assert find_ege_thresholds("109 баллов") == []
+
+
+def test_find_subjects_matches_exact_forms_in_subjects_list() -> None:
+    assert find_subjects("ЕГЭ: математика, физика, информатика") == [
+        "математика",
+        "информатика",
+        "физика",
+    ]
+    assert find_subjects("подтверждение: русский язык, математика") == [
+        "математика",
+        "русский язык",
+    ]
+    assert find_subjects("ЕГЭ по математике и физике") == []
+
+
+def test_split_top_level_ignores_separators_in_brackets_and_quotes() -> None:
+    assert split_top_level("«Высшая проба (открытая)» — I ур.; «Ломоносов» — II ур.") == [
+        "«Высшая проба (открытая)» — I ур",
+        "«Ломоносов» — II ур",
+    ]
+    assert split_top_level("«математика; физика»; информатика") == [
+        "«математика; физика»",
+        "информатика",
+    ]
+    assert split_top_level("Астрономия (подтв.: математика, физика); Анализ данных", ",;") == [
+        "Астрономия (подтв.: математика, физика)",
+        "Анализ данных",
+    ]
+
+
+def test_split_sentences_keeps_abbreviations_and_breaks_on_capital() -> None:
+    assert split_sentences("Побед. и призёры БВИ. ВсОШ (финал): математика.") == [
+        "Побед. и призёры БВИ",
+        "ВсОШ (финал): математика",
+    ]
+    assert split_sentences("Московская олимпиада — победители; ВсОШ — призёры. НТО — I ур.") == [
+        "Московская олимпиада — победители",
+        "ВсОШ — призёры",
+        "НТО — I ур",
+    ]
+
+
+def test_vsosh_subjects_extracts_subjects_and_skips_scholarships() -> None:
+    assert vsosh_subjects("ВсОШ (финал): математика, информатика, труд (технология), физика") == [
+        "математика",
+        "информатика",
+        "труд",
+        "физика",
+    ]
+    assert vsosh_subjects("победителям ВсОШ по информатике и математике — БВИ") == [
+        "информатике",
+        "математике",
+    ]
+    assert vsosh_subjects("Стипендия 50 000 ₽ — победителям ВсОШ по физике") == []
+
+
+def test_has_profile_rule_detects_list_rules() -> None:
+    assert has_profile_rule("Любая олимпиада перечня по профилю ИКТ")
+    assert has_profile_rule("Перечневые олимпиады I–III уровня")
+    assert has_profile_rule("все технологические профили — БВИ")
+    assert not has_profile_rule("«Высшая проба» (информатика, I ур.)")
+
+
+def test_parse_profile_rules_various_wording() -> None:
+    (rule,) = parse_profile_rules(
+        "любая олимпиада перечня I–III уровня по профилям: математика, физика, информатика "
+        "— побед. и призёры"
+    )
+    assert rule.scope == "rsosh"
+    assert rule.profiles == ["математика", "физика", "информатика"]
+    assert rule.levels == ["I", "II", "III"]
+    assert rule.role == "победители и призёры"
+
+    (rule,) = parse_profile_rules(
+        "Любая олимпиада перечня: Астрономия (подтв.: математика, физика) — победители и призёры"
+    )
+    assert rule.profiles == ["Астрономия"]
+    assert rule.confirm == ["математика", "физика"]
+    assert rule.levels == []
+
+    (rule,) = parse_profile_rules("ВсОШ (финал, 9–11 кл.): математика, физика — БВИ")
+    assert rule.scope == "vsosh"
+    assert rule.profiles == ["математика", "физика"]
+    assert rule.role == ""
+
+
+def test_profile_stems_uses_first_six_letters_sorted() -> None:
+    assert profile_stems("Информатика") == ("информ",)
+    assert profile_stems("Математическое моделирование и искусственный интеллект") == (
+        "интелл",
+        "искусс",
+        "матема",
+        "модели",
+    )
+    assert profile_stems("ИКТ (информационные и коммуникационные технологии)") == (
+        "икт",
+        "информ",
+        "коммун",
+        "технол",
+    )
+
+
+def test_extract_codes_from_admission_directions() -> None:
+    assert extract_codes("Направления 01.03.02, 09.03.01 и 02.03.01") == [
+        "01.03.02",
+        "09.03.01",
+        "02.03.01",
+    ]
+    assert extract_codes("код 01.03.02. Прикладная математика") == ["01.03.02"]
+    assert extract_codes("направление 1.03.02") == []
+
+
+def test_split_source_without_and_with_url() -> None:
+    assert split_source("Приказ № 45") == ("Приказ № 45", "")
+    title, url = split_source(
+        "Приложение 2 «Особые права» — https://ba.hse.ru/mirror/pubs/share/1170753560"
+    )
+    assert title == "Приложение 2 «Особые права»"
+    assert url == "https://ba.hse.ru/mirror/pubs/share/1170753560"
+    title, url = split_source("Правила приёма: https://example.ru/Приказ 2026.pdf")
+    assert title == "Правила приёма: 2026.pdf"
+    assert url == "https://example.ru/%D0%9F%D1%80%D0%B8%D0%BA%D0%B0%D0%B7"
