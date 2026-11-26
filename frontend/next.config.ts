@@ -34,7 +34,6 @@ const config: NextConfig = {
   },
   // значок Next.js в углу экрана в режиме разработки закрывал бы интерфейс
   devIndicators: false,
-  transpilePackages: ["@olymp/api-client"],
 };
 
 export default config;

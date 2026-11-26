@@ -1,4 +1,4 @@
-import { apiClient, type Schemas } from "@olymp/api-client";
+import { apiClient, type Schemas } from "@/api";
 import type { EgeScores } from "./ege";
 
 export type UniversityItem = Schemas["UniversityItem"];

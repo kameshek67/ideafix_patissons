@@ -1,6 +1,6 @@
 /* ИИ-помощник: история на устройстве, разбор потока и подготовка запроса. Логика без React. */
 
-import type { Schemas } from "@olymp/api-client";
+import type { Schemas } from "@/api";
 
 export type AssistantEntity = Schemas["AssistantEntity"];
 export type AssistantSource = Schemas["AssistantSource"];

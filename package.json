@@ -1,6 +1,0 @@
-{
-  "name": "olymp",
-  "private": true,
-  "engines": {"node": ">=22 <23"},
-  "workspaces": ["apps/web", "packages/api-client"]
-}
