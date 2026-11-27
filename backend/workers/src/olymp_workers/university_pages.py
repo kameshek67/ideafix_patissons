@@ -27,6 +27,8 @@ class Page:
     url: str  # стабильный адрес раздела
     status: str = "todo"
     note: str = ""
+    # город вуза: нужен, чтобы слой document завёл вуз, которого ещё нет в базе
+    city: str = ""
 
 
 PAGES = {
@@ -138,6 +140,42 @@ PAGES = {
         "ЛЭТИ: льготы и привилегии олимпиадникам",
         "https://etu.ru/ru/abiturientam/olimpiady-shkolnikov/lgoty-i-privilegii",
         "verified",
+    ),
+    # --- вузы, которых не было в «Базе»: их заводит слой document (city нужен для этого) ---
+    "дальневосточныйфедеральный": Page(
+        "ДВФУ: правила приёма на 2026/27 год и приложения",
+        "https://postupi.dvfu.ru/docs/pravila-priema-na-obuchenie-na-2026-27-uchebnyy-god-na-programmy-bakalavriata-spetsialiteta-i-magist/",
+        "verified",
+        "Приложение 4 — соответствие направлений профилям олимпиад",
+        "Владивосток",
+    ),
+    "нижегородскийгосударственный": Page(
+        "ННГУ: правила приёма 2026 и другие документы",
+        "http://www.unn.ru/site/about/mediaresursy/mediatsentr/informatsiya-i-dokumenty-dlya-postupleniya/pravila-prijoma-i-drugie-dokumenty-reglamentiruyushchie-prijom-v-2024-godu",
+        "verified",
+        "Приложение 6 — положение о приёме победителей и призёров олимпиад",
+        "Нижний Новгород",
+    ),
+    "университеттранспорта": Page(
+        "РУТ (МИИТ): победителям и призёрам олимпиад школьников",
+        "https://miit.ru/page/121469",
+        "verified",
+        "приложения 10–14 к правилам приёма: ВсОШ и перечневые олимпиады",
+        "Москва",
+    ),
+    "герцена": Page(
+        "РГПУ им. Герцена: приём 2026",
+        "https://www.herzen.spb.ru/abiturients/priem-rf-2026/",
+        "verified",
+        "профили олимпиад — в приложении к правилам приёма",
+        "Санкт-Петербург",
+    ),
+    "челябинскийгосударственный": Page(
+        "ЧелГУ: правила приёма и приложения",
+        "https://abit.csu.ru/priem/rules/",
+        "verified",
+        "«Особые права и преимущества, предоставляемые победителям и призёрам олимпиад»",
+        "Челябинск",
     ),
     # --- адреса разделов, присланные вручную ------------------------------
     "ниувшэ": Page(

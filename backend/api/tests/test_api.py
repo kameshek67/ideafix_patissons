@@ -14,9 +14,9 @@ async def test_health(client: httpx.AsyncClient) -> None:
 
 async def test_stats(client: httpx.AsyncClient) -> None:
     data = (await client.get("/v1/stats")).json()
-    assert data["totals"]["universities"] == 39
-    assert data["totals"]["rows"] == 59783
-    assert len(data["universities"]) == 39
+    assert data["totals"]["universities"] == 44
+    assert data["totals"]["rows"] == 62798
+    assert len(data["universities"]) == 44
     assert len(data["top_olympiads"]) == 15
     assert data["sheets"][0]["sheet"] == "База"
 

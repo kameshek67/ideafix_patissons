@@ -28,22 +28,25 @@ from olymp_workers.olympiad_cards import CARDS_FILE, load_olympiad_cards
 #    РСОШ (слой derived): +976 строк (ИТМО 27, МГУ 949), documents_added 5657 -> 6633.
 #  - C5: ключ повторов слоя document учитывает роль, классы, уровни и ЕГЭ: диплом 10 и 11 класса
 #    больше не склеиваются: +64 строки документа (МАИ 1387 вместо 1378), documents_added 6697.
+#  - R3: документы ещё пяти вузов (ДВФУ, ННГУ, МИИТ, РГПУ им. Герцена, ЧелГУ — их заводит слой document)
+#    и второй документ СПбГУ: +3015 строк (ДВФУ 993, Герцен 1120, ННГУ 473, ЧелГУ 102, МИИТ 46, СПбГУ 281),
+#    вузов 39 -> 44, направлений 833 -> 1097, documents_added 9712.
 EXPECTED = {
-    "universities": "39",
-    "programs": "833",
-    "benefits": "60260",
-    "benefits_bvi": "36430",
-    "benefits_sto": "23026",
+    "universities": "44",
+    "programs": "1097",
+    "benefits": "63275",
+    "benefits_bvi": "38274",
+    "benefits_sto": "24197",
     "benefits_raw": "859",
-    "benefits_rows": "59783",
+    "benefits_rows": "62798",
     "benefits_derived": "27654",
     "benefits_notes": "477",
     "olympiads": "176",
-    "profiles": "658",
-    "links": "69918",
-    "keywords": "142428",
+    "profiles": "726",
+    "links": "72933",
+    "keywords": "149818",
     "fts": "on",
-    "documents_added": "6697",
+    "documents_added": "9712",
     "documents_replaced": "164",
 }
 
@@ -71,6 +74,22 @@ def test_every_program_has_source(built_database_url: str) -> None:
         pages = conn.execute("SELECT COUNT(*) FROM universities WHERE docs_url = ''").fetchone()
     assert missing == (0,)
     assert pages == (0,)
+
+
+def test_document_layer_creates_new_universities(built_database_url: str) -> None:
+    """Вуз, которого не было в XLSX, заводит слой document: с городом, ссылкой на страницу и льготами."""
+    with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
+        row = conn.execute(
+            """SELECT u.city, u.region_group, u.docs_url, count(b.id)
+               FROM universities u JOIN programs p ON p.university_id = u.id
+               JOIN benefits b ON b.program_id = p.id
+               WHERE u.name LIKE 'Дальневосточный федеральный%' GROUP BY u.id"""
+        ).fetchone()
+    assert row is not None
+    city, group, docs_url, benefits = row
+    assert (city, group) == ("Владивосток", "Регионы")
+    assert docs_url.startswith("https://postupi.dvfu.ru/")
+    assert benefits > 900
 
 
 def test_search_index_covers_non_derived_rows(built_database_url: str) -> None:
@@ -408,7 +427,7 @@ def test_document_layer_rows_have_document_source(built_database_url: str) -> No
             "SELECT COUNT(*) FROM benefits WHERE layer NOT IN ('document', 'derived')"
             " AND source_page IS NOT NULL"
         ).fetchone()[0]
-    assert total == 5721
+    assert total == 8736
     assert (bad, others) == (0, 0)
 
 

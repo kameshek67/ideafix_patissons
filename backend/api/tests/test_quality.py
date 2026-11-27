@@ -31,8 +31,8 @@ async def test_extraction_from_eval_files(client: httpx.AsyncClient) -> None:
 async def test_coverage_and_freshness(client: httpx.AsyncClient) -> None:
     data = await get_quality(client)
     coverage = data["coverage"]
-    assert coverage["universities"] == 39
-    assert coverage["with_table"] + len(coverage["without_table"]) == 39
+    assert coverage["universities"] == 44
+    assert coverage["with_table"] + len(coverage["without_table"]) == 44
     assert coverage["with_table"] > 0
     assert all(item["name"] for item in coverage["without_table"])
     assert coverage["layers"]["detailed"] > 0
@@ -53,7 +53,7 @@ async def test_missing_files_leave_blanks(
     assert data["freshness"]["rsosh_list"] is None
     assert data["freshness"]["documents_checked_to"] is None
     assert data["assistant"] is None
-    assert data["coverage"]["universities"] == 39
+    assert data["coverage"]["universities"] == 44
 
 
 async def test_assistant_summary(

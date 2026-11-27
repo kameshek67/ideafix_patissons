@@ -20,6 +20,7 @@ from olymp_domain.extraction import ExtractionError, Record, load_dir, profile_k
 from olymp_domain.textutils import clean_text, squash
 
 from .eval_extract import ANY_CODE, pick_university
+from .university_pages import PAGES
 
 if TYPE_CHECKING:
     from .ingest import Ingestor
@@ -114,6 +115,20 @@ def _detail(ing: Ingestor, rec: DocRecord, olympiad_id: int) -> Any:
     )
 
 
+def _new_university(ing: Ingestor, name: str) -> tuple[int, str] | None:
+    """Заводит вуз, которого нет в базе, если справочник страниц знает его город."""
+    key = squash(name)
+    page = next((p for part, p in PAGES.items() if part in key and p.city), None)
+    if page is None:
+        return None
+    uid = ing.university_id(name, page.city)
+    ing.conn.execute(
+        "UPDATE universities SET docs_url=%s, docs_title=%s WHERE id=%s",
+        (page.url, page.title, uid),
+    )
+    return uid, clean_text(name)
+
+
 def apply_documents(
     ing: Ingestor, directory: Path, log: Callable[[str], None]
 ) -> dict[str, Counter[str]]:
@@ -126,7 +141,9 @@ def apply_documents(
     by_university: dict[int, list[DocRecord]] = defaultdict(list)
     uni_names: dict[int, str] = {}
     for rec in records:
-        found = pick_university(conn, rec.record.university)
+        found = pick_university(conn, rec.record.university) or _new_university(
+            ing, rec.record.university
+        )
         if found is None:
             log(f"      ! {rec.record.university}: вуза нет в базе, запись пропущена")
             continue
