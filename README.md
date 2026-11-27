@@ -172,6 +172,7 @@ docs/         документация, openapi.json, макеты (design)
 - [docs/architecture.md](docs/architecture.md) — как устроено: данные, модули, проверки.
 - [docs/pitch.md](docs/pitch.md) — заметки к защите: проблема, кому нужно, почему верить.
 - [docs/eval.md](docs/eval.md) — как проверяем качество: извлечение, база, помощник, выбор модели.
+- [docs/research.md](docs/research.md) — предметная область в цифрах, как учатся олимпиадники, оценка пользы, ИИ в поступлении.
 - [docs/rag.md](docs/rag.md) — какие документы нужны справочному поиску помощника.
 - [docs/operations.md](docs/operations.md) — выкатка, переменные окружения, бэкап, жалобы, бот.
 - [docs/plan.md](docs/plan.md) — план работ и что уже сделано.
