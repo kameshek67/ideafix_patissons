@@ -360,9 +360,10 @@ JOIN programs p ON p.id = b.program_id
 JOIN universities u ON u.id = p.university_id
 JOIN benefit_olympiads bo ON bo.benefit_id = b.id
 JOIN olympiads o ON o.id = bo.olympiad_id
-WHERE b.layer IN ('detailed', 'derived', 'document') AND u.id = %s
+WHERE b.layer = ANY(%s) AND u.id = %s
 ORDER BY b.id, bo.id
 """
+DB_LAYERS = ("detailed", "derived", "document")
 RE_IMENI = re.compile(r"\bимени\b", re.IGNORECASE)
 ROMAN_LEVELS = {"I": 1, "II": 2, "III": 3}
 
@@ -446,9 +447,19 @@ def pick_university(conn: Any, name: str) -> tuple[int, str] | None:
     return None
 
 
-def db_rows(conn: Any, gold: ExtractionFile) -> tuple[list[Row], str]:
+def db_raw(
+    conn: Any, university_id: int, layers: Sequence[str] = DB_LAYERS
+) -> list[dict[str, Any]]:
+    """Строки льгот вуза из базы (слои layers), по одной на связь с олимпиадой."""
     from psycopg.rows import dict_row
 
+    with conn.cursor(row_factory=dict_row) as cur:
+        return list(cur.execute(DB_SQL, (list(layers), university_id)).fetchall())
+
+
+def db_rows(
+    conn: Any, gold: ExtractionFile, layers: Sequence[str] = DB_LAYERS
+) -> tuple[list[Row], str]:
     found = pick_university(conn, gold.document.university)
     if found is None:
         return [], "вуза нет в базе"
@@ -460,10 +471,10 @@ def db_rows(conn: Any, gold: ExtractionFile) -> tuple[list[Row], str]:
     for r in gold.records:
         if r.division:
             units[squash(r.division)].add(r.program_code)
-    with conn.cursor(row_factory=dict_row) as cur:
-        raw = cur.execute(DB_SQL, (found[0],)).fetchall()
     rows = [
-        row for r in raw for row in db_rows_of(r, codes, gold.document.university, types, units)
+        row
+        for r in db_raw(conn, found[0], layers)
+        for row in db_rows_of(r, codes, gold.document.university, types, units)
     ]
     return rows, f"база: {found[1]}"
 

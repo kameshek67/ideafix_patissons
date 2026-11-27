@@ -66,6 +66,10 @@ report-regressions *ARGS:
 rag-fetch *ARGS:
     {{uv}} olymp-passages --fetch {{ARGS}}
 
+# пересчитать анализ данных: data/analysis/results.json и графики docs/img (нужна собранная база)
+analysis *ARGS:
+    uv run --project backend --with matplotlib olymp-analysis --charts {{ARGS}}
+
 # воркер фоновых задач (Dramatiq + RabbitMQ)
 worker:
     {{uv}} dramatiq olymp_workers.tasks --processes 1 --threads 2

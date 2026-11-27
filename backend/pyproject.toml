@@ -44,6 +44,11 @@ plugins = ["pydantic.mypy"]
 exclude = ["/tests/"]
 
 [[tool.mypy.overrides]]
+# графики анализа: matplotlib подключается только при пересчёте (just analysis)
+module = ["matplotlib", "matplotlib.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 # Парсер документов и скрипты данных перенесены из прототипа как есть: их поведение
 # закреплено интеграционным тестом сборки базы (workers/tests), а не типами.
 module = [

@@ -1,0 +1,1151 @@
+{
+ "database": {
+  "links": 61858,
+  "programs": 1002,
+  "universities": 35
+ },
+ "prize_2027": {
+  "bvi_rows": 38096,
+  "prize_bvi_rows": 29118,
+  "prize_bvi_programs": 677,
+  "to_hundred_rows": 26550,
+  "to_hundred_rows_share": 0.9118,
+  "to_hundred_programs": 434,
+  "to_hundred_programs_share": 0.6411,
+  "fully_to_hundred_programs": 129,
+  "fully_to_hundred_programs_share": 0.1905,
+  "to_hundred_universities": 16,
+  "check_rows": 526,
+  "role_unstated_rows": 7971,
+  "to_hundred_links_by_kind": {
+   "other": 25,
+   "rsosh": 26525
+  },
+  "top_universities": [
+   {
+    "name": "КФУ",
+    "programs": 122,
+    "prize_programs": 134,
+    "share": 0.9104
+   },
+   {
+    "name": "Уральский федеральный университет…",
+    "programs": 116,
+    "prize_programs": 124,
+    "share": 0.9355
+   },
+   {
+    "name": "НИЯУ МИФИ — филиалы",
+    "programs": 43,
+    "prize_programs": 43,
+    "share": 1.0
+   },
+   {
+    "name": "НИУ ВШЭ (Москва)",
+    "programs": 34,
+    "prize_programs": 76,
+    "share": 0.4474
+   },
+   {
+    "name": "НИЯУ МИФИ",
+    "programs": 23,
+    "prize_programs": 23,
+    "share": 1.0
+   },
+   {
+    "name": "НИУ ВШЭ — Санкт-Петербург",
+    "programs": 18,
+    "prize_programs": 18,
+    "share": 1.0
+   },
+   {
+    "name": "РНИМУ им. Н.И. Пирогова (Пироговс…",
+    "programs": 17,
+    "prize_programs": 17,
+    "share": 1.0
+   },
+   {
+    "name": "МГТУ им. Н.Э. Баумана",
+    "programs": 10,
+    "prize_programs": 10,
+    "share": 1.0
+   },
+   {
+    "name": "Университет ИТМО",
+    "programs": 10,
+    "prize_programs": 10,
+    "share": 1.0
+   },
+   {
+    "name": "МАИ",
+    "programs": 9,
+    "prize_programs": 9,
+    "share": 1.0
+   }
+  ],
+  "top_olympiads": [
+   {
+    "name": "«Высшая проба»",
+    "programs": 360,
+    "rows": 1367,
+    "universities": 15
+   },
+   {
+    "name": "Олимпиада СПбГУ",
+    "programs": 336,
+    "rows": 1214,
+    "universities": 16
+   },
+   {
+    "name": "«Ломоносов»",
+    "programs": 323,
+    "rows": 1339,
+    "universities": 15
+   },
+   {
+    "name": "МОШ",
+    "programs": 312,
+    "rows": 1253,
+    "universities": 16
+   },
+   {
+    "name": "«Покори Воробьёвы горы!»",
+    "programs": 257,
+    "rows": 516,
+    "universities": 15
+   },
+   {
+    "name": "«Шаг в будущее»",
+    "programs": 241,
+    "rows": 811,
+    "universities": 15
+   },
+   {
+    "name": "Всесибирская олимпиада",
+    "programs": 240,
+    "rows": 580,
+    "universities": 16
+   },
+   {
+    "name": "«Физтех»",
+    "programs": 231,
+    "rows": 775,
+    "universities": 16
+   },
+   {
+    "name": "Турнир Ломоносова",
+    "programs": 230,
+    "rows": 467,
+    "universities": 14
+   },
+   {
+    "name": "Предметные олимпиады КФУ",
+    "programs": 224,
+    "rows": 481,
+    "universities": 14
+   }
+  ]
+ },
+ "old_table": {
+  "layers": [
+   "detailed",
+   "derived"
+  ],
+  "types": {
+   "missing": "нет строки в таблице",
+   "extra": "лишняя строка в таблице",
+   "role": "другое «кому»",
+   "ege": "другой порог или предмет ЕГЭ",
+   "grade_level": "другой класс или уровень",
+   "detail": "группа направлений вместо кода"
+  },
+  "sets": {
+   "development": {
+    "gold": 1000,
+    "table_rows": 871,
+    "gold_matched": 133,
+    "gold_matched_share": 0.133,
+    "gold_ok": 69,
+    "gold_ok_share": 0.069,
+    "gold_missing_share": 0.792,
+    "gold_detail_share": 0.075,
+    "unmatched_no_olympiad": 785,
+    "field_diffs_any": {
+     "role": 10,
+     "ege": 64,
+     "grade_level": 26
+    },
+    "problems": 1098,
+    "counts": {
+     "missing": 792,
+     "extra": 167,
+     "role": 10,
+     "ege": 54,
+     "grade_level": 0,
+     "detail": 75
+    },
+    "shares": {
+     "missing": 0.7213,
+     "extra": 0.1521,
+     "role": 0.0091,
+     "ege": 0.0492,
+     "grade_level": 0.0,
+     "detail": 0.0683
+    },
+    "extra_unverifiable": 571,
+    "documents": {
+     "hse-1120646356": {
+      "gold": 61,
+      "table_rows": 170,
+      "ok": 52,
+      "counts": {
+       "missing": 1,
+       "extra": 53,
+       "role": 0,
+       "ege": 8,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 8,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 57,
+      "unmatched_no_olympiad": 1,
+      "university": "НИУ ВШЭ (Москва)",
+      "note": "база: НИУ ВШЭ (Москва)"
+     },
+     "itmo-rsosh-bvi": {
+      "gold": 40,
+      "table_rows": 92,
+      "ok": 0,
+      "counts": {
+       "missing": 14,
+       "extra": 43,
+       "role": 3,
+       "ege": 23,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 3,
+       "ege": 26,
+       "grade_level": 26
+      },
+      "extra_unverifiable": 23,
+      "unmatched_no_olympiad": 7,
+      "university": "Университет ИТМО",
+      "note": "база: Университет ИТМО"
+     },
+     "kfu-prilozhenie3": {
+      "gold": 90,
+      "table_rows": 574,
+      "ok": 17,
+      "counts": {
+       "missing": 0,
+       "extra": 71,
+       "role": 0,
+       "ege": 20,
+       "grade_level": 0,
+       "detail": 53
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 20,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 466,
+      "unmatched_no_olympiad": 0,
+      "university": "Казанский (Приволжский) федеральный университет",
+      "note": "база: Казанский (Приволжский) федеральный университет (КФУ)"
+     },
+     "mai-priloz7-olymp": {
+      "gold": 56,
+      "table_rows": 0,
+      "ok": 0,
+      "counts": {
+       "missing": 56,
+       "extra": 0,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 0,
+      "unmatched_no_olympiad": 56,
+      "university": "МАИ",
+      "note": "база: Московский авиационный институт (МАИ)"
+     },
+     "mpei-app2-1-rsosh": {
+      "gold": 400,
+      "table_rows": 0,
+      "ok": 0,
+      "counts": {
+       "missing": 400,
+       "extra": 0,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 0,
+      "unmatched_no_olympiad": 400,
+      "university": "НИУ «МЭИ»",
+      "note": "база: НИУ «МЭИ»"
+     },
+     "msu-olymp-benefits": {
+      "gold": 49,
+      "table_rows": 24,
+      "ok": 0,
+      "counts": {
+       "missing": 25,
+       "extra": 0,
+       "role": 7,
+       "ege": 3,
+       "grade_level": 0,
+       "detail": 14
+      },
+      "field_diffs_any": {
+       "role": 7,
+       "ege": 10,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 14,
+      "unmatched_no_olympiad": 25,
+      "university": "МГУ им. М.В. Ломоносова",
+      "note": "база: МГУ им. М.В. Ломоносова"
+     },
+     "msu-olymp-disciplines": {
+      "gold": 20,
+      "table_rows": 0,
+      "ok": 0,
+      "counts": {
+       "missing": 12,
+       "extra": 0,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 8
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 0,
+      "unmatched_no_olympiad": 12,
+      "university": "МГУ имени М.В. Ломоносова",
+      "note": "база: МГУ им. М.В. Ломоносова"
+     },
+     "ranepa-olymp-bvi": {
+      "gold": 92,
+      "table_rows": 0,
+      "ok": 0,
+      "counts": {
+       "missing": 92,
+       "extra": 0,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 0,
+      "unmatched_no_olympiad": 92,
+      "university": "РАНХиГС",
+      "note": "база: РАНХиГС (Президентская академия)"
+     },
+     "sechenov-pril5-100": {
+      "gold": 42,
+      "table_rows": 0,
+      "ok": 0,
+      "counts": {
+       "missing": 42,
+       "extra": 0,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 0,
+      "unmatched_no_olympiad": 42,
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "note": "база: Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)"
+     },
+     "spbu-republic-olymp": {
+      "gold": 150,
+      "table_rows": 11,
+      "ok": 0,
+      "counts": {
+       "missing": 150,
+       "extra": 0,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 11,
+      "unmatched_no_olympiad": 150,
+      "university": "СПбГУ",
+      "note": "база: СПбГУ"
+     }
+    }
+   },
+   "holdout": {
+    "gold": 543,
+    "table_rows": 2317,
+    "gold_matched": 10,
+    "gold_matched_share": 0.0184,
+    "gold_ok": 7,
+    "gold_ok_share": 0.0129,
+    "gold_missing_share": 0.9466,
+    "gold_detail_share": 0.035,
+    "unmatched_no_olympiad": 513,
+    "field_diffs_any": {
+     "role": 0,
+     "ege": 0,
+     "grade_level": 3
+    },
+    "problems": 1017,
+    "counts": {
+     "missing": 514,
+     "extra": 481,
+     "role": 0,
+     "ege": 0,
+     "grade_level": 3,
+     "detail": 19
+    },
+    "shares": {
+     "missing": 0.5054,
+     "extra": 0.473,
+     "role": 0.0,
+     "ege": 0.0,
+     "grade_level": 0.0029,
+     "detail": 0.0187
+    },
+    "extra_unverifiable": 1826,
+    "documents": {
+     "hse-1120646356-holdout": {
+      "gold": 7,
+      "table_rows": 170,
+      "ok": 7,
+      "counts": {
+       "missing": 0,
+       "extra": 7,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 156,
+      "unmatched_no_olympiad": 0,
+      "university": "НИУ ВШЭ (Москва)",
+      "note": "база: НИУ ВШЭ (Москва)"
+     },
+     "itmo-rsosh-bvi-holdout": {
+      "gold": 279,
+      "table_rows": 1221,
+      "ok": 0,
+      "counts": {
+       "missing": 279,
+       "extra": 208,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 1013,
+      "unmatched_no_olympiad": 278,
+      "university": "Университет ИТМО",
+      "note": "база: Университет ИТМО"
+     },
+     "kfu-prilozhenie3-holdout": {
+      "gold": 20,
+      "table_rows": 905,
+      "ok": 0,
+      "counts": {
+       "missing": 0,
+       "extra": 266,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 3,
+       "detail": 17
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 3
+      },
+      "extra_unverifiable": 636,
+      "unmatched_no_olympiad": 0,
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "note": "база: Казанский (Приволжский) федеральный университет (КФУ)"
+     },
+     "msu-olymp-benefits-holdout": {
+      "gold": 21,
+      "table_rows": 18,
+      "ok": 0,
+      "counts": {
+       "missing": 19,
+       "extra": 0,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 2
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 18,
+      "unmatched_no_olympiad": 19,
+      "university": "МГУ им. М.В. Ломоносова",
+      "note": "база: МГУ им. М.В. Ломоносова"
+     },
+     "ranepa-olymp-bvi-holdout": {
+      "gold": 100,
+      "table_rows": 0,
+      "ok": 0,
+      "counts": {
+       "missing": 100,
+       "extra": 0,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 0,
+      "unmatched_no_olympiad": 100,
+      "university": "РАНХиГС (Президентская академия)",
+      "note": "база: РАНХиГС (Президентская академия)"
+     },
+     "spbu-bac-spec-olymp-1-holdout": {
+      "gold": 116,
+      "table_rows": 3,
+      "ok": 0,
+      "counts": {
+       "missing": 116,
+       "extra": 0,
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0,
+       "detail": 0
+      },
+      "field_diffs_any": {
+       "role": 0,
+       "ege": 0,
+       "grade_level": 0
+      },
+      "extra_unverifiable": 3,
+      "unmatched_no_olympiad": 116,
+      "university": "СПбГУ",
+      "note": "база: СПбГУ"
+     }
+    }
+   }
+  },
+  "total": {
+   "gold": 1543,
+   "table_rows": 3188,
+   "gold_matched": 143,
+   "gold_matched_share": 0.0927,
+   "gold_ok": 76,
+   "gold_ok_share": 0.0493,
+   "gold_missing_share": 0.8464,
+   "gold_detail_share": 0.0609,
+   "unmatched_no_olympiad": 1298,
+   "field_diffs_any": {
+    "role": 10,
+    "ege": 64,
+    "grade_level": 29
+   },
+   "problems": 2115,
+   "counts": {
+    "missing": 1306,
+    "extra": 648,
+    "role": 10,
+    "ege": 54,
+    "grade_level": 3,
+    "detail": 94
+   },
+   "shares": {
+    "missing": 0.6175,
+    "extra": 0.3064,
+    "role": 0.0047,
+    "ege": 0.0255,
+    "grade_level": 0.0014,
+    "detail": 0.0444
+   },
+   "extra_unverifiable": 2397
+  }
+ },
+ "list_2026_27": {
+  "olympiads_in_list_with_rows": 59,
+  "olympiads_out_of_list_with_rows": 36,
+  "rsosh_rows": 56762,
+  "out_rows": 5751,
+  "out_rows_share": 0.1013,
+  "out_programs": 601,
+  "out_universities": 28,
+  "bvi_out_rows": 3444,
+  "bvi_out_programs": 470,
+  "bvi_lost_programs": 3,
+  "top": [
+   {
+    "name": "«Формула Единства»/«Третье тысячелетие»",
+    "rows": 869,
+    "programs": 352,
+    "universities": 21,
+    "bvi_programs": 250,
+    "bvi_rows": 458
+   },
+   {
+    "name": "Вузовско-академическая (информатика)",
+    "rows": 358,
+    "programs": 269,
+    "universities": 20,
+    "bvi_programs": 230,
+    "bvi_rows": 231
+   },
+   {
+    "name": "«Юниор»",
+    "rows": 530,
+    "programs": 216,
+    "universities": 15,
+    "bvi_programs": 213,
+    "bvi_rows": 502
+   },
+   {
+    "name": "«Когнитивные технологии»",
+    "rows": 338,
+    "programs": 246,
+    "universities": 19,
+    "bvi_programs": 200,
+    "bvi_rows": 206
+   },
+   {
+    "name": "«Робофест»",
+    "rows": 334,
+    "programs": 188,
+    "universities": 18,
+    "bvi_programs": 168,
+    "bvi_rows": 236
+   },
+   {
+    "name": "«Океан знаний»",
+    "rows": 509,
+    "programs": 304,
+    "universities": 20,
+    "bvi_programs": 135,
+    "bvi_rows": 163
+   },
+   {
+    "name": "«Твой путь в настоящую науку»",
+    "rows": 236,
+    "programs": 152,
+    "universities": 17,
+    "bvi_programs": 134,
+    "bvi_rows": 141
+   },
+   {
+    "name": "Оборонно-техническая",
+    "rows": 160,
+    "programs": 158,
+    "universities": 13,
+    "bvi_programs": 131,
+    "bvi_rows": 131
+   },
+   {
+    "name": "«САММАТ»",
+    "rows": 214,
+    "programs": 121,
+    "universities": 8,
+    "bvi_programs": 105,
+    "bvi_rows": 106
+   },
+   {
+    "name": "«Сибириада»",
+    "rows": 136,
+    "programs": 108,
+    "universities": 16,
+    "bvi_programs": 100,
+    "bvi_rows": 102
+   }
+  ]
+ },
+ "concentration": {
+  "bvi_links": 15880,
+  "olympiads_with_bvi": 111,
+  "role_unstated_rows": 7971,
+  "top_olympiads": [
+   {
+    "name": "ВсОШ",
+    "links": 672
+   },
+   {
+    "name": "«Высшая проба»",
+    "links": 500
+   },
+   {
+    "name": "Олимпиада СПбГУ",
+    "links": 447
+   },
+   {
+    "name": "«Ломоносов»",
+    "links": 440
+   },
+   {
+    "name": "МОШ",
+    "links": 417
+   },
+   {
+    "name": "«Покори Воробьёвы горы!»",
+    "links": 364
+   },
+   {
+    "name": "Предметные олимпиады КФУ",
+    "links": 321
+   },
+   {
+    "name": "Всесибирская олимпиада",
+    "links": 311
+   },
+   {
+    "name": "Турнир Ломоносова",
+    "links": 307
+   },
+   {
+    "name": "«Шаг в будущее»",
+    "links": 305
+   }
+  ],
+  "top10_share": 0.2572,
+  "olympiads_for_50": 25,
+  "olympiads_for_80": 48,
+  "cumulative": [
+   0.0423,
+   0.0738,
+   0.102,
+   0.1297,
+   0.1559,
+   0.1788,
+   0.1991,
+   0.2186,
+   0.238,
+   0.2572,
+   0.2754,
+   0.2934,
+   0.3113,
+   0.3291,
+   0.3468,
+   0.3639,
+   0.3809,
+   0.3977,
+   0.4144,
+   0.4311,
+   0.4476,
+   0.4637,
+   0.4796,
+   0.4953,
+   0.5109,
+   0.526,
+   0.5409,
+   0.5558,
+   0.5706,
+   0.5851
+  ],
+  "winners": {
+   "pairs": 580,
+   "top": [
+    {
+     "olympiad": "«Высшая проба»",
+     "profile": "математика",
+     "programs": 210
+    },
+    {
+     "olympiad": "МОШ",
+     "profile": "математика",
+     "programs": 208
+    },
+    {
+     "olympiad": "ВсОШ",
+     "profile": "(профиль не указан)",
+     "programs": 202
+    },
+    {
+     "olympiad": "Олимпиада СПбГУ",
+     "profile": "математика",
+     "programs": 201
+    },
+    {
+     "olympiad": "Турнир городов",
+     "profile": "математика",
+     "programs": 196
+    },
+    {
+     "olympiad": "«Ломоносов»",
+     "profile": "математика",
+     "programs": 194
+    },
+    {
+     "olympiad": "СПб олимпиада школьников",
+     "profile": "математика",
+     "programs": 194
+    },
+    {
+     "olympiad": "«Покори Воробьёвы горы!»",
+     "profile": "математика",
+     "programs": 193
+    },
+    {
+     "olympiad": "«Innopolis Open»",
+     "profile": "математика",
+     "programs": 190
+    },
+    {
+     "olympiad": "«Высшая проба»",
+     "profile": "информатика",
+     "programs": 188
+    },
+    {
+     "olympiad": "«Физтех»",
+     "profile": "математика",
+     "programs": 186
+    },
+    {
+     "olympiad": "МОШ",
+     "profile": "информатика",
+     "programs": 185
+    },
+    {
+     "olympiad": "Всесибирская олимпиада",
+     "profile": "математика",
+     "programs": 184
+    },
+    {
+     "olympiad": "ЮМШ",
+     "profile": "математика",
+     "programs": 184
+    },
+    {
+     "olympiad": "Вузовско-академическая (информатика)",
+     "profile": "информатика",
+     "programs": 183
+    }
+   ],
+   "top15_share": 0.0989
+  },
+  "prizes": {
+   "pairs": 570,
+   "top": [
+    {
+     "olympiad": "ВсОШ",
+     "profile": "(профиль не указан)",
+     "programs": 201
+    },
+    {
+     "olympiad": "«Высшая проба»",
+     "profile": "математика",
+     "programs": 197
+    },
+    {
+     "olympiad": "МОШ",
+     "profile": "математика",
+     "programs": 196
+    },
+    {
+     "olympiad": "Олимпиада СПбГУ",
+     "profile": "математика",
+     "programs": 190
+    },
+    {
+     "olympiad": "Турнир городов",
+     "profile": "математика",
+     "programs": 185
+    },
+    {
+     "olympiad": "СПб олимпиада школьников",
+     "profile": "математика",
+     "programs": 182
+    },
+    {
+     "olympiad": "«Innopolis Open»",
+     "profile": "математика",
+     "programs": 180
+    },
+    {
+     "olympiad": "«Физтех»",
+     "profile": "математика",
+     "programs": 180
+    },
+    {
+     "olympiad": "Вузовско-академическая (информатика)",
+     "profile": "информатика",
+     "programs": 180
+    },
+    {
+     "olympiad": "«Высшая проба»",
+     "profile": "информатика",
+     "programs": 179
+    },
+    {
+     "olympiad": "«Покори Воробьёвы горы!»",
+     "profile": "математика",
+     "programs": 178
+    },
+    {
+     "olympiad": "МОШ",
+     "profile": "информатика",
+     "programs": 178
+    },
+    {
+     "olympiad": "«Ломоносов»",
+     "profile": "математика",
+     "programs": 177
+    },
+    {
+     "olympiad": "Открытая по программированию",
+     "profile": "информатика",
+     "programs": 176
+    },
+    {
+     "olympiad": "ЮМШ",
+     "profile": "математика",
+     "programs": 176
+    }
+   ],
+   "top15_share": 0.0965
+  }
+ },
+ "ai": {
+  "extraction": {
+   "dev_extract": {
+    "gold": 1000,
+    "pred": 955,
+    "matched": 953,
+    "precision": 0.9979,
+    "recall": 0.953,
+    "role_wrong": 0,
+    "fields": {
+     "winner_role": 1.0,
+     "levels": 1.0,
+     "grades": 1.0,
+     "ege_min": 1.0,
+     "ege_subjects": 0.9948
+    }
+   },
+   "dev_table": {
+    "gold": 1000,
+    "pred": 871,
+    "matched": 133,
+    "precision": 0.1527,
+    "recall": 0.133,
+    "role_wrong": 4,
+    "fields": {
+     "winner_role": 0.9248,
+     "levels": 0.8421,
+     "grades": 0.8045,
+     "ege_min": 0.6842,
+     "ege_subjects": 0.5188
+    }
+   },
+   "holdout_extract": {
+    "gold": 543,
+    "pred": 446,
+    "matched": 401,
+    "precision": 0.8991,
+    "recall": 0.7385,
+    "role_wrong": 0,
+    "fields": {
+     "winner_role": 1.0,
+     "levels": 0.995,
+     "grades": 0.9925,
+     "ege_min": 1.0,
+     "ege_subjects": 0.9701
+    }
+   },
+   "holdout_table": {
+    "gold": 543,
+    "pred": 2317,
+    "matched": 10,
+    "precision": 0.0043,
+    "recall": 0.0184,
+    "role_wrong": 0,
+    "fields": {
+     "winner_role": 1.0,
+     "levels": 1.0,
+     "grades": 0.7,
+     "ege_min": 1.0,
+     "ege_subjects": 1.0
+    }
+   }
+  },
+  "assistant": {
+   "selected": "deepseek-flash",
+   "messages_per_student": [
+    3,
+    10,
+    30
+   ],
+   "base_messages": 10,
+   "models": [
+    {
+     "model": "deepseek-v4-pro",
+     "cases": 69,
+     "passed_share": 0.58,
+     "error_share_raw": 0.152,
+     "error_share_final": 0.0,
+     "answer_p95": 43.1,
+     "cost_per_answer": 0.0209,
+     "cost_per_student_year": {
+      "3": 0.0627,
+      "10": 0.209,
+      "30": 0.627
+     },
+     "gate_passed": false
+    },
+    {
+     "model": "deepseek-flash",
+     "cases": 69,
+     "passed_share": 0.681,
+     "error_share_raw": 0.151,
+     "error_share_final": 0.0,
+     "answer_p95": 14.1,
+     "cost_per_answer": 0.0044,
+     "cost_per_student_year": {
+      "3": 0.0132,
+      "10": 0.044,
+      "30": 0.132
+     },
+     "gate_passed": true
+    },
+    {
+     "model": "deepseek/deepseek-v4-pro-0813",
+     "cases": 5,
+     "passed_share": 0.6,
+     "error_share_raw": 0.0,
+     "error_share_final": 0.0,
+     "answer_p95": 13.6,
+     "cost_per_answer": 0.007,
+     "cost_per_student_year": {
+      "3": 0.021,
+      "10": 0.07,
+      "30": 0.21
+     },
+     "gate_passed": true
+    },
+    {
+     "model": "google/gemini-3.1-flash-lite",
+     "cases": 5,
+     "passed_share": 0.4,
+     "error_share_raw": 0.0,
+     "error_share_final": 0.0,
+     "answer_p95": 22.1,
+     "cost_per_answer": 0.0039,
+     "cost_per_student_year": {
+      "3": 0.0117,
+      "10": 0.039,
+      "30": 0.117
+     },
+     "gate_passed": false
+    },
+    {
+     "model": "z-ai/glm-5.3",
+     "cases": 5,
+     "passed_share": 0.4,
+     "error_share_raw": 0.5,
+     "error_share_final": 0.0,
+     "answer_p95": 34.2,
+     "cost_per_answer": 0.0234,
+     "cost_per_student_year": {
+      "3": 0.0702,
+      "10": 0.234,
+      "30": 0.702
+     },
+     "gate_passed": false
+    },
+    {
+     "model": "openai/gpt-6-luna",
+     "cases": 5,
+     "passed_share": 0.4,
+     "error_share_raw": 0.0,
+     "error_share_final": 0.0,
+     "answer_p95": 16.0,
+     "cost_per_answer": 0.0007,
+     "cost_per_student_year": {
+      "3": 0.0021,
+      "10": 0.007,
+      "30": 0.021
+     },
+     "gate_passed": true
+    },
+    {
+     "model": "qwen/qwen3.7-flash",
+     "cases": 5,
+     "passed_share": 0.2,
+     "error_share_raw": 0.0,
+     "error_share_final": 0.0,
+     "answer_p95": 30.9,
+     "cost_per_answer": 0.0005,
+     "cost_per_student_year": {
+      "3": 0.0015,
+      "10": 0.005,
+      "30": 0.015
+     },
+     "gate_passed": false
+    }
+   ],
+   "selected_summary": {
+    "cases": 69,
+    "passed_share": 0.681,
+    "error_share_raw": 0.151,
+    "error_share_final": 0.0,
+    "answer_p95": 14.0951,
+    "cost_per_answer": 0.0044
+   },
+   "selected_cost_per_student_year": 0.044,
+   "selected_cost_per_1000_students": 44.0
+  }
+ }
+}
