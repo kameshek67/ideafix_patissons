@@ -1446,7 +1446,7 @@
         "type": "object"
       },
       "EgeSummary": {
-        "description": "Подтверждение баллами ЕГЭ (только если баллы переданы, F-03).",
+        "description": "Подтверждение баллами ЕГЭ (только если баллы переданы).",
         "properties": {
           "close_universities": {
             "title": "Close Universities",

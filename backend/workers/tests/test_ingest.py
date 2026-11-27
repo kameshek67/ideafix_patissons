@@ -123,7 +123,7 @@ def test_extra_points_loaded_with_sources(built_database_url: str) -> None:
             "SELECT COUNT(*) FROM individual_achievements"
             " WHERE source_url NOT LIKE 'https://%' OR source_quote = '' OR source_page IS NULL"
         ).fetchone()[0]
-    # T-084: к 7 вузам T-051 добавлены правила ещё 19 записей вузов (Бауманка — вместе с филиалами)
+    # К 7 вузам добавлены правила ещё 19 записей вузов (Бауманка — вместе с филиалами)
     assert (meta["extra_rules"], meta["extra_universities"], meta["extra_limits"]) == (
         "999",
         "26",
@@ -171,7 +171,7 @@ def test_extra_points_reload_is_idempotent_and_keeps_data_on_error(
 
 
 def test_itmo_01_03_02_keeps_roles_and_short_named_olympiads(built_database_url: str) -> None:
-    """T-067: «побед. и призёры» не превращается в «победители», МОШ, ПВГ, НТО и ЮМШ не теряются."""
+    """«побед. и призёры» не превращается в «победители», МОШ, ПВГ, НТО и ЮМШ не теряются."""
     with psycopg.connect(psycopg_dsn(built_database_url)) as conn:
         rows = conn.execute(
             """SELECT o.short_name, b.olympiad_profile, b.winner_role

@@ -96,7 +96,7 @@ class NoTableUniversity(ResponseModel):
 
 
 class EgeSummary(ResponseModel):
-    """Подтверждение баллами ЕГЭ (только если баллы переданы, F-03)."""
+    """Подтверждение баллами ЕГЭ (только если баллы переданы)."""
 
     # направления и вузы, где хотя бы одна льгота подтверждена баллами
     confirmed_programs: int

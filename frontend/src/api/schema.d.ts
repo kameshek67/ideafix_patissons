@@ -1042,7 +1042,7 @@ export interface components {
         };
         /**
          * EgeSummary
-         * @description Подтверждение баллами ЕГЭ (только если баллы переданы, F-03).
+         * @description Подтверждение баллами ЕГЭ (только если баллы переданы).
          */
         EgeSummary: {
             /** Close Universities */
