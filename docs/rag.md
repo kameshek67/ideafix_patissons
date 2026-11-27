@@ -12,7 +12,7 @@
 | Правила о БВИ и 100 баллах с цитатами | `data/admission_rules.json` | есть, 25 правил |
 | Карточки олимпиад | `data/olympiad_cards.json` | есть, 30 карточек |
 | Ссылки на материалы олимпиад | `data/olympiad_materials.json` | только названия, без текста |
-| Документы вузов | `data/university_documents.json`, `data/extracted/` | в индексе нет, пока не скачаны в кэш |
+| Документы вузов | `data/university_documents.json`, `data/extracted/` | заполняется командой `rag-fetch` |
 
 ## Что добавить
 

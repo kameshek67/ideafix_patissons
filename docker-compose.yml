@@ -65,7 +65,8 @@ services:
     command: ["sh", "-c", "alembic upgrade head && olymp-ingest --if-stale && olymp-extra-points"]
     environment:
       OLYMP_DATABASE_URL: postgresql+psycopg://olymp:olymp@postgres:5432/olymp
-    volumes: [./data:/app/data:ro]
+    # кэш документов вузов для справочного поиска: заполняется `olymp-passages --fetch` (just rag-fetch)
+    volumes: [./data:/app/data:ro, doccache:/var/cache/olymp/documents]
     depends_on:
       postgres: {condition: service_healthy}
     restart: "no"
@@ -93,7 +94,7 @@ services:
       OLYMP_OPS_TOKEN: ${OLYMP_OPS_TOKEN:-}
     # data/ только на чтение: из неё API берёт оценку извлечения, перечень РСОШ и даты проверок
     # для страницы «Качество данных»; без каталога страница показывает только то, что есть в базе
-    volumes: [./data:/app/data:ro]
+    volumes: [./data:/app/data:ro, doccache:/var/cache/olymp/documents:ro]
     # только с этой машины: снаружи сайт открывается через Caddy (профиль https)
     ports: ["127.0.0.1:${OLYMP_API_PORT:-8000}:8000"]
     depends_on:
@@ -112,7 +113,7 @@ services:
       OLYMP_MAX_CA_DIR: /certs
       OLYMP_OPS_WEBHOOK_URL: ${OLYMP_OPS_WEBHOOK_URL:-}
       OLYMP_SOURCES_RECHECK_DAYS: ${OLYMP_SOURCES_RECHECK_DAYS:-7}
-    volumes: [./data:/app/data, ./infra/certs:/certs:ro]
+    volumes: [./data:/app/data, ./infra/certs:/certs:ro, doccache:/var/cache/olymp/documents]
     depends_on:
       migrate: {condition: service_completed_successfully}
     healthcheck: {disable: true}
@@ -201,4 +202,5 @@ services:
 
 volumes:
   pgdata:
+  doccache:
   caddy-data:

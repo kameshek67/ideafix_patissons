@@ -56,7 +56,7 @@
 
 | Группа | Переменные | Что задают |
 |---|---|---|
-| Общие | `OLYMP_ENV`, `OLYMP_LOG_LEVEL`, `OLYMP_ADMISSION_YEAR`, `OLYMP_DATA_DIR`, `XLSX_PATH`, `SOURCES_CACHE` | окружение (`local`), уровень логов, год поступления, каталог и файлы данных |
+| Общие | `OLYMP_ENV`, `OLYMP_LOG_LEVEL`, `OLYMP_ADMISSION_YEAR`, `OLYMP_DATA_DIR`, `OLYMP_DOCUMENTS_CACHE`, `XLSX_PATH`, `SOURCES_CACHE` | окружение (`local`), уровень логов, год поступления, каталог и файлы данных, кэш документов вузов для справочного поиска (в контейнерах — том `doccache`) |
 | База и кэш | `OLYMP_DATABASE_URL`, `OLYMP_DB_STATEMENT_TIMEOUT_MS`, `OLYMP_DB_LOCK_TIMEOUT_MS`, `OLYMP_REDIS_URL`, `OLYMP_RABBITMQ_URL`, `OLYMP_CACHE_TTL` | адреса, таймауты БД (15000/3000 мс), время жизни кэша (600 с); без Redis всё в памяти процесса |
 | Лимиты | `OLYMP_RATE_LIMIT_WINDOW`, `OLYMP_RATE_LIMIT_REQUESTS`, `OLYMP_ASSISTANT_RATE_PER_MINUTE`, `OLYMP_ASSISTANT_RATE_PER_DAY`, `OLYMP_SHARE_RATE_LIMIT`, `OLYMP_SHARE_DAILY_LIMIT`, `OLYMP_REPORT_RATE_LIMIT`, `OLYMP_REPORT_DAILY_LIMIT`, `OLYMP_SHARE_TTL_DAYS` | частоты запросов, сообщений, ссылок и жалоб; 0 снимает ограничение, срок ссылки — дни |
 | Помощник | `OLYMP_LLM_ENABLED`, `OLYMP_LLM_BASE_URL`, `OLYMP_LLM_API_KEY`, `OLYMP_LLM_MODEL`, `OLYMP_LLM_FALLBACK_MODEL`, `OLYMP_PARSER_MODEL`, `OLYMP_LLM_TIMEOUT`, `OLYMP_LLM_MAX_TOKENS`, `OLYMP_LLM_TEMPERATURE`, `OLYMP_LLM_TOP_P`, `OLYMP_LLM_DENY_DATA_COLLECTION`, `OLYMP_LLM_DAILY_REQUESTS`, `OLYMP_LLM_PROFILES`, `OLYMP_ASSISTANT_CONTEXT_SECRET` | адрес, ключ и варианты провайдера, таймаут, лимиты, бюджет на сутки; без адреса, ключа и названия помощник выключен |
@@ -129,6 +129,14 @@ RabbitMQ и воркер по умолчанию выключены: задач�
 Те же действия без очереди: `just refresh-sources`, `just seed`.
 
 Раз в сезон: `just rsosh` (новый перечень РСОШ), `just refresh-sources`, `just data-diff`.
+
+## Справочный поиск
+
+Таблица `passages` строится из кэша документов вузов, а на новом стенде кэш пуст. Заполнить:
+`docker compose run --rm migrate olymp-passages --fetch` (локально — `just rag-fetch`). Команда качает документы
+из `data/university_documents.json`, `data/extracted/` и таблицы `sources` (до 6 параллельно, списки поступающих
+пропускает), печатает «скачано / из кэша / ошибок» и сразу пересобирает `passages`. Ошибки отдельных ссылок
+не останавливают прогон. Кэш лежит в томе `doccache` (`OLYMP_DOCUMENTS_CACHE`), повторный запуск быстрый.
 
 ## Разбор новых документов
 

@@ -2,11 +2,12 @@
 
 Источники: правила приёма (data/admission_rules.json), карточки олимпиад
 (data/olympiad_cards.json), тексты документов вузов из кэша страниц и материалы олимпиад
-(data/olympiad_materials.json, если файл есть). Сеть не используется: документ, которого нет
-в кэше, пропускается. Текст режется на куски ~800 символов с перекрытием.
+(data/olympiad_materials.json, если файл есть). При сборке сеть не используется: документ,
+которого нет в кэше, пропускается. Текст режется на куски ~800 символов с перекрытием.
 
 Вызывается из olymp-ingest в той же транзакции; отдельно — командой olymp-passages, она
-пересобирает только эту таблицу (например, после обновления кэша документов).
+пересобирает только эту таблицу. Кэш заполняет olymp-passages --fetch: скачивает документы из
+data/university_documents.json, data/extracted/*.json и таблицы sources (списки людей пропускает).
 """
 
 import argparse
@@ -15,21 +16,25 @@ import os
 import re
 import sys
 from collections.abc import Iterator
-from dataclasses import dataclass
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 import psycopg
 from olymp_db.session import database_url, psycopg_dsn
 from olymp_domain.admission_rules import RULES_FILE, load_rules
 from olymp_domain.olympiad_cards import load_cards
+from olymp_domain.urls import is_personal_list
 
-from .ai.documents import DEFAULT_CACHE, DocumentError, DocumentStore
+from .ai.documents import DEFAULT_CACHE, Document, DocumentError, DocumentStore
 from .tables import clear_tables
 
 CARDS_FILE = "olympiad_cards.json"
 MATERIALS_FILE = "olympiad_materials.json"
 DOCUMENTS_FILE = "university_documents.json"
+EXTRACTED_DIR = "extracted"
+FETCH_WORKERS = 6
 
 CHUNK_SIZE = 800
 OVERLAP = 120
@@ -180,6 +185,83 @@ def document_passages(data_dir: Path, cache_dir: Path) -> Iterator[Passage]:
         store.close()
 
 
+class Loader(Protocol):
+    """Загрузчик документов (DocumentStore): cached — только кэш, get — кэш или сеть."""
+
+    def cached(self, url: str) -> Document | None: ...
+
+    def get(self, url: str) -> Document: ...
+
+
+@dataclass
+class FetchResult:
+    downloaded: int = 0
+    from_cache: int = 0
+    skipped: int = 0  # списки людей
+    failed: dict[str, str] = field(default_factory=dict)  # url -> причина
+
+
+def document_urls(data_dir: Path, conn: psycopg.Connection[Any] | None = None) -> dict[str, str]:
+    """Адреса документов (url -> название) из перечня вузов, разобранных файлов и таблицы sources."""
+    found: dict[str, str] = {}
+
+    def add(title: object, url: object) -> None:
+        link = str(url or "").strip()
+        if link:
+            found.setdefault(link, str(title or "").strip())
+
+    path = data_dir / DOCUMENTS_FILE
+    if path.is_file():
+        entries = json.loads(path.read_text(encoding="utf-8"))
+        for entry in entries.values():
+            for item in entry.get("documents") or []:
+                add(item.get("title"), item.get("url"))
+    for extracted in sorted((data_dir / EXTRACTED_DIR).glob("*.json")):
+        document = json.loads(extracted.read_text(encoding="utf-8")).get("document")
+        if isinstance(document, dict):
+            add(document.get("title"), document.get("url"))
+    if conn is not None:
+        with conn.cursor() as cur:
+            cur.execute("SELECT university, url FROM sources ORDER BY id")
+            for university, url in cur.fetchall():
+                add(university, url)
+    return found
+
+
+def fetch_documents(
+    urls: dict[str, str], store: Loader, workers: int = FETCH_WORKERS
+) -> FetchResult:
+    """Кладёт документы в кэш store; ошибка одного адреса не мешает остальным."""
+    result = FetchResult()
+    todo = []
+    for url, title in urls.items():
+        if is_personal_list(title, url):
+            result.skipped += 1
+        else:
+            todo.append(url)
+
+    def one(url: str) -> tuple[str, str | None]:
+        try:
+            if store.cached(url) is not None:
+                return "cache", None
+            store.get(url)
+            return "downloaded", None
+        except DocumentError as exc:
+            return "failed", str(exc)
+        except Exception as exc:  # noqa: BLE001 - один адрес не должен ронять весь прогон
+            return "failed", type(exc).__name__
+
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        for url, (status, reason) in zip(todo, pool.map(one, todo), strict=True):
+            if status == "cache":
+                result.from_cache += 1
+            elif status == "downloaded":
+                result.downloaded += 1
+            else:
+                result.failed[url] = reason or ""
+    return result
+
+
 def collect(data_dir: Path, cache_dir: Path) -> list[Passage]:
     found = [
         *rule_passages(data_dir),
@@ -215,6 +297,25 @@ def default_data_dir() -> Path:
     return Path(os.environ.get("OLYMP_DATA_DIR", Path(__file__).resolve().parents[4] / "data"))
 
 
+def report_fetch(args: argparse.Namespace) -> None:
+    try:  # таблицы sources может не быть (база не поднята) — тогда только файлы данных
+        with psycopg.connect(psycopg_dsn(args.database_url), connect_timeout=5) as conn:
+            urls = document_urls(args.data_dir, conn)
+    except psycopg.Error:
+        urls = document_urls(args.data_dir)
+    store = DocumentStore(args.cache_dir)
+    try:
+        result = fetch_documents(urls, store, args.workers)
+    finally:
+        store.close()
+    for url, reason in result.failed.items():
+        print(f"ошибка: {url}: {reason}", file=sys.stderr)
+    print(
+        f"документов: скачано {result.downloaded}, из кэша {result.from_cache}, "
+        f"ошибок {len(result.failed)}, списков людей пропущено {result.skipped}"
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Пересобрать справочные фрагменты для помощника (только таблицу passages)"
@@ -227,7 +328,15 @@ def main() -> int:
         default=Path(os.environ.get("OLYMP_DOCUMENTS_CACHE", DEFAULT_CACHE)),
         help="кэш страниц документов вузов; сеть не используется",
     )
+    parser.add_argument(
+        "--fetch",
+        action="store_true",
+        help="сначала скачать документы вузов в кэш (до --workers параллельно), затем пересобрать",
+    )
+    parser.add_argument("--workers", type=int, default=FETCH_WORKERS)
     args = parser.parse_args()
+    if args.fetch:
+        report_fetch(args)
     with psycopg.connect(psycopg_dsn(args.database_url)) as conn:
         clear_tables(conn, ["passages"])
         stats = load_passages(conn, args.data_dir, args.cache_dir)

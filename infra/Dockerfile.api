@@ -14,11 +14,12 @@ COPY backend/workers workers
 RUN uv sync --frozen --no-dev --package olymp-api --package olymp-workers
 
 FROM python:3.13-slim
-RUN useradd -r -u 10001 olymp
+RUN useradd -r -u 10001 olymp \
+    && mkdir -p /var/cache/olymp/documents && chown olymp /var/cache/olymp/documents
 WORKDIR /app
 COPY --from=base /app /app
 # XLSX и кэш ссылок на документы подключаются томом в /app/data
-ENV PATH="/app/backend/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONUTF8=1 OLYMP_DATA_DIR=/app/data
+ENV PATH="/app/backend/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONUTF8=1 OLYMP_DATA_DIR=/app/data OLYMP_DOCUMENTS_CACHE=/var/cache/olymp/documents
 USER olymp
 EXPOSE 8000
 # первые 60 с проверяем каждые 2 с: сайт (depends_on: healthy) стартует сразу, как API готов,

@@ -5,11 +5,14 @@ from pathlib import Path
 
 import psycopg
 from olymp_db.session import psycopg_dsn
-from olymp_workers.ai.documents import Document, DocumentStore
+from olymp_workers.ai.documents import Document, DocumentError, DocumentStore
 from olymp_workers.passages import (
     CHUNK_SIZE,
     OVERLAP,
+    FetchResult,
     collect,
+    document_urls,
+    fetch_documents,
     load_passages,
     split_text,
 )
@@ -134,3 +137,55 @@ def test_real_materials_file_is_indexed() -> None:
     raw = json.loads((REPO_DATA / "olympiad_materials.json").read_text(encoding="utf-8"))
     assert len(found) >= len(raw["materials"])
     assert all(p.url.startswith("http") and p.title for p in found)
+
+
+class FakeLoader:
+    """Подменённый загрузчик: в кэше один адрес, один недоступен, остальные «скачиваются»."""
+
+    def __init__(self, cached: set[str], broken: set[str]) -> None:
+        self.cache, self.broken, self.asked = set(cached), broken, []
+
+    def cached(self, url: str) -> Document | None:
+        return Document(url, url, "html", "0" * 64, ("текст",)) if url in self.cache else None
+
+    def get(self, url: str) -> Document:
+        self.asked.append(url)
+        if url in self.broken:
+            raise DocumentError("HTTP 404")
+        return Document(url, url, "html", "0" * 64, ("текст",))
+
+
+def test_document_urls_merge_files_and_skip_duplicates(tmp_path: Path) -> None:
+    data, _ = make_data(tmp_path)
+    (data / "extracted").mkdir()
+    (data / "extracted" / "a.json").write_text(
+        json.dumps(
+            {"document": {"title": "Приложение", "url": "https://example.org/extra.pdf"}},
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    (data / "extracted" / "b.json").write_text(
+        json.dumps({"document": {"title": "Дубль", "url": DOC_URL}}), encoding="utf-8"
+    )
+    urls = document_urls(data)
+    assert set(urls) == {DOC_URL, "https://example.org/none.pdf", "https://example.org/extra.pdf"}
+    assert urls[DOC_URL] == "Правила приёма открыть"  # первое название остаётся
+
+
+def test_fetch_counts_downloaded_cached_failed_and_skips_people_lists() -> None:
+    urls = {
+        "https://example.org/a.pdf": "Правила приёма",
+        "https://example.org/b.pdf": "Положение",
+        "https://example.org/c.pdf": "Приложение",
+        "https://example.org/list.pdf": "Список поступающих, рекомендованных к зачислению",
+    }
+    loader = FakeLoader(cached={"https://example.org/a.pdf"}, broken={"https://example.org/c.pdf"})
+    result = fetch_documents(urls, loader, workers=3)
+    assert result == FetchResult(
+        downloaded=1,
+        from_cache=1,
+        skipped=1,
+        failed={"https://example.org/c.pdf": "HTTP 404"},
+    )
+    assert sorted(loader.asked) == ["https://example.org/b.pdf", "https://example.org/c.pdf"]

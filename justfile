@@ -62,6 +62,10 @@ eval-extract *ARGS:
 report-regressions *ARGS:
     {{uv}} olymp-report-regressions {{ARGS}}
 
+# скачать документы вузов в кэш и пересобрать справочный поиск (passages): just rag-fetch [--workers 6]
+rag-fetch *ARGS:
+    {{uv}} olymp-passages --fetch {{ARGS}}
+
 # воркер фоновых задач (Dramatiq + RabbitMQ)
 worker:
     {{uv}} dramatiq olymp_workers.tasks --processes 1 --threads 2
