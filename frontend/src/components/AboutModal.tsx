@@ -97,6 +97,11 @@ export function AboutModal({ open, onClose, campaign }: Props) {
             </a>
           </p>
           <p className="mt-2 text-[13.5px] leading-[19px]">
+            <a id="about-developers" className="underline" href="/developers">
+              Для разработчиков: API, MCP и открытые данные
+            </a>
+          </p>
+          <p className="mt-2 text-[13.5px] leading-[19px]">
             Нет вуза или документа? <SuggestButton variant="link" />
           </p>
         </div>

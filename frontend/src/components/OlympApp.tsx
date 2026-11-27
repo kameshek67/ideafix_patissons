@@ -988,6 +988,10 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
           <a id="quality-link" className="underline" href="/quality">
             Качество данных
           </a>
+          {" · "}
+          <a id="developers-link" className="underline" href="/developers">
+            Для разработчиков
+          </a>
         </p>
       </main>
 
