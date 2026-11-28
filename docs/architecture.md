@@ -50,6 +50,10 @@
   подписание закона не проверено, поэтому сайт показывает их как проект («Правила 2027 (проект)»).
 - Баллы за индивидуальные достижения: `data/individual_achievements.csv` и
   `data/individual_achievement_limits.csv`. Загружает `olymp-extra-points`.
+- Сколько олимпиадников принимают вузы: `data/monitoring/olympiad_intake.csv` (по вузам базы; из
+  сводной панели «Мониторинг эффективности вузов» его строит `olymp-analysis --monitoring`),
+  связка с панелью — `data/monitoring/universities.csv`. Загружает `olymp-ingest` в `university_intake`,
+  API отдаёт строку последнего года в карточке и списке вуза (`intake`).
 - Карточки олимпиад: `data/olympiad_cards.json`; черновики для них делает `olymp-ai-cards`.
 
 Таблицы пользователей и жалоб (`max_users`, `user_diplomas`, `user_ege_scores`, `share_links`,
