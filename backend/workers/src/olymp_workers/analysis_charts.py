@@ -324,8 +324,141 @@ def ai_assistant(data: dict[str, Any], out: Path) -> Path:
     return save(fig, out)
 
 
+def spaced(value: float, digits: int = 0) -> str:
+    return f"{value:,.{digits}f}".replace(",", " ").replace(".", ",")
+
+
+def monitoring_dynamics(data: dict[str, Any], out: Path) -> Path:
+    rows = data["dynamics"]["by_year"]
+    years = [str(r["year"]) for r in rows]
+    fig, ax = plt.subplots(figsize=(8.5, 4.4))
+    bars = ax.bar(years, [r["total"] for r in rows], color=BLUE, width=0.62)
+    for bar, r in zip(bars, rows, strict=True):
+        ax.text(
+            bar.get_x() + bar.get_width() / 2,
+            r["total"] + 120,
+            spaced(r["total"]),
+            ha="center",
+            fontsize=9,
+        )
+        ax.text(
+            bar.get_x() + bar.get_width() / 2,
+            300,
+            f"{r['with_olympiads']}",
+            ha="center",
+            color="white",
+            fontsize=10,
+            fontweight="bold",
+        )
+    ax.set_ylim(0, max(r["total"] for r in rows) * 1.14)
+    ax.set_ylabel("принято победителей и призёров олимпиад, чел.")
+    ax.set_xlabel("год приёма (в основании столбца — число вузов с олимпиадниками, больше нуля)")
+    first, last = rows[0], rows[-1]
+    ax.set_title(
+        f"Олимпиадников принимают на {data['dynamics']['growth_total_pct']:.0f}% больше, чем в "
+        f"{first['year']}: {spaced(first['total'])} → {spaced(last['total'])}".replace(".", ",")
+    )
+    return save(fig, out)
+
+
+def monitoring_concentration(data: dict[str, Any], out: Path) -> Path:
+    conc = data["concentration"]
+    fig, (left, mid, right) = plt.subplots(
+        1, 3, figsize=(14, 4.6), gridspec_kw={"width_ratios": [1, 1, 1.15], "wspace": 0.55}
+    )
+    for year, color in ((str(data["years"][0]), GRAY), (str(conc["year"]), BLUE)):
+        pts = conc["lorenz"][year]
+        gini = next(r["gini_positive"] for r in conc["by_year"] if str(r["year"]) == year)
+        left.plot(
+            [p[0] * 100 for p in pts],
+            [p[1] * 100 for p in pts],
+            color=color,
+            lw=2,
+            label=f"{year}, Джини {gini:.2f}".replace(".", ","),
+        )
+    left.plot([0, 100], [0, 100], color=GRAY, lw=1, ls="--")
+    left.set_xlabel("вузы с олимпиадниками, % (от меньших к большим)")
+    left.set_ylabel("доля принятых олимпиадников, %")
+    left.legend(frameon=False, fontsize=9, loc="upper left")
+    top = next(r for r in conc["by_year"] if r["year"] == conc["year"])
+    left.set_title(f"Топ-10 вузов принимают {pct(top['top10_share'])}")
+
+    def paired(ax: Axes, items: list[dict[str, Any]], title: str) -> None:
+        ypos = list(range(len(items)))[::-1]
+        ax.barh([y + 0.19 for y in ypos], [i["share"] * 100 for i in items], 0.36, color=ORANGE)
+        ax.barh(
+            [y - 0.19 for y in ypos], [i["students_share"] * 100 for i in items], 0.36, color=GRAY
+        )
+        ax.set_yticks(ypos, [i["name"] for i in items])
+        for y, i in zip(ypos, items, strict=True):
+            ax.text(i["share"] * 100 + 1, y + 0.19, pct(i["share"]), va="center", fontsize=8.5)
+            ax.text(
+                i["students_share"] * 100 + 1,
+                y - 0.19,
+                pct(i["students_share"]),
+                va="center",
+                fontsize=8.5,
+                color="#6b7280",
+            )
+        ax.set_xlim(0, 100)
+        ax.tick_params(axis="y", length=0)
+        ax.xaxis.set_visible(False)
+        ax.spines["bottom"].set_visible(False)
+        ax.set_title(title)
+
+    paired(mid, conc["region_groups"], "Москва, Петербург, регионы")
+    paired(right, conc["fed_districts"], "Федеральные округа")
+    mid.legend(
+        handles=[
+            plt.Rectangle((0, 0), 1, 1, color=ORANGE),
+            plt.Rectangle((0, 0), 1, 1, color=GRAY),
+        ],
+        labels=["доля олимпиадников", "доля студентов"],
+        frameon=False,
+        fontsize=8.5,
+        loc="center right",
+    )
+    return save(fig, out)
+
+
+def monitoring_score(data: dict[str, Any], out: Path) -> Path:
+    link = data["score_link"]
+    fig, (left, right) = plt.subplots(
+        1, 2, figsize=(12.5, 4.8), gridspec_kw={"width_ratios": [1.1, 1], "wspace": 0.95}
+    )
+    left.scatter(
+        [p["score"] for p in link["points"]],
+        [p["percent"] for p in link["points"]],
+        s=18,
+        color=BLUE,
+        alpha=0.65,
+    )
+    left.set_yscale("log")
+    left.set_xlabel("средний балл ЕГЭ принятых на бюджет")
+    left.set_ylabel("доля олимпиадников, % (лог. шкала)")
+    r = link["last_year"]
+    left.set_title(f"{link['year']}: Спирмен {r['rho']:.2f}, вузов {r['n']}".replace(".", ","))
+    profiles = sorted(link["by_profile"], key=lambda p: -p["rho"])
+    ypos = list(range(len(profiles)))[::-1]
+    right.barh(
+        ypos,
+        [p["rho"] for p in profiles],
+        color=[GREEN if p["rho"] > 0.4 else GRAY for p in profiles],
+    )
+    right.set_yticks(ypos, [f"{shorten(p['profile'], 26)} ({p['n']})" for p in profiles])
+    for y, p in zip(ypos, profiles, strict=True):
+        right.text(
+            max(p["rho"], 0) + 0.02, y, f"{p['rho']:.2f}".replace(".", ","), va="center", fontsize=9
+        )
+    right.set_xlim(0, 1)
+    right.tick_params(axis="y", length=0)
+    right.set_xlabel("Спирмен, среднее по годам с данными (в скобках — число вузов)")
+    right.set_title("По профилю вуза")
+    return save(fig, out)
+
+
 def draw_all(results: dict[str, Any], img_dir: Path) -> list[Path]:
-    return [
+    paths = [
         prize_2027(results["prize_2027"], img_dir / "prize-2027.png"),
         old_table(results["old_table"], img_dir / "old-table-diffs.png"),
         list_change(results["list_2026_27"], img_dir / "list-2026-27.png"),
@@ -336,3 +469,11 @@ def draw_all(results: dict[str, Any], img_dir: Path) -> list[Path]:
         ai_extraction(results["ai"], img_dir / "ai-extraction.png"),
         ai_assistant(results["ai"], img_dir / "ai-assistant.png"),
     ]
+    if "monitoring" in results:
+        m = results["monitoring"]
+        paths += [
+            monitoring_dynamics(m, img_dir / "monitoring-dynamics.png"),
+            monitoring_concentration(m, img_dir / "monitoring-concentration.png"),
+            monitoring_score(m, img_dir / "monitoring-score.png"),
+        ]
+    return paths

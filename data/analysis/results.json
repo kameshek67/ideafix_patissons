@@ -1147,5 +1147,1643 @@
    "selected_cost_per_student_year": 0.044,
    "selected_cost_per_1000_students": 44.0
   }
+ },
+ "monitoring": {
+  "source": "Мониторинг эффективности деятельности вузов, сводная панель 2018–2024",
+  "source_note": "[источник панели — уточнить]",
+  "years": [
+   2018,
+   2024
+  ],
+  "rows": 4070,
+  "universities": 638,
+  "dynamics": {
+   "by_year": [
+    {
+     "year": 2018,
+     "universities": 597,
+     "total": 5049,
+     "with_olympiads": 152,
+     "yoy_pct": null,
+     "balanced_total": 5045,
+     "growth_vs_first_pct": 0.0,
+     "balanced_growth_vs_first_pct": 0.0
+    },
+    {
+     "year": 2019,
+     "universities": 588,
+     "total": 5749,
+     "with_olympiads": 145,
+     "yoy_pct": 13.9,
+     "balanced_total": 5748,
+     "growth_vs_first_pct": 13.9,
+     "balanced_growth_vs_first_pct": 13.9
+    },
+    {
+     "year": 2020,
+     "universities": 575,
+     "total": 6920,
+     "with_olympiads": 173,
+     "yoy_pct": 20.4,
+     "balanced_total": 6905,
+     "growth_vs_first_pct": 37.1,
+     "balanced_growth_vs_first_pct": 36.9
+    },
+    {
+     "year": 2021,
+     "universities": 574,
+     "total": 7192,
+     "with_olympiads": 162,
+     "yoy_pct": 3.9,
+     "balanced_total": 7179,
+     "growth_vs_first_pct": 42.4,
+     "balanced_growth_vs_first_pct": 42.3
+    },
+    {
+     "year": 2022,
+     "universities": 571,
+     "total": 7685,
+     "with_olympiads": 167,
+     "yoy_pct": 6.9,
+     "balanced_total": 7662,
+     "growth_vs_first_pct": 52.2,
+     "balanced_growth_vs_first_pct": 51.9
+    },
+    {
+     "year": 2023,
+     "universities": 585,
+     "total": 7652,
+     "with_olympiads": 174,
+     "yoy_pct": -0.4,
+     "balanced_total": 7598,
+     "growth_vs_first_pct": 51.6,
+     "balanced_growth_vs_first_pct": 50.6
+    },
+    {
+     "year": 2024,
+     "universities": 580,
+     "total": 8209,
+     "with_olympiads": 154,
+     "yoy_pct": 7.3,
+     "balanced_total": 8185,
+     "growth_vs_first_pct": 62.6,
+     "balanced_growth_vs_first_pct": 62.2
+    }
+   ],
+   "first_year": 2018,
+   "last_year": 2024,
+   "growth_total_pct": 62.6,
+   "growth_balanced_pct": 62.2,
+   "balanced_universities": 533,
+   "universities_ever": 638,
+   "never_reported": 346,
+   "gap_years": 68
+  },
+  "concentration": {
+   "year": 2024,
+   "by_year": [
+    {
+     "year": 2018,
+     "total": 5049,
+     "top10_share": 0.6663,
+     "top20_share": 0.8206,
+     "gini_all": 0.9578,
+     "gini_positive": 0.8342
+    },
+    {
+     "year": 2019,
+     "total": 5749,
+     "top10_share": 0.6709,
+     "top20_share": 0.8304,
+     "gini_all": 0.9598,
+     "gini_positive": 0.8368
+    },
+    {
+     "year": 2020,
+     "total": 6920,
+     "top10_share": 0.6449,
+     "top20_share": 0.8026,
+     "gini_all": 0.9525,
+     "gini_positive": 0.8422
+    },
+    {
+     "year": 2021,
+     "total": 7192,
+     "top10_share": 0.6032,
+     "top20_share": 0.8005,
+     "gini_all": 0.9515,
+     "gini_positive": 0.8282
+    },
+    {
+     "year": 2022,
+     "total": 7685,
+     "top10_share": 0.6109,
+     "top20_share": 0.7995,
+     "gini_all": 0.9513,
+     "gini_positive": 0.8336
+    },
+    {
+     "year": 2023,
+     "total": 7652,
+     "top10_share": 0.6057,
+     "top20_share": 0.8097,
+     "gini_all": 0.9525,
+     "gini_positive": 0.8404
+    },
+    {
+     "year": 2024,
+     "total": 8209,
+     "top10_share": 0.6372,
+     "top20_share": 0.8257,
+     "gini_all": 0.9564,
+     "gini_positive": 0.8357
+    }
+   ],
+   "lorenz": {
+    "2018": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.0197,
+      0.0006
+     ],
+     [
+      0.0395,
+      0.0012
+     ],
+     [
+      0.0592,
+      0.0018
+     ],
+     [
+      0.0789,
+      0.0024
+     ],
+     [
+      0.0987,
+      0.003
+     ],
+     [
+      0.1184,
+      0.0036
+     ],
+     [
+      0.1382,
+      0.0042
+     ],
+     [
+      0.1579,
+      0.0048
+     ],
+     [
+      0.1776,
+      0.0053
+     ],
+     [
+      0.1974,
+      0.0059
+     ],
+     [
+      0.2171,
+      0.0065
+     ],
+     [
+      0.2368,
+      0.0071
+     ],
+     [
+      0.2632,
+      0.0079
+     ],
+     [
+      0.2829,
+      0.0085
+     ],
+     [
+      0.3026,
+      0.0097
+     ],
+     [
+      0.3224,
+      0.0109
+     ],
+     [
+      0.3421,
+      0.0121
+     ],
+     [
+      0.3618,
+      0.0133
+     ],
+     [
+      0.3816,
+      0.0145
+     ],
+     [
+      0.4013,
+      0.0156
+     ],
+     [
+      0.4211,
+      0.0174
+     ],
+     [
+      0.4408,
+      0.0192
+     ],
+     [
+      0.4605,
+      0.021
+     ],
+     [
+      0.4803,
+      0.023
+     ],
+     [
+      0.5,
+      0.0254
+     ],
+     [
+      0.5197,
+      0.0277
+     ],
+     [
+      0.5395,
+      0.0301
+     ],
+     [
+      0.5592,
+      0.0327
+     ],
+     [
+      0.5789,
+      0.0357
+     ],
+     [
+      0.5987,
+      0.0388
+     ],
+     [
+      0.6184,
+      0.0424
+     ],
+     [
+      0.6382,
+      0.0465
+     ],
+     [
+      0.6579,
+      0.0513
+     ],
+     [
+      0.6776,
+      0.0564
+     ],
+     [
+      0.6974,
+      0.0622
+     ],
+     [
+      0.7171,
+      0.0691
+     ],
+     [
+      0.7368,
+      0.0774
+     ],
+     [
+      0.7632,
+      0.0909
+     ],
+     [
+      0.7829,
+      0.1032
+     ],
+     [
+      0.8026,
+      0.1173
+     ],
+     [
+      0.8224,
+      0.1323
+     ],
+     [
+      0.8421,
+      0.1495
+     ],
+     [
+      0.8618,
+      0.1715
+     ],
+     [
+      0.8816,
+      0.2014
+     ],
+     [
+      0.9013,
+      0.2412
+     ],
+     [
+      0.9211,
+      0.2937
+     ],
+     [
+      0.9408,
+      0.3563
+     ],
+     [
+      0.9605,
+      0.4458
+     ],
+     [
+      0.9803,
+      0.6136
+     ],
+     [
+      1.0,
+      1.0
+     ]
+    ],
+    "2024": [
+     [
+      0.0,
+      0.0
+     ],
+     [
+      0.0195,
+      0.0004
+     ],
+     [
+      0.039,
+      0.0007
+     ],
+     [
+      0.0584,
+      0.0011
+     ],
+     [
+      0.0779,
+      0.0015
+     ],
+     [
+      0.0974,
+      0.0018
+     ],
+     [
+      0.1169,
+      0.0022
+     ],
+     [
+      0.1429,
+      0.0027
+     ],
+     [
+      0.1623,
+      0.003
+     ],
+     [
+      0.1818,
+      0.0034
+     ],
+     [
+      0.2013,
+      0.0038
+     ],
+     [
+      0.2208,
+      0.0041
+     ],
+     [
+      0.2403,
+      0.0049
+     ],
+     [
+      0.2597,
+      0.0056
+     ],
+     [
+      0.2792,
+      0.0063
+     ],
+     [
+      0.2987,
+      0.0071
+     ],
+     [
+      0.3182,
+      0.0078
+     ],
+     [
+      0.3377,
+      0.0085
+     ],
+     [
+      0.3571,
+      0.0095
+     ],
+     [
+      0.3831,
+      0.011
+     ],
+     [
+      0.4026,
+      0.0121
+     ],
+     [
+      0.4221,
+      0.0132
+     ],
+     [
+      0.4416,
+      0.0144
+     ],
+     [
+      0.461,
+      0.0158
+     ],
+     [
+      0.4805,
+      0.0175
+     ],
+     [
+      0.5,
+      0.0194
+     ],
+     [
+      0.5195,
+      0.0212
+     ],
+     [
+      0.539,
+      0.0234
+     ],
+     [
+      0.5584,
+      0.0256
+     ],
+     [
+      0.5779,
+      0.0281
+     ],
+     [
+      0.5974,
+      0.0311
+     ],
+     [
+      0.6169,
+      0.0345
+     ],
+     [
+      0.6429,
+      0.0395
+     ],
+     [
+      0.6623,
+      0.0439
+     ],
+     [
+      0.6818,
+      0.0492
+     ],
+     [
+      0.7013,
+      0.0554
+     ],
+     [
+      0.7208,
+      0.0633
+     ],
+     [
+      0.7403,
+      0.0721
+     ],
+     [
+      0.7597,
+      0.0815
+     ],
+     [
+      0.7792,
+      0.0914
+     ],
+     [
+      0.7987,
+      0.1026
+     ],
+     [
+      0.8182,
+      0.1152
+     ],
+     [
+      0.8377,
+      0.1328
+     ],
+     [
+      0.8571,
+      0.1554
+     ],
+     [
+      0.8831,
+      0.1999
+     ],
+     [
+      0.9026,
+      0.2435
+     ],
+     [
+      0.9221,
+      0.3006
+     ],
+     [
+      0.9416,
+      0.3992
+     ],
+     [
+      0.961,
+      0.5125
+     ],
+     [
+      0.9805,
+      0.6846
+     ],
+     [
+      1.0,
+      1.0
+     ]
+    ]
+   },
+   "fed_districts": [
+    {
+     "name": "ЦФО",
+     "universities": 160,
+     "with_olympiads": 52,
+     "total": 5287,
+     "share": 0.644,
+     "students_share": 0.3037,
+     "per_1000_students": 4.54
+    },
+    {
+     "name": "СЗФО",
+     "universities": 60,
+     "with_olympiads": 24,
+     "total": 1841,
+     "share": 0.2243,
+     "students_share": 0.1107,
+     "per_1000_students": 4.33
+    },
+    {
+     "name": "ЮФО",
+     "universities": 77,
+     "with_olympiads": 13,
+     "total": 52,
+     "share": 0.0063,
+     "students_share": 0.1233,
+     "per_1000_students": 0.11
+    },
+    {
+     "name": "СКФО",
+     "universities": 29,
+     "with_olympiads": 3,
+     "total": 8,
+     "share": 0.001,
+     "students_share": 0.0482,
+     "per_1000_students": 0.04
+    },
+    {
+     "name": "ПФО",
+     "universities": 109,
+     "with_olympiads": 30,
+     "total": 300,
+     "share": 0.0365,
+     "students_share": 0.1877,
+     "per_1000_students": 0.42
+    },
+    {
+     "name": "УрФО",
+     "universities": 44,
+     "with_olympiads": 9,
+     "total": 246,
+     "share": 0.03,
+     "students_share": 0.0688,
+     "per_1000_students": 0.93
+    },
+    {
+     "name": "СФО",
+     "universities": 66,
+     "with_olympiads": 19,
+     "total": 415,
+     "share": 0.0506,
+     "students_share": 0.1142,
+     "per_1000_students": 0.95
+    },
+    {
+     "name": "ДФО",
+     "universities": 35,
+     "with_olympiads": 4,
+     "total": 60,
+     "share": 0.0073,
+     "students_share": 0.0434,
+     "per_1000_students": 0.36
+    }
+   ],
+   "region_groups": [
+    {
+     "name": "Москва",
+     "universities": 71,
+     "with_olympiads": 38,
+     "total": 5248,
+     "share": 0.6393,
+     "students_share": 0.1816,
+     "per_1000_students": 7.53
+    },
+    {
+     "name": "Санкт-Петербург",
+     "universities": 40,
+     "with_olympiads": 20,
+     "total": 1828,
+     "share": 0.2227,
+     "students_share": 0.0839,
+     "per_1000_students": 5.68
+    },
+    {
+     "name": "Остальные регионы",
+     "universities": 469,
+     "with_olympiads": 96,
+     "total": 1133,
+     "share": 0.138,
+     "students_share": 0.7345,
+     "per_1000_students": 0.4
+    }
+   ],
+   "top": [
+    {
+     "id": 1766,
+     "name": "Национальный исследовательский университет Высшая школа экономики",
+     "filial": false,
+     "total": 1292
+    },
+    {
+     "id": 234,
+     "name": "Национальный исследовательский университет ИТМО",
+     "filial": false,
+     "total": 673
+    },
+    {
+     "id": 161,
+     "name": "Московский физико-технический институт (национальный исследовательский университет)",
+     "filial": false,
+     "total": 624
+    },
+    {
+     "id": 1725,
+     "name": "Московский государственный университет имени М.В.Ломоносова",
+     "filial": false,
+     "total": 535
+    },
+    {
+     "id": 1783,
+     "name": "Российская академия народного хозяйства и государственной службы при Президенте Российской Федерации",
+     "filial": false,
+     "total": 475
+    },
+    {
+     "id": 165,
+     "name": "Национальный исследовательский ядерный университет МИФИ",
+     "filial": false,
+     "total": 403
+    },
+    {
+     "id": 147,
+     "name": "Московский государственный технический университет имени Н.Э.Баумана (национальный исследовательский университет)",
+     "filial": false,
+     "total": 317
+    },
+    {
+     "id": 1792,
+     "name": "Первый Московский государственный медицинский университет имени И.М. Сеченова Министерства здравоохранения Российской Федерации (Сеченовский Университет)",
+     "filial": false,
+     "total": 312
+    },
+    {
+     "id": 245,
+     "name": "Санкт-Петербургский государственный университет промышленных технологий и дизайна",
+     "filial": false,
+     "total": 301
+    },
+    {
+     "id": 1771,
+     "name": "Санкт-Петербургский государственный университет",
+     "filial": false,
+     "total": 299
+    }
+   ]
+  },
+  "score_link": {
+   "year": 2024,
+   "excluded_zero_percent": 426,
+   "excluded_no_score": 0,
+   "last_year": {
+    "n": 154,
+    "rho": 0.678,
+    "ci95": [
+     0.58,
+     0.76
+    ]
+   },
+   "by_year": [
+    {
+     "year": 2018,
+     "n": 152,
+     "rho": 0.63,
+     "ci95": [
+      0.52,
+      0.72
+     ]
+    },
+    {
+     "year": 2019,
+     "n": 145,
+     "rho": 0.547,
+     "ci95": [
+      0.41,
+      0.66
+     ]
+    },
+    {
+     "year": 2020,
+     "n": 173,
+     "rho": 0.57,
+     "ci95": [
+      0.45,
+      0.67
+     ]
+    },
+    {
+     "year": 2021,
+     "n": 162,
+     "rho": 0.604,
+     "ci95": [
+      0.49,
+      0.7
+     ]
+    },
+    {
+     "year": 2022,
+     "n": 167,
+     "rho": 0.572,
+     "ci95": [
+      0.45,
+      0.67
+     ]
+    },
+    {
+     "year": 2023,
+     "n": 173,
+     "rho": 0.613,
+     "ci95": [
+      0.5,
+      0.7
+     ]
+    },
+    {
+     "year": 2024,
+     "n": 154,
+     "rho": 0.678,
+     "ci95": [
+      0.58,
+      0.76
+     ]
+    }
+   ],
+   "per_university": {
+    "n": 291,
+    "rho": 0.549,
+    "ci95": [
+     0.46,
+     0.63
+    ]
+   },
+   "within_university_changes": {
+    "n": 732,
+    "rho": 0.236,
+    "ci95": [
+     0.16,
+     0.31
+    ]
+   },
+   "by_profile": [
+    {
+     "profile": "точные и инженерные науки",
+     "n": 86,
+     "rho": 0.605,
+     "ci95": [
+      0.44,
+      0.73
+     ],
+     "median_percent": 0.05,
+     "median_score": 70.7
+    },
+    {
+     "profile": "медицина, фармация",
+     "n": 49,
+     "rho": 0.662,
+     "ci95": [
+      0.45,
+      0.8
+     ],
+     "median_percent": 0.03,
+     "median_score": 77.0
+    },
+    {
+     "profile": "экономика и управление",
+     "n": 44,
+     "rho": 0.772,
+     "ci95": [
+      0.61,
+      0.87
+     ],
+     "median_percent": 0.06,
+     "median_score": 80.9
+    },
+    {
+     "profile": "юриспруденция",
+     "n": 30,
+     "rho": 0.495,
+     "ci95": [
+      0.14,
+      0.74
+     ],
+     "median_percent": 0.07,
+     "median_score": 79.3
+    },
+    {
+     "profile": "педагогика",
+     "n": 51,
+     "rho": 0.166,
+     "ci95": [
+      -0.13,
+      0.44
+     ],
+     "median_percent": 0.03,
+     "median_score": 68.0
+    },
+    {
+     "profile": "искусство и спорт",
+     "n": 18,
+     "rho": 0.313,
+     "ci95": [
+      -0.21,
+      0.7
+     ],
+     "median_percent": 0.16,
+     "median_score": 79.1
+    }
+   ],
+   "quartiles": [
+    {
+     "score_from": 59.1,
+     "score_to": 67.8,
+     "universities": 38,
+     "median_percent": 0.02
+    },
+    {
+     "score_from": 67.8,
+     "score_to": 75.4,
+     "universities": 39,
+     "median_percent": 0.05
+    },
+    {
+     "score_from": 75.5,
+     "score_to": 82.9,
+     "universities": 38,
+     "median_percent": 0.1
+    },
+    {
+     "score_from": 82.9,
+     "score_to": 98.7,
+     "universities": 39,
+     "median_percent": 0.73
+    }
+   ],
+   "points": [
+    {
+     "score": 62.02,
+     "percent": 0.017
+    },
+    {
+     "score": 70.33,
+     "percent": 0.216
+    },
+    {
+     "score": 66.87,
+     "percent": 0.01
+    },
+    {
+     "score": 64.78,
+     "percent": 0.035
+    },
+    {
+     "score": 68.08,
+     "percent": 0.027
+    },
+    {
+     "score": 66.16,
+     "percent": 0.047
+    },
+    {
+     "score": 72.97,
+     "percent": 0.027
+    },
+    {
+     "score": 67.96,
+     "percent": 0.016
+    },
+    {
+     "score": 81.5,
+     "percent": 0.24
+    },
+    {
+     "score": 91.3,
+     "percent": 0.273
+    },
+    {
+     "score": 90.7,
+     "percent": 2.108
+    },
+    {
+     "score": 67.52,
+     "percent": 0.004
+    },
+    {
+     "score": 68.21,
+     "percent": 0.066
+    },
+    {
+     "score": 65.64,
+     "percent": 0.016
+    },
+    {
+     "score": 64.78,
+     "percent": 0.008
+    },
+    {
+     "score": 69.11,
+     "percent": 0.009
+    },
+    {
+     "score": 73.24,
+     "percent": 0.153
+    },
+    {
+     "score": 67.29,
+     "percent": 0.009
+    },
+    {
+     "score": 71.04,
+     "percent": 0.032
+    },
+    {
+     "score": 68.92,
+     "percent": 0.011
+    },
+    {
+     "score": 76.09,
+     "percent": 0.045
+    },
+    {
+     "score": 67.67,
+     "percent": 0.033
+    },
+    {
+     "score": 66.21,
+     "percent": 0.033
+    },
+    {
+     "score": 64.16,
+     "percent": 0.011
+    },
+    {
+     "score": 65.16,
+     "percent": 0.025
+    },
+    {
+     "score": 94.89,
+     "percent": 0.733
+    },
+    {
+     "score": 81.81,
+     "percent": 0.168
+    },
+    {
+     "score": 83.59,
+     "percent": 0.225
+    },
+    {
+     "score": 79.02,
+     "percent": 0.214
+    },
+    {
+     "score": 90.63,
+     "percent": 1.397
+    },
+    {
+     "score": 76.92,
+     "percent": 0.051
+    },
+    {
+     "score": 87.68,
+     "percent": 1.43
+    },
+    {
+     "score": 76.43,
+     "percent": 0.045
+    },
+    {
+     "score": 80.4,
+     "percent": 0.296
+    },
+    {
+     "score": 77.75,
+     "percent": 0.03
+    },
+    {
+     "score": 98.67,
+     "percent": 12.445
+    },
+    {
+     "score": 75.86,
+     "percent": 0.092
+    },
+    {
+     "score": 95.66,
+     "percent": 6.912
+    },
+    {
+     "score": 81.23,
+     "percent": 0.101
+    },
+    {
+     "score": 69.86,
+     "percent": 0.08
+    },
+    {
+     "score": 77.86,
+     "percent": 0.17
+    },
+    {
+     "score": 67.81,
+     "percent": 0.011
+    },
+    {
+     "score": 83.3,
+     "percent": 0.212
+    },
+    {
+     "score": 67.06,
+     "percent": 0.027
+    },
+    {
+     "score": 70.7,
+     "percent": 0.054
+    },
+    {
+     "score": 86.04,
+     "percent": 1.72
+    },
+    {
+     "score": 65.5,
+     "percent": 0.008
+    },
+    {
+     "score": 66.27,
+     "percent": 0.052
+    },
+    {
+     "score": 65.61,
+     "percent": 0.022
+    },
+    {
+     "score": 67.74,
+     "percent": 0.008
+    },
+    {
+     "score": 71.19,
+     "percent": 0.102
+    },
+    {
+     "score": 68.07,
+     "percent": 0.856
+    },
+    {
+     "score": 70.38,
+     "percent": 0.032
+    },
+    {
+     "score": 69.08,
+     "percent": 0.017
+    },
+    {
+     "score": 92.9,
+     "percent": 0.669
+    },
+    {
+     "score": 82.94,
+     "percent": 0.164
+    },
+    {
+     "score": 80.31,
+     "percent": 0.211
+    },
+    {
+     "score": 71.06,
+     "percent": 0.08
+    },
+    {
+     "score": 73.39,
+     "percent": 0.112
+    },
+    {
+     "score": 79.06,
+     "percent": 0.032
+    },
+    {
+     "score": 86.14,
+     "percent": 0.749
+    },
+    {
+     "score": 78.86,
+     "percent": 0.349
+    },
+    {
+     "score": 67.57,
+     "percent": 0.039
+    },
+    {
+     "score": 94.2,
+     "percent": 6.569
+    },
+    {
+     "score": 79.02,
+     "percent": 0.343
+    },
+    {
+     "score": 82.62,
+     "percent": 0.493
+    },
+    {
+     "score": 75.43,
+     "percent": 0.091
+    },
+    {
+     "score": 83.49,
+     "percent": 1.773
+    },
+    {
+     "score": 81.33,
+     "percent": 0.162
+    },
+    {
+     "score": 74.85,
+     "percent": 0.047
+    },
+    {
+     "score": 67.92,
+     "percent": 0.029
+    },
+    {
+     "score": 68.68,
+     "percent": 0.008
+    },
+    {
+     "score": 75.97,
+     "percent": 0.043
+    },
+    {
+     "score": 64.98,
+     "percent": 0.019
+    },
+    {
+     "score": 68.72,
+     "percent": 0.015
+    },
+    {
+     "score": 65.31,
+     "percent": 0.009
+    },
+    {
+     "score": 72.99,
+     "percent": 0.185
+    },
+    {
+     "score": 61.95,
+     "percent": 0.056
+    },
+    {
+     "score": 76.68,
+     "percent": 1.01
+    },
+    {
+     "score": 66.46,
+     "percent": 0.186
+    },
+    {
+     "score": 74.31,
+     "percent": 0.627
+    },
+    {
+     "score": 70.03,
+     "percent": 0.012
+    },
+    {
+     "score": 66.58,
+     "percent": 0.068
+    },
+    {
+     "score": 79.53,
+     "percent": 0.154
+    },
+    {
+     "score": 66.36,
+     "percent": 0.017
+    },
+    {
+     "score": 87.48,
+     "percent": 0.014
+    },
+    {
+     "score": 68.58,
+     "percent": 0.015
+    },
+    {
+     "score": 76.12,
+     "percent": 0.508
+    },
+    {
+     "score": 73.55,
+     "percent": 0.305
+    },
+    {
+     "score": 67.82,
+     "percent": 0.027
+    },
+    {
+     "score": 67.12,
+     "percent": 0.007
+    },
+    {
+     "score": 71.99,
+     "percent": 0.041
+    },
+    {
+     "score": 70.6,
+     "percent": 0.132
+    },
+    {
+     "score": 74.53,
+     "percent": 0.138
+    },
+    {
+     "score": 71.29,
+     "percent": 0.039
+    },
+    {
+     "score": 70.29,
+     "percent": 0.056
+    },
+    {
+     "score": 79.23,
+     "percent": 0.068
+    },
+    {
+     "score": 74.87,
+     "percent": 0.178
+    },
+    {
+     "score": 62.07,
+     "percent": 0.196
+    },
+    {
+     "score": 78.94,
+     "percent": 0.063
+    },
+    {
+     "score": 65.17,
+     "percent": 0.012
+    },
+    {
+     "score": 88.21,
+     "percent": 0.072
+    },
+    {
+     "score": 62.29,
+     "percent": 0.009
+    },
+    {
+     "score": 65.79,
+     "percent": 0.013
+    },
+    {
+     "score": 77.86,
+     "percent": 0.162
+    },
+    {
+     "score": 86.43,
+     "percent": 0.137
+    },
+    {
+     "score": 81.81,
+     "percent": 0.097
+    },
+    {
+     "score": 78.21,
+     "percent": 0.101
+    },
+    {
+     "score": 76.61,
+     "percent": 0.042
+    },
+    {
+     "score": 78.04,
+     "percent": 0.598
+    },
+    {
+     "score": 89.46,
+     "percent": 0.828
+    },
+    {
+     "score": 78.08,
+     "percent": 0.012
+    },
+    {
+     "score": 62.32,
+     "percent": 0.021
+    },
+    {
+     "score": 91.73,
+     "percent": 0.337
+    },
+    {
+     "score": 67.74,
+     "percent": 0.016
+    },
+    {
+     "score": 79.85,
+     "percent": 0.142
+    },
+    {
+     "score": 73.52,
+     "percent": 0.054
+    },
+    {
+     "score": 66.62,
+     "percent": 0.059
+    },
+    {
+     "score": 90.32,
+     "percent": 1.672
+    },
+    {
+     "score": 77.97,
+     "percent": 0.019
+    },
+    {
+     "score": 82.91,
+     "percent": 0.056
+    },
+    {
+     "score": 59.15,
+     "percent": 0.199
+    },
+    {
+     "score": 59.38,
+     "percent": 0.353
+    },
+    {
+     "score": 67.22,
+     "percent": 0.041
+    },
+    {
+     "score": 97.23,
+     "percent": 2.101
+    },
+    {
+     "score": 85.89,
+     "percent": 0.082
+    },
+    {
+     "score": 97.66,
+     "percent": 4.321
+    },
+    {
+     "score": 89.81,
+     "percent": 0.004
+    },
+    {
+     "score": 90.48,
+     "percent": 1.525
+    },
+    {
+     "score": 69.34,
+     "percent": 0.007
+    },
+    {
+     "score": 96.82,
+     "percent": 2.008
+    },
+    {
+     "score": 84.23,
+     "percent": 1.026
+    },
+    {
+     "score": 76.69,
+     "percent": 0.405
+    },
+    {
+     "score": 88.92,
+     "percent": 1.568
+    },
+    {
+     "score": 92.45,
+     "percent": 0.542
+    },
+    {
+     "score": 81.66,
+     "percent": 0.067
+    },
+    {
+     "score": 85.16,
+     "percent": 0.614
+    },
+    {
+     "score": 86.53,
+     "percent": 0.07
+    },
+    {
+     "score": 75.57,
+     "percent": 0.012
+    },
+    {
+     "score": 71.33,
+     "percent": 0.033
+    },
+    {
+     "score": 68.61,
+     "percent": 0.006
+    },
+    {
+     "score": 87.41,
+     "percent": 0.285
+    },
+    {
+     "score": 75.52,
+     "percent": 0.039
+    },
+    {
+     "score": 67.79,
+     "percent": 0.085
+    },
+    {
+     "score": 90.26,
+     "percent": 1.473
+    },
+    {
+     "score": 87.41,
+     "percent": 0.254
+    },
+    {
+     "score": 96.75,
+     "percent": 4.92
+    },
+    {
+     "score": 85.74,
+     "percent": 0.109
+    },
+    {
+     "score": 92.33,
+     "percent": 0.226
+    },
+    {
+     "score": 83.59,
+     "percent": 0.046
+    },
+    {
+     "score": 64.1,
+     "percent": 0.039
+    },
+    {
+     "score": 80.96,
+     "percent": 0.124
+    },
+    {
+     "score": 79.1,
+     "percent": 0.053
+    },
+    {
+     "score": 70.56,
+     "percent": 0.068
+    }
+   ]
+  },
+  "our_base": {
+   "year": 2024,
+   "universities_in_base": 44,
+   "found_in_panel": 39,
+   "heads": 34,
+   "filial_rows": 5,
+   "not_in_panel": [
+    "РГУ нефти и газа им. И.М. Губкина — филиал в Оренбурге",
+    "РГУ нефти и газа им. И.М. Губкина — филиал в Ташкенте",
+    "РГУ нефти и газа им. И.М. Губкина — филиал в Атырау",
+    "Университет Иннополис (АНО ВО)",
+    "Центральный университет (ЦУ, АНО ВО)"
+   ],
+   "panel_organizations_with_olympiads": 154,
+   "organizations_in_base_with_olympiads": 38,
+   "by_year": [
+    {
+     "year": 2018,
+     "total": 5049,
+     "heads": 3967,
+     "filials": 123,
+     "share": 0.8101
+    },
+    {
+     "year": 2019,
+     "total": 5749,
+     "heads": 4667,
+     "filials": 151,
+     "share": 0.8381
+    },
+    {
+     "year": 2020,
+     "total": 6920,
+     "heads": 5525,
+     "filials": 188,
+     "share": 0.8256
+    },
+    {
+     "year": 2021,
+     "total": 7192,
+     "heads": 5670,
+     "filials": 246,
+     "share": 0.8226
+    },
+    {
+     "year": 2022,
+     "total": 7685,
+     "heads": 6033,
+     "filials": 356,
+     "share": 0.8314
+    },
+    {
+     "year": 2023,
+     "total": 7652,
+     "heads": 5945,
+     "filials": 324,
+     "share": 0.8193
+    },
+    {
+     "year": 2024,
+     "total": 8209,
+     "heads": 6477,
+     "filials": 338,
+     "share": 0.8302
+    }
+   ],
+   "top": {
+    "10": {
+     "in_base": 9,
+     "intake_share": 0.9425
+    },
+    "20": {
+     "in_base": 18,
+     "intake_share": 0.9382
+    },
+    "50": {
+     "in_base": 29,
+     "intake_share": 0.8646
+    }
+   },
+   "top20_not_in_base": [
+    {
+     "id": 245,
+     "name": "Санкт-Петербургский государственный университет промышленных технологий и дизайна",
+     "filial": false,
+     "total": 301
+    },
+    {
+     "id": 294,
+     "name": "Национальный исследовательский Томский государственный университет",
+     "filial": false,
+     "total": 118
+    }
+   ],
+   "filials": {
+    "all_total": 381,
+    "all_share": 0.0464,
+    "of_base_universities_not_in_base": 35
+   }
+  }
  }
 }

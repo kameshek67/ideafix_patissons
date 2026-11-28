@@ -8,7 +8,10 @@
   prize_2027      — сколько строк БВИ для призёров перечневых олимпиад станут «100 баллов» по проекту 2027;
   old_table       — чем строки старой таблицы (слои detailed и derived) отличаются от эталона документов;
   list_2026_27    — что потеряли олимпиады, не вошедшие в перечень 2026/27;
-  concentration   — на каких олимпиадах и профилях держатся льготы.
+  concentration   — на каких олимпиадах и профилях держатся льготы;
+  monitoring      — сколько олимпиадников принимают вузы (панель «Мониторинг эффективности вузов»,
+                    см. monitoring.py): olymp-analysis --monitoring путь/к/panel.xlsx. Без пути раздел
+                    не пересчитывается: в results.json остаётся прежний.
 Подбор по диплому не переписан: роли — roles_allowed, судьба БВИ — bvi_change из olymp_domain.diplomas.
 Считаются видимые строки (слой не raw); результат не зависит от времени запуска.
 """
@@ -53,6 +56,7 @@ from .eval_extract import (
     row_of,
 )
 from .ingest import DATA_DIR
+from .monitoring import INTAKE_FILE, analyse_monitoring, write_intake
 
 RESULTS_FILE = DATA_DIR / "analysis" / "results.json"
 EVAL_DIR = DATA_DIR / "eval"
@@ -578,11 +582,12 @@ def analyse(
     conn: psycopg.Connection[Any],
     eval_dir: Path = EVAL_DIR,
     old_conn: psycopg.Connection[Any] | None = None,
+    monitoring: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """old_conn — база без слоя document (сборка из одного XLSX); без неё старая таблица
     берётся из основной базы, где документы уже заменили часть её строк."""
     links = load_links(conn)
-    return {
+    results = {
         "database": {
             "links": len(links),
             "programs": len({r["program_id"] for r in links}),
@@ -597,6 +602,9 @@ def analyse(
         "concentration": concentration(links),
         "ai": ai_metrics(eval_dir),
     }
+    if monitoring is not None:
+        results["monitoring"] = monitoring
+    return results
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -608,21 +616,45 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     ap.add_argument("--charts-only", action="store_true", help="графики из готового файла --out")
     ap.add_argument("--db-url", help="по умолчанию OLYMP_DATABASE_URL")
     ap.add_argument(
+        "--monitoring",
+        type=Path,
+        help="панель «Мониторинг эффективности вузов» (xlsx): раздел monitoring и "
+        "data/monitoring/olympiad_intake.csv; без пути раздел берётся из прежнего results.json",
+    )
+    ap.add_argument(
         "--old-db-url",
         help="база, собранная из одного XLSX (OLYMP_DATA_DIR с пустым extracted/): старая таблица",
     )
     return ap.parse_args(argv)
 
 
+def monitoring_section(args: argparse.Namespace) -> dict[str, Any] | None:
+    """Раздел monitoring: из панели, а без неё — прежний из results.json (панели в репозитории нет)."""
+    if args.monitoring:
+        section, intake = analyse_monitoring(args.monitoring)
+        write_intake(intake)
+        print(f"Загрузка вузов базы: {INTAKE_FILE} ({len(intake)} строк)")
+        return section
+    if args.out.exists():
+        previous = json.loads(args.out.read_text(encoding="utf-8")).get("monitoring")
+        if previous:
+            print(
+                "Панель мониторинга не указана (--monitoring): раздел monitoring оставлен прежним"
+            )
+        return previous  # type: ignore[no-any-return]
+    return None
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     if not args.charts_only:
+        section = monitoring_section(args)
         with psycopg.connect(psycopg_dsn(args.db_url)) as conn:
             if args.old_db_url:
                 with psycopg.connect(psycopg_dsn(args.old_db_url)) as old_conn:
-                    results = analyse(conn, args.eval_dir, old_conn)
+                    results = analyse(conn, args.eval_dir, old_conn, section)
             else:
-                results = analyse(conn, args.eval_dir)
+                results = analyse(conn, args.eval_dir, monitoring=section)
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(
             json.dumps(results, ensure_ascii=False, indent=1, sort_keys=False) + "\n",
