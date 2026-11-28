@@ -699,6 +699,25 @@ export interface components {
              */
             profile_id: number | null;
         };
+        /** AssistantModel */
+        AssistantModel: {
+            /** Answer P95 */
+            answer_p95: number | null;
+            /** Cases */
+            cases: number | null;
+            /** Cost Per Answer */
+            cost_per_answer: number | null;
+            /** Error Share Final */
+            error_share_final: number | null;
+            /** Error Share Raw */
+            error_share_raw: number | null;
+            /** Gate Passed */
+            gate_passed: boolean | null;
+            /** Model */
+            model: string;
+            /** Passed Share */
+            passed_share: number | null;
+        };
         /** AssistantQuality */
         AssistantQuality: {
             /** Answer P50 */
@@ -715,6 +734,8 @@ export interface components {
             fabrication: number | null;
             /** Model */
             model: string;
+            /** Models */
+            models: components["schemas"]["AssistantModel"][];
             /** Passed Share */
             passed_share: number | null;
         };
@@ -2048,6 +2069,8 @@ export interface components {
             id: number;
             /** Name */
             name: string;
+            /** Nicknames */
+            nicknames: string[];
             /** Note */
             note: string;
             /** Programs */

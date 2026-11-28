@@ -72,6 +72,19 @@ async def test_assistant_summary(
             "answer_p50": 6.5,
             "cost_per_answer": None,
         },
+        "models": [
+            {
+                "model": "vendor/model-x",
+                "cases": 120,
+                "passed_share": 0.93,
+                "answer_p95": 9.5,
+                "error_share_raw": 0.1,
+                "error_share_final": 0.02,
+                "gate_passed": True,
+            },
+            {"model": "vendor/small", "cases": 5, "passed_share": "?"},
+            "мусор",
+        ],
     }
     path = tmp_path / "eval" / "assistant" / "summary.json"
     path.write_text(json.dumps(report), encoding="utf-8")
@@ -80,6 +93,10 @@ async def test_assistant_summary(
     assert assistant["date"] == "2026-11-27"
     assert assistant["cases"] == 120 and assistant["passed_share"] == 0.93
     assert assistant["cost_per_answer"] is None
+    first, second = assistant["models"]
+    assert first["model"] == "vendor/model-x" and first["error_share_raw"] == 0.1
+    assert first["gate_passed"] is True
+    assert second["passed_share"] is None and second["cases"] == 5
     path.write_text("не json", encoding="utf-8")
     assert (await get_quality(client))["assistant"] is None
 

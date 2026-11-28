@@ -117,15 +117,6 @@ function CoverageBlock({ data }: { data: Quality["coverage"] }) {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <div>
-      <div className="text-[22px] leading-[26px] font-medium tabular-nums">{value}</div>
-      <div className="text-[12.5px] leading-[17px] meta-text">{label}</div>
-    </div>
-  );
-}
-
 function ReportsBlock({ data }: { data: Quality["reports"] }) {
   const periods = [
     { title: "За всё время", p: data.total },
@@ -137,27 +128,95 @@ function ReportsBlock({ data }: { data: Quality["reports"] }) {
         Если в строке льготы что-то не совпадает с документом, есть кнопка «Не совпадает с документом». Мы сверяем с документом и либо исправляем, либо отвечаем, что данные верны.
       </p>
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        {periods.map(({ title, p }) => (
-          <div key={title} className="rounded-[15px] bg-soft p-3.5">
-            <div className="card-kicker">{title}</div>
-            {p.received ? (
-              <>
-                <div className="mt-2 grid grid-cols-3 gap-2">
-                  <Stat value={fmt(p.received)} label="пришло" />
-                  <Stat value={fmt(p.fixed)} label="исправлено" />
-                  <Stat value={fmt(p.correct)} label="данные верны" />
-                </div>
-                <p className="mt-2 text-[13px] leading-[18px]">
-                  {p.median_hours !== null && p.median_hours !== undefined ? `Решаем обычно за ${duration(p.median_hours)}.` : "Пока ни одной не решили."}
-                </p>
-              </>
-            ) : (
-              <p className="mt-2 text-[14px] leading-[20px] meta-text">Жалоб не было.</p>
-            )}
-          </div>
-        ))}
+        {periods.map(({ title, p }) => {
+          const rows: [string, string][] = p.received
+            ? [
+                ["Пришло", fmt(p.received)],
+                ["Исправлено", fmt(p.fixed)],
+                ["Данные верны", fmt(p.correct)],
+                p.median_hours !== null && p.median_hours !== undefined
+                  ? ["Решаем обычно за", duration(p.median_hours)]
+                  : ["Решено", "пока ничего"],
+              ]
+            : [["Жалоб", "не было"]];
+          return (
+            <div key={title} className="rounded-[15px] bg-soft p-3.5">
+              <h3 className="card-kicker">{title}</h3>
+              <dl className="mt-1 divide-y divide-[color:var(--hair)] text-[14px] leading-[19px]">
+                {rows.map(([term, value]) => (
+                  <div key={term} className="flex justify-between gap-3 py-2">
+                    <dt>{term}</dt>
+                    <dd className="font-medium tabular-nums">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          );
+        })}
       </div>
       <p className="mt-3 text-[12.5px] leading-[17px] meta-text">Тексты жалоб не публикуем, только счётчики. Повторы не считаем.</p>
+    </Section>
+  );
+}
+
+type ModelRun = NonNullable<Quality["assistant"]>["models"][number];
+
+const seconds = (n: number | null) => (n === null ? "—" : `${n.toFixed(1).replace(".", ",")} с`);
+const dollars = (n: number | null) => (n === null ? "—" : `$${n.toFixed(4).replace(".", ",")}`);
+const share = (n: number | null) => (n === null ? "—" : pct(n));
+
+/** Полные прогоны идут первыми, прогоны на нескольких вопросах — ниже и с пометкой. */
+function splitRuns(models: ModelRun[]): { full: ModelRun[]; preliminary: ModelRun[]; total: number } {
+  const total = Math.max(0, ...models.map((m) => m.cases ?? 0));
+  const isFull = (m: ModelRun) => (m.cases ?? 0) >= total / 2;
+  return { full: models.filter(isFull), preliminary: models.filter((m) => !isFull(m)), total };
+}
+
+function ModelsBlock({ models, selected }: { models: ModelRun[]; selected: string }) {
+  const { full, preliminary } = splitRuns(models);
+  const rows = [...full, ...preliminary.map((m) => ({ ...m, rough: true }))];
+  return (
+    <Section id="quality-models" title="Сравнение моделей">
+      <p className="mt-1 text-[13.5px] leading-[19px] meta-text">
+        Одни и те же вопросы, разные модели. Ошибки считаем в названных фактах: до проверки кодом и после неё. Выбрана самая дешёвая из тех, что прошли порог на полном наборе.
+      </p>
+      <div className="models-scroll mt-3">
+        <table className="models-table">
+          <thead>
+            <tr>
+              <th scope="col">Модель</th>
+              <th scope="col">Вопросов</th>
+              <th scope="col">Прошло</th>
+              <th scope="col">Ошибки до → после</th>
+              <th scope="col">p95</th>
+              <th scope="col">Цена ответа</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((m) => {
+              const rough = "rough" in m;
+              return (
+                <tr key={m.model} className={m.model === selected ? "is-selected" : undefined} aria-current={m.model === selected || undefined}>
+                  <th scope="row">
+                    <span className="break-all">{m.model}</span>
+                    {m.model === selected ? <span className="badge badge-bvi ml-1.5">выбрана</span> : null}
+                    {rough ? <div className="meta-text text-[12px]">{`предварительно, ${fmt(m.cases)} ${plural(m.cases ?? 0, "вопрос", "вопроса", "вопросов")}`}</div> : null}
+                    {m.gate_passed === false ? <div className="meta-text text-[12px]">порог включения не прошла</div> : null}
+                  </th>
+                  <td data-label="Вопросов">{fmt(m.cases)}</td>
+                  <td data-label="Прошло">{share(m.passed_share)}</td>
+                  <td data-label="Ошибки до → после">{`${share(m.error_share_raw)} → ${share(m.error_share_final)}`}</td>
+                  <td data-label="Ответ, p95">{seconds(m.answer_p95)}</td>
+                  <td data-label="Цена ответа">{dollars(m.cost_per_answer)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-3 text-[12.5px] leading-[17px] meta-text">
+        Прогоны на нескольких вопросах — пробные: по ним модель можно только отсеять, но не сравнить. p95 — за сколько секунд пришёл полный ответ у девяти из десяти вопросов.
+      </p>
     </Section>
   );
 }
@@ -256,6 +315,7 @@ export function QualityView() {
             <CoverageBlock data={q.data.coverage} />
             <ReportsBlock data={q.data.reports} />
             {q.data.assistant ? <AssistantBlock data={q.data.assistant} /> : null}
+            {q.data.assistant?.models.length ? <ModelsBlock models={q.data.assistant.models} selected={q.data.assistant.model} /> : null}
             <FreshnessBlock data={q.data.freshness} />
           </>
         ) : null}

@@ -52,6 +52,17 @@ class ReportsQuality(ResponseModel):
     days_30: ReportsPeriod
 
 
+class AssistantModel(ResponseModel):
+    model: str
+    cases: int | None
+    passed_share: float | None
+    error_share_raw: float | None  # ошибок факта до проверки кодом
+    error_share_final: float | None  # и после неё
+    answer_p95: float | None  # секунд до полного ответа, 95-й перцентиль
+    cost_per_answer: float | None  # долларов
+    gate_passed: bool | None  # прошла порог включения
+
+
 class AssistantQuality(ResponseModel):
     model: str
     date: str | None
@@ -61,6 +72,7 @@ class AssistantQuality(ResponseModel):
     fabrication: float | None  # выдумок там, где данных нет
     answer_p50: float | None  # секунд до полного ответа, медиана
     cost_per_answer: float | None
+    models: list[AssistantModel]  # все прогоны сравнения моделей
 
 
 class Quality(ResponseModel):

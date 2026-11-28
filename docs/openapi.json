@@ -464,6 +464,103 @@
         "title": "AssistantEntity",
         "type": "object"
       },
+      "AssistantModel": {
+        "properties": {
+          "answer_p95": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer P95"
+          },
+          "cases": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cases"
+          },
+          "cost_per_answer": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Per Answer"
+          },
+          "error_share_final": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Share Final"
+          },
+          "error_share_raw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Share Raw"
+          },
+          "gate_passed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gate Passed"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "passed_share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Passed Share"
+          }
+        },
+        "required": [
+          "model",
+          "cases",
+          "passed_share",
+          "error_share_raw",
+          "error_share_final",
+          "answer_p95",
+          "cost_per_answer",
+          "gate_passed"
+        ],
+        "title": "AssistantModel",
+        "type": "object"
+      },
       "AssistantQuality": {
         "properties": {
           "answer_p50": {
@@ -536,6 +633,13 @@
             "title": "Model",
             "type": "string"
           },
+          "models": {
+            "items": {
+              "$ref": "#/components/schemas/AssistantModel"
+            },
+            "title": "Models",
+            "type": "array"
+          },
           "passed_share": {
             "anyOf": [
               {
@@ -556,7 +660,8 @@
           "error_share",
           "fabrication",
           "answer_p50",
-          "cost_per_answer"
+          "cost_per_answer",
+          "models"
         ],
         "title": "AssistantQuality",
         "type": "object"
@@ -4201,6 +4306,13 @@
             "title": "Name",
             "type": "string"
           },
+          "nicknames": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Nicknames",
+            "type": "array"
+          },
           "note": {
             "title": "Note",
             "type": "string"
@@ -4242,7 +4354,8 @@
           "bvi",
           "sto",
           "benefits",
-          "table_rows"
+          "table_rows",
+          "nicknames"
         ],
         "title": "UniversityItem",
         "type": "object"

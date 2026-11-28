@@ -135,6 +135,28 @@ async def reports(session: AsyncSession) -> dict[str, Any]:
     return {"total": period("total"), "days_30": period("days")}
 
 
+def compared_models(data: dict[str, Any]) -> list[dict[str, Any]]:
+    """Строки сравнения моделей из summary.json; кривые записи пропускаем."""
+    rows = []
+    for item in data.get("models") or []:
+        if not isinstance(item, dict) or not isinstance(item.get("model"), str):
+            continue
+        cases, gate = item.get("cases"), item.get("gate_passed")
+        rows.append(
+            {
+                "model": item["model"],
+                "cases": cases if isinstance(cases, int) else None,
+                "passed_share": number(item.get("passed_share")),
+                "error_share_raw": number(item.get("error_share_raw")),
+                "error_share_final": number(item.get("error_share_final")),
+                "answer_p95": number(item.get("answer_p95")),
+                "cost_per_answer": number(item.get("cost_per_answer")),
+                "gate_passed": gate if isinstance(gate, bool) else None,
+            }
+        )
+    return rows
+
+
 def assistant() -> dict[str, Any] | None:
     """Выбранная модель и её метрики из data/eval/assistant/summary.json; нет файла — None."""
     data = read_json(data_dir() / "eval" / "assistant" / "summary.json")
@@ -158,6 +180,7 @@ def assistant() -> dict[str, Any] | None:
         "fabrication": number(stats.get("fabrication_final")),
         "answer_p50": number(stats.get("answer_p50")),
         "cost_per_answer": number(stats.get("cost_per_answer")),
+        "models": compared_models(data),
     }
 
 

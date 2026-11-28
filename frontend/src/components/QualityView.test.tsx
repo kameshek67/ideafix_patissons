@@ -102,8 +102,10 @@ describe("QualityView", () => {
   it("жалобы: числа и время; нет жалоб — так и пишем", async () => {
     renderView();
     const reports = await findById("quality-reports");
-    expect(reports.textContent).toContain("Решаем обычно за 5 ч.");
-    expect(reports.textContent).toContain("Жалоб не было.");
+    expect(reports.textContent).toContain("Решаем обычно за5 ч");
+    // «Жалоб — не было» в одной строке: подпись слева, значение справа
+    const row = [...reports.querySelectorAll("dt")].find((dt) => dt.textContent === "Жалоб")!.parentElement!;
+    expect(row.querySelector("dd")!.textContent).toBe("не было");
   });
 
   it("блок помощника есть только при наличии оценки", async () => {
@@ -120,12 +122,26 @@ describe("QualityView", () => {
       fabrication: 0,
       answer_p50: 6.5,
       cost_per_answer: null,
+      models: [
+        { model: "vendor/small", cases: 5, passed_share: 0.4, error_share_raw: 0.5, error_share_final: 0, answer_p95: 34.2, cost_per_answer: 0.0234, gate_passed: false },
+        { model: "vendor/model-x", cases: 69, passed_share: 0.68, error_share_raw: 0.15, error_share_final: 0, answer_p95: 14.1, cost_per_answer: 0.0044, gate_passed: true },
+      ],
     };
     renderView();
     const block = await findById("quality-assistant");
     expect(block.textContent).toContain("vendor/model-x");
     expect(block.textContent).toContain("93%");
     expect(block.textContent).toContain("Проверено на 120 вопросах, 27 ноября 2026");
+    // сравнение моделей: полный прогон выше пробного, выбранная выделена
+    const rows = [...document.querySelectorAll("#quality-models tbody tr")];
+    expect(rows.map((r) => r.querySelector("th")!.textContent)).toEqual([
+      "vendor/model-xвыбрана",
+      "vendor/smallпредварительно, 5 вопросовпорог включения не прошла",
+    ]);
+    expect(rows[0]!.className).toContain("is-selected");
+    expect(rows[0]!.textContent).toContain("15% → 0%");
+    expect(rows[0]!.textContent).toContain("$0,0044");
+    expect(rows[0]!.textContent).toContain("14,1 с");
   });
 
   it("без файлов оценки страница работает и честно говорит об этом", async () => {
