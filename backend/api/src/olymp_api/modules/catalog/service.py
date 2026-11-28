@@ -7,6 +7,7 @@ from olymp_domain.profile_query import collapse_profiles
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from olymp_api.db import fetch_all, fetch_one, scalar
+from olymp_api.modules.catalog.synonyms import name_fragments, nicknames_of
 from olymp_api.olympiads import OLYMPIAD_FIELDS, resolve_olympiad_profiles, resolve_olympiads
 
 REGION_ORDER = {"Москва": 0, "Санкт-Петербург": 1, "Регионы": 2}
@@ -91,8 +92,8 @@ async def regions(session: AsyncSession) -> dict[str, Any]:
 
 # Текстовые колонки в COLLATE "C" (models.CText): в ней ILIKE не складывает регистр кириллицы.
 # Сравниваем в сортировке базы по умолчанию (en_US.utf8 в образе Postgres).
-def ilike(column: str) -> str:
-    return f'{column} COLLATE "default" ILIKE :q'
+def ilike(column: str, param: str = "q") -> str:
+    return f'{column} COLLATE "default" ILIKE :{param}'
 
 
 def contains(q: str) -> str:
@@ -108,8 +109,13 @@ async def universities(session: AsyncSession, region: str | None, q: str | None)
         params["region"] = region
     if q:
         # без учёта регистра: «мгу» находит МГУ
-        where.append(f"({ilike('u.name')} OR {ilike('u.short_name')})")
+        # и по разговорным названиям: «Вышка» находит ВШЭ
+        conditions = [f"({ilike('u.name')} OR {ilike('u.short_name')})"]
         params["q"] = contains(q)
+        for i, fragment in enumerate(name_fragments(q)):
+            conditions.append(ilike("u.name", f"nick{i}"))
+            params[f"nick{i}"] = contains(fragment)
+        where.append("(" + " OR ".join(conditions) + ")")
     items = await fetch_all(
         session,
         f"""SELECT u.id, u.name, u.short_name, u.region, u.city, u.note, u.region_group,
@@ -121,6 +127,8 @@ async def universities(session: AsyncSession, region: str | None, q: str | None)
             GROUP BY u.id ORDER BY benefits DESC, u.name""",
         params,
     )
+    for item in items:
+        item["nicknames"] = nicknames_of(item["name"])
     region_names = [r["name"] for r in (await regions(session))["items"]]
     return {"count": len(items), "items": items, "regions": region_names}
 

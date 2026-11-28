@@ -5,6 +5,7 @@ from collections.abc import Mapping
 import httpx
 import pytest
 from olymp_api.main import create_app
+from olymp_api.modules.catalog.synonyms import name_fragments
 from olymp_api.settings import Settings
 
 YEAR = 2026
@@ -328,3 +329,37 @@ async def test_huge_university_id_in_score(client: httpx.AsyncClient) -> None:
         json={"university_id": HUGE_ID, "admission_year": YEAR, "claims": []},
     )
     assert_problem(response, 404, "Вуз не найден")
+
+
+@pytest.mark.parametrize(
+    ("q", "expected"),
+    [
+        ("Вышка", "НИУ ВШЭ (Москва)"),
+        ("бауманка", "МГТУ им. Н.Э. Баумана"),
+        ("Физтех", "МФТИ"),
+        ("политех", "СПбПУ Петра Великого (Политех)"),
+        ("Плешка", "РЭУ им. Г.В. Плеханова"),
+        ("мифи", "НИЯУ МИФИ"),
+        ("Питерский универ", "СПбГУ"),
+        ("спбгу", "СПбГУ"),
+    ],
+)
+async def test_universities_search_by_nickname(
+    client: httpx.AsyncClient, q: str, expected: str
+) -> None:
+    body = (await client.get("/v1/universities", params={"q": q})).json()
+    assert expected in [item["name"] for item in body["items"]]
+    assert all(item["nicknames"] is not None for item in body["items"])
+
+
+async def test_universities_nicknames_listed(client: httpx.AsyncClient) -> None:
+    items = (await client.get("/v1/universities")).json()["items"]
+    by_name = {item["name"]: item for item in items}
+    assert "вышка" in by_name["НИУ ВШЭ (Москва)"]["nicknames"]
+    assert by_name["НИУ МИЭТ (Москва, Зеленоград)"]["nicknames"] == []
+
+
+def test_nickname_fragments() -> None:
+    assert name_fragments("Выш") == ["ВШЭ"]
+    assert name_fragments("вы") == []  # короче трёх букв не угадываем
+    assert name_fragments("абракадабра") == []

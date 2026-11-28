@@ -81,6 +81,7 @@ class UniversityItem(ResponseModel):
     benefits: int
     # строк таблиц (без текстовых правил): 0 — в базе нет таблицы льгот, а не «льготы нет»
     table_rows: int
+    nicknames: list[str]  # разговорные названия: «Вышка», «Физтех»
 
 
 class Universities(ResponseModel):
