@@ -1,0 +1,3979 @@
+{
+ "extraction": {
+  "development": {
+   "documents_in_set": 10,
+   "extract": {
+    "total": {
+     "gold": 1000,
+     "pred": 955,
+     "matched": 953,
+     "precision": {
+      "value": 0.9979,
+      "low": 0.9924,
+      "high": 0.9994,
+      "interval": "wilson",
+      "bootstrap_records": {
+       "value": 0.9979,
+       "low": 0.9948,
+       "high": 1.0
+      },
+      "bootstrap_documents": {
+       "value": 0.9979,
+       "low": 0.9915,
+       "high": 1.0
+      }
+     },
+     "recall": {
+      "value": 0.953,
+      "low": 0.9381,
+      "high": 0.9645,
+      "interval": "wilson",
+      "bootstrap_records": {
+       "value": 0.953,
+       "low": 0.94,
+       "high": 0.966
+      },
+      "bootstrap_documents": {
+       "value": 0.953,
+       "low": 0.7921,
+       "high": 1.0
+      }
+     },
+     "fields": {
+      "winner_role": {
+       "title": "кому",
+       "value": 1.0,
+       "low": 0.996,
+       "high": 1.0,
+       "correct": 953,
+       "of": 953
+      },
+      "levels": {
+       "title": "уровень",
+       "value": 1.0,
+       "low": 0.996,
+       "high": 1.0,
+       "correct": 953,
+       "of": 953
+      },
+      "grades": {
+       "title": "класс",
+       "value": 1.0,
+       "low": 0.996,
+       "high": 1.0,
+       "correct": 953,
+       "of": 953
+      },
+      "ege_min": {
+       "title": "порог ЕГЭ",
+       "value": 1.0,
+       "low": 0.996,
+       "high": 1.0,
+       "correct": 953,
+       "of": 953
+      },
+      "ege_subjects": {
+       "title": "предмет ЕГЭ",
+       "value": 0.9948,
+       "low": 0.9878,
+       "high": 0.9978,
+       "correct": 948,
+       "of": 953
+      }
+     },
+     "role_wrong": {
+      "count": 0,
+      "of": 953,
+      "value": 0.0,
+      "low": 0.0,
+      "high": 0.004
+     }
+    },
+    "documents": [
+     {
+      "document": "hse-1120646356",
+      "university": "НИУ ВШЭ (Москва)",
+      "gold": 61,
+      "pred": 56,
+      "matched": 56,
+      "precision": {
+       "value": 1.0,
+       "low": 0.9358,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.918,
+       "low": 0.8221,
+       "high": 0.9645,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9358,
+        "high": 1.0,
+        "correct": 56,
+        "of": 56
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9358,
+        "high": 1.0,
+        "correct": 56,
+        "of": 56
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9358,
+        "high": 1.0,
+        "correct": 56,
+        "of": 56
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9358,
+        "high": 1.0,
+        "correct": 56,
+        "of": 56
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.9358,
+        "high": 1.0,
+        "correct": 56,
+        "of": 56
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 56,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0642
+      },
+      "passes": true,
+      "note": ""
+     },
+     {
+      "document": "itmo-rsosh-bvi",
+      "university": "Университет ИТМО",
+      "gold": 40,
+      "pred": 40,
+      "matched": 40,
+      "precision": {
+       "value": 1.0,
+       "low": 0.9124,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.9124,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9124,
+        "high": 1.0,
+        "correct": 40,
+        "of": 40
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9124,
+        "high": 1.0,
+        "correct": 40,
+        "of": 40
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9124,
+        "high": 1.0,
+        "correct": 40,
+        "of": 40
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9124,
+        "high": 1.0,
+        "correct": 40,
+        "of": 40
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.9124,
+        "high": 1.0,
+        "correct": 40,
+        "of": 40
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 40,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0876
+      },
+      "passes": true,
+      "note": ""
+     },
+     {
+      "document": "kfu-prilozhenie3",
+      "university": "Казанский (Приволжский) федеральный университет",
+      "gold": 90,
+      "pred": 92,
+      "matched": 90,
+      "precision": {
+       "value": 0.9783,
+       "low": 0.9242,
+       "high": 0.994,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.9591,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9591,
+        "high": 1.0,
+        "correct": 90,
+        "of": 90
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9591,
+        "high": 1.0,
+        "correct": 90,
+        "of": 90
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9591,
+        "high": 1.0,
+        "correct": 90,
+        "of": 90
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9591,
+        "high": 1.0,
+        "correct": 90,
+        "of": 90
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.9591,
+        "high": 1.0,
+        "correct": 90,
+        "of": 90
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 90,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0409
+      },
+      "passes": true,
+      "note": ""
+     },
+     {
+      "document": "mai-priloz7-olymp",
+      "university": "МАИ",
+      "gold": 56,
+      "pred": 56,
+      "matched": 56,
+      "precision": {
+       "value": 1.0,
+       "low": 0.9358,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.9358,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9358,
+        "high": 1.0,
+        "correct": 56,
+        "of": 56
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9358,
+        "high": 1.0,
+        "correct": 56,
+        "of": 56
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9358,
+        "high": 1.0,
+        "correct": 56,
+        "of": 56
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9358,
+        "high": 1.0,
+        "correct": 56,
+        "of": 56
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.9358,
+        "high": 1.0,
+        "correct": 56,
+        "of": 56
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 56,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0642
+      },
+      "passes": true,
+      "note": ""
+     },
+     {
+      "document": "mpei-app2-1-rsosh",
+      "university": "НИУ «МЭИ»",
+      "gold": 400,
+      "pred": 400,
+      "matched": 400,
+      "precision": {
+       "value": 1.0,
+       "low": 0.9905,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.9905,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9905,
+        "high": 1.0,
+        "correct": 400,
+        "of": 400
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9905,
+        "high": 1.0,
+        "correct": 400,
+        "of": 400
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9905,
+        "high": 1.0,
+        "correct": 400,
+        "of": 400
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9905,
+        "high": 1.0,
+        "correct": 400,
+        "of": 400
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.9905,
+        "high": 1.0,
+        "correct": 400,
+        "of": 400
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 400,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0095
+      },
+      "passes": true,
+      "note": ""
+     },
+     {
+      "document": "msu-olymp-benefits",
+      "university": "МГУ им. М.В. Ломоносова",
+      "gold": 49,
+      "pred": 49,
+      "matched": 49,
+      "precision": {
+       "value": 1.0,
+       "low": 0.9273,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.9273,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9273,
+        "high": 1.0,
+        "correct": 49,
+        "of": 49
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9273,
+        "high": 1.0,
+        "correct": 49,
+        "of": 49
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9273,
+        "high": 1.0,
+        "correct": 49,
+        "of": 49
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9273,
+        "high": 1.0,
+        "correct": 49,
+        "of": 49
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.9273,
+        "high": 1.0,
+        "correct": 49,
+        "of": 49
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 49,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0727
+      },
+      "passes": true,
+      "note": ""
+     },
+     {
+      "document": "msu-olymp-disciplines",
+      "university": "МГУ имени М.В. Ломоносова",
+      "gold": 20,
+      "pred": 20,
+      "matched": 20,
+      "precision": {
+       "value": 1.0,
+       "low": 0.8389,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.8389,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.8389,
+        "high": 1.0,
+        "correct": 20,
+        "of": 20
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.8389,
+        "high": 1.0,
+        "correct": 20,
+        "of": 20
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.8389,
+        "high": 1.0,
+        "correct": 20,
+        "of": 20
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.8389,
+        "high": 1.0,
+        "correct": 20,
+        "of": 20
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.8389,
+        "high": 1.0,
+        "correct": 20,
+        "of": 20
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 20,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.1611
+      },
+      "passes": true,
+      "note": ""
+     },
+     {
+      "document": "ranepa-olymp-bvi",
+      "university": "РАНХиГС",
+      "gold": 92,
+      "pred": 92,
+      "matched": 92,
+      "precision": {
+       "value": 1.0,
+       "low": 0.9599,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.9599,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9599,
+        "high": 1.0,
+        "correct": 92,
+        "of": 92
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9599,
+        "high": 1.0,
+        "correct": 92,
+        "of": 92
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9599,
+        "high": 1.0,
+        "correct": 92,
+        "of": 92
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9599,
+        "high": 1.0,
+        "correct": 92,
+        "of": 92
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 0.9457,
+        "low": 0.879,
+        "high": 0.9766,
+        "correct": 87,
+        "of": 92
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 92,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0401
+      },
+      "passes": true,
+      "note": ""
+     },
+     {
+      "document": "sechenov-pril5-100",
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "gold": 42,
+      "pred": 0,
+      "matched": 0,
+      "precision": {
+       "value": null,
+       "low": null,
+       "high": null,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0838,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": ""
+     },
+     {
+      "document": "spbu-republic-olymp",
+      "university": "СПбГУ",
+      "gold": 150,
+      "pred": 150,
+      "matched": 150,
+      "precision": {
+       "value": 1.0,
+       "low": 0.975,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.975,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.975,
+        "high": 1.0,
+        "correct": 150,
+        "of": 150
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.975,
+        "high": 1.0,
+        "correct": 150,
+        "of": 150
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.975,
+        "high": 1.0,
+        "correct": 150,
+        "of": 150
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.975,
+        "high": 1.0,
+        "correct": 150,
+        "of": 150
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.975,
+        "high": 1.0,
+        "correct": 150,
+        "of": 150
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 150,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.025
+      },
+      "passes": true,
+      "note": ""
+     }
+    ]
+   },
+   "old_table": {
+    "total": {
+     "gold": 1000,
+     "pred": 871,
+     "matched": 133,
+     "precision": {
+      "value": 0.1527,
+      "low": 0.1303,
+      "high": 0.1781,
+      "interval": "wilson",
+      "bootstrap_records": {
+       "value": 0.1527,
+       "low": 0.1297,
+       "high": 0.1768
+      },
+      "bootstrap_documents": {
+       "value": 0.1527,
+       "low": 0.0645,
+       "high": 0.3546
+      }
+     },
+     "recall": {
+      "value": 0.133,
+      "low": 0.1134,
+      "high": 0.1555,
+      "interval": "wilson",
+      "bootstrap_records": {
+       "value": 0.133,
+       "low": 0.113,
+       "high": 0.155
+      },
+      "bootstrap_documents": {
+       "value": 0.133,
+       "low": 0.0231,
+       "high": 0.4107
+      }
+     },
+     "fields": {
+      "winner_role": {
+       "title": "кому",
+       "value": 0.9248,
+       "low": 0.8671,
+       "high": 0.9586,
+       "correct": 123,
+       "of": 133
+      },
+      "levels": {
+       "title": "уровень",
+       "value": 0.8421,
+       "low": 0.7707,
+       "high": 0.8943,
+       "correct": 112,
+       "of": 133
+      },
+      "grades": {
+       "title": "класс",
+       "value": 0.8045,
+       "low": 0.729,
+       "high": 0.863,
+       "correct": 107,
+       "of": 133
+      },
+      "ege_min": {
+       "title": "порог ЕГЭ",
+       "value": 0.6842,
+       "low": 0.601,
+       "high": 0.7571,
+       "correct": 91,
+       "of": 133
+      },
+      "ege_subjects": {
+       "title": "предмет ЕГЭ",
+       "value": 0.5188,
+       "low": 0.4346,
+       "high": 0.602,
+       "correct": 69,
+       "of": 133
+      }
+     },
+     "role_wrong": {
+      "count": 4,
+      "of": 133,
+      "value": 0.0301,
+      "low": 0.0118,
+      "high": 0.0748
+     }
+    },
+    "documents": [
+     {
+      "document": "hse-1120646356",
+      "university": "НИУ ВШЭ (Москва)",
+      "gold": 61,
+      "pred": 170,
+      "matched": 60,
+      "precision": {
+       "value": 0.3529,
+       "low": 0.2851,
+       "high": 0.4273,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.9836,
+       "low": 0.9128,
+       "high": 0.9971,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9398,
+        "high": 1.0,
+        "correct": 60,
+        "of": 60
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9398,
+        "high": 1.0,
+        "correct": 60,
+        "of": 60
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9398,
+        "high": 1.0,
+        "correct": 60,
+        "of": 60
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 0.9,
+        "low": 0.7985,
+        "high": 0.9534,
+        "correct": 54,
+        "of": 60
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 0.8667,
+        "low": 0.7583,
+        "high": 0.9309,
+        "correct": 52,
+        "of": 60
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 60,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0602
+      },
+      "passes": false,
+      "note": "база: НИУ ВШЭ (Москва)"
+     },
+     {
+      "document": "itmo-rsosh-bvi",
+      "university": "Университет ИТМО",
+      "gold": 40,
+      "pred": 92,
+      "matched": 26,
+      "precision": {
+       "value": 0.2826,
+       "low": 0.2008,
+       "high": 0.3819,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.65,
+       "low": 0.4951,
+       "high": 0.7787,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 0.8846,
+        "low": 0.7102,
+        "high": 0.96,
+        "correct": 23,
+        "of": 26
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 0.1923,
+        "low": 0.0851,
+        "high": 0.3788,
+        "correct": 5,
+        "of": 26
+       },
+       "grades": {
+        "title": "класс",
+        "value": 0.0,
+        "low": 0.0,
+        "high": 0.1287,
+        "correct": 0,
+        "of": 26
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 0.0,
+        "low": 0.0,
+        "high": 0.1287,
+        "correct": 0,
+        "of": 26
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 0.0,
+        "low": 0.0,
+        "high": 0.1287,
+        "correct": 0,
+        "of": 26
+       }
+      },
+      "role_wrong": {
+       "count": 3,
+       "of": 26,
+       "value": 0.1154,
+       "low": 0.04,
+       "high": 0.2898
+      },
+      "passes": false,
+      "note": "база: Университет ИТМО"
+     },
+     {
+      "document": "kfu-prilozhenie3",
+      "university": "Казанский (Приволжский) федеральный университет",
+      "gold": 90,
+      "pred": 574,
+      "matched": 37,
+      "precision": {
+       "value": 0.0645,
+       "low": 0.0471,
+       "high": 0.0876,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.4111,
+       "low": 0.3151,
+       "high": 0.5144,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9059,
+        "high": 1.0,
+        "correct": 37,
+        "of": 37
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9059,
+        "high": 1.0,
+        "correct": 37,
+        "of": 37
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9059,
+        "high": 1.0,
+        "correct": 37,
+        "of": 37
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9059,
+        "high": 1.0,
+        "correct": 37,
+        "of": 37
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 0.4595,
+        "low": 0.3104,
+        "high": 0.6162,
+        "correct": 17,
+        "of": 37
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 37,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0941
+      },
+      "passes": false,
+      "note": "база: Казанский (Приволжский) федеральный университет (КФУ)"
+     },
+     {
+      "document": "mai-priloz7-olymp",
+      "university": "МАИ",
+      "gold": 56,
+      "pred": 0,
+      "matched": 0,
+      "precision": {
+       "value": null,
+       "low": null,
+       "high": null,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0642,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": "база: Московский авиационный институт (МАИ)"
+     },
+     {
+      "document": "mpei-app2-1-rsosh",
+      "university": "НИУ «МЭИ»",
+      "gold": 400,
+      "pred": 0,
+      "matched": 0,
+      "precision": {
+       "value": null,
+       "low": null,
+       "high": null,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0095,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": "база: НИУ «МЭИ»"
+     },
+     {
+      "document": "msu-olymp-benefits",
+      "university": "МГУ им. М.В. Ломоносова",
+      "gold": 49,
+      "pred": 24,
+      "matched": 10,
+      "precision": {
+       "value": 0.4167,
+       "low": 0.2447,
+       "high": 0.6117,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.2041,
+       "low": 0.1148,
+       "high": 0.3364,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 0.3,
+        "low": 0.1078,
+        "high": 0.6032,
+        "correct": 3,
+        "of": 10
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.7225,
+        "high": 1.0,
+        "correct": 10,
+        "of": 10
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.7225,
+        "high": 1.0,
+        "correct": 10,
+        "of": 10
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 0.0,
+        "low": 0.0,
+        "high": 0.2775,
+        "correct": 0,
+        "of": 10
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 0.0,
+        "low": 0.0,
+        "high": 0.2775,
+        "correct": 0,
+        "of": 10
+       }
+      },
+      "role_wrong": {
+       "count": 1,
+       "of": 10,
+       "value": 0.1,
+       "low": 0.0179,
+       "high": 0.4042
+      },
+      "passes": false,
+      "note": "база: МГУ им. М.В. Ломоносова"
+     },
+     {
+      "document": "msu-olymp-disciplines",
+      "university": "МГУ имени М.В. Ломоносова",
+      "gold": 20,
+      "pred": 0,
+      "matched": 0,
+      "precision": {
+       "value": null,
+       "low": null,
+       "high": null,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.1611,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": "база: МГУ им. М.В. Ломоносова"
+     },
+     {
+      "document": "ranepa-olymp-bvi",
+      "university": "РАНХиГС",
+      "gold": 92,
+      "pred": 0,
+      "matched": 0,
+      "precision": {
+       "value": null,
+       "low": null,
+       "high": null,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0401,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": "база: РАНХиГС (Президентская академия)"
+     },
+     {
+      "document": "sechenov-pril5-100",
+      "university": "Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)",
+      "gold": 42,
+      "pred": 0,
+      "matched": 0,
+      "precision": {
+       "value": null,
+       "low": null,
+       "high": null,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0838,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": "база: Первый МГМУ им. И.М. Сеченова (Сеченовский Университет)"
+     },
+     {
+      "document": "spbu-republic-olymp",
+      "university": "СПбГУ",
+      "gold": 150,
+      "pred": 11,
+      "matched": 0,
+      "precision": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.2588,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.025,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": "база: СПбГУ"
+     }
+    ]
+   }
+  },
+  "holdout": {
+   "documents_in_set": 6,
+   "extract": {
+    "total": {
+     "gold": 543,
+     "pred": 446,
+     "matched": 401,
+     "precision": {
+      "value": 0.8991,
+      "low": 0.8677,
+      "high": 0.9237,
+      "interval": "wilson",
+      "bootstrap_records": {
+       "value": 0.8991,
+       "low": 0.87,
+       "high": 0.926
+      },
+      "bootstrap_documents": {
+       "value": 0.8991,
+       "low": 0.8,
+       "high": 1.0
+      }
+     },
+     "recall": {
+      "value": 0.7385,
+      "low": 0.6999,
+      "high": 0.7737,
+      "interval": "wilson",
+      "bootstrap_records": {
+       "value": 0.7385,
+       "low": 0.6998,
+       "high": 0.7735
+      },
+      "bootstrap_documents": {
+       "value": 0.7385,
+       "low": 0.5703,
+       "high": 0.9736
+      }
+     },
+     "fields": {
+      "winner_role": {
+       "title": "кому",
+       "value": 1.0,
+       "low": 0.9905,
+       "high": 1.0,
+       "correct": 401,
+       "of": 401
+      },
+      "levels": {
+       "title": "уровень",
+       "value": 0.995,
+       "low": 0.982,
+       "high": 0.9986,
+       "correct": 399,
+       "of": 401
+      },
+      "grades": {
+       "title": "класс",
+       "value": 0.9925,
+       "low": 0.9782,
+       "high": 0.9975,
+       "correct": 398,
+       "of": 401
+      },
+      "ege_min": {
+       "title": "порог ЕГЭ",
+       "value": 1.0,
+       "low": 0.9905,
+       "high": 1.0,
+       "correct": 401,
+       "of": 401
+      },
+      "ege_subjects": {
+       "title": "предмет ЕГЭ",
+       "value": 0.9701,
+       "low": 0.9484,
+       "high": 0.9828,
+       "correct": 389,
+       "of": 401
+      }
+     },
+     "role_wrong": {
+      "count": 0,
+      "of": 401,
+      "value": 0.0,
+      "low": 0.0,
+      "high": 0.0095
+     }
+    },
+    "documents": [
+     {
+      "document": "hse-1120646356-holdout",
+      "university": "НИУ ВШЭ (Москва)",
+      "gold": 7,
+      "pred": 7,
+      "matched": 7,
+      "precision": {
+       "value": 1.0,
+       "low": 0.6457,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.6457,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.6457,
+        "high": 1.0,
+        "correct": 7,
+        "of": 7
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.6457,
+        "high": 1.0,
+        "correct": 7,
+        "of": 7
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.6457,
+        "high": 1.0,
+        "correct": 7,
+        "of": 7
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.6457,
+        "high": 1.0,
+        "correct": 7,
+        "of": 7
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.6457,
+        "high": 1.0,
+        "correct": 7,
+        "of": 7
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 7,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.3543
+      },
+      "passes": true,
+      "note": ""
+     },
+     {
+      "document": "itmo-rsosh-bvi-holdout",
+      "university": "Университет ИТМО",
+      "gold": 279,
+      "pred": 198,
+      "matched": 154,
+      "precision": {
+       "value": 0.7778,
+       "low": 0.7149,
+       "high": 0.8301,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.552,
+       "low": 0.4933,
+       "high": 0.6092,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9757,
+        "high": 1.0,
+        "correct": 154,
+        "of": 154
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9757,
+        "high": 1.0,
+        "correct": 154,
+        "of": 154
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9757,
+        "high": 1.0,
+        "correct": 154,
+        "of": 154
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9757,
+        "high": 1.0,
+        "correct": 154,
+        "of": 154
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.9757,
+        "high": 1.0,
+        "correct": 154,
+        "of": 154
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 154,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0243
+      },
+      "passes": false,
+      "note": ""
+     },
+     {
+      "document": "kfu-prilozhenie3-holdout",
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "gold": 20,
+      "pred": 12,
+      "matched": 12,
+      "precision": {
+       "value": 1.0,
+       "low": 0.7575,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.6,
+       "low": 0.3866,
+       "high": 0.7812,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.7575,
+        "high": 1.0,
+        "correct": 12,
+        "of": 12
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.7575,
+        "high": 1.0,
+        "correct": 12,
+        "of": 12
+       },
+       "grades": {
+        "title": "класс",
+        "value": 0.75,
+        "low": 0.4677,
+        "high": 0.9111,
+        "correct": 9,
+        "of": 12
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.7575,
+        "high": 1.0,
+        "correct": 12,
+        "of": 12
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.7575,
+        "high": 1.0,
+        "correct": 12,
+        "of": 12
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 12,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.2425
+      },
+      "passes": false,
+      "note": ""
+     },
+     {
+      "document": "msu-olymp-benefits-holdout",
+      "university": "МГУ им. М.В. Ломоносова",
+      "gold": 21,
+      "pred": 18,
+      "matched": 18,
+      "precision": {
+       "value": 1.0,
+       "low": 0.8241,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.8571,
+       "low": 0.6536,
+       "high": 0.9502,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.8241,
+        "high": 1.0,
+        "correct": 18,
+        "of": 18
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 0.8889,
+        "low": 0.672,
+        "high": 0.969,
+        "correct": 16,
+        "of": 18
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.8241,
+        "high": 1.0,
+        "correct": 18,
+        "of": 18
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.8241,
+        "high": 1.0,
+        "correct": 18,
+        "of": 18
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.8241,
+        "high": 1.0,
+        "correct": 18,
+        "of": 18
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 18,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.1759
+      },
+      "passes": false,
+      "note": ""
+     },
+     {
+      "document": "ranepa-olymp-bvi-holdout",
+      "university": "РАНХиГС (Президентская академия)",
+      "gold": 100,
+      "pred": 95,
+      "matched": 94,
+      "precision": {
+       "value": 0.9895,
+       "low": 0.9428,
+       "high": 0.9981,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.94,
+       "low": 0.8752,
+       "high": 0.9722,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9607,
+        "high": 1.0,
+        "correct": 94,
+        "of": 94
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9607,
+        "high": 1.0,
+        "correct": 94,
+        "of": 94
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9607,
+        "high": 1.0,
+        "correct": 94,
+        "of": 94
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9607,
+        "high": 1.0,
+        "correct": 94,
+        "of": 94
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 0.8723,
+        "low": 0.79,
+        "high": 0.9254,
+        "correct": 82,
+        "of": 94
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 94,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0393
+      },
+      "passes": true,
+      "note": ""
+     },
+     {
+      "document": "spbu-bac-spec-olymp-1-holdout",
+      "university": "СПбГУ",
+      "gold": 116,
+      "pred": 116,
+      "matched": 116,
+      "precision": {
+       "value": 1.0,
+       "low": 0.9679,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.9679,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.9679,
+        "high": 1.0,
+        "correct": 116,
+        "of": 116
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.9679,
+        "high": 1.0,
+        "correct": 116,
+        "of": 116
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.9679,
+        "high": 1.0,
+        "correct": 116,
+        "of": 116
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.9679,
+        "high": 1.0,
+        "correct": 116,
+        "of": 116
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.9679,
+        "high": 1.0,
+        "correct": 116,
+        "of": 116
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 116,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0321
+      },
+      "passes": true,
+      "note": ""
+     }
+    ]
+   },
+   "old_table": {
+    "total": {
+     "gold": 543,
+     "pred": 2317,
+     "matched": 10,
+     "precision": {
+      "value": 0.0043,
+      "low": 0.0023,
+      "high": 0.0079,
+      "interval": "wilson",
+      "bootstrap_records": {
+       "value": 0.0043,
+       "low": 0.0017,
+       "high": 0.0069
+      },
+      "bootstrap_documents": {
+       "value": 0.0043,
+       "low": 0.0,
+       "high": 0.0385
+      }
+     },
+     "recall": {
+      "value": 0.0184,
+      "low": 0.01,
+      "high": 0.0336,
+      "interval": "wilson",
+      "bootstrap_records": {
+       "value": 0.0184,
+       "low": 0.0074,
+       "high": 0.0313
+      },
+      "bootstrap_documents": {
+       "value": 0.0184,
+       "low": 0.0,
+       "high": 0.1429
+      }
+     },
+     "fields": {
+      "winner_role": {
+       "title": "кому",
+       "value": 1.0,
+       "low": 0.7225,
+       "high": 1.0,
+       "correct": 10,
+       "of": 10
+      },
+      "levels": {
+       "title": "уровень",
+       "value": 1.0,
+       "low": 0.7225,
+       "high": 1.0,
+       "correct": 10,
+       "of": 10
+      },
+      "grades": {
+       "title": "класс",
+       "value": 0.7,
+       "low": 0.3968,
+       "high": 0.8922,
+       "correct": 7,
+       "of": 10
+      },
+      "ege_min": {
+       "title": "порог ЕГЭ",
+       "value": 1.0,
+       "low": 0.7225,
+       "high": 1.0,
+       "correct": 10,
+       "of": 10
+      },
+      "ege_subjects": {
+       "title": "предмет ЕГЭ",
+       "value": 1.0,
+       "low": 0.7225,
+       "high": 1.0,
+       "correct": 10,
+       "of": 10
+      }
+     },
+     "role_wrong": {
+      "count": 0,
+      "of": 10,
+      "value": 0.0,
+      "low": 0.0,
+      "high": 0.2775
+     }
+    },
+    "documents": [
+     {
+      "document": "hse-1120646356-holdout",
+      "university": "НИУ ВШЭ (Москва)",
+      "gold": 7,
+      "pred": 170,
+      "matched": 7,
+      "precision": {
+       "value": 0.0412,
+       "low": 0.0201,
+       "high": 0.0825,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 1.0,
+       "low": 0.6457,
+       "high": 1.0,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.6457,
+        "high": 1.0,
+        "correct": 7,
+        "of": 7
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.6457,
+        "high": 1.0,
+        "correct": 7,
+        "of": 7
+       },
+       "grades": {
+        "title": "класс",
+        "value": 1.0,
+        "low": 0.6457,
+        "high": 1.0,
+        "correct": 7,
+        "of": 7
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.6457,
+        "high": 1.0,
+        "correct": 7,
+        "of": 7
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.6457,
+        "high": 1.0,
+        "correct": 7,
+        "of": 7
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 7,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.3543
+      },
+      "passes": false,
+      "note": "база: НИУ ВШЭ (Москва)"
+     },
+     {
+      "document": "itmo-rsosh-bvi-holdout",
+      "university": "Университет ИТМО",
+      "gold": 279,
+      "pred": 1221,
+      "matched": 0,
+      "precision": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0031,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0136,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": "база: Университет ИТМО"
+     },
+     {
+      "document": "kfu-prilozhenie3-holdout",
+      "university": "Казанский (Приволжский) федеральный университет (КФУ)",
+      "gold": 20,
+      "pred": 905,
+      "matched": 3,
+      "precision": {
+       "value": 0.0033,
+       "low": 0.0011,
+       "high": 0.0097,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.15,
+       "low": 0.0524,
+       "high": 0.3604,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": 1.0,
+        "low": 0.4385,
+        "high": 1.0,
+        "correct": 3,
+        "of": 3
+       },
+       "levels": {
+        "title": "уровень",
+        "value": 1.0,
+        "low": 0.4385,
+        "high": 1.0,
+        "correct": 3,
+        "of": 3
+       },
+       "grades": {
+        "title": "класс",
+        "value": 0.0,
+        "low": 0.0,
+        "high": 0.5615,
+        "correct": 0,
+        "of": 3
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": 1.0,
+        "low": 0.4385,
+        "high": 1.0,
+        "correct": 3,
+        "of": 3
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": 1.0,
+        "low": 0.4385,
+        "high": 1.0,
+        "correct": 3,
+        "of": 3
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 3,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615
+      },
+      "passes": false,
+      "note": "база: Казанский (Приволжский) федеральный университет (КФУ)"
+     },
+     {
+      "document": "msu-olymp-benefits-holdout",
+      "university": "МГУ им. М.В. Ломоносова",
+      "gold": 21,
+      "pred": 18,
+      "matched": 0,
+      "precision": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.1759,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.1546,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": "база: МГУ им. М.В. Ломоносова"
+     },
+     {
+      "document": "ranepa-olymp-bvi-holdout",
+      "university": "РАНХиГС (Президентская академия)",
+      "gold": 100,
+      "pred": 0,
+      "matched": 0,
+      "precision": {
+       "value": null,
+       "low": null,
+       "high": null,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.037,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": "база: РАНХиГС (Президентская академия)"
+     },
+     {
+      "document": "spbu-bac-spec-olymp-1-holdout",
+      "university": "СПбГУ",
+      "gold": 116,
+      "pred": 3,
+      "matched": 0,
+      "precision": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615,
+       "interval": "wilson"
+      },
+      "recall": {
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.0321,
+       "interval": "wilson"
+      },
+      "fields": {
+       "winner_role": {
+        "title": "кому",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "levels": {
+        "title": "уровень",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "grades": {
+        "title": "класс",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_min": {
+        "title": "порог ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       },
+       "ege_subjects": {
+        "title": "предмет ЕГЭ",
+        "value": null,
+        "low": null,
+        "high": null,
+        "correct": 0,
+        "of": 0
+       }
+      },
+      "role_wrong": {
+       "count": 0,
+       "of": 0,
+       "value": null,
+       "low": null,
+       "high": null
+      },
+      "passes": false,
+      "note": "база: СПбГУ"
+     }
+    ]
+   }
+  }
+ },
+ "assistant": {
+  "runs": [
+   {
+    "file": "2026-11-26-deepseek-pro-rescored.json",
+    "model": "deepseek-v4-pro",
+    "date": "2026-11-26T15:05:56+00:00",
+    "cases": 69,
+    "passed": {
+     "count": 40,
+     "of": 69,
+     "value": 0.5797,
+     "low": 0.4621,
+     "high": 0.6889
+    },
+    "answered_turns": 66,
+    "errors_before": {
+     "count": 10,
+     "of": 66,
+     "value": 0.1515,
+     "low": 0.0844,
+     "high": 0.2569
+    },
+    "errors_after": {
+     "count": 0,
+     "of": 66,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.055
+    },
+    "who_type_errors_before": 1,
+    "who_type_errors_after": 0,
+    "answers_changed_by_check": {
+     "count": 12,
+     "of": 66,
+     "value": 0.1818,
+     "low": 0.1072,
+     "high": 0.2915
+    },
+    "answer_p50": 20.07,
+    "answer_p95": 43.09,
+    "gate_passed": false,
+    "by_kind": {
+     "clarify": {
+      "cases": 2,
+      "passed": {
+       "count": 2,
+       "of": 2,
+       "value": 1.0,
+       "low": 0.3424,
+       "high": 1.0
+      },
+      "answered_turns": 2,
+      "errors_before": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      }
+     },
+     "hobby": {
+      "cases": 10,
+      "passed": {
+       "count": 9,
+       "of": 10,
+       "value": 0.9,
+       "low": 0.5958,
+       "high": 0.9821
+      },
+      "answered_turns": 10,
+      "errors_before": {
+       "count": 0,
+       "of": 10,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.2775
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 10,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.2775
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 10,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.2775
+      }
+     },
+     "no_data_olympiad": {
+      "cases": 5,
+      "passed": {
+       "count": 3,
+       "of": 5,
+       "value": 0.6,
+       "low": 0.2307,
+       "high": 0.8824
+      },
+      "answered_turns": 5,
+      "errors_before": {
+       "count": 0,
+       "of": 5,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4345
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 5,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4345
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 5,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4345
+      }
+     },
+     "olympiad_unis": {
+      "cases": 18,
+      "passed": {
+       "count": 8,
+       "of": 18,
+       "value": 0.4444,
+       "low": 0.2456,
+       "high": 0.6628
+      },
+      "answered_turns": 17,
+      "errors_before": {
+       "count": 4,
+       "of": 17,
+       "value": 0.2353,
+       "low": 0.0956,
+       "high": 0.4726
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 17,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.1843
+      },
+      "who_type_errors_before": 1,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 6,
+       "of": 17,
+       "value": 0.3529,
+       "low": 0.1731,
+       "high": 0.587
+      }
+     },
+     "pair": {
+      "cases": 21,
+      "passed": {
+       "count": 8,
+       "of": 21,
+       "value": 0.381,
+       "low": 0.2075,
+       "high": 0.5912
+      },
+      "answered_turns": 19,
+      "errors_before": {
+       "count": 4,
+       "of": 19,
+       "value": 0.2105,
+       "low": 0.0851,
+       "high": 0.4333
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 19,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.1682
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 4,
+       "of": 19,
+       "value": 0.2105,
+       "low": 0.0851,
+       "high": 0.4333
+      }
+     },
+     "program": {
+      "cases": 8,
+      "passed": {
+       "count": 7,
+       "of": 8,
+       "value": 0.875,
+       "low": 0.5291,
+       "high": 0.9776
+      },
+      "answered_turns": 8,
+      "errors_before": {
+       "count": 2,
+       "of": 8,
+       "value": 0.25,
+       "low": 0.0715,
+       "high": 0.5907
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 8,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.3244
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 2,
+       "of": 8,
+       "value": 0.25,
+       "low": 0.0715,
+       "high": 0.5907
+      }
+     },
+     "refuse": {
+      "cases": 3,
+      "passed": {
+       "count": 3,
+       "of": 3,
+       "value": 1.0,
+       "low": 0.4385,
+       "high": 1.0
+      },
+      "answered_turns": 3,
+      "errors_before": {
+       "count": 0,
+       "of": 3,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 3,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 3,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615
+      }
+     },
+     "uni_olympiads": {
+      "cases": 2,
+      "passed": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "answered_turns": 2,
+      "errors_before": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      }
+     }
+    }
+   },
+   {
+    "file": "2026-11-26-deepseek-rescored.json",
+    "model": "deepseek-flash",
+    "date": "2026-11-26T14:47:55+00:00",
+    "cases": 69,
+    "passed": {
+     "count": 47,
+     "of": 69,
+     "value": 0.6812,
+     "low": 0.5642,
+     "high": 0.7791
+    },
+    "answered_turns": 73,
+    "errors_before": {
+     "count": 11,
+     "of": 73,
+     "value": 0.1507,
+     "low": 0.0863,
+     "high": 0.25
+    },
+    "errors_after": {
+     "count": 0,
+     "of": 73,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.05
+    },
+    "who_type_errors_before": 0,
+    "who_type_errors_after": 0,
+    "answers_changed_by_check": {
+     "count": 12,
+     "of": 73,
+     "value": 0.1644,
+     "low": 0.0966,
+     "high": 0.2657
+    },
+    "answer_p50": 9.12,
+    "answer_p95": 14.1,
+    "gate_passed": true,
+    "by_kind": {
+     "clarify": {
+      "cases": 2,
+      "passed": {
+       "count": 2,
+       "of": 2,
+       "value": 1.0,
+       "low": 0.3424,
+       "high": 1.0
+      },
+      "answered_turns": 2,
+      "errors_before": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      }
+     },
+     "hobby": {
+      "cases": 10,
+      "passed": {
+       "count": 9,
+       "of": 10,
+       "value": 0.9,
+       "low": 0.5958,
+       "high": 0.9821
+      },
+      "answered_turns": 11,
+      "errors_before": {
+       "count": 0,
+       "of": 11,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.2588
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 11,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.2588
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 11,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.2588
+      }
+     },
+     "no_data_olympiad": {
+      "cases": 5,
+      "passed": {
+       "count": 5,
+       "of": 5,
+       "value": 1.0,
+       "low": 0.5655,
+       "high": 1.0
+      },
+      "answered_turns": 5,
+      "errors_before": {
+       "count": 1,
+       "of": 5,
+       "value": 0.2,
+       "low": 0.0362,
+       "high": 0.6245
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 5,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4345
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 1,
+       "of": 5,
+       "value": 0.2,
+       "low": 0.0362,
+       "high": 0.6245
+      }
+     },
+     "olympiad_unis": {
+      "cases": 18,
+      "passed": {
+       "count": 12,
+       "of": 18,
+       "value": 0.6667,
+       "low": 0.4375,
+       "high": 0.8372
+      },
+      "answered_turns": 21,
+      "errors_before": {
+       "count": 3,
+       "of": 21,
+       "value": 0.1429,
+       "low": 0.0498,
+       "high": 0.3464
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 21,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.1546
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 4,
+       "of": 21,
+       "value": 0.1905,
+       "low": 0.0767,
+       "high": 0.4
+      }
+     },
+     "pair": {
+      "cases": 21,
+      "passed": {
+       "count": 8,
+       "of": 21,
+       "value": 0.381,
+       "low": 0.2075,
+       "high": 0.5912
+      },
+      "answered_turns": 21,
+      "errors_before": {
+       "count": 6,
+       "of": 21,
+       "value": 0.2857,
+       "low": 0.1381,
+       "high": 0.4996
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 21,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.1546
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 6,
+       "of": 21,
+       "value": 0.2857,
+       "low": 0.1381,
+       "high": 0.4996
+      }
+     },
+     "program": {
+      "cases": 8,
+      "passed": {
+       "count": 8,
+       "of": 8,
+       "value": 1.0,
+       "low": 0.6756,
+       "high": 1.0
+      },
+      "answered_turns": 8,
+      "errors_before": {
+       "count": 1,
+       "of": 8,
+       "value": 0.125,
+       "low": 0.0224,
+       "high": 0.4709
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 8,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.3244
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 1,
+       "of": 8,
+       "value": 0.125,
+       "low": 0.0224,
+       "high": 0.4709
+      }
+     },
+     "refuse": {
+      "cases": 3,
+      "passed": {
+       "count": 3,
+       "of": 3,
+       "value": 1.0,
+       "low": 0.4385,
+       "high": 1.0
+      },
+      "answered_turns": 3,
+      "errors_before": {
+       "count": 0,
+       "of": 3,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 3,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 3,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615
+      }
+     },
+     "uni_olympiads": {
+      "cases": 2,
+      "passed": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "answered_turns": 2,
+      "errors_before": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      }
+     }
+    }
+   },
+   {
+    "file": "2026-11-26-dspro-limit5-rescored.json",
+    "model": "deepseek/deepseek-v4-pro-0813",
+    "date": "2026-11-26T13:23:43+00:00",
+    "cases": 5,
+    "passed": {
+     "count": 3,
+     "of": 5,
+     "value": 0.6,
+     "low": 0.2307,
+     "high": 0.8824
+    },
+    "answered_turns": 4,
+    "errors_before": {
+     "count": 0,
+     "of": 4,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.4899
+    },
+    "errors_after": {
+     "count": 0,
+     "of": 4,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.4899
+    },
+    "who_type_errors_before": 0,
+    "who_type_errors_after": 0,
+    "answers_changed_by_check": {
+     "count": 0,
+     "of": 4,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.4899
+    },
+    "answer_p50": 9.26,
+    "answer_p95": 13.57,
+    "gate_passed": true,
+    "by_kind": {
+     "pair": {
+      "cases": 5,
+      "passed": {
+       "count": 3,
+       "of": 5,
+       "value": 0.6,
+       "low": 0.2307,
+       "high": 0.8824
+      },
+      "answered_turns": 4,
+      "errors_before": {
+       "count": 0,
+       "of": 4,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4899
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 4,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4899
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 4,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4899
+      }
+     }
+    }
+   },
+   {
+    "file": "2026-11-26-gemini-limit5-rescored.json",
+    "model": "google/gemini-3.1-flash-lite",
+    "date": "2026-11-26T13:15:11+00:00",
+    "cases": 5,
+    "passed": {
+     "count": 2,
+     "of": 5,
+     "value": 0.4,
+     "low": 0.1176,
+     "high": 0.7693
+    },
+    "answered_turns": 4,
+    "errors_before": {
+     "count": 0,
+     "of": 4,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.4899
+    },
+    "errors_after": {
+     "count": 0,
+     "of": 4,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.4899
+    },
+    "who_type_errors_before": 0,
+    "who_type_errors_after": 0,
+    "answers_changed_by_check": {
+     "count": 1,
+     "of": 4,
+     "value": 0.25,
+     "low": 0.0456,
+     "high": 0.6994
+    },
+    "answer_p50": 8.66,
+    "answer_p95": 22.07,
+    "gate_passed": false,
+    "by_kind": {
+     "pair": {
+      "cases": 5,
+      "passed": {
+       "count": 2,
+       "of": 5,
+       "value": 0.4,
+       "low": 0.1176,
+       "high": 0.7693
+      },
+      "answered_turns": 4,
+      "errors_before": {
+       "count": 0,
+       "of": 4,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4899
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 4,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4899
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 1,
+       "of": 4,
+       "value": 0.25,
+       "low": 0.0456,
+       "high": 0.6994
+      }
+     }
+    }
+   },
+   {
+    "file": "2026-11-26-glm-limit5-rescored.json",
+    "model": "z-ai/glm-5.3",
+    "date": "2026-11-26T13:21:11+00:00",
+    "cases": 5,
+    "passed": {
+     "count": 2,
+     "of": 5,
+     "value": 0.4,
+     "low": 0.1176,
+     "high": 0.7693
+    },
+    "answered_turns": 2,
+    "errors_before": {
+     "count": 1,
+     "of": 2,
+     "value": 0.5,
+     "low": 0.0945,
+     "high": 0.9055
+    },
+    "errors_after": {
+     "count": 0,
+     "of": 2,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.6576
+    },
+    "who_type_errors_before": 0,
+    "who_type_errors_after": 0,
+    "answers_changed_by_check": {
+     "count": 1,
+     "of": 2,
+     "value": 0.5,
+     "low": 0.0945,
+     "high": 0.9055
+    },
+    "answer_p50": 11.52,
+    "answer_p95": 34.2,
+    "gate_passed": false,
+    "by_kind": {
+     "pair": {
+      "cases": 5,
+      "passed": {
+       "count": 2,
+       "of": 5,
+       "value": 0.4,
+       "low": 0.1176,
+       "high": 0.7693
+      },
+      "answered_turns": 2,
+      "errors_before": {
+       "count": 1,
+       "of": 2,
+       "value": 0.5,
+       "low": 0.0945,
+       "high": 0.9055
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 2,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.6576
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 1,
+       "of": 2,
+       "value": 0.5,
+       "low": 0.0945,
+       "high": 0.9055
+      }
+     }
+    }
+   },
+   {
+    "file": "2026-11-26-gpt6luna-limit5-rescored.json",
+    "model": "openai/gpt-6-luna",
+    "date": "2026-11-26T13:14:05+00:00",
+    "cases": 5,
+    "passed": {
+     "count": 2,
+     "of": 5,
+     "value": 0.4,
+     "low": 0.1176,
+     "high": 0.7693
+    },
+    "answered_turns": 5,
+    "errors_before": {
+     "count": 0,
+     "of": 5,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.4345
+    },
+    "errors_after": {
+     "count": 0,
+     "of": 5,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.4345
+    },
+    "who_type_errors_before": 0,
+    "who_type_errors_after": 0,
+    "answers_changed_by_check": {
+     "count": 0,
+     "of": 5,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.4345
+    },
+    "answer_p50": 10.24,
+    "answer_p95": 15.95,
+    "gate_passed": true,
+    "by_kind": {
+     "pair": {
+      "cases": 5,
+      "passed": {
+       "count": 2,
+       "of": 5,
+       "value": 0.4,
+       "low": 0.1176,
+       "high": 0.7693
+      },
+      "answered_turns": 5,
+      "errors_before": {
+       "count": 0,
+       "of": 5,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4345
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 5,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4345
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 5,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.4345
+      }
+     }
+    }
+   },
+   {
+    "file": "2026-11-26-qwen-limit5-rescored.json",
+    "model": "qwen/qwen3.7-flash",
+    "date": "2026-11-26T13:13:05+00:00",
+    "cases": 5,
+    "passed": {
+     "count": 1,
+     "of": 5,
+     "value": 0.2,
+     "low": 0.0362,
+     "high": 0.6245
+    },
+    "answered_turns": 3,
+    "errors_before": {
+     "count": 0,
+     "of": 3,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.5615
+    },
+    "errors_after": {
+     "count": 0,
+     "of": 3,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.5615
+    },
+    "who_type_errors_before": 0,
+    "who_type_errors_after": 0,
+    "answers_changed_by_check": {
+     "count": 0,
+     "of": 3,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.5615
+    },
+    "answer_p50": 17.03,
+    "answer_p95": 30.91,
+    "gate_passed": false,
+    "by_kind": {
+     "pair": {
+      "cases": 5,
+      "passed": {
+       "count": 1,
+       "of": 5,
+       "value": 0.2,
+       "low": 0.0362,
+       "high": 0.6245
+      },
+      "answered_turns": 3,
+      "errors_before": {
+       "count": 0,
+       "of": 3,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615
+      },
+      "errors_after": {
+       "count": 0,
+       "of": 3,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615
+      },
+      "who_type_errors_before": 0,
+      "who_type_errors_after": 0,
+      "answers_changed_by_check": {
+       "count": 0,
+       "of": 3,
+       "value": 0.0,
+       "low": 0.0,
+       "high": 0.5615
+      }
+     }
+    }
+   }
+  ]
+ },
+ "database": {
+  "universities": 44,
+  "programs": 1097,
+  "olympiads": 176,
+  "benefit_rows": {
+   "visible": 63275,
+   "raw_not_shown": 859
+  },
+  "layers": {
+   "derived": {
+    "rows": 27654,
+    "with_quote": {
+     "count": 976,
+     "of": 27654,
+     "value": 0.0353,
+     "low": 0.0332,
+     "high": 0.0375
+    },
+    "with_source": {
+     "count": 27343,
+     "of": 27654,
+     "value": 0.9888,
+     "low": 0.9874,
+     "high": 0.9899
+    },
+    "with_quote_and_source": {
+     "count": 976,
+     "of": 27654,
+     "value": 0.0353,
+     "low": 0.0332,
+     "high": 0.0375
+    }
+   },
+   "detailed": {
+    "rows": 26408,
+    "with_quote": {
+     "count": 0,
+     "of": 26408,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.0001
+    },
+    "with_source": {
+     "count": 19202,
+     "of": 26408,
+     "value": 0.7271,
+     "low": 0.7217,
+     "high": 0.7325
+    },
+    "with_quote_and_source": {
+     "count": 0,
+     "of": 26408,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.0001
+    }
+   },
+   "document": {
+    "rows": 8736,
+    "with_quote": {
+     "count": 8736,
+     "of": 8736,
+     "value": 1.0,
+     "low": 0.9996,
+     "high": 1.0
+    },
+    "with_source": {
+     "count": 8736,
+     "of": 8736,
+     "value": 1.0,
+     "low": 0.9996,
+     "high": 1.0
+    },
+    "with_quote_and_source": {
+     "count": 8736,
+     "of": 8736,
+     "value": 1.0,
+     "low": 0.9996,
+     "high": 1.0
+    }
+   },
+   "raw": {
+    "rows": 859,
+    "with_quote": {
+     "count": 0,
+     "of": 859,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.0045
+    },
+    "with_source": {
+     "count": 704,
+     "of": 859,
+     "value": 0.8196,
+     "low": 0.7924,
+     "high": 0.8438
+    },
+    "with_quote_and_source": {
+     "count": 0,
+     "of": 859,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.0045
+    }
+   },
+   "summary": {
+    "rows": 477,
+    "with_quote": {
+     "count": 0,
+     "of": 477,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.008
+    },
+    "with_source": {
+     "count": 307,
+     "of": 477,
+     "value": 0.6436,
+     "low": 0.5996,
+     "high": 0.6853
+    },
+    "with_quote_and_source": {
+     "count": 0,
+     "of": 477,
+     "value": 0.0,
+     "low": 0.0,
+     "high": 0.008
+    }
+   }
+  },
+  "visible_rows": {
+   "rows": 63275,
+   "with_quote": {
+    "count": 9712,
+    "of": 63275,
+    "value": 0.1535,
+    "low": 0.1507,
+    "high": 0.1563
+   },
+   "with_source": {
+    "count": 55588,
+    "of": 63275,
+    "value": 0.8785,
+    "low": 0.8759,
+    "high": 0.881
+   },
+   "with_quote_and_source": {
+    "count": 9712,
+    "of": 63275,
+    "value": 0.1535,
+    "low": 0.1507,
+    "high": 0.1563
+   }
+  },
+  "universities_with_table": {
+   "count": 35,
+   "of": 44,
+   "value": 0.7955,
+   "low": 0.655,
+   "high": 0.8885
+  },
+  "universities_with_document_layer": {
+   "count": 13,
+   "of": 44,
+   "value": 0.2955,
+   "low": 0.1816,
+   "high": 0.4422
+  },
+  "source_check_age": {
+   "as_of": "2026-11-28",
+   "documents": 24,
+   "mean_days": 65.0,
+   "min_days": 65,
+   "max_days": 65
+  },
+  "rsosh_list": {
+   "in_list": 60,
+   "found_in_database": 59,
+   "with_benefits": {
+    "count": 59,
+    "of": 60,
+    "value": 0.9833,
+    "low": 0.9114,
+    "high": 0.9971
+   },
+   "without_benefits": []
+  },
+  "check_rows": {
+   "count": 526,
+   "of_bvi_rows": 38096,
+   "role_unstated_rows": 7971
+  }
+ },
+ "computed_at": "2026-11-28T19:06:14",
+ "api": {
+  "base": "http://127.0.0.1:18000",
+  "requests_per_endpoint": 100,
+  "warmup": 3,
+  "endpoints": {
+   "GET /v1/stats": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 4.1,
+    "p95_ms": 9.0,
+    "max_ms": 10.6,
+    "rate_limited_waits": 0,
+    "distinct_urls": 1,
+    "response_kb": 17.9
+   },
+   "GET /v1/quality": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 4.3,
+    "p95_ms": 10.3,
+    "max_ms": 13.2,
+    "rate_limited_waits": 0,
+    "distinct_urls": 1,
+    "response_kb": 1.9
+   },
+   "GET /v1/regions": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 3.5,
+    "p95_ms": 4.2,
+    "max_ms": 5.6,
+    "rate_limited_waits": 0,
+    "distinct_urls": 1,
+    "response_kb": 0.5
+   },
+   "GET /v1/universities": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 66.1,
+    "p95_ms": 81.8,
+    "max_ms": 136.7,
+    "rate_limited_waits": 0,
+    "distinct_urls": 1,
+    "response_kb": 11.5
+   },
+   "GET /v1/olympiads": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 4.5,
+    "p95_ms": 5.7,
+    "max_ms": 5.8,
+    "rate_limited_waits": 0,
+    "distinct_urls": 2,
+    "response_kb": 10.3
+   },
+   "GET /v1/olympiads/{id}/profiles": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 6.8,
+    "p95_ms": 44.3,
+    "max_ms": 46.1,
+    "rate_limited_waits": 1,
+    "distinct_urls": 12,
+    "response_kb": 3.9
+   },
+   "GET /v1/programs": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 5.6,
+    "p95_ms": 13.6,
+    "max_ms": 14.3,
+    "rate_limited_waits": 0,
+    "distinct_urls": 12,
+    "response_kb": 21.5
+   },
+   "GET /v1/search/by-olympiad (карточка олимпиады)": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 4.9,
+    "p95_ms": 12.6,
+    "max_ms": 13.7,
+    "rate_limited_waits": 0,
+    "distinct_urls": 12,
+    "response_kb": 14.6
+   },
+   "GET /v1/search/by-olympiad (все строки)": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 36.0,
+    "p95_ms": 115.9,
+    "max_ms": 126.8,
+    "rate_limited_waits": 0,
+    "distinct_urls": 12,
+    "response_kb": 2650.4
+   },
+   "GET /v1/search/by-program (карточка программы)": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 6.0,
+    "p95_ms": 10.0,
+    "max_ms": 13.4,
+    "rate_limited_waits": 0,
+    "distinct_urls": 24,
+    "response_kb": 136.4
+   },
+   "GET /v1/achievements/olympiads/{id}": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 4.4,
+    "p95_ms": 5.2,
+    "max_ms": 5.5,
+    "rate_limited_waits": 0,
+    "distinct_urls": 12,
+    "response_kb": 3.3
+   },
+   "GET /v1/achievements/match": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 4.7,
+    "p95_ms": 5.9,
+    "max_ms": 12.0,
+    "rate_limited_waits": 1,
+    "distinct_urls": 4,
+    "response_kb": 12.1
+   },
+   "GET /v1/goals/olympiads": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 5.2,
+    "p95_ms": 13.0,
+    "max_ms": 18.1,
+    "rate_limited_waits": 0,
+    "distinct_urls": 24,
+    "response_kb": 37.8
+   },
+   "GET /v1/extra-points/universities": {
+    "requests": 100,
+    "failed": 0,
+    "p50_ms": 4.7,
+    "p95_ms": 5.7,
+    "max_ms": 7.8,
+    "rate_limited_waits": 0,
+    "distinct_urls": 1,
+    "response_kb": 3.7
+   }
+  }
+ },
+ "frontend": {
+  "first_load_js": {
+   "page": "/",
+   "scripts": 10,
+   "raw_kb": 743.7,
+   "gzip_kb": 226.2
+  },
+  "tests": {
+   "backend_pytest": 972,
+   "frontend_vitest": {
+    "total": 212,
+    "passed": 212,
+    "failed": 0
+   }
+  }
+ }
+}
