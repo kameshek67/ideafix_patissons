@@ -76,6 +76,10 @@ analysis *ARGS:
 metrics *ARGS:
     {{uv}} olymp-metrics {{ARGS}}
 
+# оценка справочного поиска помощника без LLM: data/eval/rag/questions.jsonl -> summary.json (нужна база с passages)
+rag-eval *ARGS:
+    {{uv}} olymp-eval-rag {{ARGS}}
+
 # воркер фоновых задач (Dramatiq + RabbitMQ)
 worker:
     {{uv}} dramatiq olymp_workers.tasks --processes 1 --threads 2

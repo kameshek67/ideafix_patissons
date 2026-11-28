@@ -1234,6 +1234,7 @@ source = { editable = "workers" }
 dependencies = [
     { name = "dramatiq", extra = ["rabbitmq"] },
     { name = "httpx" },
+    { name = "olymp-api" },
     { name = "olymp-db" },
     { name = "olymp-domain" },
     { name = "olymp-llm" },
@@ -1248,6 +1249,7 @@ dependencies = [
 requires-dist = [
     { name = "dramatiq", extras = ["rabbitmq"], specifier = ">=1.17" },
     { name = "httpx", specifier = ">=0.27" },
+    { name = "olymp-api", editable = "api" },
     { name = "olymp-db", editable = "db" },
     { name = "olymp-domain", editable = "domain" },
     { name = "olymp-llm", editable = "llm" },

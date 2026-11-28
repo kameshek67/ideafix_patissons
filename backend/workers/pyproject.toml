@@ -12,6 +12,7 @@ dependencies = [
   "dramatiq[rabbitmq]>=1.17",
   "structlog>=24.4",
   "olymp-llm",
+  "olymp-api",
   "pdfplumber>=0.11",
   "httpx>=0.27",
 ]
@@ -29,6 +30,7 @@ olymp-report-regressions = "olymp_workers.report_regressions:main"
 olymp-ai-cards = "olymp_workers.ai_cards:main"
 olymp-ai-verify = "olymp_workers.ai.verify:main"
 olymp-eval-extract = "olymp_workers.eval_extract:main"
+olymp-eval-rag = "olymp_workers.eval_rag:main"
 olymp-extract = "olymp_workers.extract.cli:main"
 olymp-export-reports = "olymp_workers.export_reports:main"
 olymp-sources = "olymp_workers.sources.cli:main"
