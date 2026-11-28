@@ -35,6 +35,7 @@ olymp-sources = "olymp_workers.sources.cli:main"
 olymp-export-dataset = "olymp_workers.export_dataset:main"
 olymp-passages = "olymp_workers.passages:main"
 olymp-analysis = "olymp_workers.analysis:main"
+olymp-metrics = "olymp_workers.metrics:main"
 
 [build-system]
 requires = ["hatchling"]

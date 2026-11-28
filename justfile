@@ -70,6 +70,12 @@ rag-fetch *ARGS:
 analysis *ARGS:
     uv run --project backend --with matplotlib olymp-analysis --charts {{ARGS}}
 
+# все метрики без людей → data/eval/metrics.json: just metrics [--only extraction,assistant,database,api,frontend]
+# (база — OLYMP_DATABASE_URL, старая таблица — --old-db-url как в docs/data-analysis.md,
+# API — демо на :18000, сайт — собранный frontend/.next)
+metrics *ARGS:
+    {{uv}} olymp-metrics {{ARGS}}
+
 # воркер фоновых задач (Dramatiq + RabbitMQ)
 worker:
     {{uv}} dramatiq olymp_workers.tasks --processes 1 --threads 2

@@ -86,6 +86,29 @@ def test_precision_recall_and_fields_on_matched_records() -> None:
     assert total.matched == 2
 
 
+def test_hits_are_kept_per_record_and_sum_up() -> None:
+    pred = file(
+        [
+            rec("01.03.02", "Высшая проба", winner_role="both", levels=[1]),
+            rec("01.03.02", "Ломоносов", winner_role="prizewinner"),
+            rec("01.03.02", "Лишняя олимпиада"),
+        ]
+    )
+    results, total = ev.run({"d": GOLD}, {"d": pred})
+    r = results[0]
+    assert r.gold_hits == [True, True, False]
+    assert r.pred_hits == [True, True, False]
+    assert len(r.pair_fields) == r.matched == 2
+    assert total.gold_hits == r.gold_hits and sum(total.pred_hits) == total.matched
+
+
+def test_any_code_spread_is_not_in_pred_hits() -> None:
+    gold = file([rec("*", "МОШ")])
+    pred = file([rec("01.03.02", "МОШ"), rec("09.03.01", "МОШ"), rec("09.03.01", "Лишняя")])
+    r = ev.run({"d": gold}, {"d": pred})[0][0]
+    assert len(r.pred_hits) == r.pred == 2 and sum(r.pred_hits) == 1
+
+
 def test_honest_empty_role_is_not_a_wrong_role() -> None:
     pred = file(
         [rec("01.03.02", "Ломоносов"), rec("01.03.02", "Высшая проба"), rec("01.03.02", "МОШ")]

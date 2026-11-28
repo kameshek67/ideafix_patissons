@@ -199,6 +199,10 @@ class DocResult:
     quotes: tuple[int, int, int] | None = None
     gold_quotes: tuple[int, int, int] | None = None
     note: str = ""
+    # по записям: нашлась ли каждая запись эталона, совпала ли каждая извлечённая, верны ли поля пар
+    gold_hits: list[bool] = field(default_factory=list)
+    pred_hits: list[bool] = field(default_factory=list)
+    pair_fields: list[tuple[bool, ...]] = field(default_factory=list)
 
     @property
     def precision(self) -> float | None:
@@ -241,6 +245,9 @@ class DocResult:
             self.field_ok[name] += other.field_ok[name]
         self.quotes = _add3(self.quotes, other.quotes)
         self.gold_quotes = _add3(self.gold_quotes, other.gold_quotes)
+        self.gold_hits += other.gold_hits
+        self.pred_hits += other.pred_hits
+        self.pair_fields += other.pair_fields
 
     def as_json(self) -> dict[str, Any]:
         return {
@@ -302,7 +309,13 @@ def evaluate_document(
     )
     result.note = note
     result.matched = len(pairs)
+    matched_gold = {id(g) for g, _ in pairs}
+    result.gold_hits = [id(g) in matched_gold for g in gold_rows]
+    result.pred_hits = [
+        id(p) in used for p in pred_rows if id(p) in used or _tail(p.key) not in any_code
+    ]
     for g, p in pairs:
+        result.pair_fields.append(tuple(getattr(g, f) == getattr(p, f) for f in FIELDS))
         for f in FIELDS:
             if getattr(g, f) == getattr(p, f):
                 result.field_ok[f] += 1
@@ -488,11 +501,12 @@ def run(
     *,
     conn: Any = None,
     checker: QuoteChecker | None = None,
+    layers: Sequence[str] = DB_LAYERS,
 ) -> tuple[list[DocResult], DocResult]:
     results: list[DocResult] = []
     for name, gold in gold_files.items():
         if conn is not None:
-            rows, note = db_rows(conn, gold)
+            rows, note = db_rows(conn, gold, layers)
             rows = in_scope(rows, gold.document.pages, gold.document.rows)
             results.append(evaluate_document(name, gold, rows, note=note, loose_profile=True))
             continue
