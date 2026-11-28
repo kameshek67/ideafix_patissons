@@ -110,6 +110,15 @@ async def test_search_nothing_and_empty(session: AsyncSession) -> None:
     assert len(await search_passages(session, "олимпиад", limit=99)) <= MAX_LIMIT
 
 
+async def test_search_ranks_by_rare_words_and_drops_weak_matches(session: AsyncSession) -> None:
+    # «олимпиады» есть почти везде, «Альфа» — только в одной карточке: она и должна быть первой
+    found = await search_passages(session, "что известно про олимпиады и Альфа")
+    assert found[0].title == "Олимпиада Альфа"
+    assert 0 < found[0].rank <= 1
+    # совпало слово «документы» из четырёх, остальные в справочнике не встречаются
+    assert await search_passages(session, "документы квантовая хромодинамика бозон") == []
+
+
 async def test_tool_returns_source_and_page(session: AsyncSession) -> None:
     ctx = ToolContext(session=session, diplomas=[])
     result = await run_tool(

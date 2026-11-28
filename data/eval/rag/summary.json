@@ -1,0 +1,172 @@
+{
+  "k": 5,
+  "questions": 59,
+  "with_answer": {
+    "questions": 51,
+    "hit@1": 0.373,
+    "hit@3": 0.392,
+    "hit@5": 0.451,
+    "recall@5": 0.451,
+    "mrr": 0.395,
+    "ndcg@5": 0.409
+  },
+  "by_question_type": {
+    "бви_и_100": {
+      "questions": 7,
+      "hit@1": 0.429,
+      "hit@3": 0.429,
+      "hit@5": 0.429,
+      "recall@5": 0.429,
+      "mrr": 0.429,
+      "ndcg@5": 0.429
+    },
+    "закон_и_перечень": {
+      "questions": 9,
+      "hit@1": 0.444,
+      "hit@3": 0.444,
+      "hit@5": 0.667,
+      "recall@5": 0.667,
+      "mrr": 0.494,
+      "ndcg@5": 0.535
+    },
+    "материалы": {
+      "questions": 5,
+      "hit@1": 0.4,
+      "hit@3": 0.6,
+      "hit@5": 0.6,
+      "recall@5": 0.6,
+      "mrr": 0.5,
+      "ndcg@5": 0.526
+    },
+    "олимпиада_этапы": {
+      "questions": 7,
+      "hit@1": 0.429,
+      "hit@3": 0.429,
+      "hit@5": 0.429,
+      "recall@5": 0.429,
+      "mrr": 0.429,
+      "ndcg@5": 0.429
+    },
+    "подтверждение": {
+      "questions": 6,
+      "hit@1": 0.333,
+      "hit@3": 0.333,
+      "hit@5": 0.5,
+      "recall@5": 0.5,
+      "mrr": 0.367,
+      "ndcg@5": 0.398
+    },
+    "правила_вуза": {
+      "questions": 13,
+      "hit@1": 0.308,
+      "hit@3": 0.308,
+      "hit@5": 0.308,
+      "recall@5": 0.308,
+      "mrr": 0.308,
+      "ndcg@5": 0.308
+    },
+    "срок_диплома": {
+      "questions": 4,
+      "hit@1": 0.25,
+      "hit@3": 0.25,
+      "hit@5": 0.25,
+      "recall@5": 0.25,
+      "mrr": 0.25,
+      "ndcg@5": 0.25
+    }
+  },
+  "by_source_type": {
+    "admission_rule": {
+      "expectations": 23,
+      "found@5": 12,
+      "recall@5": 0.522
+    },
+    "olympiad_card": {
+      "expectations": 7,
+      "found@5": 3,
+      "recall@5": 0.429
+    },
+    "olympiad_material": {
+      "expectations": 5,
+      "found@5": 3,
+      "recall@5": 0.6
+    },
+    "university_document": {
+      "expectations": 17,
+      "found@5": 5,
+      "recall@5": 0.294
+    }
+  },
+  "no_answer": {
+    "questions": 8,
+    "empty_share": 1.0,
+    "top_rank_median": 0.0,
+    "top_rank_max": 0.0,
+    "right_rank_median": 0.698,
+    "right_rank_p10": 0.542
+  },
+  "latency": {
+    "p50_ms": 177.9,
+    "p95_ms": 306.7,
+    "max_ms": 366.9
+  },
+  "misses": [
+    "100-what",
+    "bvi-vs-100",
+    "bvi-one-vuz",
+    "bvi-which-rights",
+    "diploma-msu-years",
+    "diploma-sechenov-years",
+    "diploma-grades",
+    "confirm-min",
+    "confirm-msu",
+    "confirm-winner-prizer",
+    "law-ia",
+    "law-not-list",
+    "law-order",
+    "msu-bvi-deadline",
+    "spbu-start",
+    "msu-dorm",
+    "msu-quota",
+    "spmi-docs",
+    "rudn-ia",
+    "polytech-order",
+    "innopolis-list",
+    "ranepa-100",
+    "lomonosov-stages",
+    "hse-vp",
+    "kurchatov",
+    "nto",
+    "mat-lomonosov-appeal",
+    "mat-spbu-archive"
+  ],
+  "coverage": {
+    "passages": 5865,
+    "by_source_type": {
+      "admission_rule": {
+        "passages": 27,
+        "documents": 11
+      },
+      "olympiad_card": {
+        "passages": 31,
+        "documents": 30
+      },
+      "olympiad_material": {
+        "passages": 118,
+        "documents": 116
+      },
+      "university_document": {
+        "passages": 5689,
+        "documents": 62
+      }
+    },
+    "documents": 219,
+    "universities_in_base": 44,
+    "universities_with_documents": 17,
+    "university_documents_listed": 95,
+    "university_documents_indexed": 62,
+    "avg_passage_chars": 686,
+    "page_share": 0.97
+  },
+  "unresolved_expectations": []
+}
