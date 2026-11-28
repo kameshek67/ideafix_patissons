@@ -8,7 +8,7 @@ import type { Column } from "@/lib/table";
 import { DataTable, useTables } from "./DataTable";
 import { IconSummaryChevron } from "./icons";
 import { ShareButton } from "./ShareButton";
-import { badgeClass, Clamp2, DerivedMark, DocumentMark, documentPage, EmptyState, TYPE_STYLE } from "./ui";
+import { badgeClass, Clamp2, DerivedMark, DocumentMark, documentPage, EmptyState, IntakeLine, TYPE_STYLE } from "./ui";
 import { SuggestButton } from "./SuggestDialog";
 import { conditionsLine } from "@/lib/conditions";
 import { RowReport } from "./BenefitReport";
@@ -156,6 +156,7 @@ export function ProgramView({ data, benefitType, goToOlympiad }: Props) {
           ))}
         </div>
         {university.note ? <p className="mt-2 text-[12.5px] leading-snug meta-text">{university.note}</p> : null}
+        <IntakeLine intake={university.intake} />
         <SourceBlock sources={data.sources} />
         <ReportError target={{ kind: "program", program_id: program.id }} />
       </div>

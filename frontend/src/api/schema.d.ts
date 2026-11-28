@@ -2041,6 +2041,7 @@ export interface components {
             docs_url: string;
             /** Id */
             id: number;
+            intake: components["schemas"]["UniversityIntake"] | null;
             /** Name */
             name: string;
             /** Note */
@@ -2057,6 +2058,24 @@ export interface components {
              */
             site_url: string;
         };
+        /**
+         * UniversityIntake
+         * @description Сколько олимпиадников принял вуз за год (сводная панель «Мониторинг эффективности вузов»).
+         *
+         *     Пустое число — данных нет или вуз не заполнил показатель, а не «принял ноль».
+         */
+        UniversityIntake: {
+            /** Avg Score Budget */
+            avg_score_budget: number | null;
+            /** Olympiad Share */
+            olympiad_share: number | null;
+            /** Olympiad Students */
+            olympiad_students: number | null;
+            /** Source */
+            source: string;
+            /** Year */
+            year: number;
+        };
         /** UniversityItem */
         UniversityItem: {
             /** Benefits */
@@ -2067,6 +2086,7 @@ export interface components {
             city: string;
             /** Id */
             id: number;
+            intake: components["schemas"]["UniversityIntake"] | null;
             /** Name */
             name: string;
             /** Nicknames */

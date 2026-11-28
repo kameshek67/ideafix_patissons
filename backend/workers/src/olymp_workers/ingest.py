@@ -72,6 +72,7 @@ from olymp_domain.textutils import (
 
 from .document_layer import EXTRACTED_DIR, apply_documents
 from .extra_points import load_extra_points
+from .intake import INTAKE_CSV, load_intake
 from .olympiad_cards import CARDS_FILE, load_olympiad_cards
 from .passages import MATERIALS_FILE, load_passages
 from .row_keys import RowFields, assign_row_keys
@@ -1299,6 +1300,9 @@ class Ingestor:
 
         extra = load_extra_points(self.conn, DATA_DIR)
         log(f"      баллы за ИД: правил {extra['rules']}, лимитов {extra['limits']}")
+
+        intake = load_intake(self.conn, DATA_DIR)
+        log(f"      набор олимпиадников: строк {intake['rows']}, вузов {intake['universities']}")
 
         log("[7/7] Статистика")
         self.finalize(started)
@@ -2666,7 +2670,15 @@ def build_fingerprint(xlsx_path: str) -> str:
     import olymp_domain.olympiad_seeds as seeds
     import olymp_domain.textutils as textutils
 
-    from . import document_layer, olympiad_cards, passages, row_keys, rsosh, university_pages
+    from . import (
+        document_layer,
+        intake,
+        olympiad_cards,
+        passages,
+        row_keys,
+        rsosh,
+        university_pages,
+    )
 
     parts = [
         Path(xlsx_path),
@@ -2688,6 +2700,8 @@ def build_fingerprint(xlsx_path: str) -> str:
         Path(olympiad_cards.__file__),
         Path(cards.__file__),
         Path(ege.__file__),
+        Path(intake.__file__),
+        DATA_DIR / INTAKE_CSV,
     ]
     digest = hashlib.sha256()
     for part in parts:

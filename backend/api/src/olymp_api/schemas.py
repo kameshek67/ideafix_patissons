@@ -100,6 +100,20 @@ class Benefit(ResponseModel):
     matched: Matched | None = None
 
 
+class UniversityIntake(ResponseModel):
+    """Сколько олимпиадников принял вуз за год (сводная панель «Мониторинг эффективности вузов»).
+
+    Пустое число — данных нет или вуз не заполнил показатель, а не «принял ноль».
+    """
+
+    year: int
+    olympiad_students: int | None = None
+    # доля победителей и призёров среди принятых на бакалавриат и специалитет, %
+    olympiad_share: float | None = None
+    avg_score_budget: float | None = None
+    source: str
+
+
 class UniversityInfo(ResponseModel):
     id: int
     name: str
@@ -111,3 +125,4 @@ class UniversityInfo(ResponseModel):
     docs_url: str = ""
     docs_title: str = ""
     region_group: str
+    intake: UniversityIntake | None = None

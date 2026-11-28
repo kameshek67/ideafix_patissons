@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from olymp_api.db import fetch_all, fetch_one, scalar
 from olymp_api.modules.catalog.synonyms import name_fragments, nicknames_of
 from olymp_api.olympiads import OLYMPIAD_FIELDS, resolve_olympiad_profiles, resolve_olympiads
+from olymp_api.universities import INTAKE_FIELD, intake_of
 
 REGION_ORDER = {"Москва": 0, "Санкт-Петербург": 1, "Регионы": 2}
 
@@ -119,7 +120,7 @@ async def universities(session: AsyncSession, region: str | None, q: str | None)
     items = await fetch_all(
         session,
         f"""SELECT u.id, u.name, u.short_name, u.region, u.city, u.note, u.region_group,
-                   {UNIVERSITY_COUNTERS}
+                   {UNIVERSITY_COUNTERS}, {INTAKE_FIELD}
             FROM universities u
             LEFT JOIN programs p ON p.university_id = u.id
             LEFT JOIN benefits b ON b.program_id = p.id AND b.layer <> 'raw'
@@ -129,6 +130,7 @@ async def universities(session: AsyncSession, region: str | None, q: str | None)
     )
     for item in items:
         item["nicknames"] = nicknames_of(item["name"])
+        item["intake"] = intake_of(item["intake"])
     region_names = [r["name"] for r in (await regions(session))["items"]]
     return {"count": len(items), "items": items, "regions": region_names}
 

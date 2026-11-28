@@ -19,6 +19,7 @@ from sqlalchemy import (
     CheckConstraint,
     Date,
     DateTime,
+    Float,
     ForeignKey,
     Index,
     Integer,
@@ -404,6 +405,28 @@ class IndividualAchievementLimit(Base):
     review: Mapped[str] = _text("extracted")
 
 
+class UniversityIntake(Base):
+    """Сколько олимпиадников принял вуз и какой средний балл ЕГЭ на бюджете (по годам).
+
+    Из сводной панели «Мониторинг эффективности вузов» (data/monitoring/olympiad_intake.csv).
+    Пустое число олимпиадников — «нет данных или не заполнено», а не ноль.
+    """
+
+    __tablename__ = "university_intake"
+    __table_args__ = (
+        UniqueConstraint("university_id", "year"),
+        CheckConstraint("olympiad_students IS NULL OR olympiad_students > 0", name="students"),
+    )
+
+    id: Mapped[int] = _pk()
+    university_id: Mapped[int] = mapped_column(ForeignKey("universities.id", ondelete="CASCADE"))
+    year: Mapped[int] = mapped_column(SmallInteger)
+    olympiad_students: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # доля победителей и призёров среди принятых на бакалавриат и специалитет, %
+    olympiad_share: Mapped[float | None] = mapped_column(Float, nullable=True)
+    avg_score_budget: Mapped[float | None] = mapped_column(Float, nullable=True)
+
+
 # ---------------------------------------------------------------- пользователи MAX
 # Данные пользователей не входят в DATA_TABLES: пересборка базы их не трогает. Поэтому
 # дипломы ссылаются на олимпиады и профили ключами squash, а не id — id после пересборки
@@ -686,6 +709,7 @@ DATA_TABLES = [
     "individual_achievement_limits",
     "programs",
     "university_documents",
+    "university_intake",
     "universities",
     "ingest_log",
     "meta",

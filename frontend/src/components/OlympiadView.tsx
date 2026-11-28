@@ -13,7 +13,7 @@ import { IconChevronLeft, IconChevronRight } from "./icons";
 import { ShareButton } from "./ShareButton";
 import { ReportError } from "./ReportError";
 import { type SourceLink, SourceBlock } from "./SourceBlock";
-import { badgeClass, Clamp2, DerivedMark, DocumentMark, documentPage, EmptyState, NotInListBadge } from "./ui";
+import { badgeClass, Clamp2, DerivedMark, DocumentMark, documentPage, EmptyState, IntakeLine, NotInListBadge } from "./ui";
 import { SuggestButton } from "./SuggestDialog";
 
 const vuzov = (n: number) => plural(n, "вуз", "вуза", "вузов");
@@ -484,6 +484,7 @@ export function UniversityBenefits({
         <div className="card-kicker">{`${place(u)} · ${fmt(data.total_programs)} ${napravleniy(data.total_programs)}`}</div>
         <h3 className="card-title mt-1">{u.name}</h3>
         {u.note ? <p className="mt-2 text-[12.5px] leading-snug meta-text">{u.note}</p> : null}
+        <IntakeLine intake={u.intake} />
         <SourceBlock sources={universitySource(data, u)} />
         {data.matched_olympiads[0] ? (
           <ReportError target={{ kind: "olympiad", olympiad_id: data.matched_olympiads[0].id, university_id: u.id }} />

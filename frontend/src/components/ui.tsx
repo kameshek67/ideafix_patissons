@@ -1,5 +1,6 @@
 /* Общие куски разметки прототипа: заглушки, пустые состояния, стили льгот. */
 
+import { INTAKE_HINT, type Intake, intakeLine } from "@/lib/intake";
 import { NOT_IN_LIST_BADGE, NOT_IN_LIST_HINT, notInList } from "@/lib/rsosh";
 
 export const TYPES = ["Все", "БВИ", "100 баллов"] as const;
@@ -125,5 +126,17 @@ export function NotInListBadge({ olympiad }: { olympiad: { in_rsosh_2026_27?: bo
     <span className="badge badge-alt" title={NOT_IN_LIST_HINT}>
       {NOT_IN_LIST_BADGE}
     </span>
+  );
+}
+
+/** Сколько олимпиадников принял вуз: одна строка с подписью-источником, без данных — ничего. */
+export function IntakeLine({ intake }: { intake: Intake | null | undefined }) {
+  const line = intakeLine(intake);
+  if (!intake || !line) return null;
+  return (
+    <p className="mt-2 text-[12.5px] leading-snug meta-text" title={INTAKE_HINT}>
+      {line}
+      <span className="block text-[11.5px]">{`Источник: ${intake.source}`}</span>
+    </p>
   );
 }

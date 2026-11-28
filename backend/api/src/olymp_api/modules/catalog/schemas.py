@@ -1,4 +1,4 @@
-from olymp_api.schemas import OlympiadHit, ProfileHit, ResponseModel
+from olymp_api.schemas import OlympiadHit, ProfileHit, ResponseModel, UniversityIntake
 
 
 class StatsTotals(ResponseModel):
@@ -82,6 +82,7 @@ class UniversityItem(ResponseModel):
     # строк таблиц (без текстовых правил): 0 — в базе нет таблицы льгот, а не «льготы нет»
     table_rows: int
     nicknames: list[str]  # разговорные названия: «Вышка», «Физтех»
+    intake: UniversityIntake | None = None
 
 
 class Universities(ResponseModel):

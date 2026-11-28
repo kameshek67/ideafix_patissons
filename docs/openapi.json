@@ -4243,6 +4243,16 @@
             "title": "Id",
             "type": "integer"
           },
+          "intake": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UniversityIntake"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "name": {
             "title": "Name",
             "type": "string"
@@ -4279,9 +4289,65 @@
           "site_url",
           "docs_url",
           "docs_title",
-          "region_group"
+          "region_group",
+          "intake"
         ],
         "title": "UniversityInfo",
+        "type": "object"
+      },
+      "UniversityIntake": {
+        "description": "Сколько олимпиадников принял вуз за год (сводная панель «Мониторинг эффективности вузов»).\n\nПустое число — данных нет или вуз не заполнил показатель, а не «принял ноль».",
+        "properties": {
+          "avg_score_budget": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Score Budget"
+          },
+          "olympiad_share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Olympiad Share"
+          },
+          "olympiad_students": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Olympiad Students"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "year": {
+            "title": "Year",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "year",
+          "olympiad_students",
+          "olympiad_share",
+          "avg_score_budget",
+          "source"
+        ],
+        "title": "UniversityIntake",
         "type": "object"
       },
       "UniversityItem": {
@@ -4301,6 +4367,16 @@
           "id": {
             "title": "Id",
             "type": "integer"
+          },
+          "intake": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UniversityIntake"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "name": {
             "title": "Name",
@@ -4355,7 +4431,8 @@
           "sto",
           "benefits",
           "table_rows",
-          "nicknames"
+          "nicknames",
+          "intake"
         ],
         "title": "UniversityItem",
         "type": "object"
