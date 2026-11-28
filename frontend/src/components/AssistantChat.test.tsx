@@ -260,8 +260,8 @@ describe("AssistantChat", () => {
     render(<AssistantChat {...props} />);
     ask("вопрос");
     await screen.findByText(isAnswer("Попробуй НТО"));
-    fireEvent.click(screen.getByText("Очистить"));
-    fireEvent.click(screen.getByText("Точно очистить?"));
+    fireEvent.click(screen.getByLabelText("Очистить диалог"));
+    fireEvent.click(screen.getByLabelText("Точно очистить?"));
     await waitFor(() => expect(screen.queryByText(isAnswer("Попробуй НТО"))).toBeNull());
     expect(localStorage.getItem("olymp.assistant.v1")).toBeNull();
   });

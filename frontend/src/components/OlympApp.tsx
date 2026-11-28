@@ -189,8 +189,9 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
 
   function universityItems(q: string): ComboItem<UniversityItem>[] {
     const needle = q.toLowerCase();
+    // и по разговорным названиям из API: «вышка» находит ВШЭ
     return universities
-      .filter((u) => !needle || u.name.toLowerCase().includes(needle))
+      .filter((u) => !needle || u.name.toLowerCase().includes(needle) || u.nicknames.some((n) => n.includes(needle)))
       .map((u) => ({
         key: u.id,
         value: u,
@@ -885,14 +886,34 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
                     void runOlympiadSearch(next);
                   }
                   if (e.key === "Escape") hideSuggest();
+                  if (e.key === "ArrowDown" && suggestOpen) {
+                    e.preventDefault();
+                    document.querySelector<HTMLElement>("#olymp-suggest .suggest-item")?.focus();
+                  }
                 }}
               />
             </label>
-            <div id="olymp-suggest" className={suggestOpen ? "suggest" : "suggest hidden"}>
+            <div
+              id="olymp-suggest"
+              className={suggestOpen ? "suggest" : "suggest hidden"}
+              onKeyDown={(e) => {
+                // стрелки ходят по подсказкам, из первой вверх — обратно в поле, Escape закрывает
+                const items = [...e.currentTarget.querySelectorAll<HTMLElement>(".suggest-item")];
+                const at = items.indexOf(document.activeElement as HTMLElement);
+                if (e.key === "ArrowDown") items[Math.min(at + 1, items.length - 1)]?.focus();
+                else if (e.key === "ArrowUp") (at > 0 ? items[at - 1] : document.getElementById("olymp-input"))?.focus();
+                else if (e.key === "Escape") {
+                  hideSuggest();
+                  document.getElementById("olymp-input")?.focus();
+                } else return;
+                e.preventDefault();
+              }}
+            >
               {suggestItems === null ? null : suggestItems.length ? (
                 suggestItems.map((o) => (
-                  <div
+                  <button
                     key={`${o.id}-${o.profile_id ?? ""}`}
+                    type="button"
                     className="suggest-item"
                     onClick={() =>
                       goToOlympiad(o.id, o.short_name, o.profile_id, o.profile_name ? suggestTitle(o) : o.short_name)
@@ -907,7 +928,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
                         {`${fmt(o.uni_count)} ${plural(o.uni_count, "вуз", "вуза", "вузов")}`}
                       </span>
                     </div>
-                  </div>
+                  </button>
                 ))
               ) : (
                 <div className="suggest-empty">
@@ -984,7 +1005,7 @@ export function OlympApp({ shareToken }: { shareToken?: string } = {}) {
           <ExtraPointsView active={tab === "extra"} />
         </section>
 
-        <p className="mt-8 text-center text-[12.5px] leading-[17px] meta-text">
+        <p className="app-footer mt-8 text-center text-[12.5px] leading-[17px] meta-text">
           <a id="quality-link" className="underline" href="/quality">
             Качество данных
           </a>

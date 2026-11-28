@@ -13,7 +13,7 @@ import {
 import { type DiplomaEntry, diplomaMeta, parseSpec, REGIONAL_NOTE } from "@/lib/diplomas";
 import { EGE_DATIVE, type EgeScores, type EgeSubject, egeQuery, hasEge, NO_EGE } from "@/lib/ege";
 import { conditionsLine } from "@/lib/conditions";
-import { codesOf, dash, fmt, place, plural } from "@/lib/format";
+import { codesOf, dash, fmt, OTHER_BENEFITS_HINT, otherBenefits, place, plural } from "@/lib/format";
 import { levelChange } from "@/lib/rsosh";
 import { diplomasShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
@@ -262,7 +262,7 @@ function DiplomaList({
                     <>
                       {c.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(c.bvi)}`}</span> : null}
                       {c.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(c.sto)}`}</span> : null}
-                      {c.other ? <span className="badge badge-alt">{`${fmt(c.other)} др.`}</span> : null}
+                      {c.other ? <span className="badge badge-alt" title={OTHER_BENEFITS_HINT}>{otherBenefits(c.other)}</span> : null}
                       <span className="badge badge-soft">{`${fmt(c.universities)} ${vuzov(c.universities)}`}</span>
                     </>
                   ) : (
@@ -386,8 +386,8 @@ function Results({
           {t.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(t.bvi)}`}</span> : null}
           {t.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(t.sto)}`}</span> : null}
           {t.other ? (
-            <span className="badge badge-alt" title="Особое право, фаст-трек, доп. баллы">
-              {`${fmt(t.other)} др.`}
+            <span className="badge badge-alt" title={OTHER_BENEFITS_HINT}>
+              {otherBenefits(t.other)}
             </span>
           ) : null}
         </div>
@@ -439,7 +439,7 @@ function Results({
                 ) : null}
                 {r.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(r.bvi)}`}</span> : null}
                 {r.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(r.sto)}`}</span> : null}
-                {r.other ? <span className="badge badge-alt">{`${fmt(r.other)} др.`}</span> : null}
+                {r.other ? <span className="badge badge-alt" title={OTHER_BENEFITS_HINT}>{otherBenefits(r.other)}</span> : null}
                 {r.to_hundred ? (
                   <span className="badge badge-soft" title={CHANGED_HINT}>{`БВИ → 100: ${fmt(r.to_hundred)}`}</span>
                 ) : null}

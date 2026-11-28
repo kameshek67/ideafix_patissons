@@ -21,3 +21,8 @@ export const dash = (value: string | null | undefined): string => value || "—"
 /** Коды направлений из строки («01.03.02, 09.03.04»), отсортированные — для сравнения. */
 export const codesOf = (s: string | null | undefined): string =>
   (String(s || "").match(/\d{2}\.\d{2}\.\d{2}/g) || []).sort().join(",");
+
+/** Значок «другие льготы»: всё, что не БВИ и не 100 баллов. */
+export const otherBenefits = (n: number): string => `другие льготы: ${fmt(n)}`;
+export const OTHER_BENEFITS_HINT =
+  "Другие льготы, кроме БВИ и 100 баллов: особое право, фаст-трек, дополнительные баллы";

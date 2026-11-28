@@ -3,7 +3,7 @@
 import { type ReactNode, useLayoutEffect, useRef } from "react";
 import { type OlympiadCard, type OlympiadSearch, shareBenefitType, type UniversityInfo } from "@/lib/api";
 import { conditionsLine } from "@/lib/conditions";
-import { codesOf, dash, fmt, place, plural } from "@/lib/format";
+import { codesOf, dash, fmt, OTHER_BENEFITS_HINT, otherBenefits, place, plural } from "@/lib/format";
 import { levelChange } from "@/lib/rsosh";
 import { olympiadShareText } from "@/lib/share";
 import type { Column } from "@/lib/table";
@@ -301,8 +301,8 @@ export function OlympiadResults({
                     {group.bvi ? <span className="badge badge-bvi">{`БВИ: ${fmt(group.bvi)}`}</span> : null}
                     {group.sto ? <span className="badge badge-sto">{`100 баллов: ${fmt(group.sto)}`}</span> : null}
                     {group.other ? (
-                      <span className="badge badge-alt" title="Особое право, фаст-трек, доп. баллы">
-                        {`${fmt(group.other)} др.`}
+                      <span className="badge badge-alt" title={OTHER_BENEFITS_HINT}>
+                        {otherBenefits(group.other)}
                       </span>
                     ) : null}
                   </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { IconChevronDown } from "./icons";
 
 export interface ComboItem<T> {
@@ -70,7 +71,9 @@ export function Combo<T>({
 
   function toggle() {
     if (open) return close();
-    setOpen(true);
+    // панель появляется синхронно, и фокус уходит в поле в том же касании: на телефоне иначе не покажется клавиатура
+    flushSync(() => setOpen(true));
+    input.current?.focus();
     setSearch("");
     // при открытии старый список не показываем: он мог быть для другого вуза
     setList({ kind: "idle" });
@@ -98,7 +101,9 @@ export function Combo<T>({
         className="combo-btn"
         type="button"
         aria-label={ariaLabel}
+        aria-haspopup="listbox"
         aria-expanded={open}
+        aria-controls={`${id}-list`}
         disabled={disabled}
         title={disabled ? disabledTitle : undefined}
         onClick={toggle}
@@ -122,7 +127,12 @@ export function Combo<T>({
             timer.current = setTimeout(() => void refresh(q.trim()), 180);
           }}
         />
-        <div className={list.kind === "loading" && list.previous ? "combo-list is-loading" : "combo-list"}>
+        <div
+          id={`${id}-list`}
+          role={items.length ? "listbox" : undefined}
+          aria-label={items.length ? ariaLabel : undefined}
+          className={list.kind === "loading" && list.previous ? "combo-list is-loading" : "combo-list"}
+        >
           {list.kind === "idle" ? null : list.kind === "loading" && !list.previous ? (
             <div className="suggest-empty">Загрузка…</div>
           ) : list.kind === "error" ? (
@@ -136,6 +146,9 @@ export function Combo<T>({
             items.map((item) => (
               <button
                 key={item.key}
+                type="button"
+                role="option"
+                aria-selected={item.label === value}
                 className="combo-item"
                 aria-busy={list.kind === "loading" || undefined}
                 onClick={() => {

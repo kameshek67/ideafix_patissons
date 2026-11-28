@@ -16,7 +16,7 @@ import {
   streamChat,
 } from "@/lib/assistant";
 import { sendAssistantFeedback } from "@/lib/api";
-import { IconChevronRight, IconCloseModal } from "./icons";
+import { IconChevronRight, IconCloseModal, IconTrash } from "./icons";
 import { AssistantText } from "./AssistantText";
 import { useMax } from "./MaxProvider";
 import { SourceBlock } from "./SourceBlock";
@@ -213,8 +213,15 @@ export function AssistantChat({ open, suggestions, diplomas, onClose, onEntity, 
           <p className="assistant-note">Отвечает по базе льгот «Олимпа». Может ошибаться — проверяй по ссылкам</p>
         </div>
         {items.length ? (
-          <button className="chip" type="button" onClick={clear}>
-            {confirmClear ? "Точно очистить?" : "Очистить"}
+          // иконка, а не слово: подпись «Очистить» отнимала у подзаголовка треть ширины
+          <button
+            className={confirmClear ? "chip" : "icon-btn"}
+            type="button"
+            onClick={clear}
+            aria-label={confirmClear ? "Точно очистить?" : "Очистить диалог"}
+            title={confirmClear ? "Нажми ещё раз, чтобы стереть диалог" : "Очистить диалог"}
+          >
+            {confirmClear ? "Точно?" : <IconTrash />}
           </button>
         ) : null}
         <button className="icon-btn -mr-2" type="button" onClick={onClose} aria-label="Свернуть чат">

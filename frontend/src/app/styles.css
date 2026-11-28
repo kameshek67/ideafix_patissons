@@ -188,7 +188,8 @@ body::before {
   background: #fff; border: 1px solid #F0E1F6; border-radius: 15px;
   box-shadow: 0 12px 28px rgba(89,0,120,.12); overflow: hidden; max-height: 360px; overflow-y: auto;
 }
-.suggest-item { padding: 12px 16px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #F8F2FA; }
+.suggest-item { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 12px 16px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #F8F2FA; }
+.suggest-item:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; background: var(--soft); }
 .suggest-item:last-child { border-bottom: 0; }
 .suggest-item:hover, .suggest-item.active { background: var(--soft); }
 .suggest-empty { padding: 14px 16px; font-size: 13.5px; line-height: 1.4; color: var(--muted); }
@@ -477,6 +478,8 @@ html[data-max="android"] .table-toolbar .chip-ghost { display: none; }
   position: fixed; z-index: 30; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom));
   height: 52px; padding: 0 20px; border-radius: 30px; display: inline-flex; align-items: center; gap: 8px;
 }
+/* подвал не прячется под плавающую кнопку: её высота + отступы + «домой» на iPhone */
+.app-footer { padding-bottom: calc(52px + 32px + env(safe-area-inset-bottom)); }
 .assistant-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; }
 .assistant-sheet {
   position: fixed; z-index: 40; inset: 0; height: 100dvh; display: flex; flex-direction: column;
@@ -751,3 +754,25 @@ html[data-max="android"] .table-toolbar .chip-ghost { display: none; }
   }
 }
 @keyframes ops-pulse { 0%, 100% { opacity: .35; } 50% { opacity: .9; } }
+
+/* ---------- сравнение моделей: на телефоне строки превращаются в карточки, вбок ничего не ездит ---------- */
+.models-scroll { overflow-x: auto; }
+.models-table { width: 100%; border-collapse: collapse; font-size: 13.5px; line-height: 18px; }
+.models-table th, .models-table td { padding: 9px 8px; text-align: right; vertical-align: top; border-bottom: 1px solid var(--hair); font-variant-numeric: tabular-nums; }
+.models-table thead th { font-size: 12px; font-weight: 500; color: var(--muted); vertical-align: bottom; }
+.models-table th:first-child { text-align: left; font-weight: 500; }
+.models-table tbody th { font-weight: 500; }
+.models-table td { white-space: nowrap; }
+.models-table tr.is-selected { background: var(--soft); }
+.models-table tr:last-child > * { border-bottom: 0; }
+@media (max-width: 639px) {
+  .models-table, .models-table tbody, .models-table tr { display: block; }
+  .models-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .models-table tr { padding: 10px 12px; border-bottom: 1px solid var(--hair); }
+  .models-table tr:last-child { border-bottom: 0; }
+  .models-table tr.is-selected { border-radius: 12px; }
+  .models-table th, .models-table td { padding: 0; border: 0; }
+  .models-table tbody th { display: block; text-align: left; margin-bottom: 4px; }
+  .models-table td { display: flex; justify-content: space-between; gap: 12px; padding-top: 3px; }
+  .models-table td::before { content: attr(data-label); color: var(--muted); font-weight: 400; text-align: left; }
+}

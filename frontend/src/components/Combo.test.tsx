@@ -63,6 +63,18 @@ describe("Combo", () => {
     expect(button.getAttribute("aria-expanded")).toBe("false");
   });
 
+  it("размечен как список: кнопка с aria-haspopup, пункты role=option, поле поиска в фокусе", async () => {
+    renderCombo({ value: "ВШЭ" });
+    const button = screen.getByRole("button", { name: "Вуз" });
+    expect(button.getAttribute("aria-haspopup")).toBe("listbox");
+    fireEvent.click(button);
+    expect(document.activeElement).toBe(screen.getByPlaceholderText("Поиск вуза"));
+    const options = await screen.findAllByRole("option");
+    expect(options.length).toBe(items.length);
+    expect(screen.getByRole("listbox", { name: "Вуз" })).toBeTruthy();
+    expect(screen.getByRole("option", { name: /НИУ ВШЭ/ }).getAttribute("aria-selected")).toBe("true");
+  });
+
   it("показывает выбранное значение, а заблокированная кнопка не открывает панель", () => {
     renderCombo({ value: "НИУ ВШЭ" });
     const selected = screen.getByRole("button", { name: "Вуз" });
